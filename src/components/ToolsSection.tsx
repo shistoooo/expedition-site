@@ -75,11 +75,7 @@ export default function ToolsSection() {
           {/* Côté Visuel / Mockup */}
           <div className="flex-1 w-full relative">
             <div className="absolute -inset-10 bg-gradient-to-tr from-purple-500/20 via-blue-500/20 to-pink-500/20 blur-3xl rounded-full opacity-50" />
-            <motion.div 
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="relative glass rounded-2xl border border-white/10 p-4 shadow-2xl"
-            >
+            <div className="relative glass rounded-2xl border border-white/10 p-4 shadow-2xl">
               <div className="aspect-video bg-[#0a0a0a] rounded-xl overflow-hidden relative border border-white/5 flex items-center justify-center group">
                 {/* Simulation d'interface */}
                 <div className="absolute inset-0 flex">
@@ -92,21 +88,41 @@ export default function ToolsSection() {
                   {/* Main Content */}
                   <div className="flex-1 p-6 relative">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                      <div className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-purple-500/30">
+                      <motion.div 
+                        animate={{ scale: [1, 1.1, 1], boxShadow: ["0 10px 15px -3px rgba(147, 51, 234, 0.3)", "0 20px 25px -5px rgba(147, 51, 234, 0.5)", "0 10px 15px -3px rgba(147, 51, 234, 0.3)"] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-purple-500/30"
+                      >
                         <Video className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="h-2 w-32 bg-white/10 rounded-full mb-2" />
-                      <div className="h-2 w-20 bg-white/10 rounded-full" />
+                      </motion.div>
+                      <motion.div 
+                        animate={{ opacity: [0.5, 1, 0.5], width: ["8rem", "9rem", "8rem"] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                        className="h-2 w-32 bg-white/10 rounded-full mb-2" 
+                      />
+                      <motion.div 
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                        className="h-2 w-20 bg-white/10 rounded-full" 
+                      />
                     </div>
                     {/* Timeline fictive */}
                     <div className="absolute bottom-6 left-6 right-6 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 gap-1">
-                      <div className="h-8 w-1/4 bg-purple-500/20 rounded border border-purple-500/30" />
-                      <div className="h-8 w-1/3 bg-blue-500/20 rounded border border-blue-500/30" />
+                      <motion.div 
+                        animate={{ opacity: [0.6, 1, 0.6] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+                        className="h-8 w-1/4 bg-purple-500/20 rounded border border-purple-500/30" 
+                      />
+                      <motion.div 
+                        animate={{ opacity: [0.6, 1, 0.6] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                        className="h-8 w-1/3 bg-blue-500/20 rounded border border-blue-500/30" 
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>
