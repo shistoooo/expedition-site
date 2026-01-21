@@ -107,7 +107,7 @@ export default function ToolsSection() {
                       />
                     </div>
                     {/* Timeline fictive */}
-                    <div className="absolute bottom-6 left-6 right-6 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 gap-1">
+                    <div className="absolute bottom-6 left-6 right-6 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 gap-1 relative overflow-hidden">
                       <motion.div 
                         animate={{ opacity: [0.6, 1, 0.6] }}
                         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0 }}
@@ -117,6 +117,12 @@ export default function ToolsSection() {
                         animate={{ opacity: [0.6, 1, 0.6] }}
                         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                         className="h-8 w-1/3 bg-blue-500/20 rounded border border-blue-500/30" 
+                      />
+                      {/* Playhead */}
+                      <motion.div
+                        animate={{ left: ["0%", "100%"] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute top-0 bottom-0 w-0.5 bg-white/30 backdrop-blur-sm z-10"
                       />
                     </div>
                   </div>
