@@ -5,6 +5,7 @@ import CursorGlow from "@/components/CursorGlow";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ToolsSection from "@/components/ToolsSection";
+import PhilosophySection from "@/components/PhilosophySection";
 import DiscordSection from "@/components/DiscordSection";
 import Footer from "@/components/Footer";
 import UpcomingTools from "@/components/UpcomingTools";
@@ -23,6 +24,7 @@ export default function Home() {
       <main className="w-full">
         <Hero />
         <ToolsSection />
+        <PhilosophySection />
         <UpcomingTools />
         <DiscordSection />
       </main>
