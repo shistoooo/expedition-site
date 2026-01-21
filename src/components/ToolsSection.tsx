@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Video, Wand2, Scissors, Share2, ArrowRight } from "lucide-react";
+import { Video, Wand2, Scissors, Share2, ArrowRight, FileCheck } from "lucide-react";
 
 export default function ToolsSection() {
   return (
@@ -49,6 +49,11 @@ export default function ToolsSection() {
                   icon: Share2,
                   title: "Sous-titres & Export",
                   desc: "Sous-titres générés automatiquement et export 4K.",
+                },
+                              {
+                  icon: FileCheck,
+                  title: "Correction de Sous-titres",
+                  desc: "Importez vos .srt : l'IA corrige l'orthographe et le sens.",
                 },
               ].map((item, i) => (
                 <li key={i} className="flex gap-5">
