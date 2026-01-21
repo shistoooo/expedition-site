@@ -76,7 +76,7 @@ export default function ToolsSection() {
           {/* Côté Visuel / Mockup */}
           <div className="flex-1 w-full relative">
             <div className="absolute -inset-10 bg-gradient-to-tr from-purple-500/20 via-blue-500/20 to-pink-500/20 blur-3xl rounded-full opacity-50" />
-            <div className="relative glass rounded-2xl border border-white/10 p-4 shadow-2xl">
+            <div className="relative glass rounded-2xl border border-white/5 p-2 shadow-2xl">
               <div className="aspect-video bg-[#0a0a0a] rounded-xl overflow-hidden relative border border-white/5 flex items-center justify-center group">
                 {/* Simulation d'interface */}
                 <div className="absolute inset-0 flex">
@@ -87,7 +87,7 @@ export default function ToolsSection() {
                     <div className="w-8 h-8 rounded-lg bg-white/5" />
                   </div>
                   {/* Main Content */}
-                  <div className="flex-1 p-6 relative">
+                  <div className="flex-1 p-6 relative h-full">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
                       <motion.div 
                         animate={{ scale: [1, 1.1, 1], boxShadow: ["0 10px 15px -3px rgba(147, 51, 234, 0.3)", "0 20px 25px -5px rgba(147, 51, 234, 0.5)", "0 10px 15px -3px rgba(147, 51, 234, 0.3)"] }}
@@ -107,44 +107,9 @@ export default function ToolsSection() {
                         className="h-2 w-20 bg-white/10 rounded-full" 
                       />
                     </div>
-                    {/* Timeline fictive */}
-                    <div className="absolute bottom-6 left-6 right-6 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 gap-2 overflow-hidden">
-                      {/* Clip Violet (Cut animation) */}
-                      <motion.div 
-                        animate={{ 
-                          width: ["40%", "20%", "20%", "40%"],
-                          x: [0, 0, 100, 0] // Simulation de déplacement
-                        }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="h-8 bg-purple-500/20 rounded border border-purple-500/30 backdrop-blur-sm" 
-                      />
-                      
-                      {/* Clip Bleu (Reposition animation) */}
-                      <motion.div 
-                        animate={{ 
-                          width: ["30%", "30%", "50%", "30%"],
-                          x: [0, 0, -50, 0] // Simulation de déplacement inverse/swap
-                        }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="h-8 bg-blue-500/20 rounded border border-blue-500/30 backdrop-blur-sm" 
-                      />
-
-                      {/* Clip Additionnel (Apparition) */}
-                      <motion.div 
-                        animate={{ 
-                          width: ["0%", "20%", "0%", "0%"],
-                          opacity: [0, 1, 0, 0]
-                        }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="h-8 bg-white/10 rounded border border-white/20 backdrop-blur-sm" 
-                      />
-
-                      {/* Playhead qui parcourt */}
-                      <motion.div
-                        animate={{ left: ["0%", "100%"] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10"
-                      />
+                    {/* Timeline Ripple Insert */}
+                    <div className="absolute bottom-6 left-6 right-6 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 overflow-hidden">
+                      <TimelineAnimation />
                     </div>
                   </div>
                 </div>
@@ -161,58 +126,64 @@ function TimelineAnimation() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    // Séquence : 0 (VOD continue) -> 1 (Cut/Ouverture) -> 2 (Insertion Clip) -> 0
+    // Séquence : 0 (Continu) -> 1 (Cut/Split) -> 2 (Insert/Ripple) -> 0
     const interval = setInterval(() => {
       setStep((prev) => (prev + 1) % 3);
-    }, 4000); 
+    }, 3000); 
     return () => clearInterval(interval);
   }, []);
 
   return (
     <>
-      {/* Segment Violet Gauche */}
+      {/* Segment Violet Gauche (Fixe) */}
       <motion.div 
         animate={{ 
-          width: step === 0 ? "50%" : step === 1 ? "35%" : "33%",
           borderTopRightRadius: step === 0 ? "0px" : "4px",
           borderBottomRightRadius: step === 0 ? "0px" : "4px",
-          marginRight: step === 0 ? "0px" : "auto", // Pousse les autres éléments
+          marginRight: step === 1 ? "4px" : "0px",
         }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="h-8 bg-purple-500/20 border-y border-l border-purple-500/30 backdrop-blur-sm rounded-l-md"
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className="h-8 w-1/2 shrink-0 bg-purple-500/20 border-y border-l border-purple-500/30 backdrop-blur-sm rounded-l-md relative"
         style={{ borderRight: step === 0 ? "none" : "1px solid rgba(168, 85, 247, 0.3)" }}
-      />
+      >
+        {/* Ligne de cut qui flash */}
+        <motion.div 
+          animate={{ opacity: step === 1 ? [0, 1, 0] : 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute right-0 top-0 bottom-0 w-0.5 bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] z-20"
+        />
+      </motion.div>
       
-      {/* Segment Bleu (Insertion) */}
+      {/* Segment Bleu (Insertion Ripple) */}
       <motion.div 
+        initial={{ width: 0, opacity: 0 }}
         animate={{ 
-          width: step === 2 ? "33%" : "0%", 
+          width: step === 2 ? "30%" : "0%", 
           opacity: step === 2 ? 1 : 0,
-          marginLeft: "4px",
-          marginRight: "4px"
+          marginRight: step === 2 ? "4px" : "0px",
+          marginLeft: step === 2 ? "4px" : "0px"
         }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="h-8 bg-blue-500/20 border border-blue-500/30 backdrop-blur-sm rounded-md overflow-hidden" 
+        transition={{ type: "spring", stiffness: 300, damping: 25 }} // Effet mécanique de poussée
+        className="h-8 shrink-0 bg-blue-500/20 border border-blue-500/30 backdrop-blur-sm rounded-md overflow-hidden" 
       />
 
-      {/* Segment Violet Droit */}
+      {/* Segment Violet Droit (Poussé vers la droite) */}
       <motion.div 
         animate={{ 
-          width: step === 0 ? "50%" : step === 1 ? "35%" : "33%",
           borderTopLeftRadius: step === 0 ? "0px" : "4px",
           borderBottomLeftRadius: step === 0 ? "0px" : "4px",
-          marginLeft: step === 0 ? "0px" : "auto"
+          marginLeft: step === 1 ? "4px" : "0px",
         }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="h-8 bg-purple-500/20 border-y border-r border-purple-500/30 backdrop-blur-sm rounded-r-md"
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className="h-8 w-1/2 shrink-0 bg-purple-500/20 border-y border-r border-purple-500/30 backdrop-blur-sm rounded-r-md"
         style={{ borderLeft: step === 0 ? "none" : "1px solid rgba(168, 85, 247, 0.3)" }}
       />
 
       {/* Playhead */}
       <motion.div
         animate={{ left: ["0%", "100%"] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-        className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10 pointer-events-none"
+        transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+        className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10 pointer-events-none shadow-[0_0_10px_rgba(255,255,255,0.5)]"
       />
     </>
   );
