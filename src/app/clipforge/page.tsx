@@ -124,7 +124,7 @@ export default function ClipForgePage() {
             </p>
 
             <motion.a
-              href="https://drive.google.com/uc?export=download&id=1PqCyd8ZkURDTS3KTadg1FFSwrlKzdmxZ"
+              href="https://drive.google.com/uc?export=download&id=1sDTnPth86a4IZveiCsxvOrlbIhh81bSt"
               download
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -266,7 +266,7 @@ export default function ClipForgePage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <motion.a
-                href="https://drive.google.com/uc?export=download&id=1PqCyd8ZkURDTS3KTadg1FFSwrlKzdmxZ"
+                href="https://drive.google.com/uc?export=download&id=1sDTnPth86a4IZveiCsxvOrlbIhh81bSt"
                 download
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
