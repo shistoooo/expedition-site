@@ -5,7 +5,7 @@ import { HeartHandshake, Scale, Users, Gem } from "lucide-react";
 
 export default function PhilosophySection() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-24 relative">
       {/* Background Elements */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl opacity-50" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl opacity-50" />
