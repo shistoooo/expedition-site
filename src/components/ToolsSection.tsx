@@ -161,41 +161,57 @@ function TimelineAnimation() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    // Séquence : 0 (Initial) -> 1 (Cut/Trim) -> 2 (Reposition/Swap) -> 0
+    // Séquence : 0 (VOD continue) -> 1 (Cut/Ouverture) -> 2 (Insertion Clip) -> 0
     const interval = setInterval(() => {
       setStep((prev) => (prev + 1) % 3);
-    }, 2500); // Change toutes les 2.5 secondes
+    }, 4000); 
     return () => clearInterval(interval);
   }, []);
 
   return (
     <>
+      {/* Segment Violet Gauche */}
       <motion.div 
-        layout
-        initial={false}
         animate={{ 
-          width: step === 0 ? "40%" : "25%", // Se réduit au step 1 (Cut)
+          width: step === 0 ? "50%" : step === 1 ? "35%" : "33%",
+          borderTopRightRadius: step === 0 ? "0px" : "4px",
+          borderBottomRightRadius: step === 0 ? "0px" : "4px",
+          marginRight: step === 0 ? "0px" : "auto", // Pousse les autres éléments
         }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="h-8 bg-purple-500/20 rounded border border-purple-500/30 backdrop-blur-sm" 
-        style={{ order: step === 2 ? 1 : 0 }} // Change d'ordre au step 2 (Reposition)
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        className="h-8 bg-purple-500/20 border-y border-l border-purple-500/30 backdrop-blur-sm rounded-l-md"
+        style={{ borderRight: step === 0 ? "none" : "1px solid rgba(168, 85, 247, 0.3)" }}
       />
       
+      {/* Segment Bleu (Insertion) */}
       <motion.div 
-        layout
-        initial={false}
         animate={{ 
-          width: step === 0 ? "30%" : "35%", // S'agrandit légèrement
+          width: step === 2 ? "33%" : "0%", 
+          opacity: step === 2 ? 1 : 0,
+          marginLeft: "4px",
+          marginRight: "4px"
         }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="h-8 bg-blue-500/20 rounded border border-blue-500/30 backdrop-blur-sm" 
-        style={{ order: step === 2 ? 0 : 1 }} // Change d'ordre au step 2
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        className="h-8 bg-blue-500/20 border border-blue-500/30 backdrop-blur-sm rounded-md overflow-hidden" 
+      />
+
+      {/* Segment Violet Droit */}
+      <motion.div 
+        animate={{ 
+          width: step === 0 ? "50%" : step === 1 ? "35%" : "33%",
+          borderTopLeftRadius: step === 0 ? "0px" : "4px",
+          borderBottomLeftRadius: step === 0 ? "0px" : "4px",
+          marginLeft: step === 0 ? "0px" : "auto"
+        }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        className="h-8 bg-purple-500/20 border-y border-r border-purple-500/30 backdrop-blur-sm rounded-r-md"
+        style={{ borderLeft: step === 0 ? "none" : "1px solid rgba(168, 85, 247, 0.3)" }}
       />
 
       {/* Playhead */}
       <motion.div
         animate={{ left: ["0%", "100%"] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
         className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10 pointer-events-none"
       />
     </>
