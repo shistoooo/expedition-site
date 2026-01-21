@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Video, Wand2, Scissors, Share2, ArrowRight } from "lucide-react";
 
@@ -107,22 +108,42 @@ export default function ToolsSection() {
                       />
                     </div>
                     {/* Timeline fictive */}
-                    <div className="absolute bottom-6 left-6 right-6 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 gap-1 relative overflow-hidden">
+                    <div className="absolute bottom-6 left-6 right-6 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 gap-2 overflow-hidden">
+                      {/* Clip Violet (Cut animation) */}
                       <motion.div 
-                        animate={{ opacity: [0.6, 1, 0.6] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0 }}
-                        className="h-8 w-1/4 bg-purple-500/20 rounded border border-purple-500/30" 
+                        animate={{ 
+                          width: ["40%", "20%", "20%", "40%"],
+                          x: [0, 0, 100, 0] // Simulation de déplacement
+                        }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="h-8 bg-purple-500/20 rounded border border-purple-500/30 backdrop-blur-sm" 
                       />
+                      
+                      {/* Clip Bleu (Reposition animation) */}
                       <motion.div 
-                        animate={{ opacity: [0.6, 1, 0.6] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                        className="h-8 w-1/3 bg-blue-500/20 rounded border border-blue-500/30" 
+                        animate={{ 
+                          width: ["30%", "30%", "50%", "30%"],
+                          x: [0, 0, -50, 0] // Simulation de déplacement inverse/swap
+                        }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="h-8 bg-blue-500/20 rounded border border-blue-500/30 backdrop-blur-sm" 
                       />
-                      {/* Playhead */}
+
+                      {/* Clip Additionnel (Apparition) */}
+                      <motion.div 
+                        animate={{ 
+                          width: ["0%", "20%", "0%", "0%"],
+                          opacity: [0, 1, 0, 0]
+                        }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="h-8 bg-white/10 rounded border border-white/20 backdrop-blur-sm" 
+                      />
+
+                      {/* Playhead qui parcourt */}
                       <motion.div
                         animate={{ left: ["0%", "100%"] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute top-0 bottom-0 w-0.5 bg-white/30 backdrop-blur-sm z-10"
+                        className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10"
                       />
                     </div>
                   </div>
