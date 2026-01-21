@@ -1,9 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Lock, Sparkles, Palette, Languages, Youtube } from "lucide-react";
+import { Rocket, Lock, Sparkles, Palette, Languages, Youtube, FileCheck } from "lucide-react";
 
 const upcomingTools = [
+  {
+    icon: FileCheck,
+    name: "Correction de Sous-titres",
+    description: "Importez vos .srt : l'IA corrige l'orthographe et reformule les phrases mal comprises.",
+    status: "Bientôt disponible",
+    color: "from-green-500 to-emerald-500",
+  },
   {
     icon: Languages,
     name: "TikTok Repurpose",
