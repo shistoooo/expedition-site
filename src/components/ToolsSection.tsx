@@ -156,3 +156,48 @@ export default function ToolsSection() {
     </section>
   );
 }
+
+function TimelineAnimation() {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    // Séquence : 0 (Initial) -> 1 (Cut/Trim) -> 2 (Reposition/Swap) -> 0
+    const interval = setInterval(() => {
+      setStep((prev) => (prev + 1) % 3);
+    }, 2500); // Change toutes les 2.5 secondes
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <>
+      <motion.div 
+        layout
+        initial={false}
+        animate={{ 
+          width: step === 0 ? "40%" : "25%", // Se réduit au step 1 (Cut)
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="h-8 bg-purple-500/20 rounded border border-purple-500/30 backdrop-blur-sm" 
+        style={{ order: step === 2 ? 1 : 0 }} // Change d'ordre au step 2 (Reposition)
+      />
+      
+      <motion.div 
+        layout
+        initial={false}
+        animate={{ 
+          width: step === 0 ? "30%" : "35%", // S'agrandit légèrement
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="h-8 bg-blue-500/20 rounded border border-blue-500/30 backdrop-blur-sm" 
+        style={{ order: step === 2 ? 0 : 1 }} // Change d'ordre au step 2
+      />
+
+      {/* Playhead */}
+      <motion.div
+        animate={{ left: ["0%", "100%"] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10 pointer-events-none"
+      />
+    </>
+  );
+}
