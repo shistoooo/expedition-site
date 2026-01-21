@@ -15,7 +15,7 @@ export default function Footer() {
             className="text-center md:text-left"
           >
             <span className="text-xl font-bold gradient-text">EXPÉDITION</span>
-            <p className="text-white/40 text-sm mt-1">
+            <p className="text-white/50 text-sm mt-1">
               Les outils dont vous avez besoin.
             </p>
           </motion.div>
@@ -65,11 +65,11 @@ export default function Footer() {
           viewport={{ once: true }}
           className="mt-8 pt-8 border-t border-white/5 text-center"
         >
-          <p className="text-white/30 text-sm flex items-center justify-center gap-1">
+          <p className="text-white/40 text-sm flex items-center justify-center gap-1">
             Fait avec <Heart className="w-4 h-4 text-red-500" /> par la communauté
             Expédition
           </p>
-          <p className="text-white/20 text-xs mt-3">
+          <p className="text-white/30 text-xs mt-3">
             © {new Date().getFullYear()} Expédition. Tous droits réservés.
           </p>
         </motion.div>

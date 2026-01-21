@@ -63,7 +63,7 @@ export default function DiscordSection() {
               >
                 <Icon className="w-6 h-6 mb-2 text-primary" />
                 <div className="text-xl md:text-2xl font-bold text-white mb-1">{value}</div>
-                <div className="text-xs md:text-sm text-white/40">{label}</div>
+                <div className="text-xs md:text-sm text-white/50">{label}</div>
               </motion.div>
             ))}
           </div>

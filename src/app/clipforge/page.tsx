@@ -49,12 +49,6 @@ const currentFeatures = [
     description:
       "Rendu rapide, même sur des vidéos longues.",
   },
-  {
-    icon: Layers,
-    title: "Templates Personnalisables",
-    description:
-      "Bibliothèque de templates pour sous-titres, transitions et effets visuels.",
-  },
 ];
 
 const upcomingFeatures = [
@@ -64,18 +58,18 @@ const upcomingFeatures = [
     progress: 75,
   },
   {
-    title: "Intégration directe YouTube/Twitch",
-    description: "Importez vos VODs directement depuis votre chaîne.",
+    title: "Auto-crop intelligent",
+    description: "Recadrage automatique selon le contenu : détecte la cam et le jeu sur les lives Twitch, redimensionne correctement.",
     progress: 50,
   },
   {
-    title: "Édition collaborative",
-    description: "Travaillez à plusieurs sur vos projets en temps réel.",
-    progress: 25,
+    title: "Pipeline YouTube/Twitch complet",
+    description: "Téléchargement auto depuis YouTube/Twitch, création de clips, et upload automatique sur YouTube et TikTok.",
+    progress: 15,
   },
   {
-    title: "Bibliothèque de musiques libres",
-    description: "Accès à des milliers de tracks libres de droits.",
+    title: "Templates Personnalisables",
+    description: "Bibliothèque de templates pour sous-titres, transitions et effets visuels.",
     progress: 40,
   },
 ];
@@ -128,13 +122,13 @@ export default function ClipForgePage() {
               download
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold text-lg shadow-lg shadow-purple-500/25 transition-all"
+              className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold text-lg shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)] hover:scale-105 transition-all"
             >
               <Download className="w-6 h-6" />
               Télécharger ClipForge
             </motion.a>
 
-            <p className="text-white/40 text-sm mt-4">
+            <p className="text-white/50 text-sm mt-4">
               Windows 10/11 • Version 1.0.0 • Gratuit
             </p>
           </motion.div>
@@ -236,7 +230,7 @@ export default function ClipForgePage() {
                         className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
                       />
                     </div>
-                    <p className="text-xs text-white/40 mt-2">
+                    <p className="text-xs text-white/50 mt-2">
                       {feature.progress}% complété
                     </p>
                   </div>
@@ -270,7 +264,7 @@ export default function ClipForgePage() {
                 download
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold shadow-lg shadow-purple-500/25"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)] hover:scale-105 transition-all"
               >
                 <Download className="w-5 h-5" />
                 Télécharger maintenant
@@ -293,7 +287,7 @@ export default function ClipForgePage() {
           <Link href="/" className="text-xl font-bold gradient-text">
             EXPÉDITION
           </Link>
-          <p className="text-white/40 text-sm mt-2">
+          <p className="text-white/50 text-sm mt-2">
             © {new Date().getFullYear()} Expédition. Tous droits réservés.
           </p>
         </div>

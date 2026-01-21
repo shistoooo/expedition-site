@@ -67,19 +67,19 @@ export default function UpcomingTools() {
               <div className="glass rounded-2xl p-6 h-full border border-white/5 hover:border-white/10 transition-all relative overflow-hidden">
                 {/* Gradient overlay on hover */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity`}
+                  className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-15 transition-opacity`}
                 />
 
                 {/* Lock badge */}
                 <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/5 text-xs text-white/40">
+                  <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/5 text-xs text-white/50">
                     <Lock className="w-3 h-3" />
                     {tool.status}
                   </div>
                 </div>
 
                 <div
-                  className={`w-14 h-14 rounded-xl bg-gradient-to-br ${tool.color} opacity-20 flex items-center justify-center mb-5 group-hover:opacity-30 transition-opacity`}
+                  className={`w-14 h-14 rounded-xl bg-gradient-to-br ${tool.color} opacity-20 flex items-center justify-center mb-5 group-hover:opacity-100 transition-opacity`}
                 >
                   <tool.icon className="w-7 h-7 text-white" />
                 </div>
@@ -111,7 +111,7 @@ export default function UpcomingTools() {
           viewport={{ once: true }}
           className="mt-12 text-center"
         >
-          <p className="text-white/40">
+          <p className="text-white/50">
             Rejoignez notre{" "}
             <a
               href="https://dsc.gg/expedition"

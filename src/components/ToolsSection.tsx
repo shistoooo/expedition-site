@@ -58,7 +58,7 @@ export default function ToolsSection() {
                     <h3 className="font-semibold text-white text-lg">
                       {item.title}
                     </h3>
-                    <p className="text-white/40">{item.desc}</p>
+                    <p className="text-white/50">{item.desc}</p>
                   </div>
                 </li>
               ))}
@@ -75,8 +75,12 @@ export default function ToolsSection() {
           {/* Côté Visuel / Mockup */}
           <div className="flex-1 w-full relative">
             <div className="absolute -inset-10 bg-gradient-to-tr from-purple-500/20 via-blue-500/20 to-pink-500/20 blur-3xl rounded-full opacity-50" />
-            <div className="relative glass rounded-3xl border border-white/10 p-4 shadow-2xl">
-              <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden relative border border-white/5 flex items-center justify-center group">
+            <motion.div 
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative glass rounded-2xl border border-white/10 p-4 shadow-2xl"
+            >
+              <div className="aspect-video bg-[#0a0a0a] rounded-xl overflow-hidden relative border border-white/5 flex items-center justify-center group">
                 {/* Simulation d'interface */}
                 <div className="absolute inset-0 flex">
                   {/* Sidebar */}
@@ -102,7 +106,7 @@ export default function ToolsSection() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>
