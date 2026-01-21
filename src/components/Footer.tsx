@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Github, Twitter, Heart } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -18,6 +19,14 @@ export default function Footer() {
             <p className="text-white/50 text-sm mt-1">
               Les outils dont vous avez besoin.
             </p>
+            <div className="mt-4 flex gap-6 justify-center md:justify-start text-sm font-medium text-white/60">
+              <Link href="/pricing" className="hover:text-purple-400 transition-colors">
+                Tarifs
+              </Link>
+              <Link href="/clipforge" className="hover:text-purple-400 transition-colors">
+                ClipForge
+              </Link>
+            </div>
           </motion.div>
 
           <motion.div
