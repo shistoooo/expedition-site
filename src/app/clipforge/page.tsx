@@ -72,6 +72,21 @@ const upcomingFeatures = [
     description: "Bibliothèque de templates pour sous-titres, transitions et effets visuels.",
     progress: 40,
   },
+  {
+    title: "Système Multi-POV",
+    description: "Synchronisation VOD multijoueurs : détecte qui parle et affiche sa vue automatiquement (style Premiere).",
+    progress: 25,
+  },
+  {
+    title: "Compilations Virales",
+    description: "Créez un clip viral à partir de plusieurs extraits combinés dynamiquement.",
+    progress: 15,
+  },
+  {
+    title: "Correction Transcript par IA",
+    description: "Correction automatique des fautes et du contexte des sous-titres via API avancée.",
+    progress: 35,
+  },
 ];
 
 export default function ClipForgePage() {
