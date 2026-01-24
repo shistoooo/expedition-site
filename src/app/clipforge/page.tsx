@@ -87,6 +87,11 @@ const upcomingFeatures = [
     description: "Correction automatique des fautes et du contexte des sous-titres via API avancée.",
     progress: 35,
   },
+  {
+    title: "Garantie Paiement & Qualité",
+    description: "Système de sécurisation des transactions et de la livrabilité entre créateurs et prestataires.",
+    progress: 10,
+  },
 ];
 
 export default function ClipForgePage() {

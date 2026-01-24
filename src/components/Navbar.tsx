@@ -19,6 +19,7 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Accueil", href: "/" },
+    { name: "L'Expédition", href: "/expedition" },
     { name: "ClipForge", href: "/clipforge" },
     { name: "Tarifs", href: "/pricing" },
     { name: "Discord", href: "/#discord" },
