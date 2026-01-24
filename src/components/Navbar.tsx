@@ -4,10 +4,14 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useFlightStore } from "@/stores/useFlightStore";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  const setPhase = useFlightStore((state) => state.setPhase);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,9 +21,21 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
+  const handleExpeditionClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setPhase('launching');
+    
+    setTimeout(() => {
+      setPhase('warping');
+      setTimeout(() => {
+        router.push('/expedition');
+      }, 1500);
+    }, 1000);
+  };
+
+  const navItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [
     { name: "Accueil", href: "/" },
-    { name: "L'Expédition", href: "/expedition" },
+    { name: "L'Expédition", href: "/expedition", onClick: handleExpeditionClick },
     { name: "ClipForge", href: "/clipforge" },
     { name: "Tarifs", href: "/pricing" },
     { name: "Discord", href: "/#discord" },
@@ -49,6 +65,7 @@ export default function Navbar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={item.onClick}
               className="text-sm font-medium text-white/70 hover:text-white transition-colors"
             >
               {item.name}

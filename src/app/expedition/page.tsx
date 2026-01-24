@@ -1,16 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Users, Calendar, Target, Rocket, ArrowRight, CheckCircle2 } from "lucide-react";
-
-// Dynamically import the 3D scene to avoid SSR issues
-const RocketScene = dynamic(() => import("@/components/3d/RocketScene"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 bg-[#0a0a0a]" />,
-});
 
 const benefits = [
   {
@@ -61,7 +54,7 @@ export default function ExpeditionPage() {
 
       {/* Hero Section with 3D Rocket */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <RocketScene />
+        {/* GlobalSpace handles the 3D background now */}
         
         <div className="container-main relative z-10 text-center">
           <motion.div
