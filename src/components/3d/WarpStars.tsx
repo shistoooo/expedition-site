@@ -11,9 +11,18 @@ export default function WarpStars() {
   
   const count = 700;
   
-  const [positions, initialPositions] = useMemo(() => {
+  const [positions, colors, initialPositions] = useMemo(() => {
     const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
     const initPos = new Float32Array(count * 3);
+    
+    const colorPalette = [
+      new THREE.Color("#8b5cf6"), // Violet
+      new THREE.Color("#3b82f6"), // Blue
+      new THREE.Color("#06b6d4"), // Cyan
+      new THREE.Color("#ffffff"), // White
+    ];
+
     for (let i = 0; i < count; i++) {
       const x = (Math.random() - 0.5) * 100;
       const y = (Math.random() - 0.5) * 100;
@@ -26,8 +35,14 @@ export default function WarpStars() {
       initPos[i * 3] = x;
       initPos[i * 3 + 1] = y;
       initPos[i * 3 + 2] = z;
+
+      // Random color from palette
+      const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      col[i * 3] = color.r;
+      col[i * 3 + 1] = color.g;
+      col[i * 3 + 2] = color.b;
     }
-    return [pos, initPos];
+    return [pos, col, initPos];
   }, []);
 
   useFrame((state) => {
@@ -82,13 +97,19 @@ export default function WarpStars() {
           count={count}
           args={[positions, 3]}
         />
+        <bufferAttribute
+          attach="attributes-color"
+          count={count}
+          args={[colors, 3]}
+        />
       </bufferGeometry>
       <pointsMaterial
         size={0.15}
-        color="#ffffff"
+        vertexColors
         transparent
         opacity={0.8}
         sizeAttenuation
+        depthWrite={false}
       />
     </points>
   );

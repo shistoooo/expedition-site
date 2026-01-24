@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, PerspectiveCamera } from "@react-three/drei";
+import { Environment, PerspectiveCamera, Stars, Sparkles } from "@react-three/drei";
 import { Suspense, useRef, useEffect } from "react";
 import RocketModel from "@/components/3d/RocketModel";
 import WarpStars from "@/components/3d/WarpStars";
@@ -106,6 +106,8 @@ export default function GlobalSpace() {
         <Environment preset="city" />
         
         <Suspense fallback={null}>
+          <Stars radius={300} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+          <Sparkles count={500} scale={20} size={4} speed={0.4} opacity={0.5} color="#8b5cf6" />
           <WarpStars />
           
           {/* We only show the rocket here if we want it persistent. 
