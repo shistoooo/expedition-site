@@ -95,7 +95,7 @@ export default function MoneySection() {
             viewport={{ once: true }}
             className="h-[500px] w-full relative"
           >
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+            <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
               <Suspense fallback={null}>
                 <Environment preset="city" />
                 <ambientLight intensity={0.5} />
