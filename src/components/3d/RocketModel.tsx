@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { Float, PerspectiveCamera, Stars, Trail } from "@react-three/drei";
 import * as THREE from "three";
 
-function Rocket() {
+export default function RocketModel() {
   const rocketRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -51,16 +51,5 @@ function Rocket() {
         <pointLight position={[0, -2, 0]} color="#ef4444" intensity={2} distance={5} />
       </Float>
     </group>
-  );
-}
-
-export default function RocketScene() {
-  return (
-    <div className="w-full h-[600px] md:h-[800px] absolute top-0 left-0 -z-10">
-      {/* We need to import Canvas dynamically in the parent or ensure this component is only rendered client-side 
-          But since we are inside "use client", we can use Canvas here if we import it. 
-          However, usually it's better to keep the Canvas in a separate file or import R3F components.
-      */}
-    </div>
   );
 }
