@@ -9,7 +9,7 @@ export default function WarpStars() {
   const phase = useFlightStore((state) => state.phase);
   const meshRef = useRef<THREE.Points>(null);
   
-  const count = 2000;
+  const count = 700;
   
   const [positions, initialPositions] = useMemo(() => {
     const pos = new Float32Array(count * 3);
@@ -37,7 +37,7 @@ export default function WarpStars() {
     let speed = 0.05; // Base idle speed
     if (phase === 'launching') speed = 0.5;
     if (phase === 'warping') speed = 4.0; // HYPERDRIVE
-    if (phase === 'orbit') speed = 0.2;
+    if (phase === 'orbit') speed = 0.5; // High speed cruise
 
     const positionsAttribute = meshRef.current.geometry.attributes.position;
     
@@ -67,6 +67,8 @@ export default function WarpStars() {
     
     if (phase === 'warping') {
        meshRef.current.rotation.z += 0.02;
+    } else if (phase === 'orbit') {
+       meshRef.current.rotation.z += 0.005;
     } else {
        meshRef.current.rotation.z += 0.001;
     }

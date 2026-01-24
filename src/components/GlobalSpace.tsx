@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, PerspectiveCamera } from "@react-three/drei";
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useEffect } from "react";
 import RocketModel from "@/components/3d/RocketModel";
 import WarpStars from "@/components/3d/WarpStars";
 import { useFlightStore } from "@/stores/useFlightStore";
@@ -14,22 +14,78 @@ function CameraController() {
   const pathname = usePathname();
   const setPhase = useFlightStore((state) => state.setPhase);
   
-  useFrame((state) => {
-    // Camera Logic based on Phase
-    if (phase === 'idle') {
-      // Normal view
-      state.camera.position.lerp(new THREE.Vector3(0, 0, 8), 0.05);
-    } else if (phase === 'launching') {
-      // Pull back slightly
-      state.camera.position.lerp(new THREE.Vector3(0, -2, 10), 0.02);
-    } else if (phase === 'warping') {
-      // Shakey cam effect ?
-      // state.camera.position.x = (Math.random() - 0.5) * 0.1;
+  // Reset phase when arriving at destination or direct access
+  useEffect(() => {
+    if (pathname === '/expedition') {
+      if (phase === 'warping') {
+         // Arrival from transition
+         const timer = setTimeout(() => setPhase('orbit'), 800);
+         return () => clearTimeout(timer);
+      } else if (phase === 'idle') {
+         // Direct access
+         setPhase('orbit');
+      }
+    } else if (pathname === '/' && phase === 'orbit') {
+      setPhase('idle');
     }
+  }, [pathname, phase, setPhase]);
 
-    // Reset phase if we are on expedition page
-    if (pathname === '/expedition' && phase === 'warping') {
-       setTimeout(() => setPhase('idle'), 1000); // Cooldown
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    
+    // --- IDLE: Gentle Float ---
+    if (phase === 'idle') {
+      const targetPos = new THREE.Vector3(
+        Math.sin(t * 0.2) * 0.2, 
+        Math.cos(t * 0.3) * 0.2, 
+        8 + Math.sin(t * 0.1) * 0.5
+      );
+      state.camera.position.lerp(targetPos, 0.02);
+      state.camera.rotation.set(0, 0, 0);
+      if (state.camera instanceof THREE.PerspectiveCamera) {
+        state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, 45, 0.05);
+        state.camera.updateProjectionMatrix();
+      }
+    } 
+    
+    // --- ORBIT: Cruise Mode ---
+    else if (phase === 'orbit') {
+      // Stable high speed flight
+      const targetPos = new THREE.Vector3(0, 0, 9); // Slightly further back
+      state.camera.position.lerp(targetPos, 0.05);
+      
+      // Slight banking follow
+      state.camera.rotation.z = Math.sin(t * 0.5) * 0.02;
+      
+      if (state.camera instanceof THREE.PerspectiveCamera) {
+        state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, 55, 0.05); // Wider FOV for speed
+        state.camera.updateProjectionMatrix();
+      }
+    }
+    
+    // --- LAUNCHING: Shake & Pullback ---
+    else if (phase === 'launching') {
+      // Shake
+      const shake = 0.05;
+      state.camera.position.x += (Math.random() - 0.5) * shake;
+      state.camera.position.y += (Math.random() - 0.5) * shake;
+      
+      // Pull back
+      state.camera.position.lerp(new THREE.Vector3(0, -2, 10), 0.02);
+    } 
+    
+    // --- WARPING: Speed Effect ---
+    else if (phase === 'warping') {
+      // Intense Shake
+      const shake = 0.2;
+      state.camera.position.x = (Math.random() - 0.5) * shake;
+      state.camera.position.y = (Math.random() - 0.5) * shake;
+      
+      // FOV Widen (Warp Speed feeling)
+      if (state.camera instanceof THREE.PerspectiveCamera) {
+        state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, 100, 0.05);
+        state.camera.updateProjectionMatrix();
+      }
     }
   });
   
@@ -39,7 +95,11 @@ function CameraController() {
 export default function GlobalSpace() {
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
-      <Canvas>
+      <Canvas 
+        dpr={[1, 1.5]} 
+        gl={{ antialias: false, powerPreference: "high-performance" }}
+        performance={{ min: 0.5 }}
+      >
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
