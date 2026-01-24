@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Lock, Sparkles, Palette, Languages, Youtube, FileCheck } from "lucide-react";
+import { Rocket, Lock, Sparkles, Palette, Languages, Youtube, FileCheck, Brain } from "lucide-react";
 
 const upcomingTools = [
   {
@@ -10,6 +10,13 @@ const upcomingTools = [
     description: "Importez vos .srt : l'IA corrige l'orthographe et reformule les phrases mal comprises.",
     status: "Bientôt disponible",
     color: "from-green-500 to-emerald-500",
+  },
+  {
+    icon: Brain,
+    name: "Optimiseur de Titres",
+    description: "Analyse vos titres via des leviers psychologiques et compare avec les meilleures vidéos de votre niche pour optimiser l'impact.",
+    status: "En conception",
+    color: "from-violet-500 to-fuchsia-500",
   },
   {
     icon: Languages,
