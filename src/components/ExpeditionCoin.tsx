@@ -92,7 +92,8 @@ export default function ExpeditionCoin() {
           color="#B8860B"
           anchorX="center"
           anchorY="middle"
-          font="https://fonts.gstatic.com/s/russoone/v14/Z9XUDmZ5CnVrWfFbmznB.woff"
+          font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff"
+          fontWeight="bold"
           outlineWidth={0.02}
           outlineColor="#FFF"
           outlineOpacity={0.5}
