@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ToolsSection from "@/components/ToolsSection";
 import PhilosophySection from "@/components/PhilosophySection";
+import MoneySection from "@/components/MoneySection";
 import DiscordSection from "@/components/DiscordSection";
 import Footer from "@/components/Footer";
 import UpcomingTools from "@/components/UpcomingTools";
@@ -25,6 +26,7 @@ export default function Home() {
         <Hero />
         <ToolsSection />
         <PhilosophySection />
+        <MoneySection />
         <UpcomingTools />
         <DiscordSection />
       </main>
