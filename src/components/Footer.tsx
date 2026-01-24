@@ -23,8 +23,8 @@ export default function Footer() {
               <Link href="/pricing" className="hover:text-purple-400 transition-colors">
                 Tarifs
               </Link>
-              <Link href="/clipforge" className="hover:text-purple-400 transition-colors">
-                ClipForge
+              <Link href="/tools" className="hover:text-purple-400 transition-colors">
+                Nos Outils
               </Link>
             </div>
           </motion.div>
