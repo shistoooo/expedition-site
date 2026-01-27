@@ -10,14 +10,13 @@
     "version": "2.0.1",
     "release_date": "2026-01-25",
     "critical": false,
-    "message": "Améliorations mineures.",
-    "download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/TubeForge.app.zip"
+    "message": "Améliorations mineures."
   },
   "launcher": {
     "version": "0.1.0",
     "release_date": "2026-01-27",
     "critical": true,
     "message": "Nouvelle version avec détection automatique des mises à jour.",
-    "download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/expedition-launcher_0.1.0_aarch64.dmg"
+    "download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Mac.zip"
   }
 }

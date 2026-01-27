@@ -125,7 +125,7 @@ export default function LauncherPage() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <motion.a
-                  href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/expedition-launcher_0.1.0_aarch64.dmg"
+                  href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Mac.zip"
                   download
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -145,7 +145,7 @@ export default function LauncherPage() {
                  <p className="text-xs text-blue-200/80 flex gap-2 items-start">
                     <span className="mt-0.5">ℹ️</span>
                     <span>
-                       <strong>Version 0.1.0 :</strong> Détection automatique des mises à jour pour ClipForge et tous vos outils Expedition.
+                       <strong>Version 0.1.0 :</strong> Le téléchargement inclut le launcher + le script de réparation macOS. Détection automatique des mises à jour intégrée.
                     </span>
                  </p>
               </div>
