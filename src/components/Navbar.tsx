@@ -36,7 +36,7 @@ export default function Navbar() {
   const navItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [
     { name: "Accueil", href: "/" },
     { name: "L'Expédition", href: "/expedition", onClick: handleExpeditionClick },
-    { name: "Outils", href: "/tools" },
+    { name: "Launcher", href: "/launcher" },
     { name: "Tarifs", href: "/pricing" },
     { name: "Discord", href: "/#discord" },
   ];
@@ -60,13 +60,13 @@ export default function Navbar() {
           </motion.span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-6 z-10">
+        <div className="hidden md:flex items-center gap-8 z-10">
           {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               onClick={item.onClick}
-              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
+              className="text-sm font-medium text-white/70 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
             >
               {item.name}
             </Link>
