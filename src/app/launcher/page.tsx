@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Download, Rocket, Zap, Layers, Globe, Cpu, Sparkles, Command, Terminal, ChevronRight, Lock, Hammer, Palette, Brain, Shield, Star, MessageCircle, FileCheck, Languages, Youtube } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useState, useEffect } from "react";
 
 const roadmapTools = [
   {
