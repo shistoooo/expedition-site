@@ -1,9 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Lock, Sparkles, Palette, Languages, Youtube, FileCheck, Brain, MessageSquare } from "lucide-react";
+import { Rocket, Lock, Sparkles, Palette, Languages, Youtube, FileCheck, Brain, MessageSquare, Clock } from "lucide-react";
 
 const upcomingTools = [
+  {
+    icon: Clock,
+    name: "TimeTracker",
+    description: "Système de suivi du temps de travail pour monteurs et graphistes. Visibilité en temps réel sur les heures travaillées et calcul automatique de la facturation horaire.",
+    status: "En conception",
+    color: "from-indigo-500 to-blue-500",
+  },
   {
     icon: MessageSquare,
     name: "ReviewForge",

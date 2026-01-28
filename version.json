@@ -1,9 +1,9 @@
 {
   "clipforge": {
-    "version": "1.0.4",
+    "version": "1.0.7",
     "release_date": "2026-01-28",
     "critical": false,
-    "message": "Mise à jour de ClipForge.",
+    "message": "Interface responsive améliorée : Mobile (tabs), Medium (2 colonnes), XL (3 colonnes).",
     "download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge.app.zip",
     "windows_download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge-Windows-Installer.zip"
   },
@@ -15,10 +15,10 @@
     "windows_download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/TubeForge-Windows-Installer.zip"
   },
   "launcher": {
-    "version": "0.1.3",
+    "version": "0.1.6",
     "release_date": "2026-01-28",
-    "critical": false,
-    "message": "Fix: Détection des mises à jour corrigée + bouton supprimer fonctionnel.",
+    "critical": true,
+    "message": "Fix critique Windows : Lancement des apps corrigé (working directory). Les apps ClipForge et TubeForge démarrent maintenant correctement.",
     "download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Mac.zip",
     "windows_download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"
   }
