@@ -128,13 +128,24 @@ export default function ClipForgePage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <motion.a
                   href={versionData?.download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge.app.zip"}
-                  download={versionData?.download_url ? true : undefined}
+                  download
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="group px-8 py-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)]"
                 >
                   <Download className="w-5 h-5" />
-                  <span>Télécharger (Win/Mac)</span>
+                  <span>Mac</span>
+                </motion.a>
+
+                <motion.a
+                  href={versionData?.windows_download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge-Windows-Installer.zip"}
+                  download
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-lg flex items-center justify-center gap-3 transition-all"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>Windows</span>
                 </motion.a>
                 
                 <button className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 font-medium flex items-center justify-center gap-3 cursor-not-allowed">
