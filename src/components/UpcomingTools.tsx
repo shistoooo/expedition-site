@@ -1,9 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Lock, Sparkles, Palette, Languages, Youtube, FileCheck, Brain } from "lucide-react";
+import { Rocket, Lock, Sparkles, Palette, Languages, Youtube, FileCheck, Brain, MessageSquare } from "lucide-react";
 
 const upcomingTools = [
+  {
+    icon: MessageSquare,
+    name: "ReviewForge",
+    description: "Plateforme de révision vidéo collaborative. Hébergez vos maquettes sur YouTube (non répertorié) et ajoutez des retours précis par timecode pour vos monteurs.",
+    status: "En conception",
+    color: "from-orange-500 to-amber-500",
+  },
   {
     icon: FileCheck,
     name: "Correction de Sous-titres",

@@ -9,7 +9,6 @@ import PhilosophySection from "@/components/PhilosophySection";
 import MoneySection from "@/components/MoneySection";
 import DiscordSection from "@/components/DiscordSection";
 import Footer from "@/components/Footer";
-import UpcomingTools from "@/components/UpcomingTools";
 
 const ParticlesBackground = dynamic(
   () => import("@/components/ParticlesBackground"),
@@ -27,7 +26,6 @@ export default function Home() {
         <ToolsSection />
         <PhilosophySection />
         <MoneySection />
-        <UpcomingTools />
         <DiscordSection />
       </main>
       <Footer />

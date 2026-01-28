@@ -18,7 +18,7 @@ export default function PricingPage() {
       id: 1,
       name: "Vague Pionnier",
       date: "20 Février",
-      price: "19€",
+      price: "9,99€",
       period: "/mois",
       status: "open", // open, closed, upcoming
       features: [
@@ -35,7 +35,7 @@ export default function PricingPage() {
       id: 2,
       name: "Vague Expansion",
       date: "Mai 2024",
-      price: "29€",
+      price: "11,99€",
       period: "/mois",
       status: "upcoming",
       features: [
@@ -51,7 +51,7 @@ export default function PricingPage() {
       id: 3,
       name: "Vague Ultime",
       date: "Juillet 2024",
-      price: "39€",
+      price: "19,99€",
       period: "/mois",
       status: "upcoming",
       features: [

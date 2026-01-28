@@ -1,10 +1,19 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Video, Download, ArrowRight, Wand2 } from "lucide-react";
+import { Video, Download, ArrowRight, Wand2, Rocket } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 const tools = [
+  {
+    id: "launcher",
+    title: "Expedition Launcher",
+    description: "Le hub central pour tous vos outils créatifs. ClipForge, TubeForge, et plus encore.",
+    icon: Rocket,
+    href: "/launcher",
+    color: "from-blue-500 to-purple-500",
+    status: "Recommandé"
+  },
   {
     id: "clipforge",
     title: "ClipForge",
