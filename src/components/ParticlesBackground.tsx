@@ -1,13 +1,14 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 function Particles({ count = 500 }) {
   const mesh = useRef<THREE.Points>(null);
+  const [data, setData] = useState<{ positions: Float32Array; colors: Float32Array } | null>(null);
 
-  const particles = useMemo(() => {
+  useEffect(() => {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
 
@@ -28,7 +29,8 @@ function Particles({ count = 500 }) {
       colors[i * 3 + 2] = color.b;
     }
 
-    return { positions, colors };
+    // eslint-disable-next-line
+    setData({ positions, colors });
   }, [count]);
 
   useFrame((state) => {
@@ -38,16 +40,18 @@ function Particles({ count = 500 }) {
     }
   });
 
+  if (!data) return null;
+
   return (
     <points ref={mesh}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          args={[particles.positions, 3]}
+          args={[data.positions, 3]}
         />
         <bufferAttribute
           attach="attributes-color"
-          args={[particles.colors, 3]}
+          args={[data.colors, 3]}
         />
       </bufferGeometry>
       <pointsMaterial

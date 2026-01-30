@@ -34,7 +34,7 @@ export default function MoneySection() {
 
       <div className="container-main relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
+
           {/* Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -46,23 +46,23 @@ export default function MoneySection() {
               <Zap className="w-4 h-4" />
               Nouveau Concept
             </div>
-            
+
             <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-              L'Économie <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600">Expedition</span>
+              L&apos;Économie <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600">Expedition</span>
             </h2>
-            
+
             <div className="space-y-6 text-lg text-white/70 leading-relaxed">
               <p>
-                Nous résolvons le problème de l'œuf et de la poule pour les créateurs. 
+                Nous résolvons le problème de l&apos;œuf et de la poule pour les créateurs.
                 Comment obtenir des services de qualité sans budget ?
               </p>
               <p className="font-medium text-white">
                 La réponse est simple : votre temps a de la valeur.
               </p>
               <p>
-                Expedition introduit une monnaie virtuelle interne. Vous êtes excellent en montage mais nul en miniatures ? 
+                Expedition introduit une monnaie virtuelle interne. Vous êtes excellent en montage mais nul en miniatures ?
                 Montez une vidéo pour un membre, gagnez des XP, et utilisez-les pour payer un graphiste de talent.
-                C'est un système de troc modernisé, fluide et équitable.
+                C&apos;est un système de troc modernisé, fluide et équitable.
               </p>
             </div>
 
@@ -101,9 +101,9 @@ export default function MoneySection() {
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffd700" />
                 <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff8c00" />
-                
+
                 <ExpeditionCoin />
-                
+
                 <ContactShadows
                   position={[0, -2, 0]}
                   opacity={0.4}

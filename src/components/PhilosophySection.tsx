@@ -12,9 +12,9 @@ export default function PhilosophySection() {
 
       <div className="container-main relative">
         <div className="flex flex-col lg:flex-row items-center gap-16">
-          
+
           {/* Content */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -27,7 +27,7 @@ export default function PhilosophySection() {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
-              L'alternative <br/>
+              L&apos;alternative <br />
               <span className="gradient-text">Accessible & Honnête</span>
             </h2>
 
@@ -36,17 +36,17 @@ export default function PhilosophySection() {
                 Soyons transparents : nous ne réinventons pas la roue. Les outils que nous développons existent souvent ailleurs, parfois en version plus avancée ou plus polie.
               </p>
               <p>
-                <strong className="text-white">Mais notre mission est différente.</strong> Là où d'autres facturent des abonnements prohibitifs pour chaque outil, nous choisissons l'accessibilité radicale.
+                <strong className="text-white">Mais notre mission est différente.</strong> Là où d&apos;autres facturent des abonnements prohibitifs pour chaque outil, nous choisissons l&apos;accessibilité radicale.
               </p>
               <p>
-                Rejoindre Expédition, c'est accepter de grandir avec nous. Nos produits évoluent chaque semaine grâce à vos retours. En échange de votre tolérance et de votre soutien, nous nous engageons à maintenir un tarif imbattable.
+                Rejoindre Expédition, c&apos;est accepter de grandir avec nous. Nos produits évoluent chaque semaine grâce à vos retours. En échange de votre tolérance et de votre soutien, nous nous engageons à maintenir un tarif imbattable.
               </p>
             </div>
           </motion.div>
 
           {/* Cards / Visuals */}
           <div className="flex-1 w-full grid gap-6 sm:grid-cols-2">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -60,7 +60,7 @@ export default function PhilosophySection() {
               </p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -70,11 +70,11 @@ export default function PhilosophySection() {
               <Users className="w-8 h-8 text-purple-400 mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">Co-Construction</h3>
               <p className="text-white/50 text-sm">
-                Nous sommes à l'écoute. Vos retours sur Discord façonnent directement les prochaines mises à jour.
+                Nous sommes à l&apos;écoute. Vos retours sur Discord façonnent directement les prochaines mises à jour.
               </p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

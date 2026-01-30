@@ -124,7 +124,7 @@ export default function UpcomingTools() {
                 {/* Teaser line */}
                 <div className="mt-5 pt-5 border-t border-white/5">
                   <p className="text-sm text-white/30 italic">
-                    Plus d'infos bientôt...
+                    Plus d&apos;infos bientôt...
                   </p>
                 </div>
               </div>

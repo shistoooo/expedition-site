@@ -73,7 +73,7 @@ const upcomingFeatures = [
 ];
 
 export default function ClipForgePage() {
-  const [versionData, setVersionData] = useState<any>(null);
+  const [versionData, setVersionData] = useState<{ download_url?: string; windows_download_url?: string; version?: string } | null>(null);
 
   useEffect(() => {
     const fetchVersion = async () => {
@@ -93,20 +93,20 @@ export default function ClipForgePage() {
   return (
     <div className="min-h-screen bg-[#05050A] text-white selection:bg-purple-500/30 font-sans">
       <Navbar />
-      
+
       {/* Background Grid Pattern */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03]" 
-           style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} 
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03]"
+        style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}
       />
-      
+
       <main className="relative overflow-hidden pt-24">
-        
+
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 md:pt-32 md:pb-32 container-main">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            
+
             {/* Left Content */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex-1 text-left z-10"
@@ -122,7 +122,7 @@ export default function ClipForgePage() {
               </h1>
 
               <p className="text-lg text-white/50 mb-10 max-w-xl leading-relaxed">
-                Transformez vos longues vidéos en clips viraux en quelques secondes. L'IA analyse, découpe et sous-titre votre contenu automatiquement.
+                Transformez vos longues vidéos en clips viraux en quelques secondes. L&apos;IA analyse, découpe et sous-titre votre contenu automatiquement.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -147,7 +147,7 @@ export default function ClipForgePage() {
                   <Download className="w-5 h-5" />
                   <span>Windows</span>
                 </motion.a>
-                
+
                 <button className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 font-medium flex items-center justify-center gap-3 cursor-not-allowed">
                   <Monitor className="w-5 h-5" />
                   <span>Démo Web (Bientôt)</span>
@@ -183,56 +183,56 @@ export default function ClipForgePage() {
                   {/* Sidebar Tools */}
                   <div className="w-14 border-r border-white/5 flex flex-col items-center py-4 gap-6 bg-[#111115]">
                     <div className="w-8 h-8 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center">
-                       <Scissors className="w-4 h-4" />
+                      <Scissors className="w-4 h-4" />
                     </div>
                     <div className="w-8 h-8 rounded hover:bg-white/5 text-white/20 flex items-center justify-center transition-colors">
-                       <Captions className="w-4 h-4" />
+                      <Captions className="w-4 h-4" />
                     </div>
                     <div className="w-8 h-8 rounded hover:bg-white/5 text-white/20 flex items-center justify-center transition-colors">
-                       <Wand2 className="w-4 h-4" />
+                      <Wand2 className="w-4 h-4" />
                     </div>
                   </div>
 
                   {/* Main Preview Area */}
                   <div className="flex-1 p-6 bg-[#0F0F12] flex flex-col">
                     <div className="flex-1 bg-black/40 rounded-lg border border-white/5 relative overflow-hidden flex items-center justify-center">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10" />
-                        <div className="w-32 h-48 bg-white/5 rounded border border-white/10 flex items-center justify-center">
-                            <Video className="w-8 h-8 text-white/20" />
-                        </div>
-                        
-                        {/* Fake Captions */}
-                        <div className="absolute bottom-8 left-0 right-0 text-center">
-                            <span className="bg-black/60 px-2 py-1 rounded text-yellow-400 font-bold text-sm">Incroyable ce moment !</span>
-                        </div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10" />
+                      <div className="w-32 h-48 bg-white/5 rounded border border-white/10 flex items-center justify-center">
+                        <Video className="w-8 h-8 text-white/20" />
+                      </div>
+
+                      {/* Fake Captions */}
+                      <div className="absolute bottom-8 left-0 right-0 text-center">
+                        <span className="bg-black/60 px-2 py-1 rounded text-yellow-400 font-bold text-sm">Incroyable ce moment !</span>
+                      </div>
                     </div>
-                    
+
                     {/* Timeline */}
                     <div className="h-24 mt-4 bg-[#111115] rounded-lg border border-white/5 p-2 flex gap-1 overflow-hidden relative">
-                        {[...Array(10)].map((_, i) => (
-                            <div key={i} className="flex-1 bg-purple-500/20 rounded-sm h-full opacity-50 relative group/track">
-                                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-blue-500/20" />
-                            </div>
-                        ))}
-                        <div className="absolute left-1/3 top-0 bottom-0 w-0.5 bg-red-500 z-10" />
+                      {[...Array(10)].map((_, i) => (
+                        <div key={i} className="flex-1 bg-purple-500/20 rounded-sm h-full opacity-50 relative group/track">
+                          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-blue-500/20" />
+                        </div>
+                      ))}
+                      <div className="absolute left-1/3 top-0 bottom-0 w-0.5 bg-red-500 z-10" />
                     </div>
                   </div>
-                  
+
                   {/* Properties Panel */}
                   <div className="w-48 border-l border-white/5 bg-[#111115] p-4 hidden sm:block">
-                     <div className="space-y-4">
-                        <div className="h-2 w-12 bg-white/10 rounded" />
-                        <div className="h-20 bg-white/5 rounded border border-white/5" />
-                        <div className="h-2 w-20 bg-white/10 rounded" />
-                        <div className="flex gap-2">
-                            <div className="h-8 flex-1 bg-purple-500/20 rounded border border-purple-500/30" />
-                            <div className="h-8 flex-1 bg-white/5 rounded border border-white/10" />
-                        </div>
-                     </div>
+                    <div className="space-y-4">
+                      <div className="h-2 w-12 bg-white/10 rounded" />
+                      <div className="h-20 bg-white/5 rounded border border-white/5" />
+                      <div className="h-2 w-20 bg-white/10 rounded" />
+                      <div className="flex gap-2">
+                        <div className="h-8 flex-1 bg-purple-500/20 rounded border border-purple-500/30" />
+                        <div className="h-8 flex-1 bg-white/5 rounded border border-white/10" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              
+
               {/* Purple Glow */}
               <div className="absolute -inset-10 bg-purple-500/10 blur-[80px] -z-10 rounded-full" />
             </motion.div>
@@ -241,40 +241,40 @@ export default function ClipForgePage() {
 
         {/* Features Grid */}
         <section className="py-24 border-t border-white/5 bg-white/[0.01]">
-            <div className="container-main">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold mb-4">Architecture Système</h2>
-                    <p className="text-white/50">Fonctionnalités natives intégrées au noyau.</p>
-                </div>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentFeatures.map((feature, i) => (
-                        <div key={i} className="p-6 rounded-2xl bg-[#0F0F12] border border-white/5 hover:border-purple-500/30 transition-colors group">
-                            <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4 text-purple-400 group-hover:scale-110 transition-transform">
-                                <feature.icon className="w-6 h-6" />
-                            </div>
-                            <h3 className="text-lg font-bold mb-2 text-white/90">{feature.title}</h3>
-                            <p className="text-sm text-white/50 leading-relaxed">
-                                {feature.description}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+          <div className="container-main">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4">Architecture Système</h2>
+              <p className="text-white/50">Fonctionnalités natives intégrées au noyau.</p>
             </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentFeatures.map((feature, i) => (
+                <div key={i} className="p-6 rounded-2xl bg-[#0F0F12] border border-white/5 hover:border-purple-500/30 transition-colors group">
+                  <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4 text-purple-400 group-hover:scale-110 transition-transform">
+                    <feature.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white/90">{feature.title}</h3>
+                  <p className="text-sm text-white/50 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* Development Roadmap */}
         <section className="py-24 border-t border-white/5">
           <div className="container-main max-w-4xl">
             <div className="flex items-center gap-4 mb-12">
-               <Terminal className="w-6 h-6 text-purple-400" />
-               <h2 className="text-2xl font-mono font-bold">DEV_LOG & ROADMAP</h2>
-               <div className="h-px flex-1 bg-white/10" />
+              <Terminal className="w-6 h-6 text-purple-400" />
+              <h2 className="text-2xl font-mono font-bold">DEV_LOG & ROADMAP</h2>
+              <div className="h-px flex-1 bg-white/10" />
             </div>
 
             <div className="space-y-4">
               {upcomingFeatures.map((feature, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -282,28 +282,28 @@ export default function ClipForgePage() {
                   className="group p-4 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors"
                 >
                   <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between mb-3">
-                     <div className="flex items-start gap-3">
-                        <div className="mt-1">
-                            {feature.progress === 100 ? (
-                                <CheckCircle2 className="w-4 h-4 text-green-400" />
-                            ) : (
-                                <Circle className="w-4 h-4 text-white/20" />
-                            )}
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-white/90">{feature.title}</h3>
-                            <p className="text-sm text-white/40">{feature.description}</p>
-                        </div>
-                     </div>
-                     <div className="flex items-center gap-3 min-w-[140px]">
-                        <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div 
-                                className="h-full bg-purple-500 rounded-full" 
-                                style={{ width: `${feature.progress}%` }}
-                            />
-                        </div>
-                        <span className="text-xs font-mono text-purple-400 w-8 text-right">{feature.progress}%</span>
-                     </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1">
+                        {feature.progress === 100 ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <Circle className="w-4 h-4 text-white/20" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-white/90">{feature.title}</h3>
+                        <p className="text-sm text-white/40">{feature.description}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 min-w-[140px]">
+                      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-purple-500 rounded-full"
+                          style={{ width: `${feature.progress}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-mono text-purple-400 w-8 text-right">{feature.progress}%</span>
+                    </div>
                   </div>
                 </motion.div>
               ))}

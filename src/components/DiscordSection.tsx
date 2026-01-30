@@ -47,7 +47,7 @@ export default function DiscordSection() {
             <span className="gradient-text">Expédition</span>
           </h2>
           <p className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed text-center">
-            Un espace d'entraide et de partage pour booster votre productivité.
+            Un espace d&apos;entraide et de partage pour booster votre productivité.
             Partagez vos créations et restez informé des dernières mises à jour.
           </p>
 
