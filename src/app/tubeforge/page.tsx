@@ -62,7 +62,7 @@ const roadmap = [
 ];
 
 export default function TubeForgePage() {
-  const [versionData, setVersionData] = useState<any>(null);
+  const [versionData, setVersionData] = useState<{ download_url?: string; windows_download_url?: string; version?: string } | null>(null);
 
   useEffect(() => {
     const fetchVersion = async () => {
@@ -82,20 +82,20 @@ export default function TubeForgePage() {
   return (
     <div className="min-h-screen bg-[#05050A] text-white selection:bg-red-500/30 font-sans">
       <Navbar />
-      
+
       {/* Background Grid Pattern */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03]" 
-           style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} 
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03]"
+        style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}
       />
-      
+
       <main className="relative overflow-hidden pt-24">
-        
+
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 md:pt-32 md:pb-32 container-main">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            
+
             {/* Left Content */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex-1 text-left z-10"
@@ -111,7 +111,7 @@ export default function TubeForgePage() {
               </h1>
 
               <p className="text-lg text-white/50 mb-10 max-w-xl leading-relaxed">
-                L'outil ultime pour télécharger et archiver vos contenus préférés. Rapide, sécurisé et sans limite de qualité.
+                L&apos;outil ultime pour télécharger et archiver vos contenus préférés. Rapide, sécurisé et sans limite de qualité.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -136,7 +136,7 @@ export default function TubeForgePage() {
                   <Download className="w-5 h-5" />
                   <span>Windows</span>
                 </motion.a>
-                
+
                 <button className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 font-medium flex items-center justify-center gap-3 cursor-not-allowed">
                   <Monitor className="w-5 h-5" />
                   <span>Version Web (Bientôt)</span>
@@ -172,13 +172,13 @@ export default function TubeForgePage() {
                   {/* Sidebar */}
                   <div className="w-14 border-r border-white/5 flex flex-col items-center py-4 gap-6 bg-[#111115]">
                     <div className="w-8 h-8 rounded bg-red-500/20 text-red-400 flex items-center justify-center">
-                       <Download className="w-4 h-4" />
+                      <Download className="w-4 h-4" />
                     </div>
                     <div className="w-8 h-8 rounded hover:bg-white/5 text-white/20 flex items-center justify-center transition-colors">
-                       <ListVideo className="w-4 h-4" />
+                      <ListVideo className="w-4 h-4" />
                     </div>
                     <div className="w-8 h-8 rounded hover:bg-white/5 text-white/20 flex items-center justify-center transition-colors">
-                       <HardDrive className="w-4 h-4" />
+                      <HardDrive className="w-4 h-4" />
                     </div>
                   </div>
 
@@ -186,36 +186,36 @@ export default function TubeForgePage() {
                   <div className="flex-1 p-6 bg-[#0F0F12] flex flex-col gap-4">
                     {/* Search Bar */}
                     <div className="h-12 bg-[#1A1A20] rounded-lg border border-white/5 flex items-center px-4 gap-3">
-                        <Youtube className="w-5 h-5 text-white/20" />
-                        <div className="h-4 w-48 bg-white/5 rounded-full" />
-                        <div className="ml-auto px-3 py-1 bg-red-500 rounded text-xs font-bold">GET</div>
+                      <Youtube className="w-5 h-5 text-white/20" />
+                      <div className="h-4 w-48 bg-white/5 rounded-full" />
+                      <div className="ml-auto px-3 py-1 bg-red-500 rounded text-xs font-bold">GET</div>
                     </div>
 
                     {/* Download Queue */}
                     <div className="space-y-3 mt-2">
-                        {[1, 2, 3].map((_, i) => (
-                            <div key={i} className="h-16 bg-[#16161A] rounded border border-white/5 flex items-center p-3 gap-3">
-                                <div className="h-10 w-16 bg-white/5 rounded relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-red-500/10" />
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <Play className="w-3 h-3 text-white/20 fill-current" />
-                                    </div>
-                                </div>
-                                <div className="flex-1 space-y-2">
-                                    <div className="h-2 w-32 bg-white/10 rounded" />
-                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-red-500" style={{ width: `${80 - (i * 25)}%` }} />
-                                    </div>
-                                </div>
-                                <div className="text-xs font-mono text-white/30">
-                                    {80 - (i * 25)}%
-                                </div>
+                      {[1, 2, 3].map((_, i) => (
+                        <div key={i} className="h-16 bg-[#16161A] rounded border border-white/5 flex items-center p-3 gap-3">
+                          <div className="h-10 w-16 bg-white/5 rounded relative overflow-hidden">
+                            <div className="absolute inset-0 bg-red-500/10" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Play className="w-3 h-3 text-white/20 fill-current" />
                             </div>
-                        ))}
+                          </div>
+                          <div className="flex-1 space-y-2">
+                            <div className="h-2 w-32 bg-white/10 rounded" />
+                            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                              <div className="h-full bg-red-500" style={{ width: `${80 - (i * 25)}%` }} />
+                            </div>
+                          </div>
+                          <div className="text-xs font-mono text-white/30">
+                            {80 - (i * 25)}%
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Red Glow */}
                 <div className="absolute -inset-10 bg-red-500/10 blur-[80px] -z-10 rounded-full" />
               </div>
@@ -225,40 +225,40 @@ export default function TubeForgePage() {
 
         {/* Features Grid */}
         <section className="py-24 border-t border-white/5 bg-white/[0.01]">
-            <div className="container-main">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold mb-4">Moteur de Téléchargement</h2>
-                    <p className="text-white/50">Performance et qualité sans compromis.</p>
-                </div>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentFeatures.map((feature, i) => (
-                        <div key={i} className="p-6 rounded-2xl bg-[#0F0F12] border border-white/5 hover:border-red-500/30 transition-colors group">
-                            <div className="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center mb-4 text-red-400 group-hover:scale-110 transition-transform">
-                                <feature.icon className="w-6 h-6" />
-                            </div>
-                            <h3 className="text-lg font-bold mb-2 text-white/90">{feature.title}</h3>
-                            <p className="text-sm text-white/50 leading-relaxed">
-                                {feature.description}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+          <div className="container-main">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4">Moteur de Téléchargement</h2>
+              <p className="text-white/50">Performance et qualité sans compromis.</p>
             </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentFeatures.map((feature, i) => (
+                <div key={i} className="p-6 rounded-2xl bg-[#0F0F12] border border-white/5 hover:border-red-500/30 transition-colors group">
+                  <div className="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center mb-4 text-red-400 group-hover:scale-110 transition-transform">
+                    <feature.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white/90">{feature.title}</h3>
+                  <p className="text-sm text-white/50 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* Roadmap */}
         <section className="py-24 border-t border-white/5">
           <div className="container-main max-w-4xl">
             <div className="flex items-center gap-4 mb-12">
-               <Terminal className="w-6 h-6 text-red-400" />
-               <h2 className="text-2xl font-mono font-bold">SYSTEM_UPDATES</h2>
-               <div className="h-px flex-1 bg-white/10" />
+              <Terminal className="w-6 h-6 text-red-400" />
+              <h2 className="text-2xl font-mono font-bold">SYSTEM_UPDATES</h2>
+              <div className="h-px flex-1 bg-white/10" />
             </div>
 
             <div className="space-y-6">
               {roadmap.map((item, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -272,22 +272,22 @@ export default function TubeForgePage() {
                   </div>
 
                   <div className="flex-1 p-6 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
-                     <div className="flex items-center gap-3 mb-2">
-                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">
-                            {item.version}
-                        </span>
-                        <span className="text-xs text-white/30 font-mono">{item.date}</span>
-                     </div>
-                     
-                     <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                     <p className="text-white/50 text-sm mb-4">{item.desc}</p>
-                     
-                     {/* Progress Bar for In Progress items */}
-                     {item.progress > 0 && (
-                        <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mt-2">
-                            <div className="h-full bg-red-500" style={{ width: `${item.progress}%` }} />
-                        </div>
-                     )}
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs font-mono px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">
+                        {item.version}
+                      </span>
+                      <span className="text-xs text-white/30 font-mono">{item.date}</span>
+                    </div>
+
+                    <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                    <p className="text-white/50 text-sm mb-4">{item.desc}</p>
+
+                    {/* Progress Bar for In Progress items */}
+                    {item.progress > 0 && (
+                      <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mt-2">
+                        <div className="h-full bg-red-500" style={{ width: `${item.progress}%` }} />
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}

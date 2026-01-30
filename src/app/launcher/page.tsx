@@ -53,13 +53,13 @@ const roadmapTools = [
 ];
 
 export default function LauncherPage() {
-  const [updates, setUpdates] = useState<Record<string, any>>({});
+  const [updates, setUpdates] = useState<Record<string, { version: string; critical: boolean; message: string; download_url?: string; windows_download_url?: string }>>({});
 
   useEffect(() => {
     const checkUpdates = async () => {
       try {
         const response = await fetch('https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/version.json', {
-            cache: 'no-store'
+          cache: 'no-store'
         });
         const data = await response.json();
         setUpdates(data);
@@ -73,7 +73,7 @@ export default function LauncherPage() {
   const getUpdateStatus = (appKey: string, currentVersion: string) => {
     const remote = updates[appKey];
     if (!remote) return null;
-    
+
     // Simple string comparison for now, assuming semantic versioning format
     if (remote.version > currentVersion) {
       return {
@@ -87,24 +87,24 @@ export default function LauncherPage() {
   };
 
   const clipforgeUpdate = getUpdateStatus('clipforge', '1.0.0');
-  
+
   return (
     <div className="min-h-screen bg-[#030304] text-white selection:bg-blue-500/30 font-sans">
       <Navbar />
-      
+
       {/* Background Grid Pattern */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03]" 
-           style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} 
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03]"
+        style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}
       />
-      
+
       <main className="relative overflow-hidden pt-24">
-        
+
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 md:pt-32 md:pb-32 container-main">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            
+
             {/* Left Content */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex-1 text-left z-10"
@@ -134,7 +134,7 @@ export default function LauncherPage() {
                   <Download className="w-5 h-5" />
                   <span>Télécharger (Mac)</span>
                 </motion.a>
-                
+
                 <motion.a
                   href={updates.launcher?.windows_download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"}
                   download
@@ -148,12 +148,12 @@ export default function LauncherPage() {
               </div>
 
               <div className="mt-6 p-4 rounded-lg bg-blue-500/5 border border-blue-500/10 max-w-md">
-                 <p className="text-xs text-blue-200/80 flex gap-2 items-start">
-                    <span className="mt-0.5">ℹ️</span>
-                    <span>
-                       <strong>Version 0.1.0 :</strong> Le téléchargement inclut le launcher + le script de réparation macOS. Détection automatique des mises à jour intégrée.
-                    </span>
-                 </p>
+                <p className="text-xs text-blue-200/80 flex gap-2 items-start">
+                  <span className="mt-0.5">ℹ️</span>
+                  <span>
+                    <strong>Version 0.1.0 :</strong> Le téléchargement inclut le launcher + le script de réparation macOS. Détection automatique des mises à jour intégrée.
+                  </span>
+                </p>
               </div>
             </motion.div>
 
@@ -179,10 +179,10 @@ export default function LauncherPage() {
                   {/* Sidebar */}
                   <div className="w-16 border-r border-white/5 flex flex-col items-center py-4 gap-4 bg-[#121418]">
                     <div className="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
-                       <Rocket className="w-5 h-5" />
+                      <Rocket className="w-5 h-5" />
                     </div>
                     <div className="w-10 h-10 rounded-lg bg-white/5 text-white/20 flex items-center justify-center">
-                       <Layers className="w-5 h-5" />
+                      <Layers className="w-5 h-5" />
                     </div>
                     <div className="mt-auto w-8 h-8 rounded-full bg-white/5" />
                   </div>
@@ -191,64 +191,64 @@ export default function LauncherPage() {
                   <div className="flex-1 p-6 bg-[#0F1115]">
                     {/* Welcome Banner */}
                     <div className="mb-6 p-6 rounded-xl bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-white/5 flex justify-between items-center">
-                       <div>
-                          <h3 className="text-sm font-medium text-blue-200 mb-1">Bienvenue, Créateur</h3>
-                          <p className="text-xs text-white/40">Tous les systèmes sont opérationnels.</p>
-                       </div>
-                       <div className="px-3 py-1 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-mono">ONLINE</div>
+                      <div>
+                        <h3 className="text-sm font-medium text-blue-200 mb-1">Bienvenue, Créateur</h3>
+                        <p className="text-xs text-white/40">Tous les systèmes sont opérationnels.</p>
+                      </div>
+                      <div className="px-3 py-1 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-mono">ONLINE</div>
                     </div>
 
                     {/* App Grid */}
                     <div className="grid grid-cols-2 gap-4">
-                        {/* ClipForge Widget */}
-                        <Link href="/clipforge" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-purple-500/30 transition-colors group/card cursor-pointer block relative overflow-hidden">
-                           {clipforgeUpdate?.available && (
-                             <div className="absolute top-0 right-0 px-2 py-1 bg-blue-500 text-white text-[10px] font-bold rounded-bl-xl z-10 animate-pulse">
-                               UPDATE
-                             </div>
-                           )}
-                           <div className="flex justify-between items-start mb-3">
-                              <div className="p-2 rounded bg-purple-500/10 text-purple-400">
-                                 <Sparkles className="w-4 h-4" />
-                              </div>
-                              <div className={`w-2 h-2 rounded-full ${clipforgeUpdate?.available ? 'bg-blue-500 animate-ping' : 'bg-green-500'}`} />
-                           </div>
-                           <h4 className="font-medium text-sm text-white/80 mb-1">ClipForge</h4>
-                           <p className={`text-xs ${clipforgeUpdate?.available ? 'text-blue-400 font-bold' : 'text-white/30'}`}>
-                             {clipforgeUpdate?.available ? `v${clipforgeUpdate.version} disponible` : 'v1.2.4 • Installed'}
-                           </p>
-                           <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                              <div className="h-full w-full bg-purple-500/50" />
-                           </div>
-                        </Link>
+                      {/* ClipForge Widget */}
+                      <Link href="/clipforge" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-purple-500/30 transition-colors group/card cursor-pointer block relative overflow-hidden">
+                        {clipforgeUpdate?.available && (
+                          <div className="absolute top-0 right-0 px-2 py-1 bg-blue-500 text-white text-[10px] font-bold rounded-bl-xl z-10 animate-pulse">
+                            UPDATE
+                          </div>
+                        )}
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="p-2 rounded bg-purple-500/10 text-purple-400">
+                            <Sparkles className="w-4 h-4" />
+                          </div>
+                          <div className={`w-2 h-2 rounded-full ${clipforgeUpdate?.available ? 'bg-blue-500 animate-ping' : 'bg-green-500'}`} />
+                        </div>
+                        <h4 className="font-medium text-sm text-white/80 mb-1">ClipForge</h4>
+                        <p className={`text-xs ${clipforgeUpdate?.available ? 'text-blue-400 font-bold' : 'text-white/30'}`}>
+                          {clipforgeUpdate?.available ? `v${clipforgeUpdate.version} disponible` : 'v1.2.4 • Installed'}
+                        </p>
+                        <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                          <div className="h-full w-full bg-purple-500/50" />
+                        </div>
+                      </Link>
 
-                        {/* TubeForge Widget */}
-                        <Link href="/tubeforge" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-red-500/30 transition-colors group/card cursor-pointer block">
-                           <div className="flex justify-between items-start mb-3">
-                              <div className="p-2 rounded bg-red-500/10 text-red-400">
-                                 <Download className="w-4 h-4" />
-                              </div>
-                              <div className="w-2 h-2 rounded-full bg-green-500" />
-                           </div>
-                           <h4 className="font-medium text-sm text-white/80 mb-1">TubeForge</h4>
-                           <p className="text-xs text-white/30">v2.0.1 • Installed</p>
-                           <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                              <div className="h-full w-3/4 bg-red-500/50" />
-                           </div>
-                        </Link>
+                      {/* TubeForge Widget */}
+                      <Link href="/tubeforge" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-red-500/30 transition-colors group/card cursor-pointer block">
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="p-2 rounded bg-red-500/10 text-red-400">
+                            <Download className="w-4 h-4" />
+                          </div>
+                          <div className="w-2 h-2 rounded-full bg-green-500" />
+                        </div>
+                        <h4 className="font-medium text-sm text-white/80 mb-1">TubeForge</h4>
+                        <p className="text-xs text-white/30">v2.0.1 • Installed</p>
+                        <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                          <div className="h-full w-3/4 bg-red-500/50" />
+                        </div>
+                      </Link>
                     </div>
-                    
+
                     {/* Console Log Fake */}
                     <div className="mt-6 p-3 rounded-lg bg-black/40 border border-white/5 font-mono text-[10px] text-white/30 leading-relaxed">
-                       <p>&gt; Initializing core services...</p>
-                       <p>&gt; Connected to Expedition Network (ms: 24)</p>
-                       <p className="text-blue-400/60">&gt; Updates found: ClipForge (patch_1.2.5)</p>
-                       <p className="animate-pulse">_</p>
+                      <p>&gt; Initializing core services...</p>
+                      <p>&gt; Connected to Expedition Network (ms: 24)</p>
+                      <p className="text-blue-400/60">&gt; Updates found: ClipForge (patch_1.2.5)</p>
+                      <p className="animate-pulse">_</p>
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               {/* Blue Glow */}
               <div className="absolute -inset-10 bg-blue-500/10 blur-[80px] -z-10 rounded-full" />
             </motion.div>
@@ -259,47 +259,47 @@ export default function LauncherPage() {
         <section className="py-24 border-t border-white/5">
           <div className="container-main">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-               <div>
-                  <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
-                     <Hammer className="w-6 h-6 text-white/40" />
-                     Laboratoire
-                  </h2>
-                  <p className="text-white/50 max-w-lg">
-                     Aperçu des outils en cours de développement dans nos forges secrètes.
-                     Bientôt disponibles dans votre Launcher.
-                  </p>
-               </div>
-               <div className="hidden md:block">
-                  <div className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-white/40">
-                     ROADMAP_2026.JSON
-                  </div>
-               </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
+                  <Hammer className="w-6 h-6 text-white/40" />
+                  Laboratoire
+                </h2>
+                <p className="text-white/50 max-w-lg">
+                  Aperçu des outils en cours de développement dans nos forges secrètes.
+                  Bientôt disponibles dans votre Launcher.
+                </p>
+              </div>
+              <div className="hidden md:block">
+                <div className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-white/40">
+                  ROADMAP_2026.JSON
+                </div>
+              </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               {roadmapTools.map((tool, i) => (
-                 <motion.div 
-                    key={i}
-                    whileHover={{ y: -5 }}
-                    className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors relative group overflow-hidden"
-                 >
-                    <div className="absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold border bg-white/5 border-white/10 uppercase tracking-wide text-white/40 group-hover:bg-white/10 group-hover:text-white/60 transition-colors">
-                       {tool.status}
-                    </div>
-                    
-                    <div className={`w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 ${tool.color} group-hover:scale-110 transition-transform`}>
-                       <tool.icon className="w-6 h-6" />
-                    </div>
-                    
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">{tool.name}</h3>
-                    <p className="text-white/40 text-sm leading-relaxed mb-6">
-                       {tool.desc}
-                    </p>
-                    
-                    <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                       <div className="h-full bg-white/10 w-1/3 group-hover:w-2/3 transition-all duration-700 ease-out" />
-                    </div>
-                 </motion.div>
+                <motion.div
+                  key={i}
+                  whileHover={{ y: -5 }}
+                  className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors relative group overflow-hidden"
+                >
+                  <div className="absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold border bg-white/5 border-white/10 uppercase tracking-wide text-white/40 group-hover:bg-white/10 group-hover:text-white/60 transition-colors">
+                    {tool.status}
+                  </div>
+
+                  <div className={`w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-6 ${tool.color} group-hover:scale-110 transition-transform`}>
+                    <tool.icon className="w-6 h-6" />
+                  </div>
+
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">{tool.name}</h3>
+                  <p className="text-white/40 text-sm leading-relaxed mb-6">
+                    {tool.desc}
+                  </p>
+
+                  <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-white/10 w-1/3 group-hover:w-2/3 transition-all duration-700 ease-out" />
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>

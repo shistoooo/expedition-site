@@ -21,7 +21,7 @@ export default function Hero() {
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-xs md:text-sm font-medium mb-6 backdrop-blur-sm"
         >
           <Sparkles className="w-4 h-4" />
-          <span>L'AVENTURE COMMENCE ICI</span>
+          <span>L&apos;AVENTURE COMMENCE ICI</span>
         </motion.div>
 
         <motion.h1

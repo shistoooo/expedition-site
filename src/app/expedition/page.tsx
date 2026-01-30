@@ -53,10 +53,10 @@ export default function ExpeditionPage() {
       <Navbar />
 
       {/* Hero Section with 3D Rocket */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="pt-32 pb-40 md:pt-48 md:pb-56 relative overflow-hidden min-h-screen">
         {/* GlobalSpace handles the 3D background now */}
-        
-        <div className="container-main relative z-10 text-center">
+
+        <div className="container-main flex flex-col items-center text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,17 +66,17 @@ export default function ExpeditionPage() {
               <Rocket className="w-4 h-4 animate-pulse" />
               <span>Prochain décollage : 20 Février</span>
             </div>
-            
+
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
               Rejoignez <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-                L'Expédition
+                L&apos;Expédition
               </span>
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
               Un accélérateur intensif de 60 jours pour créateurs de contenu ambitieux.
-              Stratégie, entraide et passage à l'action.
+              Stratégie, entraide et passage à l&apos;action.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -131,19 +131,17 @@ export default function ExpeditionPage() {
 
           <div className="max-w-4xl mx-auto space-y-4">
             {waves.map((wave) => (
-              <div 
+              <div
                 key={wave.id}
-                className={`flex items-center justify-between p-6 rounded-xl border ${
-                  wave.status === 'upcoming' 
-                    ? 'bg-purple-500/10 border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.1)]' 
-                    : 'bg-white/5 border-white/10 opacity-70'
-                }`}
+                className={`flex items-center justify-between p-6 rounded-xl border ${wave.status === 'upcoming'
+                  ? 'bg-purple-500/10 border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.1)]'
+                  : 'bg-white/5 border-white/10 opacity-70'
+                  }`}
               >
                 <div className="flex items-center gap-6">
-                  <div className={`w-3 h-3 rounded-full ${
-                    wave.status === 'active' ? 'bg-green-500 animate-pulse' :
+                  <div className={`w-3 h-3 rounded-full ${wave.status === 'active' ? 'bg-green-500 animate-pulse' :
                     wave.status === 'upcoming' ? 'bg-purple-500' : 'bg-white/20'
-                  }`} />
+                    }`} />
                   <div>
                     <h3 className="font-bold text-lg">{wave.name}</h3>
                     <p className="text-white/50 text-sm flex items-center gap-2">
@@ -151,11 +149,10 @@ export default function ExpeditionPage() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-4">
-                  <span className={`text-sm font-medium px-3 py-1 rounded-full ${
-                    wave.status === 'upcoming' ? 'bg-purple-500/20 text-purple-300' : 'text-white/40'
-                  }`}>
+                  <span className={`text-sm font-medium px-3 py-1 rounded-full ${wave.status === 'upcoming' ? 'bg-purple-500/20 text-purple-300' : 'text-white/40'
+                    }`}>
                     {wave.spots}
                   </span>
                   {wave.status === 'upcoming' && (
@@ -173,25 +170,23 @@ export default function ExpeditionPage() {
       {/* CTA / Application Section */}
       <section id="candidature" className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none" />
-        
+
         <div className="container-main text-center max-w-2xl mx-auto relative z-10">
           <h2 className="text-4xl font-bold mb-6">Prêt à décoller ?</h2>
           <p className="text-xl text-white/60 mb-10">
-            Les places sont limitées pour garantir la qualité de l'accompagnement.
+            Les places sont limitées pour garantir la qualité de l&apos;accompagnement.
             Remplissez le formulaire pour postuler à la prochaine vague.
           </p>
-          
+
           <a
-            href="https://tally.so/r/w7NE1X" // Remplacez par votre lien Typeform/Tally réel
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/pricing"
             className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/25"
           >
-            Déposer ma candidature
+            Rejoindre l&apos;Expédition
             <Rocket className="w-5 h-5" />
           </a>
           <p className="mt-4 text-sm text-white/30">
-            Temps estimé : 5 minutes. Aucune carte bancaire requise pour postuler.
+            Accès immédiat au Launcher et aux outils de la Vague 1.
           </p>
         </div>
       </section>
