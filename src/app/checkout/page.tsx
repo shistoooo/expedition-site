@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
@@ -63,11 +63,22 @@ const stripeAppearance = {
 };
 
 // Inner payment form component (must be inside <Elements>)
-function PaymentForm() {
+function PaymentForm({ discount }: { discount: { percentOff: number | null; amountOff: number | null } | null }) {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const basePrice = 9.99;
+    let finalPrice = basePrice;
+    let discountLabel = "";
+    if (discount?.percentOff) {
+        finalPrice = basePrice * (1 - discount.percentOff / 100);
+        discountLabel = `-${discount.percentOff}%`;
+    } else if (discount?.amountOff) {
+        finalPrice = Math.max(0, basePrice - discount.amountOff / 100);
+        discountLabel = `-${(discount.amountOff / 100).toFixed(2)}€`;
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -113,9 +124,21 @@ function PaymentForm() {
             )}
 
             <div className="border-t border-white/10 pt-6 mt-6">
+                {discount && (
+                    <div className="flex justify-between items-center mb-2 text-sm text-white/50">
+                        <span>Sous-total</span>
+                        <span className="line-through">{basePrice.toFixed(2)}€</span>
+                    </div>
+                )}
+                {discount && (
+                    <div className="flex justify-between items-center mb-2 text-sm text-green-400">
+                        <span className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5" />Réduction</span>
+                        <span>{discountLabel}</span>
+                    </div>
+                )}
                 <div className="flex justify-between items-center mb-4 text-lg font-bold">
                     <span>Total à payer</span>
-                    <span>9,99€<span className="text-sm font-normal text-white/40">/mois</span></span>
+                    <span>{finalPrice.toFixed(2)}€<span className="text-sm font-normal text-white/40">/mois</span></span>
                 </div>
 
                 <button
@@ -143,9 +166,12 @@ export default function CheckoutPage() {
     const [step, setStep] = useState<CheckoutStep>("auth");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [promoCode, setPromoCode] = useState("");
+    const [showPromo, setShowPromo] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
+    const [discount, setDiscount] = useState<{ percentOff: number | null; amountOff: number | null } | null>(null);
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -153,16 +179,19 @@ export default function CheckoutPage() {
         setLoading(true);
 
         try {
+            const promoTrimmed = promoCode.trim() || undefined;
+
             // 1. Try to register (new account)
             const registerRes = await fetch(`${WORKER_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password, promoCode: promoTrimmed }),
             });
 
             const registerData = await registerRes.json();
 
             if (registerRes.ok && registerData.clientSecret) {
+                if (registerData.discount) setDiscount(registerData.discount);
                 setClientSecret(registerData.clientSecret);
                 setStep("payment");
                 return;
@@ -195,12 +224,13 @@ export default function CheckoutPage() {
                         "Authorization": `Bearer ${loginData.accessToken}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ plan: "monthly" }),
+                    body: JSON.stringify({ plan: "monthly", promoCode: promoTrimmed }),
                 });
 
                 const subData = await subRes.json();
 
                 if (subRes.ok && subData.clientSecret) {
+                    if (subData.discount) setDiscount(subData.discount);
                     setClientSecret(subData.clientSecret);
                     setStep("payment");
                     return;
@@ -218,7 +248,9 @@ export default function CheckoutPage() {
             throw new Error(registerData.error || "Une erreur est survenue");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "";
-            if (message.includes("mot de passe") || message.includes("incorrect")) {
+            if (message.includes("Code promo") || message.includes("promo")) {
+                setError(message);
+            } else if (message.includes("mot de passe") || message.includes("incorrect")) {
                 setError("Mot de passe incorrect pour ce compte.");
             } else if (message.includes("email") || message.includes("Email")) {
                 setError(message);
@@ -364,6 +396,39 @@ export default function CheckoutPage() {
                                         </div>
                                     </div>
 
+                                    {/* Promo code */}
+                                    <div className="mt-4">
+                                        {!showPromo ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPromo(true)}
+                                                className="text-sm text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1.5"
+                                            >
+                                                <Tag className="w-3.5 h-3.5" />
+                                                J&apos;ai un code promo
+                                            </button>
+                                        ) : (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                className="space-y-2"
+                                            >
+                                                <label htmlFor="promo" className="text-xs font-mono text-white/40 uppercase">Code promo</label>
+                                                <div className="relative">
+                                                    <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                    <input
+                                                        id="promo"
+                                                        type="text"
+                                                        value={promoCode}
+                                                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                                        placeholder="EXPEDITION20"
+                                                        className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm uppercase tracking-wider"
+                                                    />
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </div>
+
                                     {error && (
                                         <motion.div
                                             initial={{ opacity: 0, y: -5 }}
@@ -436,7 +501,7 @@ export default function CheckoutPage() {
                                             locale: "fr",
                                         }}
                                     >
-                                        <PaymentForm />
+                                        <PaymentForm discount={discount} />
                                     </Elements>
 
                                     <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
