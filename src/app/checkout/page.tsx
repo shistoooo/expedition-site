@@ -7,7 +7,8 @@ import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
@@ -62,14 +63,21 @@ const stripeAppearance = {
     },
 };
 
+type PlanType = "monthly" | "yearly";
+
+const PLANS = {
+    monthly: { price: 9.99, label: "/mois", period: "mois" },
+    yearly: { price: 99.99, label: "/an", period: "an" },
+};
+
 // Inner payment form component (must be inside <Elements>)
-function PaymentForm({ discount }: { discount: { percentOff: number | null; amountOff: number | null } | null }) {
+function PaymentForm({ discount, plan }: { discount: { percentOff: number | null; amountOff: number | null } | null; plan: PlanType }) {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const basePrice = 9.99;
+    const basePrice = PLANS[plan].price;
     let finalPrice = basePrice;
     let discountLabel = "";
     if (discount?.percentOff) {
@@ -138,7 +146,7 @@ function PaymentForm({ discount }: { discount: { percentOff: number | null; amou
                 )}
                 <div className="flex justify-between items-center mb-4 text-lg font-bold">
                     <span>Total à payer</span>
-                    <span>{finalPrice.toFixed(2)}€<span className="text-sm font-normal text-white/40">/mois</span></span>
+                    <span>{finalPrice.toFixed(2)}€<span className="text-sm font-normal text-white/40">{PLANS[plan].label}</span></span>
                 </div>
 
                 <button
@@ -162,7 +170,10 @@ function PaymentForm({ discount }: { discount: { percentOff: number | null; amou
 
 type CheckoutStep = "auth" | "payment";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
+    const searchParams = useSearchParams();
+    const initialPlan = searchParams.get("plan") === "yearly" ? "yearly" : "monthly";
+    const [plan, setPlan] = useState<PlanType>(initialPlan as PlanType);
     const [step, setStep] = useState<CheckoutStep>("auth");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -185,7 +196,7 @@ export default function CheckoutPage() {
             const registerRes = await fetch(`${WORKER_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, promoCode: promoTrimmed }),
+                body: JSON.stringify({ email, password, promoCode: promoTrimmed, plan }),
             });
 
             const registerData = await registerRes.json();
@@ -224,7 +235,7 @@ export default function CheckoutPage() {
                         "Authorization": `Bearer ${loginData.accessToken}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ plan: "monthly", promoCode: promoTrimmed }),
+                    body: JSON.stringify({ plan, promoCode: promoTrimmed }),
                 });
 
                 const subData = await subRes.json();
@@ -289,14 +300,36 @@ export default function CheckoutPage() {
                         <p className="text-white/60 mb-8">Vous êtes sur le point de rejoindre l&apos;élite des créateurs.</p>
 
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
+                            {/* Plan Toggle */}
+                            <div className="flex gap-2 p-1 rounded-xl bg-white/5 border border-white/10">
+                                <button
+                                    type="button"
+                                    onClick={() => setPlan("monthly")}
+                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${plan === "monthly" ? "bg-white text-black shadow-md" : "text-white/50 hover:text-white/80"}`}
+                                >
+                                    Mensuel
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setPlan("yearly")}
+                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all relative ${plan === "yearly" ? "bg-white text-black shadow-md" : "text-white/50 hover:text-white/80"}`}
+                                >
+                                    Annuel
+                                    <span className="absolute -top-2 -right-1 px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full">-17%</span>
+                                </button>
+                            </div>
+
                             <div className="flex justify-between items-start border-b border-white/5 pb-6">
                                 <div>
-                                    <h3 className="text-xl font-bold text-white">Vague Pionnier (Mensuel)</h3>
-                                    <p className="text-purple-400 text-sm font-medium mt-1">Accès Anticipé • Prix Bloqué à Vie</p>
+                                    <h3 className="text-xl font-bold text-white">Vague Pionnier ({plan === "yearly" ? "Annuel" : "Mensuel"})</h3>
+                                    <p className="text-purple-400 text-sm font-medium mt-1">Acc&egrave;s Anticip&eacute; &bull; Prix Bloqu&eacute; &agrave; Vie</p>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-2xl font-bold">9,99€</div>
-                                    <div className="text-white/40 text-xs text-right">/ mois</div>
+                                    <div className="text-2xl font-bold">{PLANS[plan].price.toFixed(2).replace(".", ",")}€</div>
+                                    <div className="text-white/40 text-xs text-right">{PLANS[plan].label}</div>
+                                    {plan === "yearly" && (
+                                        <div className="text-green-400 text-xs mt-1">soit 8,33€/mois</div>
+                                    )}
                                 </div>
                             </div>
 
@@ -325,7 +358,7 @@ export default function CheckoutPage() {
                                     <div>
                                         <p className="mb-2">
                                             <strong>Garantie &quot;Early Adopter&quot; & Droit au Retour :</strong><br />
-                                            Votre tarif de 9,99€ est maintenu à vie tant que l&apos;abonnement est actif.
+                                            Votre tarif de {PLANS[plan].price.toFixed(2).replace(".", ",")}€{PLANS[plan].label} est maintenu &agrave; vie tant que l&apos;abonnement est actif.
                                         </p>
                                         <p className="text-xs opacity-80 mb-1">En cas de désabonnement, vous conservez votre tarif préférentiel pendant une période de grâce :</p>
                                         <ul className="text-xs opacity-70 list-disc pl-4 space-y-1">
@@ -501,7 +534,7 @@ export default function CheckoutPage() {
                                             locale: "fr",
                                         }}
                                     >
-                                        <PaymentForm discount={discount} />
+                                        <PaymentForm discount={discount} plan={plan} />
                                     </Elements>
 
                                     <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
@@ -516,5 +549,13 @@ export default function CheckoutPage() {
             </main>
             <Footer />
         </div>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense>
+            <CheckoutContent />
+        </Suspense>
     );
 }
