@@ -2,12 +2,14 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
 import { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const ParticlesBackground = dynamic(
     () => import("@/components/ParticlesBackground"),
@@ -15,22 +17,137 @@ const ParticlesBackground = dynamic(
 );
 
 const WORKER_URL = "https://expedition-licensing.expedition-studio.workers.dev";
+const stripePromise = loadStripe("pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
+
+// Stripe Elements dark theme matching Expedition style
+const stripeAppearance = {
+    theme: "night" as const,
+    variables: {
+        colorPrimary: "#a855f7",
+        colorBackground: "#0F0F12",
+        colorText: "#ffffff",
+        colorDanger: "#ef4444",
+        borderRadius: "12px",
+        colorTextSecondary: "#ffffff66",
+        colorTextPlaceholder: "#ffffff33",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+    },
+    rules: {
+        ".Input": {
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            boxShadow: "none",
+            color: "#ffffff",
+        },
+        ".Input:focus": {
+            border: "1px solid rgba(168, 85, 247, 0.5)",
+            backgroundColor: "rgba(255, 255, 255, 0.07)",
+            boxShadow: "none",
+        },
+        ".Label": {
+            color: "rgba(255, 255, 255, 0.4)",
+            fontSize: "0.75rem",
+            textTransform: "uppercase" as const,
+        },
+        ".Tab": {
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            color: "rgba(255, 255, 255, 0.6)",
+        },
+        ".Tab--selected": {
+            backgroundColor: "rgba(168, 85, 247, 0.15)",
+            border: "1px solid rgba(168, 85, 247, 0.3)",
+            color: "#ffffff",
+        },
+    },
+};
+
+// Inner payment form component (must be inside <Elements>)
+function PaymentForm() {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!stripe || !elements) return;
+
+        setLoading(true);
+        setError(null);
+
+        const { error: confirmError } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                return_url: `${window.location.origin}/checkout/success`,
+            },
+            redirect: "if_required",
+        });
+
+        if (confirmError) {
+            if (confirmError.type === "card_error" || confirmError.type === "validation_error") {
+                setError(confirmError.message || "Le paiement a échoué.");
+            } else {
+                setError("Une erreur inattendue est survenue.");
+            }
+            setLoading(false);
+        } else {
+            // Payment succeeded without redirect (no 3DS)
+            window.location.href = "/checkout/success";
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <PaymentElement options={{ layout: "tabs" }} />
+
+            {error && (
+                <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                >
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    {error}
+                </motion.div>
+            )}
+
+            <div className="border-t border-white/10 pt-6 mt-6">
+                <div className="flex justify-between items-center mb-4 text-lg font-bold">
+                    <span>Total à payer</span>
+                    <span>9,99€<span className="text-sm font-normal text-white/40">/mois</span></span>
+                </div>
+
+                <button
+                    type="submit"
+                    disabled={!stripe || loading}
+                    className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {loading ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                        <>
+                            <Lock className="w-4 h-4" />
+                            Confirmer et payer
+                        </>
+                    )}
+                </button>
+            </div>
+        </form>
+    );
+}
+
+type CheckoutStep = "auth" | "payment";
 
 export default function CheckoutPage() {
+    const [step, setStep] = useState<CheckoutStep>("auth");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
 
-    const redirectToCheckout = (url: string) => {
-        if (url && url.startsWith("https://checkout.stripe.com/")) {
-            window.location.href = url;
-        } else {
-            throw new Error("Impossible de créer la session de paiement");
-        }
-    };
-
-    const handleCheckout = async (e: React.FormEvent) => {
+    const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
@@ -45,12 +162,13 @@ export default function CheckoutPage() {
 
             const registerData = await registerRes.json();
 
-            if (registerRes.ok && registerData.checkoutUrl) {
-                redirectToCheckout(registerData.checkoutUrl);
+            if (registerRes.ok && registerData.clientSecret) {
+                setClientSecret(registerData.clientSecret);
+                setStep("payment");
                 return;
             }
 
-            // 2. Account already exists → login + get checkout URL
+            // 2. Account already exists → login + get clientSecret
             if (registerRes.status === 409) {
                 const loginRes = await fetch(`${WORKER_URL}/auth/login`, {
                     method: "POST",
@@ -64,21 +182,32 @@ export default function CheckoutPage() {
                     throw new Error(loginData.error || "Email ou mot de passe incorrect");
                 }
 
-                // If already has active subscription, redirect to success
+                // Already has active subscription
                 if (loginData.subscription?.status === "active" || loginData.subscription?.status === "trialing") {
                     window.location.href = "/checkout/success";
                     return;
                 }
 
-                // Get checkout URL via portal
-                const checkoutRes = await fetch(`${WORKER_URL}/portal/checkout?plan=monthly`, {
-                    headers: { "Authorization": `Bearer ${loginData.accessToken}` },
+                // Get clientSecret for existing user
+                const subRes = await fetch(`${WORKER_URL}/portal/subscribe`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${loginData.accessToken}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ plan: "monthly" }),
                 });
 
-                const checkoutData = await checkoutRes.json();
+                const subData = await subRes.json();
 
-                if (checkoutRes.ok && checkoutData.url) {
-                    redirectToCheckout(checkoutData.url);
+                if (subRes.ok && subData.clientSecret) {
+                    setClientSecret(subData.clientSecret);
+                    setStep("payment");
+                    return;
+                }
+
+                if (subRes.status === 409) {
+                    window.location.href = "/checkout/success";
                     return;
                 }
 
@@ -178,97 +307,144 @@ export default function CheckoutPage() {
                         </div>
                     </motion.div>
 
-                    {/* Right Column: Payment Form */}
+                    {/* Right Column: Auth or Payment */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
                         className="w-full lg:w-[450px]"
                     >
-                        <form onSubmit={handleCheckout} className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl sticky top-32">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-bold">Connexion / Inscription</h2>
-                                <Lock className="w-4 h-4 text-white/40" />
-                            </div>
-
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label htmlFor="email" className="text-xs font-mono text-white/40 uppercase">Email</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                                        <input
-                                            id="email"
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                            placeholder="vous@email.com"
-                                            className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-lg border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="password" className="text-xs font-mono text-white/40 uppercase">Mot de passe</label>
-                                    <div className="relative">
-                                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                                        <input
-                                            id="password"
-                                            type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                            minLength={8}
-                                            placeholder="8 caractères minimum"
-                                            className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-lg border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {error && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -5 }}
+                        <AnimatePresence mode="wait">
+                            {/* Step 1: Email + Password */}
+                            {step === "auth" && (
+                                <motion.form
+                                    key="auth"
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                                    exit={{ opacity: 0, y: -10 }}
+                                    onSubmit={handleAuth}
+                                    className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl sticky top-32"
                                 >
-                                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                                    {error}
-                                </motion.div>
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-xl font-bold">Connexion / Inscription</h2>
+                                        <Lock className="w-4 h-4 text-white/40" />
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label htmlFor="email" className="text-xs font-mono text-white/40 uppercase">Email</label>
+                                            <div className="relative">
+                                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                <input
+                                                    id="email"
+                                                    type="email"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    required
+                                                    placeholder="vous@email.com"
+                                                    className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label htmlFor="password" className="text-xs font-mono text-white/40 uppercase">Mot de passe</label>
+                                            <div className="relative">
+                                                <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                <input
+                                                    id="password"
+                                                    type="password"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    required
+                                                    minLength={8}
+                                                    placeholder="8 caractères minimum"
+                                                    className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {error && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                                        >
+                                            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                            {error}
+                                        </motion.div>
+                                    )}
+
+                                    <div className="flex items-center gap-3 mt-6 p-3 rounded-xl bg-white/5 border border-white/5">
+                                        <CreditCard className="w-5 h-5 text-white/30 shrink-0" />
+                                        <p className="text-xs text-white/40 leading-relaxed">
+                                            Nouveau ? Un compte sera créé automatiquement. Déjà inscrit ? Connectez-vous pour souscrire.
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+                                    >
+                                        {loading ? (
+                                            <Loader2 className="w-5 h-5 animate-spin" />
+                                        ) : (
+                                            "Continuer"
+                                        )}
+                                    </button>
+
+                                    <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
+                                        Paiement sécurisé par Stripe. En cliquant, vous acceptez les CGV et la politique de confidentialité d&apos;Expédition.
+                                    </p>
+                                </motion.form>
                             )}
 
-                            <div className="flex items-center gap-3 mt-6 p-3 rounded-xl bg-white/5 border border-white/5">
-                                <CreditCard className="w-5 h-5 text-white/30 shrink-0" />
-                                <p className="text-xs text-white/40 leading-relaxed">
-                                    Nouveau ? Un compte sera créé automatiquement. Déjà inscrit ? Connectez-vous pour souscrire.
-                                </p>
-                            </div>
-
-                            <div className="border-t border-white/10 pt-6 mt-6">
-                                <div className="flex justify-between items-center mb-4 text-lg font-bold">
-                                    <span>Total à payer</span>
-                                    <span>9,99€<span className="text-sm font-normal text-white/40">/mois</span></span>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            {/* Step 2: Payment Element */}
+                            {step === "payment" && clientSecret && (
+                                <motion.div
+                                    key="payment"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl sticky top-32"
                                 >
-                                    {loading ? (
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                    ) : (
-                                        <>
-                                            <Lock className="w-4 h-4" />
-                                            Confirmer et payer
-                                        </>
-                                    )}
-                                </button>
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={() => { setStep("auth"); setClientSecret(null); }}
+                                                className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+                                            >
+                                                <ArrowLeft className="w-4 h-4" />
+                                            </button>
+                                            <h2 className="text-xl font-bold">Paiement sécurisé</h2>
+                                        </div>
+                                        <CreditCard className="w-4 h-4 text-white/40" />
+                                    </div>
 
-                                <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
-                                    Paiement sécurisé par Stripe. En cliquant, vous acceptez les CGV et la politique de confidentialité d&apos;Expédition.
-                                </p>
-                            </div>
-                        </form>
+                                    {/* Show email */}
+                                    <div className="mb-6 p-3 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
+                                        <Mail className="w-4 h-4 text-white/30" />
+                                        <span className="text-sm text-white/60">{email}</span>
+                                    </div>
+
+                                    <Elements
+                                        stripe={stripePromise}
+                                        options={{
+                                            clientSecret,
+                                            appearance: stripeAppearance,
+                                            locale: "fr",
+                                        }}
+                                    >
+                                        <PaymentForm />
+                                    </Elements>
+
+                                    <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
+                                        Paiement sécurisé par Stripe. Vos données bancaires ne transitent pas par nos serveurs.
+                                    </p>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
 
                 </div>
