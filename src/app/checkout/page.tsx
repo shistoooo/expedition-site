@@ -3,17 +3,66 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, AlertCircle } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
+import { useState } from "react";
 
 const ParticlesBackground = dynamic(
     () => import("@/components/ParticlesBackground"),
     { ssr: false }
 );
 
+const WORKER_URL = "https://expedition-licensing.expedition-studio.workers.dev";
+
 export default function CheckoutPage() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleCheckout = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
+
+        try {
+            const res = await fetch(`${WORKER_URL}/auth/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Une erreur est survenue");
+            }
+
+            if (data.checkoutUrl && data.checkoutUrl.startsWith("https://checkout.stripe.com/")) {
+                window.location.href = data.checkoutUrl;
+            } else {
+                throw new Error("Impossible de créer la session de paiement");
+            }
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "";
+            if (message.includes("existe déjà") || message.includes("already exists")) {
+                setError("Un compte existe déjà avec cet email. Connectez-vous depuis le Launcher.");
+            } else if (message.includes("mot de passe") || message.includes("password")) {
+                setError(message);
+            } else if (message.includes("email") || message.includes("Email")) {
+                setError(message);
+            } else if (message.includes("Trop de tentatives")) {
+                setError(message);
+            } else {
+                setError("Une erreur est survenue. Veuillez réessayer.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-purple-500/30 overflow-x-hidden">
             <ParticlesBackground />
@@ -89,59 +138,97 @@ export default function CheckoutPage() {
                         </div>
                     </motion.div>
 
-                    {/* Right Column: Payment Dummy */}
+                    {/* Right Column: Payment Form */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
                         className="w-full lg:w-[450px]"
                     >
-                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl sticky top-32">
+                        <form onSubmit={handleCheckout} className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl sticky top-32">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-bold">Paiement Sécurisé</h2>
+                                <h2 className="text-xl font-bold">Créer votre compte</h2>
                                 <Lock className="w-4 h-4 text-white/40" />
                             </div>
 
-                            {/* Simulated Payment Form */}
-                            <div className="space-y-4 opacity-50 pointer-events-none filter blur-[1px]">
+                            <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-mono text-white/40">EMAIL</label>
-                                    <div className="h-10 bg-white/5 rounded border border-white/10" />
+                                    <label htmlFor="email" className="text-xs font-mono text-white/40 uppercase">Email</label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                            placeholder="vous@email.com"
+                                            className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-lg border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm"
+                                        />
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-mono text-white/40">CARTE BANCAIRE</label>
-                                    <div className="h-10 bg-white/5 rounded border border-white/10 flex items-center px-3 gap-2">
-                                        <CreditCard className="w-4 h-4 text-white/20" />
+                                    <label htmlFor="password" className="text-xs font-mono text-white/40 uppercase">Mot de passe</label>
+                                    <div className="relative">
+                                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                        <input
+                                            id="password"
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                            minLength={8}
+                                            placeholder="8 caractères minimum"
+                                            className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-lg border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm"
+                                        />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Overlay for "Coming Soon" or "Connect API" */}
-                            <div className="my-8 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-center">
-                                <AlertCircle className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                                <h3 className="font-bold text-yellow-200 mb-1">Mode Préparation</h3>
-                                <p className="text-xs text-yellow-200/60 leading-relaxed">
-                                    L&apos;intégration API Stripe est prête à être connectée.
-                                    Aucun débit ne sera effectué lors de ce test.
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                                >
+                                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                    {error}
+                                </motion.div>
+                            )}
+
+                            <div className="flex items-center gap-3 mt-6 p-3 rounded-xl bg-white/5 border border-white/5">
+                                <CreditCard className="w-5 h-5 text-white/30 shrink-0" />
+                                <p className="text-xs text-white/40 leading-relaxed">
+                                    Vous serez redirigé vers Stripe pour le paiement sécurisé après la création de votre compte.
                                 </p>
                             </div>
 
                             <div className="border-t border-white/10 pt-6 mt-6">
                                 <div className="flex justify-between items-center mb-4 text-lg font-bold">
                                     <span>Total à payer</span>
-                                    <span>9,99€</span>
+                                    <span>9,99€<span className="text-sm font-normal text-white/40">/mois</span></span>
                                 </div>
 
-                                <button className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-colors shadow-lg shadow-white/10 flex items-center justify-center gap-2">
-                                    <Lock className="w-4 h-4" />
-                                    Confirmer la commande
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? (
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                    ) : (
+                                        <>
+                                            <Lock className="w-4 h-4" />
+                                            Confirmer et payer
+                                        </>
+                                    )}
                                 </button>
 
                                 <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
-                                    Paiement sécurisé par Stripe (Simulation). En cliquant, vous acceptez les CGV et la politique de confidentialité d&apos;Expédition.
+                                    Paiement sécurisé par Stripe. En cliquant, vous acceptez les CGV et la politique de confidentialité d&apos;Expédition.
                                 </p>
                             </div>
-                        </div>
+                        </form>
                     </motion.div>
 
                 </div>
