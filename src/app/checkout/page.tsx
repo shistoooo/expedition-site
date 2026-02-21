@@ -301,21 +301,26 @@ function CheckoutContent() {
 
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
                             {/* Plan Toggle */}
-                            <div className="flex gap-2 p-1 rounded-xl bg-white/5 border border-white/10">
+                            <div className="relative flex p-1 rounded-xl bg-white/5 border border-white/10">
+                                <motion.div
+                                    className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-lg bg-white shadow-md"
+                                    animate={{ x: plan === "monthly" ? 0 : "calc(100% + 4px)" }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                />
                                 <button
                                     type="button"
                                     onClick={() => setPlan("monthly")}
-                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${plan === "monthly" ? "bg-white text-black shadow-md" : "text-white/50 hover:text-white/80"}`}
+                                    className={`relative z-10 flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${plan === "monthly" ? "text-black" : "text-white/50 hover:text-white/80"}`}
                                 >
                                     Mensuel
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setPlan("yearly")}
-                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all relative ${plan === "yearly" ? "bg-white text-black shadow-md" : "text-white/50 hover:text-white/80"}`}
+                                    className={`relative z-10 flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${plan === "yearly" ? "text-black" : "text-white/50 hover:text-white/80"}`}
                                 >
                                     Annuel
-                                    <span className="absolute -top-2 -right-1 px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full">-17%</span>
+                                    <span className="absolute -top-2 -right-1 px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full z-20">-17%</span>
                                 </button>
                             </div>
 
