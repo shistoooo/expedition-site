@@ -22,35 +22,75 @@ export default function CheckoutPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const redirectToCheckout = (url: string) => {
+        if (url && url.startsWith("https://checkout.stripe.com/")) {
+            window.location.href = url;
+        } else {
+            throw new Error("Impossible de créer la session de paiement");
+        }
+    };
+
     const handleCheckout = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
 
         try {
-            const res = await fetch(`${WORKER_URL}/auth/register`, {
+            // 1. Try to register (new account)
+            const registerRes = await fetch(`${WORKER_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await res.json();
+            const registerData = await registerRes.json();
 
-            if (!res.ok) {
-                throw new Error(data.error || "Une erreur est survenue");
+            if (registerRes.ok && registerData.checkoutUrl) {
+                redirectToCheckout(registerData.checkoutUrl);
+                return;
             }
 
-            if (data.checkoutUrl && data.checkoutUrl.startsWith("https://checkout.stripe.com/")) {
-                window.location.href = data.checkoutUrl;
-            } else {
+            // 2. Account already exists → login + get checkout URL
+            if (registerRes.status === 409) {
+                const loginRes = await fetch(`${WORKER_URL}/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const loginData = await loginRes.json();
+
+                if (!loginRes.ok) {
+                    throw new Error(loginData.error || "Email ou mot de passe incorrect");
+                }
+
+                // If already has active subscription, redirect to success
+                if (loginData.subscription?.status === "active" || loginData.subscription?.status === "trialing") {
+                    window.location.href = "/checkout/success";
+                    return;
+                }
+
+                // Get checkout URL via portal
+                const checkoutRes = await fetch(`${WORKER_URL}/portal/checkout?plan=monthly`, {
+                    headers: { "Authorization": `Bearer ${loginData.accessToken}` },
+                });
+
+                const checkoutData = await checkoutRes.json();
+
+                if (checkoutRes.ok && checkoutData.url) {
+                    redirectToCheckout(checkoutData.url);
+                    return;
+                }
+
                 throw new Error("Impossible de créer la session de paiement");
             }
+
+            // 3. Other registration error
+            throw new Error(registerData.error || "Une erreur est survenue");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "";
-            if (message.includes("existe déjà") || message.includes("already exists")) {
-                setError("Un compte existe déjà avec cet email. Connectez-vous depuis le Launcher.");
-            } else if (message.includes("mot de passe") || message.includes("password")) {
-                setError(message);
+            if (message.includes("mot de passe") || message.includes("incorrect")) {
+                setError("Mot de passe incorrect pour ce compte.");
             } else if (message.includes("email") || message.includes("Email")) {
                 setError(message);
             } else if (message.includes("Trop de tentatives")) {
@@ -147,7 +187,7 @@ export default function CheckoutPage() {
                     >
                         <form onSubmit={handleCheckout} className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl sticky top-32">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-bold">Créer votre compte</h2>
+                                <h2 className="text-xl font-bold">Connexion / Inscription</h2>
                                 <Lock className="w-4 h-4 text-white/40" />
                             </div>
 
@@ -199,7 +239,7 @@ export default function CheckoutPage() {
                             <div className="flex items-center gap-3 mt-6 p-3 rounded-xl bg-white/5 border border-white/5">
                                 <CreditCard className="w-5 h-5 text-white/30 shrink-0" />
                                 <p className="text-xs text-white/40 leading-relaxed">
-                                    Vous serez redirigé vers Stripe pour le paiement sécurisé après la création de votre compte.
+                                    Nouveau ? Un compte sera créé automatiquement. Déjà inscrit ? Connectez-vous pour souscrire.
                                 </p>
                             </div>
 
