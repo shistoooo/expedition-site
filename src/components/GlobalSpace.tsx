@@ -126,7 +126,7 @@ function CameraController() {
 export default function GlobalSpace() {
   const pathname = usePathname();
 
-  if (pathname === '/checkout' || pathname === '/checkout/success' || pathname === '/coin-green-screen') return null;
+  if (pathname === '/checkout' || pathname === '/checkout/success' || pathname === '/account' || pathname === '/coin-green-screen') return null;
 
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
