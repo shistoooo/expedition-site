@@ -17,8 +17,8 @@ const ParticlesBackground = dynamic(
     { ssr: false }
 );
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "";
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
 
 // Stripe Elements dark theme matching Expedition style
 const stripeAppearance = {
