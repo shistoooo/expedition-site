@@ -2,11 +2,9 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Download, Rocket, Zap, Layers, Sparkles, Terminal, Hammer, Palette, Brain, FileCheck, Languages, Youtube } from "lucide-react";
+import { Download, Rocket, Layers, Sparkles, Terminal, Hammer, Palette, Brain, FileCheck, Languages, Youtube, ArrowRight, RefreshCw, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import DownloadButtons from "@/components/DownloadButtons";
-import { useFetchVersion } from "@/hooks/useFetchVersion";
 
 const roadmapTools = [
   {
@@ -53,14 +51,25 @@ const roadmapTools = [
   }
 ];
 
+const sellingPoints = [
+  {
+    icon: RefreshCw,
+    title: "Mises à jour automatiques",
+    description: "Vos outils se mettent à jour en arrière-plan. Toujours la dernière version, sans effort."
+  },
+  {
+    icon: Layers,
+    title: "Tous vos outils, un seul endroit",
+    description: "ClipForge, TubeForge et tous les futurs outils accessibles depuis une interface unique."
+  },
+  {
+    icon: Shield,
+    title: "Licence unifiée",
+    description: "Un seul abonnement pour tout débloquer. Connectez-vous et c'est parti."
+  }
+];
+
 export default function LauncherPage() {
-  const { data: launcherData } = useFetchVersion("launcher");
-  const { data: clipforgeData } = useFetchVersion("clipforge");
-
-  const clipforgeUpdate = clipforgeData?.version && clipforgeData.version > '1.0.0'
-    ? { available: true, version: clipforgeData.version, critical: clipforgeData.critical, message: clipforgeData.message }
-    : null;
-
   return (
     <div className="min-h-screen bg-[#030304] text-white selection:bg-blue-500/30 font-sans">
       <Navbar />
@@ -96,22 +105,14 @@ export default function LauncherPage() {
                 Centralisez votre flux de production. Accédez à tous les outils Expedition, gérez vos mises à jour et découvrez les nouveautés depuis une interface unique.
               </p>
 
-              <DownloadButtons
-                macUrl={launcherData?.download_url}
-                macFallbackPath="Expedition-Launcher-Mac.zip"
-                windowsUrl={launcherData?.windows_download_url}
-                windowsFallbackPath="Expedition-Launcher-Windows.zip"
-                accentColor="blue"
-              />
-
-              <div className="mt-6 p-4 rounded-lg bg-blue-500/5 border border-blue-500/10 max-w-md">
-                <p className="text-xs text-blue-200/80 flex gap-2 items-start">
-                  <span className="mt-0.5">ℹ️</span>
-                  <span>
-                    <strong>Version 0.1.0 :</strong> Le téléchargement inclut le launcher + le script de réparation macOS. Détection automatique des mises à jour intégrée.
-                  </span>
-                </p>
-              </div>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.4)]"
+              >
+                <Rocket className="w-5 h-5" />
+                Obtenir le Launcher
+                <ArrowRight className="w-5 h-5" />
+              </Link>
             </motion.div>
 
             {/* Right Mockup - "Command Center" Style */}
@@ -159,21 +160,14 @@ export default function LauncherPage() {
                     <div className="grid grid-cols-2 gap-4">
                       {/* ClipForge Widget */}
                       <Link href="/clipforge" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-purple-500/30 transition-colors group/card cursor-pointer block relative overflow-hidden">
-                        {clipforgeUpdate?.available && (
-                          <div className="absolute top-0 right-0 px-2 py-1 bg-blue-500 text-white text-[10px] font-bold rounded-bl-xl z-10 animate-pulse">
-                            UPDATE
-                          </div>
-                        )}
                         <div className="flex justify-between items-start mb-3">
                           <div className="p-2 rounded bg-purple-500/10 text-purple-400">
                             <Sparkles className="w-4 h-4" />
                           </div>
-                          <div className={`w-2 h-2 rounded-full ${clipforgeUpdate?.available ? 'bg-blue-500 animate-ping' : 'bg-green-500'}`} />
+                          <div className="w-2 h-2 rounded-full bg-green-500" />
                         </div>
                         <h4 className="font-medium text-sm text-white/80 mb-1">ClipForge</h4>
-                        <p className={`text-xs ${clipforgeUpdate?.available ? 'text-blue-400 font-bold' : 'text-white/30'}`}>
-                          {clipforgeUpdate?.available ? `v${clipforgeUpdate.version} disponible` : 'v1.2.4 • Installed'}
-                        </p>
+                        <p className="text-xs text-white/30">v1.2.4 &bull; Installed</p>
                         <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
                           <div className="h-full w-full bg-purple-500/50" />
                         </div>
@@ -209,6 +203,28 @@ export default function LauncherPage() {
               {/* Blue Glow */}
               <div className="absolute -inset-10 bg-blue-500/10 blur-[80px] -z-10 rounded-full" />
             </motion.div>
+          </div>
+        </section>
+
+        {/* Selling Points */}
+        <section className="py-24 border-t border-white/5 bg-white/[0.01]">
+          <div className="container-main">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4">Pourquoi le Launcher ?</h2>
+              <p className="text-white/50">Un hub centralisé pour tous vos outils de création.</p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {sellingPoints.map((point, i) => (
+                <div key={i} className="p-6 rounded-2xl bg-[#0F0F12] border border-white/5 hover:border-blue-500/30 transition-colors group">
+                  <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4 text-blue-400 group-hover:scale-110 transition-transform">
+                    <point.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white/90">{point.title}</h3>
+                  <p className="text-sm text-white/50 leading-relaxed">{point.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

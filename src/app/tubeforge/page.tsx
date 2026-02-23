@@ -1,11 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Zap, Youtube, Shield, Sparkles, Terminal, Play, ListVideo, HardDrive } from "lucide-react";
+import Link from "next/link";
+import { Download, Zap, Youtube, Shield, Sparkles, Terminal, Play, ListVideo, HardDrive, Rocket, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import DownloadButtons from "@/components/DownloadButtons";
-import { useFetchVersion } from "@/hooks/useFetchVersion";
 
 const currentFeatures = [
   {
@@ -63,8 +62,6 @@ const roadmap = [
 ];
 
 export default function TubeForgePage() {
-  const { data: versionData } = useFetchVersion("tubeforge");
-
   return (
     <div className="min-h-screen bg-[#05050A] text-white selection:bg-red-500/30 font-sans">
       <Navbar />
@@ -100,19 +97,19 @@ export default function TubeForgePage() {
                 L&apos;outil ultime pour télécharger et archiver vos contenus préférés. Rapide, sécurisé et sans limite de qualité.
               </p>
 
-              <DownloadButtons
-                macUrl={versionData?.download_url}
-                macFallbackPath="TubeForge.app.zip"
-                windowsUrl={versionData?.windows_download_url}
-                windowsFallbackPath="TubeForge-Windows-Installer.zip"
-                accentColor="red"
-                showWebButton
-              />
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold text-lg transition-all shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.4)]"
+              >
+                <Rocket className="w-5 h-5" />
+                Obtenir TubeForge
+                <ArrowRight className="w-5 h-5" />
+              </Link>
 
               <div className="mt-6 flex items-center gap-4 text-xs text-white/30 font-mono">
-                <span>v{versionData?.version || '2.0.1'} Stable</span>
-                <span>•</span>
                 <span>Support 8K/60fps</span>
+                <span>&bull;</span>
+                <span>Inclus dans l&apos;abonnement</span>
               </div>
             </motion.div>
 

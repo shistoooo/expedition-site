@@ -1,11 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, Video, Scissors, Wand2, Captions, Share2, CheckCircle2, Circle, Sparkles, Terminal } from "lucide-react";
+import Link from "next/link";
+import { Zap, Video, Scissors, Wand2, Captions, Share2, CheckCircle2, Circle, Sparkles, Terminal, Rocket, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import DownloadButtons from "@/components/DownloadButtons";
-import { useFetchVersion } from "@/hooks/useFetchVersion";
 
 const currentFeatures = [
   {
@@ -74,8 +73,6 @@ const upcomingFeatures = [
 ];
 
 export default function ClipForgePage() {
-  const { data: versionData } = useFetchVersion("clipforge");
-
   return (
     <div className="min-h-screen bg-[#05050A] text-white selection:bg-purple-500/30 font-sans">
       <Navbar />
@@ -111,20 +108,19 @@ export default function ClipForgePage() {
                 Transformez vos longues vidéos en clips viraux en quelques secondes. L&apos;IA analyse, découpe et sous-titre votre contenu automatiquement.
               </p>
 
-              <DownloadButtons
-                macUrl={versionData?.download_url}
-                macFallbackPath="ClipForge.app.zip"
-                windowsUrl={versionData?.windows_download_url}
-                windowsFallbackPath="ClipForge-Windows-Installer.zip"
-                accentColor="purple"
-                showWebButton
-                webLabel="D\u00e9mo Web (Bient\u00f4t)"
-              />
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-lg transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]"
+              >
+                <Rocket className="w-5 h-5" />
+                Obtenir ClipForge
+                <ArrowRight className="w-5 h-5" />
+              </Link>
 
               <div className="mt-6 flex items-center gap-4 text-xs text-white/30 font-mono">
-                <span>v{versionData?.version || '1.2.4'} Stable</span>
-                <span>•</span>
                 <span>Windows 10/11 & macOS</span>
+                <span>&bull;</span>
+                <span>Inclus dans l&apos;abonnement</span>
               </div>
             </motion.div>
 

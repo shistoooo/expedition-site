@@ -1,9 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle2, Download, ArrowRight } from "lucide-react";
+import { CheckCircle2, Download, Apple, Monitor } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
@@ -47,29 +46,36 @@ export default function CheckoutSuccessPage() {
                     </p>
 
                     <div className="p-6 rounded-2xl bg-white/5 border border-white/10 mb-8 text-left">
-                        <h3 className="font-bold text-white mb-4">Prochaine étape :</h3>
-                        <div className="flex items-start gap-4">
-                            <div className="p-3 rounded-xl bg-purple-500/20 shrink-0">
-                                <Download className="w-6 h-6 text-purple-400" />
-                            </div>
-                            <div>
-                                <p className="text-white/80 font-medium mb-1">Téléchargez le Launcher</p>
-                                <p className="text-white/50 text-sm">
-                                    Connectez-vous avec l&apos;email et le mot de passe que vous venez de créer pour accéder à tous vos outils.
-                                </p>
-                            </div>
+                        <h3 className="font-bold text-white mb-4">Prochaine étape : Installer le Launcher</h3>
+                        <p className="text-white/50 text-sm mb-6">
+                            Connectez-vous avec l&apos;email et le mot de passe que vous venez de créer pour accéder à tous vos outils.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <a
+                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.command"
+                                download
+                                className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+                            >
+                                <Apple className="w-5 h-5" />
+                                Mac
+                            </a>
+                            <a
+                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"
+                                download
+                                className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
+                            >
+                                <Monitor className="w-5 h-5" />
+                                Windows
+                            </a>
                         </div>
+
+                        <p className="text-white/30 text-xs mt-4">
+                            Mac : double-cliquez sur le fichier téléchargé pour lancer l&apos;installation automatique.
+                        </p>
                     </div>
 
-                    <Link
-                        href="/launcher"
-                        className="inline-flex items-center gap-2 py-4 px-8 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10"
-                    >
-                        Télécharger le Launcher
-                        <ArrowRight className="w-5 h-5" />
-                    </Link>
-
-                    <p className="text-white/30 text-xs mt-6">
+                    <p className="text-white/30 text-xs">
                         Un email de confirmation vous a été envoyé par Stripe.
                     </p>
                 </motion.div>

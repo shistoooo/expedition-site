@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
-    CreditCard, Calendar, Shield, XCircle, RotateCcw, CheckCircle2, LogOut
+    CreditCard, Calendar, Shield, XCircle, RotateCcw, CheckCircle2, LogOut, Download, Apple, Monitor
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -265,6 +265,37 @@ export default function AccountPage() {
                                         {email}
                                     </div>
                                 </div>
+
+                                {/* Download Section */}
+                                {subscription && subscription.status !== "canceled" && (
+                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                        <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
+                                            <Download className="w-5 h-5 text-blue-400" />
+                                            T&eacute;l&eacute;chargements
+                                        </h2>
+                                        <div className="flex flex-col sm:flex-row gap-3">
+                                            <a
+                                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.command"
+                                                download
+                                                className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+                                            >
+                                                <Apple className="w-5 h-5" />
+                                                Launcher Mac
+                                            </a>
+                                            <a
+                                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"
+                                                download
+                                                className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
+                                            >
+                                                <Monitor className="w-5 h-5" />
+                                                Launcher Windows
+                                            </a>
+                                        </div>
+                                        <p className="text-white/30 text-xs mt-4">
+                                            Mac : double-cliquez sur le fichier t&eacute;l&eacute;charg&eacute; pour lancer l&apos;installation automatique.
+                                        </p>
+                                    </div>
+                                )}
 
                                 {/* Subscription Card */}
                                 {subscription ? (
