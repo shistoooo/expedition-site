@@ -17,7 +17,7 @@ const ParticlesBackground = dynamic(
     { ssr: false }
 );
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL!;
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "";
 
 type AccountStep = "login" | "dashboard";
 

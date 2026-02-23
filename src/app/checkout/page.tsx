@@ -17,8 +17,8 @@ const ParticlesBackground = dynamic(
     { ssr: false }
 );
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL!;
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "";
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
 
 // Stripe Elements dark theme matching Expedition style
 const stripeAppearance = {
