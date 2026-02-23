@@ -24,9 +24,8 @@ const securityHeaders = [
   },
 ];
 
-console.log("[BUILD] NEXT_PUBLIC_WORKER_URL =", process.env.NEXT_PUBLIC_WORKER_URL ? "SET" : "MISSING");
-console.log("[BUILD] NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY =", process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ? "SET" : "MISSING");
-console.log("[BUILD] NEXT_PUBLIC_R2_BUCKET_URL =", process.env.NEXT_PUBLIC_R2_BUCKET_URL ? "SET" : "MISSING");
+console.log("[BUILD] WORKER_URL value:", JSON.stringify(process.env.NEXT_PUBLIC_WORKER_URL));
+console.log("[BUILD] R2_URL value:", JSON.stringify(process.env.NEXT_PUBLIC_R2_BUCKET_URL));
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
