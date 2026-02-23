@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Download, Rocket, Layers, Sparkles, Terminal, Hammer, Palette, Brain, FileCheck, Languages, Youtube, ArrowRight, RefreshCw, Shield } from "lucide-react";
+import { Download, Rocket, Layers, Sparkles, Terminal, Hammer, Palette, Brain, FileCheck, Languages, Youtube, ArrowRight, RefreshCw, Shield, Scissors, Captions, Video, Wand2, Zap, ListVideo, Search, FolderOpen } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -224,6 +224,92 @@ export default function LauncherPage() {
                   <p className="text-sm text-white/50 leading-relaxed">{point.description}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Available Tools */}
+        <section className="py-24 border-t border-white/5">
+          <div className="container-main">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4">Disponible maintenant</h2>
+              <p className="text-white/50">Deux outils inclus dans votre abonnement, accessibles depuis le Launcher.</p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+
+              {/* ClipForge Card */}
+              <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/5 hover:border-purple-500/20 transition-colors group">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold">ClipForge</h3>
+                    <p className="text-sm text-purple-400/80">Clips verticaux en quelques clics</p>
+                  </div>
+                </div>
+
+                <p className="text-white/50 text-sm mb-6 leading-relaxed">
+                  Transformez vos vidéos longues en clips courts prêts pour TikTok, Shorts et Reels.
+                  Collez un lien YouTube ou importez un fichier, l&apos;IA fait le reste.
+                </p>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: Wand2, text: "Détection des moments clés par IA" },
+                    { icon: Scissors, text: "Recadrage auto 16:9 vers 9:16" },
+                    { icon: Captions, text: "Sous-titres générés et stylisés" },
+                    { icon: Video, text: "Export MP4 vertical optimisé" },
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-white/[0.03]">
+                      <feature.icon className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                      <span className="text-xs text-white/60">{feature.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link href="/clipforge" className="mt-6 inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                  En savoir plus <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              {/* TubeForge Card */}
+              <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/5 hover:border-red-500/20 transition-colors group">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform">
+                    <Download className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold">TubeForge</h3>
+                    <p className="text-sm text-red-400/80">Téléchargement & archivage</p>
+                  </div>
+                </div>
+
+                <p className="text-white/50 text-sm mb-6 leading-relaxed">
+                  Téléchargez des vidéos et de l&apos;audio depuis YouTube en haute qualité.
+                  Vidéo unique, playlists, ou recherche directe avec téléchargement par lot.
+                </p>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: Zap, text: "Téléchargement multithread rapide" },
+                    { icon: ListVideo, text: "Playlists et batch download" },
+                    { icon: Search, text: "Recherche YouTube intégrée" },
+                    { icon: FolderOpen, text: "Bibliothèque locale avec dossiers" },
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-white/[0.03]">
+                      <feature.icon className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                      <span className="text-xs text-white/60">{feature.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link href="/tubeforge" className="mt-6 inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors">
+                  En savoir plus <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
             </div>
           </div>
         </section>
