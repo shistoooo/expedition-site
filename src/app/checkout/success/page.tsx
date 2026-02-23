@@ -53,7 +53,7 @@ export default function CheckoutSuccessPage() {
 
                         <div className="flex flex-col sm:flex-row gap-3">
                             <a
-                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.command"
+                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.zip"
                                 download
                                 className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
                             >
