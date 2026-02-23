@@ -34,14 +34,14 @@ const waves = [
   {
     id: "wave-beta",
     name: "Vague Bêta",
-    date: "20 Février 2024",
+    date: "Mars 2026",
     status: "upcoming",
     spots: "Candidatures ouvertes",
   },
   {
     id: "wave-gamma",
     name: "Vague Gamma",
-    date: "20 Avril 2024",
+    date: "Mai 2026",
     status: "future",
     spots: "Bientôt",
   },
@@ -64,7 +64,7 @@ export default function ExpeditionPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium mb-8 backdrop-blur-md">
               <Rocket className="w-4 h-4 animate-pulse" />
-              <span>Prochain décollage : 20 Février</span>
+              <span>Prochain décollage : Mars 2026</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">

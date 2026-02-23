@@ -69,7 +69,7 @@ export default function DiscordSection() {
           </div>
 
           <motion.a
-            href="https://dsc.gg/expedition"
+            href={process.env.NEXT_PUBLIC_DISCORD_URL}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}

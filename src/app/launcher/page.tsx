@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Download, Rocket, Zap, Layers, Globe, Cpu, Sparkles, Command, Terminal, ChevronRight, Lock, Hammer, Palette, Brain, Shield, Star, MessageCircle, FileCheck, Languages, Youtube } from "lucide-react";
+import { Download, Rocket, Zap, Layers, Sparkles, Terminal, Hammer, Palette, Brain, FileCheck, Languages, Youtube } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useState, useEffect } from "react";
+import DownloadButtons from "@/components/DownloadButtons";
+import { useFetchVersion } from "@/hooks/useFetchVersion";
 
 const roadmapTools = [
   {
@@ -53,40 +54,12 @@ const roadmapTools = [
 ];
 
 export default function LauncherPage() {
-  const [updates, setUpdates] = useState<Record<string, { version: string; critical: boolean; message: string; download_url?: string; windows_download_url?: string }>>({});
+  const { data: launcherData } = useFetchVersion("launcher");
+  const { data: clipforgeData } = useFetchVersion("clipforge");
 
-  useEffect(() => {
-    const checkUpdates = async () => {
-      try {
-        const response = await fetch('https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/version.json', {
-          cache: 'no-store'
-        });
-        const data = await response.json();
-        setUpdates(data);
-      } catch (err) {
-        console.error("Failed to check for updates:", err);
-      }
-    };
-    checkUpdates();
-  }, []);
-
-  const getUpdateStatus = (appKey: string, currentVersion: string) => {
-    const remote = updates[appKey];
-    if (!remote) return null;
-
-    // Simple string comparison for now, assuming semantic versioning format
-    if (remote.version > currentVersion) {
-      return {
-        available: true,
-        version: remote.version,
-        critical: remote.critical,
-        message: remote.message
-      };
-    }
-    return null;
-  };
-
-  const clipforgeUpdate = getUpdateStatus('clipforge', '1.0.0');
+  const clipforgeUpdate = clipforgeData?.version && clipforgeData.version > '1.0.0'
+    ? { available: true, version: clipforgeData.version, critical: clipforgeData.critical, message: clipforgeData.message }
+    : null;
 
   return (
     <div className="min-h-screen bg-[#030304] text-white selection:bg-blue-500/30 font-sans">
@@ -123,29 +96,13 @@ export default function LauncherPage() {
                 Centralisez votre flux de production. Accédez à tous les outils Expedition, gérez vos mises à jour et découvrez les nouveautés depuis une interface unique.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <motion.a
-                  href={updates.launcher?.download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Mac.zip"}
-                  download
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Télécharger (Mac)</span>
-                </motion.a>
-
-                <motion.a
-                  href={updates.launcher?.windows_download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"}
-                  download
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-3 transition-all"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Télécharger (Windows)</span>
-                </motion.a>
-              </div>
+              <DownloadButtons
+                macUrl={launcherData?.download_url}
+                macFallbackPath="Expedition-Launcher-Mac.zip"
+                windowsUrl={launcherData?.windows_download_url}
+                windowsFallbackPath="Expedition-Launcher-Windows.zip"
+                accentColor="blue"
+              />
 
               <div className="mt-6 p-4 rounded-lg bg-blue-500/5 border border-blue-500/10 max-w-md">
                 <p className="text-xs text-blue-200/80 flex gap-2 items-start">

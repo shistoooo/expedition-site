@@ -17,8 +17,8 @@ const ParticlesBackground = dynamic(
     { ssr: false }
 );
 
-const WORKER_URL = "https://expedition-licensing.expedition-studio.workers.dev";
-const stripePromise = loadStripe("pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL!;
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 // Stripe Elements dark theme matching Expedition style
 const stripeAppearance = {
@@ -187,6 +187,18 @@ function CheckoutContent() {
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+
+        // Input validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Veuillez entrer une adresse email valide.");
+            return;
+        }
+        if (password.length < 8) {
+            setError("Le mot de passe doit contenir au moins 8 caractères.");
+            return;
+        }
+
         setLoading(true);
 
         try {

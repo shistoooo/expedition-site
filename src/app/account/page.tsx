@@ -17,7 +17,7 @@ const ParticlesBackground = dynamic(
     { ssr: false }
 );
 
-const WORKER_URL = "https://expedition-licensing.expedition-studio.workers.dev";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL!;
 
 type AccountStep = "login" | "dashboard";
 
@@ -78,6 +78,7 @@ export default function AccountPage() {
 
     const handleCancel = async () => {
         if (!accessToken) return;
+        if (!window.confirm("Êtes-vous sûr de vouloir annuler votre abonnement ? Vous conserverez l'accès jusqu'à la fin de la période en cours.")) return;
         setActionLoading(true);
         setError(null);
         setSuccessMessage(null);

@@ -59,7 +59,7 @@ export default function Hero() {
             <ArrowRight className="w-5 h-5" />
           </Link>
           <Link
-            href="https://discord.gg/expedition"
+            href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL || "https://discord.gg/expedition"}
             target="_blank"
             className="px-8 py-4 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold transition-all backdrop-blur-sm"
           >

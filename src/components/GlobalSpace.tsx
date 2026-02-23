@@ -126,7 +126,8 @@ function CameraController() {
 export default function GlobalSpace() {
   const pathname = usePathname();
 
-  if (pathname === '/checkout' || pathname === '/checkout/success' || pathname === '/account' || pathname === '/coin-green-screen') return null;
+  const EXCLUDED_ROUTES = ['/checkout', '/checkout/success', '/account', '/coin-green-screen', '/avatar-editor'];
+  if (EXCLUDED_ROUTES.includes(pathname)) return null;
 
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-0">

@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Rocket, Zap, Layers, Video, Scissors, Wand2, Captions, Share2, Clock, CheckCircle2, Circle, Monitor, Sparkles, Terminal } from "lucide-react";
+import { Zap, Video, Scissors, Wand2, Captions, Share2, CheckCircle2, Circle, Sparkles, Terminal } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useState, useEffect } from "react";
+import DownloadButtons from "@/components/DownloadButtons";
+import { useFetchVersion } from "@/hooks/useFetchVersion";
 
 const currentFeatures = [
   {
@@ -73,22 +74,7 @@ const upcomingFeatures = [
 ];
 
 export default function ClipForgePage() {
-  const [versionData, setVersionData] = useState<{ download_url?: string; windows_download_url?: string; version?: string } | null>(null);
-
-  useEffect(() => {
-    const fetchVersion = async () => {
-      try {
-        const response = await fetch('https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/version.json', {
-          cache: 'no-store'
-        });
-        const data = await response.json();
-        setVersionData(data.clipforge);
-      } catch (err) {
-        console.error('Failed to fetch version:', err);
-      }
-    };
-    fetchVersion();
-  }, []);
+  const { data: versionData } = useFetchVersion("clipforge");
 
   return (
     <div className="min-h-screen bg-[#05050A] text-white selection:bg-purple-500/30 font-sans">
@@ -125,34 +111,15 @@ export default function ClipForgePage() {
                 Transformez vos longues vidéos en clips viraux en quelques secondes. L&apos;IA analyse, découpe et sous-titre votre contenu automatiquement.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <motion.a
-                  href={versionData?.download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge.app.zip"}
-                  download
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group px-8 py-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)]"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Mac</span>
-                </motion.a>
-
-                <motion.a
-                  href={versionData?.windows_download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge-Windows-Installer.zip"}
-                  download
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-lg flex items-center justify-center gap-3 transition-all"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Windows</span>
-                </motion.a>
-
-                <button className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 font-medium flex items-center justify-center gap-3 cursor-not-allowed">
-                  <Monitor className="w-5 h-5" />
-                  <span>Démo Web (Bientôt)</span>
-                </button>
-              </div>
+              <DownloadButtons
+                macUrl={versionData?.download_url}
+                macFallbackPath="ClipForge.app.zip"
+                windowsUrl={versionData?.windows_download_url}
+                windowsFallbackPath="ClipForge-Windows-Installer.zip"
+                accentColor="purple"
+                showWebButton
+                webLabel="D\u00e9mo Web (Bient\u00f4t)"
+              />
 
               <div className="mt-6 flex items-center gap-4 text-xs text-white/30 font-mono">
                 <span>v{versionData?.version || '1.2.4'} Stable</span>

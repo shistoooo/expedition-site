@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, Suspense } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment, ContactShadows } from "@react-three/drei";
 import { motion } from "framer-motion";
@@ -24,6 +24,45 @@ const features = [
     description: "Une économie circulaire où votre temps et vos compétences sont les seules valeurs. Pas d'euros, juste du talent."
   }
 ];
+
+function CoinCanvas() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0, scale: 0.8 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      className="h-[500px] w-full relative"
+    >
+      {isVisible && (
+        <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+          <Suspense fallback={null}>
+            <Environment preset="city" />
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffd700" />
+            <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff8c00" />
+            <ExpeditionCoin />
+            <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
+          </Suspense>
+        </Canvas>
+      )}
+    </motion.div>
+  );
+}
 
 export default function MoneySection() {
   return (
@@ -88,32 +127,8 @@ export default function MoneySection() {
             </div>
           </motion.div>
 
-          {/* 3D Visual */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="h-[500px] w-full relative"
-          >
-            <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
-              <Suspense fallback={null}>
-                <Environment preset="city" />
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffd700" />
-                <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff8c00" />
-
-                <ExpeditionCoin />
-
-                <ContactShadows
-                  position={[0, -2, 0]}
-                  opacity={0.4}
-                  scale={10}
-                  blur={2.5}
-                  far={4}
-                />
-              </Suspense>
-            </Canvas>
-          </motion.div>
+          {/* 3D Visual - Only renders when visible */}
+          <CoinCanvas />
 
         </div>
       </div>

@@ -1,33 +1,30 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Text, Float } from "@react-three/drei";
 import * as THREE from "three";
 
 export default function ExpeditionCoin() {
   const meshRef = useRef<THREE.Group>(null);
-  
-  // Rotation animation
+
   useFrame((state) => {
     if (meshRef.current) {
-      // Steady rotation on Y axis to show 3D depth
       meshRef.current.rotation.y = state.clock.elapsedTime * 0.5;
     }
   });
 
-  // Shared materials
-  const goldMaterial = new THREE.MeshStandardMaterial({
+  const goldMaterial = useMemo(() => new THREE.MeshStandardMaterial({
     color: "#FFD700",
     metalness: 0.9,
     roughness: 0.15,
-  });
+  }), []);
 
-  const edgeMaterial = new THREE.MeshStandardMaterial({
-    color: "#DAA520", // Slightly darker for contrast
+  const edgeMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+    color: "#DAA520",
     metalness: 0.8,
     roughness: 0.3,
-  });
+  }), []);
 
   return (
     <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>

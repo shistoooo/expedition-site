@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Rocket, Zap, Layers, Monitor, Youtube, Shield, Sparkles, Terminal, Clock, Play, ListVideo, HardDrive } from "lucide-react";
+import { Download, Zap, Youtube, Shield, Sparkles, Terminal, Play, ListVideo, HardDrive } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useState, useEffect } from "react";
+import DownloadButtons from "@/components/DownloadButtons";
+import { useFetchVersion } from "@/hooks/useFetchVersion";
 
 const currentFeatures = [
   {
@@ -62,22 +63,7 @@ const roadmap = [
 ];
 
 export default function TubeForgePage() {
-  const [versionData, setVersionData] = useState<{ download_url?: string; windows_download_url?: string; version?: string } | null>(null);
-
-  useEffect(() => {
-    const fetchVersion = async () => {
-      try {
-        const response = await fetch('https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/version.json', {
-          cache: 'no-store'
-        });
-        const data = await response.json();
-        setVersionData(data.tubeforge);
-      } catch (err) {
-        console.error('Failed to fetch version:', err);
-      }
-    };
-    fetchVersion();
-  }, []);
+  const { data: versionData } = useFetchVersion("tubeforge");
 
   return (
     <div className="min-h-screen bg-[#05050A] text-white selection:bg-red-500/30 font-sans">
@@ -114,34 +100,14 @@ export default function TubeForgePage() {
                 L&apos;outil ultime pour télécharger et archiver vos contenus préférés. Rapide, sécurisé et sans limite de qualité.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <motion.a
-                  href={versionData?.download_url || "#"}
-                  download
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-[0_0_20px_rgba(239,68,68,0.3)]"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Mac</span>
-                </motion.a>
-
-                <motion.a
-                  href={versionData?.windows_download_url || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/TubeForge-Windows-Installer.zip"}
-                  download
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-3 transition-all"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Windows</span>
-                </motion.a>
-
-                <button className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 font-medium flex items-center justify-center gap-3 cursor-not-allowed">
-                  <Monitor className="w-5 h-5" />
-                  <span>Version Web (Bientôt)</span>
-                </button>
-              </div>
+              <DownloadButtons
+                macUrl={versionData?.download_url}
+                macFallbackPath="TubeForge.app.zip"
+                windowsUrl={versionData?.windows_download_url}
+                windowsFallbackPath="TubeForge-Windows-Installer.zip"
+                accentColor="red"
+                showWebButton
+              />
 
               <div className="mt-6 flex items-center gap-4 text-xs text-white/30 font-mono">
                 <span>v{versionData?.version || '2.0.1'} Stable</span>
