@@ -65,10 +65,10 @@ export default function TubeForgeSection() {
                         </ul>
 
                         <Link
-                            href="/tubeforge"
+                            href="/pricing"
                             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg shadow-white/10"
                         >
-                            Télécharger Gratuitement <ArrowRight className="w-5 h-5" />
+                            Obtenir TubeForge <ArrowRight className="w-5 h-5" />
                         </Link>
                     </div>
 

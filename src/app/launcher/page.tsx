@@ -159,7 +159,7 @@ export default function LauncherPage() {
                     {/* App Grid */}
                     <div className="grid grid-cols-2 gap-4">
                       {/* ClipForge Widget */}
-                      <Link href="/clipforge" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-purple-500/30 transition-colors group/card cursor-pointer block relative overflow-hidden">
+                      <Link href="/pricing" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-purple-500/30 transition-colors group/card cursor-pointer block relative overflow-hidden">
                         <div className="flex justify-between items-start mb-3">
                           <div className="p-2 rounded bg-purple-500/10 text-purple-400">
                             <Sparkles className="w-4 h-4" />
@@ -174,7 +174,7 @@ export default function LauncherPage() {
                       </Link>
 
                       {/* TubeForge Widget */}
-                      <Link href="/tubeforge" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-red-500/30 transition-colors group/card cursor-pointer block">
+                      <Link href="/pricing" className="p-4 rounded-xl bg-[#16181D] border border-white/5 hover:border-red-500/30 transition-colors group/card cursor-pointer block">
                         <div className="flex justify-between items-start mb-3">
                           <div className="p-2 rounded bg-red-500/10 text-red-400">
                             <Download className="w-4 h-4" />
@@ -269,7 +269,7 @@ export default function LauncherPage() {
                   ))}
                 </div>
 
-                <Link href="/clipforge" className="mt-6 inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                <Link href="/pricing" className="mt-6 inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors">
                   En savoir plus <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -305,7 +305,7 @@ export default function LauncherPage() {
                   ))}
                 </div>
 
-                <Link href="/tubeforge" className="mt-6 inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors">
+                <Link href="/pricing" className="mt-6 inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors">
                   En savoir plus <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>

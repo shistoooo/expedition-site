@@ -19,7 +19,7 @@ const tools = [
     title: "ClipForge",
     description: "Transformez vos vidéos longues en formats courts (TikTok, Shorts) grâce à l'IA.",
     icon: Wand2,
-    href: "/clipforge",
+    href: "/launcher",
     color: "from-purple-500 to-pink-500",
     status: "Disponible"
   },
@@ -28,7 +28,7 @@ const tools = [
     title: "TubeForge",
     description: "Téléchargez des vidéos YouTube en haute qualité pour vos montages.",
     icon: Download,
-    href: "/tubeforge",
+    href: "/launcher",
     color: "from-red-500 to-orange-500",
     status: "Nouveau"
   }

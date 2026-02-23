@@ -71,7 +71,7 @@ export default function ToolsSection() {
             </ul>
 
             <a
-              href="/clipforge"
+              href="/launcher"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg shadow-white/10"
             >
               En savoir plus <ArrowRight className="w-5 h-5" />
