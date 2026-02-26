@@ -1,9 +1,8 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, PerspectiveCamera, Stars, Sparkles } from "@react-three/drei";
-import { Suspense, useRef, useEffect, useState } from "react";
-import RocketModel from "@/components/3d/RocketModel";
+import { PerspectiveCamera, Stars, Sparkles } from "@react-three/drei";
+import { Suspense, useEffect, useState } from "react";
 import WarpStars from "@/components/3d/WarpStars";
 import { useFlightStore } from "@/stores/useFlightStore";
 import * as THREE from "three";
@@ -24,9 +23,6 @@ function CameraController() {
   const phase = useFlightStore((state) => state.phase);
   const pathname = usePathname();
   const setPhase = useFlightStore((state) => state.setPhase);
-
-  // Ref for camera lag smoothing
-  const vec = new THREE.Vector3();
 
   // Reset phase when arriving at destination or direct access
   useEffect(() => {
@@ -95,22 +91,6 @@ function CameraController() {
       }
     }
 
-    // --- LAUNCHING: Camera Lag & Shake ---
-    else if (phase === 'launching') {
-      // Shake (High frequency noise)
-      const shake = 0.08;
-      state.camera.position.x += (Math.random() - 0.5) * shake;
-      state.camera.position.y += (Math.random() - 0.5) * shake;
-
-      // Pull back with HEAVY lag
-      // We want the rocket to feel like it's leaving the camera behind
-      const targetLag = new THREE.Vector3(0, -3, 14);
-      dampVec(state.camera.position, targetLag, 0.8); // Very slow follow = heavy weight
-
-      // Look slight up at the rocket
-      state.camera.rotation.x = damp(state.camera.rotation.x, 0.2, 1);
-    }
-
     // --- WARPING: Intense Speed Effect ---
     else if (phase === 'warping') {
       // Violent Shake
@@ -159,15 +139,11 @@ export default function GlobalSpace() {
         performance={{ min: 0.5 }}
       >
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        <Environment preset="city" />
 
         <Suspense fallback={null}>
           <Stars radius={300} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
           <Sparkles count={500} scale={20} size={4} speed={0.4} opacity={0.5} color="#8b5cf6" />
           <WarpStars />
-          <RocketModel />
         </Suspense>
 
         <CameraController />

@@ -12,14 +12,12 @@ describe('useFlightStore', () => {
 
   it('should update phase', () => {
     const { setPhase } = useFlightStore.getState();
-    setPhase('launching');
-    expect(useFlightStore.getState().phase).toBe('launching');
+    setPhase('warping');
+    expect(useFlightStore.getState().phase).toBe('warping');
   });
 
   it('should transition through phases', () => {
     const { setPhase } = useFlightStore.getState();
-    setPhase('launching');
-    expect(useFlightStore.getState().phase).toBe('launching');
     setPhase('warping');
     expect(useFlightStore.getState().phase).toBe('warping');
     setPhase('orbit');

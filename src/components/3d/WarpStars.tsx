@@ -48,7 +48,6 @@ export default function WarpStars() {
 
     // Determine speed based on phase
     let speed = 0.05; // Base idle speed
-    if (phase === 'launching') speed = 0.5;
     if (phase === 'warping') speed = 4.0; // HYPERDRIVE
     if (phase === 'orbit') speed = 0.5; // High speed cruise
 

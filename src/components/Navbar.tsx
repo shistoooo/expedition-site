@@ -23,14 +23,10 @@ export default function Navbar() {
 
   const handleExpeditionClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setPhase('launching');
-    
+    setPhase('warping');
     setTimeout(() => {
-      setPhase('warping');
-      setTimeout(() => {
-        router.push('/expedition');
-      }, 1500);
-    }, 1000);
+      router.push('/expedition');
+    }, 2000);
   };
 
   const navItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [

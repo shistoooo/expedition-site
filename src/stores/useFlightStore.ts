@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type FlightState = 'idle' | 'launching' | 'warping' | 'orbit';
+type FlightState = 'idle' | 'warping' | 'orbit';
 
 interface FlightStore {
   phase: FlightState;
