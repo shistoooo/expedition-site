@@ -2,12 +2,23 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, PerspectiveCamera, Stars, Sparkles } from "@react-three/drei";
-import { Suspense, useRef, useEffect } from "react";
+import { Suspense, useRef, useEffect, useState } from "react";
 import RocketModel from "@/components/3d/RocketModel";
 import WarpStars from "@/components/3d/WarpStars";
 import { useFlightStore } from "@/stores/useFlightStore";
 import * as THREE from "three";
 import { usePathname } from "next/navigation";
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isDesktop;
+}
 
 function CameraController() {
   const phase = useFlightStore((state) => state.phase);
@@ -125,9 +136,20 @@ function CameraController() {
 
 export default function GlobalSpace() {
   const pathname = usePathname();
+  const isDesktop = useIsDesktop();
 
   const EXCLUDED_ROUTES = ['/checkout', '/checkout/success', '/account', '/coin-green-screen', '/avatar-editor'];
   if (EXCLUDED_ROUTES.includes(pathname)) return null;
+
+  // Mobile: lightweight static background instead of 3D canvas
+  if (!isDesktop) {
+    return (
+      <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.08)_0%,transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(139,92,246,0.05)_0%,transparent_50%)]" />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
@@ -145,17 +167,12 @@ export default function GlobalSpace() {
           <Stars radius={300} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
           <Sparkles count={500} scale={20} size={4} speed={0.4} opacity={0.5} color="#8b5cf6" />
           <WarpStars />
-
-          {/* We only show the rocket here if we want it persistent. 
-              Ideally, the rocket is always there but moves position?
-              Let's keep it simple: Rocket is always part of the global background now. 
-          */}
           <RocketModel />
         </Suspense>
 
         <CameraController />
       </Canvas>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0a]/20 to-[#0a0a0a] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#06051a]/20 to-[#06051a] pointer-events-none" />
     </div>
   );
 }
