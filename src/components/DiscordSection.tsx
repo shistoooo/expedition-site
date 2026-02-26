@@ -12,10 +12,6 @@ const stats = [
 export default function DiscordSection() {
   return (
     <section id="discord" className="py-24 md:py-32 relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(800px,100vw)] h-[min(800px,100vw)] bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 rounded-full blur-3xl opacity-30" />
-      </div>
-
       <div className="container-main relative max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -74,7 +70,7 @@ export default function DiscordSection() {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#5865F2] hover:bg-[#4752C4] transition-all font-semibold text-lg shadow-lg shadow-[#5865F2]/25 relative z-10 mt-4"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] transition-all font-bold text-lg shadow-lg shadow-[#5865F2]/25 relative z-10 mt-4"
           >
             <svg
               className="w-6 h-6"

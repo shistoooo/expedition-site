@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -11,11 +10,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
 import { useState } from "react";
-
-const ParticlesBackground = dynamic(
-    () => import("@/components/ParticlesBackground"),
-    { ssr: false }
-);
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
 
@@ -168,7 +162,6 @@ export default function AccountPage() {
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-purple-500/30 overflow-x-hidden">
-            <ParticlesBackground />
             <CursorGlow />
             <Navbar />
 

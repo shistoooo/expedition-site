@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check } from "lucide-react";
@@ -11,11 +10,6 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-
-const ParticlesBackground = dynamic(
-    () => import("@/components/ParticlesBackground"),
-    { ssr: false }
-);
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
@@ -289,7 +283,6 @@ function CheckoutContent() {
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-purple-500/30 overflow-x-hidden">
-            <ParticlesBackground />
             <CursorGlow />
             <Navbar />
 

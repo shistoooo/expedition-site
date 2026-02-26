@@ -7,12 +7,6 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <section className="pt-32 pb-40 md:pt-48 md:pb-56 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] opacity-30" />
-        <div className="absolute top-40 right-10 w-72 h-72 bg-secondary/20 rounded-full blur-[100px] opacity-30" />
-      </div>
-
       <div className="container-main flex flex-col items-center text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -52,16 +46,16 @@ export default function Hero() {
           className="flex flex-col sm:flex-row items-center gap-4"
         >
           <Link
-            href="#clipforge"
-            className="px-8 py-4 rounded-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-semibold transition-all flex items-center gap-2 shadow-lg shadow-primary/25"
+            href="/pricing"
+            className="px-8 py-4 rounded-xl bg-white text-black font-bold transition-all flex items-center gap-2 shadow-lg shadow-white/10 hover:bg-gray-100"
           >
-            Découvrir les outils
+            Voir les tarifs
             <ArrowRight className="w-5 h-5" />
           </Link>
           <Link
             href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL || "https://discord.gg/expedition"}
             target="_blank"
-            className="px-8 py-4 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold transition-all backdrop-blur-sm"
+            className="px-8 py-4 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold transition-all backdrop-blur-sm"
           >
             Rejoindre Discord
           </Link>

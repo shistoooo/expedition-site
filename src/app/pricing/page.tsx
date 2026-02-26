@@ -1,17 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import CursorGlow from "@/components/CursorGlow";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Check, Lock, Calendar, AlertCircle, Rocket, Zap, Download, Layers, Sparkles, Terminal } from "lucide-react";
-
-const ParticlesBackground = dynamic(
-  () => import("@/components/ParticlesBackground"),
-  { ssr: false }
-);
 
 const includedTools = [
   {
@@ -95,7 +89,7 @@ export default function PricingPage() {
 
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative bg-[#0a0a0a] text-white">
-      <ParticlesBackground />
+
       <CursorGlow />
       <Navbar />
 

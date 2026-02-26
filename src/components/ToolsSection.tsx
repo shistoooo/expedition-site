@@ -72,7 +72,7 @@ export default function ToolsSection() {
 
             <a
               href="/launcher"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg shadow-white/10"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg shadow-white/10"
             >
               En savoir plus <ArrowRight className="w-5 h-5" />
             </a>
@@ -80,7 +80,7 @@ export default function ToolsSection() {
 
           {/* Côté Visuel / Mockup */}
           <div className="flex-1 w-full relative">
-            <div className="absolute -inset-10 bg-gradient-to-tr from-purple-500/20 via-blue-500/20 to-pink-500/20 blur-3xl rounded-full opacity-50" />
+            <div className="absolute -inset-10 bg-purple-500/10 blur-3xl rounded-full opacity-50" />
             <div className="relative glass rounded-2xl border border-white/5 p-2 shadow-2xl">
               <div className="aspect-video bg-[#0a0a0a] rounded-xl overflow-hidden relative border border-white/5 flex items-center justify-center group">
                 {/* Simulation d'interface */}

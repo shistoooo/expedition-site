@@ -9,59 +9,55 @@ const upcomingTools = [
     name: "TimeTracker",
     description: "Système de suivi du temps de travail pour monteurs et graphistes. Visibilité en temps réel sur les heures travaillées et calcul automatique de la facturation horaire.",
     status: "En conception",
-    color: "from-indigo-500 to-blue-500",
+    color: "from-violet-500 to-purple-500",
   },
   {
     icon: MessageSquare,
     name: "ReviewForge",
     description: "Plateforme de révision vidéo collaborative. Hébergez vos maquettes sur YouTube (non répertorié) et ajoutez des retours précis par timecode pour vos monteurs.",
     status: "En conception",
-    color: "from-orange-500 to-amber-500",
+    color: "from-violet-500 to-purple-500",
   },
   {
     icon: FileCheck,
     name: "Correction de Sous-titres",
     description: "Importez vos .srt : l'IA corrige l'orthographe et reformule les phrases mal comprises.",
     status: "Bientôt disponible",
-    color: "from-green-500 to-emerald-500",
+    color: "from-violet-500 to-purple-500",
   },
   {
     icon: Brain,
     name: "Optimiseur de Titres",
     description: "Analyse vos titres via des leviers psychologiques et compare avec les meilleures vidéos de votre niche pour optimiser l'impact.",
     status: "En conception",
-    color: "from-violet-500 to-fuchsia-500",
+    color: "from-violet-500 to-purple-500",
   },
   {
     icon: Languages,
     name: "TikTok Repurpose",
     description: "Importez des TikToks, traduction FR automatique, analyse des facteurs de succès et création de contenus.",
     status: "En développement",
-    color: "from-pink-500 to-purple-500",
+    color: "from-violet-500 to-purple-500",
   },
   {
     icon: Youtube,
     name: "YouTube Repurpose",
     description: "Les mêmes fonctionnalités pour YouTube : traduction, analyse et création de contenus.",
     status: "En conception",
-    color: "from-red-500 to-orange-500",
+    color: "from-violet-500 to-purple-500",
   },
   {
     icon: Palette,
     name: "ThumbCraft",
     description: "Créez des miniatures avec l'aide de l'IA pour améliorer vos taux de clics.",
     status: "Bientôt disponible",
-    color: "from-blue-500 to-cyan-500",
+    color: "from-violet-500 to-purple-500",
   },
 ];
 
 export default function UpcomingTools() {
   return (
     <section className="py-24 md:py-32 relative overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 rounded-full blur-3xl opacity-40" />
-      </div>
-
       <div className="container-main relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -69,7 +65,7 @@ export default function UpcomingTools() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium mb-8">
             <Rocket className="w-4 h-4" />
             Coming Soon
           </div>

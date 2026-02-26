@@ -6,10 +6,6 @@ import { HeartHandshake, Scale, Users, Gem } from "lucide-react";
 export default function PhilosophySection() {
   return (
     <section className="py-24 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl opacity-50" />
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl opacity-50" />
-
       <div className="container-main relative">
         <div className="flex flex-col lg:flex-row items-center gap-16">
 
@@ -53,7 +49,7 @@ export default function PhilosophySection() {
               transition={{ delay: 0.2 }}
               className="glass p-6 rounded-2xl border border-white/5 bg-white/[0.02]"
             >
-              <Scale className="w-8 h-8 text-blue-400 mb-4" />
+              <Scale className="w-8 h-8 text-purple-400 mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">Prix Juste</h3>
               <p className="text-white/50 text-sm">
                 Pourquoi payer 10x plus cher ? Nous rendons la technologie abordable pour tous les créateurs, petits ou grands.
@@ -81,7 +77,7 @@ export default function PhilosophySection() {
               transition={{ delay: 0.4 }}
               className="glass p-6 rounded-2xl border border-white/5 bg-white/[0.02]"
             >
-              <HeartHandshake className="w-8 h-8 text-pink-400 mb-4" />
+              <HeartHandshake className="w-8 h-8 text-purple-400 mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">Transparence</h3>
               <p className="text-white/50 text-sm">
                 Pas de promesses intenables. Nous sommes une petite équipe passionnée qui construit des outils utiles, jour après jour.

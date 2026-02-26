@@ -66,7 +66,7 @@ export default function TubeForgeSection() {
 
                         <Link
                             href="/pricing"
-                            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg shadow-white/10"
+                            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg shadow-white/10"
                         >
                             Obtenir TubeForge <ArrowRight className="w-5 h-5" />
                         </Link>
@@ -74,7 +74,7 @@ export default function TubeForgeSection() {
 
                     {/* Côté Visuel / Mockup */}
                     <div className="flex-1 w-full relative">
-                        <div className="absolute -inset-10 bg-gradient-to-tr from-red-500/20 via-orange-500/20 to-yellow-500/20 blur-3xl rounded-full opacity-50" />
+                        <div className="absolute -inset-10 bg-purple-500/10 blur-3xl rounded-full opacity-50" />
                         <div className="relative glass rounded-2xl border border-white/5 p-2 shadow-2xl">
                             <div className="aspect-[4/3] bg-[#0F0F12] rounded-xl overflow-hidden relative border border-white/5 group">
                                 {/* Header Mockup */}
