@@ -220,8 +220,8 @@ function CheckoutContent() {
                 return;
             }
 
-            // 2. Account already exists → login + get clientSecret
-            if (registerRes.status === 409) {
+            // 2. Account already exists (409) OR register succeeded but Stripe failed (200 without clientSecret)
+            if (registerRes.status === 409 || (registerRes.ok && !registerData.clientSecret)) {
                 const loginRes = await fetch(`${WORKER_URL}/auth/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
