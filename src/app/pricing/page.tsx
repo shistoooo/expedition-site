@@ -63,7 +63,7 @@ export default function PricingPage() {
       id: 2,
       name: "Vague Expansion",
       date: "Mai 2026",
-      price: "14,99€",
+      price: "~15€",
       period: "/mois",
       status: "upcoming",
       features: [
@@ -79,7 +79,7 @@ export default function PricingPage() {
       id: 3,
       name: "Vague Ultime",
       date: "Juillet 2026",
-      price: "24,99€",
+      price: "~25€",
       period: "/mois",
       status: "upcoming",
       features: [
@@ -160,6 +160,11 @@ export default function PricingPage() {
                 {wave.status === 'open' && (
                   <div className="absolute top-0 right-0 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
                     MEILLEURE OFFRE
+                  </div>
+                )}
+                {wave.status === 'upcoming' && (
+                  <div className="absolute top-0 right-0 bg-white/10 text-white/50 text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                    BIENTOT
                   </div>
                 )}
 

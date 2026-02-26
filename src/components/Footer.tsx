@@ -26,6 +26,17 @@ export default function Footer() {
               <Link href="/launcher" className="hover:text-purple-400 transition-colors">
                 Launcher
               </Link>
+              <Link href="/account" className="hover:text-purple-400 transition-colors">
+                Mon compte
+              </Link>
+            </div>
+            <div className="mt-3 flex gap-6 justify-center md:justify-start text-xs text-white/40">
+              <Link href="/cgv" className="hover:text-white/60 transition-colors">
+                CGV
+              </Link>
+              <Link href="/confidentialite" className="hover:text-white/60 transition-colors">
+                Confidentialité
+              </Link>
             </div>
           </motion.div>
 

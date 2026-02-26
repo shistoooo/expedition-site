@@ -76,6 +76,25 @@ export default function AccountPage() {
         }
     };
 
+    const handleBillingPortal = async () => {
+        if (!accessToken) return;
+        setActionLoading(true);
+        setError(null);
+
+        try {
+            const res = await fetch(`${WORKER_URL}/portal`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            window.open(data.url, "_blank");
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur lors de l'ouverture du portail");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
     const handleCancel = async () => {
         if (!accessToken) return;
         if (!window.confirm("Êtes-vous sûr de vouloir annuler votre abonnement ? Vous conserverez l'accès jusqu'à la fin de la période en cours.")) return;
@@ -275,7 +294,7 @@ export default function AccountPage() {
                                         </h2>
                                         <div className="flex flex-col sm:flex-row gap-3">
                                             <a
-                                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.command"
+                                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.zip"
                                                 download
                                                 className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
                                             >
@@ -366,6 +385,22 @@ export default function AccountPage() {
                                                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                                 {error}
                                             </motion.div>
+                                        )}
+
+                                        {/* Past Due Warning */}
+                                        {subscription.status === "past_due" && (
+                                            <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                                                <p className="text-red-400 text-sm font-medium mb-2">Votre paiement a échoué.</p>
+                                                <p className="text-white/50 text-xs mb-3">Mettez à jour votre moyen de paiement pour conserver votre accès.</p>
+                                                <button
+                                                    onClick={handleBillingPortal}
+                                                    disabled={actionLoading}
+                                                    className="px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm font-medium hover:bg-red-500/30 transition-all flex items-center gap-2 disabled:opacity-50"
+                                                >
+                                                    {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
+                                                    Mettre à jour le paiement
+                                                </button>
+                                            </div>
                                         )}
 
                                         {/* Actions */}

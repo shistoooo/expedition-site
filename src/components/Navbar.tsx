@@ -39,6 +39,7 @@ export default function Navbar() {
     { name: "Launcher", href: "/launcher" },
     { name: "Tarifs", href: "/pricing" },
     { name: "Discord", href: "/#discord" },
+    { name: "Mon compte", href: "/account" },
   ];
 
   return (
