@@ -4,7 +4,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
-    CreditCard, Calendar, Shield, XCircle, RotateCcw, CheckCircle2, LogOut, Download, Apple, Monitor
+    CreditCard, Calendar, Shield, XCircle, RotateCcw, CheckCircle2, LogOut, Download, Apple, Monitor,
+    Users, TrendingUp, Banknote, Clock, Copy, Check, Gift, Share2, ExternalLink
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -21,6 +22,18 @@ interface SubscriptionInfo {
     cancelAtPeriodEnd: boolean;
 }
 
+interface AmbassadorInfo {
+    isAmbassador: boolean;
+    referralCode: string;
+    stripeConnectStatus: "not_started" | "onboarding" | "active" | "restricted";
+    stats: {
+        totalReferrals: number;
+        activeReferrals: number;
+        totalEarnings: number;
+        pendingEarnings: number;
+    };
+}
+
 export default function AccountPage() {
     const [step, setStep] = useState<AccountStep>("login");
     const [email, setEmail] = useState("");
@@ -31,6 +44,12 @@ export default function AccountPage() {
     const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [ambassadorStatus, setAmbassadorStatus] = useState<AmbassadorInfo | null>(null);
+    const [ambassadorLoading, setAmbassadorLoading] = useState(false);
+    const [ambassadorError, setAmbassadorError] = useState<string | null>(null);
+    const [customCodeInput, setCustomCodeInput] = useState("");
+    const [customCodeLoading, setCustomCodeLoading] = useState(false);
+    const [codeCopied, setCodeCopied] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -61,6 +80,21 @@ export default function AccountPage() {
             if (subData.subscription) {
                 setSubscription(subData.subscription);
             }
+
+            // Fetch ambassador status (non-blocking)
+            try {
+                const ambRes = await fetch(`${WORKER_URL}/ambassador/status`, {
+                    headers: { "Authorization": `Bearer ${data.accessToken}` },
+                });
+                if (ambRes.ok) {
+                    const ambData = await ambRes.json();
+                    if (ambData.isAmbassador) {
+                        setAmbassadorStatus(ambData);
+                        setCustomCodeInput(ambData.referralCode);
+                    }
+                }
+            } catch { /* silently ignore */ }
+
             setStep("dashboard");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "Une erreur est survenue";
@@ -142,6 +176,105 @@ export default function AccountPage() {
         } finally {
             setActionLoading(false);
         }
+    };
+
+    const handleBecomeAmbassador = async () => {
+        if (!accessToken) return;
+        setAmbassadorLoading(true);
+        setAmbassadorError(null);
+
+        try {
+            const res = await fetch(`${WORKER_URL}/ambassador/register`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erreur lors de l'activation");
+
+            setAmbassadorStatus({
+                isAmbassador: true,
+                referralCode: data.referralCode,
+                stripeConnectStatus: "not_started",
+                stats: { totalReferrals: 0, activeReferrals: 0, totalEarnings: 0, pendingEarnings: 0 },
+            });
+            setCustomCodeInput(data.referralCode);
+        } catch (err: unknown) {
+            setAmbassadorError(err instanceof Error ? err.message : "Erreur lors de l'activation");
+        } finally {
+            setAmbassadorLoading(false);
+        }
+    };
+
+    const handleCustomizeCode = async () => {
+        if (!accessToken || !customCodeInput.trim()) return;
+        setCustomCodeLoading(true);
+        setAmbassadorError(null);
+
+        try {
+            const res = await fetch(`${WORKER_URL}/ambassador/customize-code`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ code: customCodeInput.trim().toUpperCase() }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Code indisponible");
+
+            setAmbassadorStatus(prev => prev ? { ...prev, referralCode: data.referralCode } : null);
+            setCustomCodeInput(data.referralCode);
+        } catch (err: unknown) {
+            setAmbassadorError(err instanceof Error ? err.message : "Erreur");
+        } finally {
+            setCustomCodeLoading(false);
+        }
+    };
+
+    const handleStripeOnboard = async () => {
+        if (!accessToken) return;
+        setAmbassadorLoading(true);
+        setAmbassadorError(null);
+
+        try {
+            const res = await fetch(`${WORKER_URL}/ambassador/onboard`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erreur Stripe");
+            window.open(data.url, "_blank");
+        } catch (err: unknown) {
+            setAmbassadorError(err instanceof Error ? err.message : "Erreur Stripe");
+        } finally {
+            setAmbassadorLoading(false);
+        }
+    };
+
+    const handleStripeDashboard = async () => {
+        if (!accessToken) return;
+        setAmbassadorLoading(true);
+        setAmbassadorError(null);
+
+        try {
+            const res = await fetch(`${WORKER_URL}/ambassador/dashboard-link`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erreur Stripe");
+            window.open(data.url, "_blank");
+        } catch (err: unknown) {
+            setAmbassadorError(err instanceof Error ? err.message : "Erreur Stripe");
+        } finally {
+            setAmbassadorLoading(false);
+        }
+    };
+
+    const handleCopyCode = async () => {
+        if (!ambassadorStatus) return;
+        const link = `https://expedition.studio/checkout?ref=${ambassadorStatus.referralCode}`;
+        await navigator.clipboard.writeText(link);
+        setCodeCopied(true);
+        setTimeout(() => setCodeCopied(false), 2000);
     };
 
     const formatDate = (dateStr: string) => {
@@ -265,7 +398,7 @@ export default function AccountPage() {
                                     <div className="flex items-center justify-between mb-1">
                                         <h1 className="text-2xl font-bold">Mon compte</h1>
                                         <button
-                                            onClick={() => { setStep("login"); setAccessToken(null); setSubscription(null); setError(null); setSuccessMessage(null); }}
+                                            onClick={() => { setStep("login"); setAccessToken(null); setSubscription(null); setError(null); setSuccessMessage(null); setAmbassadorStatus(null); setAmbassadorError(null); }}
                                             className="flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors"
                                         >
                                             <LogOut className="w-4 h-4" />
@@ -450,6 +583,230 @@ export default function AccountPage() {
                                         </Link>
                                     </div>
                                 )}
+
+                                {/* Ambassador Section */}
+                                {subscription && subscription.status !== "canceled" && (
+                                    ambassadorStatus?.isAmbassador ? (
+                                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                            <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
+                                                <Gift className="w-5 h-5 text-purple-400" />
+                                                Programme Ambassadeur
+                                            </h2>
+
+                                            {/* Stats Grid */}
+                                            <div className="grid grid-cols-2 gap-3 mb-6">
+                                                <div className="p-4 rounded-xl bg-white/5">
+                                                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                                                        <Users className="w-3.5 h-3.5" />
+                                                        Total filleuls
+                                                    </div>
+                                                    <div className="text-2xl font-bold">{ambassadorStatus.stats.totalReferrals}</div>
+                                                </div>
+                                                <div className="p-4 rounded-xl bg-white/5">
+                                                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                                                        <TrendingUp className="w-3.5 h-3.5" />
+                                                        Actifs
+                                                    </div>
+                                                    <div className="text-2xl font-bold text-green-400">{ambassadorStatus.stats.activeReferrals}</div>
+                                                </div>
+                                                <div className="p-4 rounded-xl bg-white/5">
+                                                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                                                        <Banknote className="w-3.5 h-3.5" />
+                                                        Gains totaux
+                                                    </div>
+                                                    <div className="text-2xl font-bold">{(ambassadorStatus.stats.totalEarnings / 100).toFixed(2)}€</div>
+                                                </div>
+                                                <div className="p-4 rounded-xl bg-white/5">
+                                                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                                                        <Clock className="w-3.5 h-3.5" />
+                                                        En attente
+                                                    </div>
+                                                    <div className="text-2xl font-bold text-purple-400">{(ambassadorStatus.stats.pendingEarnings / 100).toFixed(2)}€</div>
+                                                </div>
+                                            </div>
+
+                                            {/* Referral Code */}
+                                            <div className="mb-4">
+                                                <label className="text-xs font-mono text-white/40 uppercase mb-2 block">Votre lien de parrainage</label>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex-1 h-11 px-4 bg-white/5 rounded-xl border border-white/10 text-white text-sm flex items-center truncate">
+                                                        expedition.studio/checkout?ref={ambassadorStatus.referralCode}
+                                                    </div>
+                                                    <button
+                                                        onClick={handleCopyCode}
+                                                        className="h-11 px-4 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 transition-all flex items-center gap-2 text-sm font-medium shrink-0"
+                                                    >
+                                                        {codeCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                                        {codeCopied ? "Copié" : "Copier"}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Customize Code */}
+                                            <div className="mb-6">
+                                                <label className="text-xs font-mono text-white/40 uppercase mb-2 block">Personnaliser le code</label>
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="text"
+                                                        value={customCodeInput}
+                                                        onChange={(e) => setCustomCodeInput(e.target.value.toUpperCase())}
+                                                        placeholder="MONCODE"
+                                                        className="flex-1 h-11 px-4 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm uppercase tracking-wider"
+                                                    />
+                                                    <button
+                                                        onClick={handleCustomizeCode}
+                                                        disabled={customCodeLoading || customCodeInput.trim() === ambassadorStatus.referralCode}
+                                                        className="h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 transition-all text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                                                    >
+                                                        {customCodeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Appliquer"}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Stripe Connect Section */}
+                                            <div className="pt-6 border-t border-white/10">
+                                                <h3 className="text-sm font-bold flex items-center gap-2 mb-4">
+                                                    <Share2 className="w-4 h-4 text-purple-400" />
+                                                    Paiements — Stripe Connect
+                                                </h3>
+
+                                                {ambassadorStatus.stripeConnectStatus === "active" ? (
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-3">
+                                                            <div className="w-2 h-2 rounded-full bg-green-500" />
+                                                            <span className="text-sm text-green-400 font-medium">Compte connecté</span>
+                                                        </div>
+                                                        <button
+                                                            onClick={handleStripeDashboard}
+                                                            disabled={ambassadorLoading}
+                                                            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                                        >
+                                                            {ambassadorLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                                                                <>
+                                                                    <ExternalLink className="w-4 h-4" />
+                                                                    Ouvrir le dashboard Stripe
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                ) : ambassadorStatus.stripeConnectStatus === "restricted" ? (
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-3">
+                                                            <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                                            <span className="text-sm text-orange-400 font-medium">Informations manquantes</span>
+                                                        </div>
+                                                        <p className="text-white/40 text-xs mb-3">
+                                                            Stripe a besoin d&apos;informations supplémentaires pour activer les paiements.
+                                                        </p>
+                                                        <button
+                                                            onClick={handleStripeOnboard}
+                                                            disabled={ambassadorLoading}
+                                                            className="w-full py-3 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-300 font-medium hover:bg-orange-500/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                                        >
+                                                            {ambassadorLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                                                                <>
+                                                                    <ExternalLink className="w-4 h-4" />
+                                                                    Compléter l&apos;inscription Stripe
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                ) : ambassadorStatus.stripeConnectStatus === "onboarding" ? (
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-3">
+                                                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                                                            <span className="text-sm text-blue-400 font-medium">Inscription en cours</span>
+                                                        </div>
+                                                        <button
+                                                            onClick={handleStripeOnboard}
+                                                            disabled={ambassadorLoading}
+                                                            className="w-full py-3 rounded-xl bg-blue-500/20 border border-blue-500/30 text-blue-300 font-medium hover:bg-blue-500/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                                        >
+                                                            {ambassadorLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                                                                <>
+                                                                    <ExternalLink className="w-4 h-4" />
+                                                                    Continuer l&apos;inscription Stripe
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        <p className="text-white/40 text-xs mb-3">
+                                                            Connectez votre compte bancaire via Stripe pour recevoir vos commissions.
+                                                        </p>
+                                                        <button
+                                                            onClick={handleStripeOnboard}
+                                                            disabled={ambassadorLoading}
+                                                            className="w-full py-3 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 font-medium hover:bg-purple-500/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                                        >
+                                                            {ambassadorLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                                                                <>
+                                                                    <Banknote className="w-4 h-4" />
+                                                                    Configurer les paiements
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Ambassador Error */}
+                                            {ambassadorError && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: -5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                                                >
+                                                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                                    {ambassadorError}
+                                                </motion.div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                            <div className="text-center">
+                                                <Gift className="w-10 h-10 text-purple-400 mx-auto mb-4" />
+                                                <h2 className="text-lg font-bold mb-2">Devenez Ambassadeur</h2>
+                                                <p className="text-white/50 text-sm mb-6">
+                                                    Partagez Expédition et gagnez 50% de commission récurrente sur chaque abonnement généré.
+                                                </p>
+                                                <button
+                                                    onClick={handleBecomeAmbassador}
+                                                    disabled={ambassadorLoading}
+                                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-purple-500/25"
+                                                >
+                                                    {ambassadorLoading ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <>
+                                                            <Gift className="w-4 h-4" />
+                                                            Activer le programme
+                                                        </>
+                                                    )}
+                                                </button>
+                                                <Link
+                                                    href="/ambassador"
+                                                    className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 transition-colors mt-4"
+                                                >
+                                                    En savoir plus <ExternalLink className="w-3.5 h-3.5" />
+                                                </Link>
+
+                                                {ambassadorError && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -5 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                                                    >
+                                                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                                        {ambassadorError}
+                                                    </motion.div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )
+                                )}
+
                             </motion.div>
                         )}
 

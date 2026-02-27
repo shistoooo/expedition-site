@@ -34,6 +34,7 @@ export default function Navbar() {
     { name: "L'Expédition", href: "/expedition", onClick: handleExpeditionClick },
     { name: "Launcher", href: "/launcher" },
     { name: "Tarifs", href: "/pricing" },
+    { name: "Ambassadeur", href: "/ambassador" },
     { name: "Discord", href: "/#discord" },
     { name: "Mon compte", href: "/account" },
   ];

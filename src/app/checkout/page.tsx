@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
@@ -171,8 +171,9 @@ function CheckoutContent() {
     const [step, setStep] = useState<CheckoutStep>("auth");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [promoCode, setPromoCode] = useState("");
-    const [showPromo, setShowPromo] = useState(false);
+    const initialRef = searchParams.get("ref") || "";
+    const [promoCode, setPromoCode] = useState(initialRef);
+    const [showPromo, setShowPromo] = useState(!!initialRef);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -438,6 +439,18 @@ function CheckoutContent() {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Referral banner */}
+                                    {initialRef && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="mt-4 p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm flex items-center gap-2"
+                                        >
+                                            <Gift className="w-4 h-4 shrink-0" />
+                                            Code de parrainage appliqué : <span className="font-bold">{initialRef}</span>
+                                        </motion.div>
+                                    )}
 
                                     {/* Promo code */}
                                     <div className="mt-4">
