@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Phone } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
-import { useState, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -70,6 +70,8 @@ function PaymentForm({ discount, plan }: { discount: { percentOff: number | null
     const elements = useElements();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showDisclaimer, setShowDisclaimer] = useState(false);
+    const confirmBtnRef = useRef<HTMLButtonElement>(null);
 
     const basePrice = PLANS[plan].price;
     let finalPrice = basePrice;
@@ -82,10 +84,25 @@ function PaymentForm({ discount, plan }: { discount: { percentOff: number | null
         discountLabel = `-${(discount.amountOff / 100).toFixed(2)}€`;
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    // Close modal on Escape
+    useEffect(() => {
+        if (!showDisclaimer) return;
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setShowDisclaimer(false);
+        };
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, [showDisclaimer]);
+
+    // Auto-focus confirm button when modal opens
+    useEffect(() => {
+        if (showDisclaimer) confirmBtnRef.current?.focus();
+    }, [showDisclaimer]);
+
+    const confirmPayment = useCallback(async () => {
         if (!stripe || !elements) return;
 
+        setShowDisclaimer(false);
         setLoading(true);
         setError(null);
 
@@ -105,60 +122,163 @@ function PaymentForm({ discount, plan }: { discount: { percentOff: number | null
             }
             setLoading(false);
         } else {
-            // Payment succeeded without redirect (no 3DS)
             window.location.href = "/checkout/success";
         }
+    }, [stripe, elements]);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!stripe || !elements) return;
+        setShowDisclaimer(true);
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <PaymentElement options={{ layout: "tabs" }} />
+        <>
+            <form onSubmit={handleSubmit}>
+                <PaymentElement options={{ layout: "tabs" }} />
 
-            {error && (
-                <motion.div
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
-                >
-                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                    {error}
-                </motion.div>
-            )}
-
-            <div className="border-t border-white/10 pt-6 mt-6">
-                {discount && (
-                    <div className="flex justify-between items-center mb-2 text-sm text-white/50">
-                        <span>Sous-total</span>
-                        <span className="line-through">{basePrice.toFixed(2)}€</span>
-                    </div>
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                    >
+                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                        {error}
+                    </motion.div>
                 )}
-                {discount && (
-                    <div className="flex justify-between items-center mb-2 text-sm text-green-400">
-                        <span className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5" />Réduction</span>
-                        <span>{discountLabel}</span>
-                    </div>
-                )}
-                <div className="flex justify-between items-center mb-4 text-lg font-bold">
-                    <span>Total à payer</span>
-                    <span>{finalPrice.toFixed(2)}€<span className="text-sm font-normal text-white/40">{PLANS[plan].label}</span></span>
-                </div>
 
-                <button
-                    type="submit"
-                    disabled={!stripe || loading}
-                    className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                        <>
-                            <Lock className="w-4 h-4" />
-                            Confirmer et payer
-                        </>
+                <div className="border-t border-white/10 pt-6 mt-6">
+                    {discount && (
+                        <div className="flex justify-between items-center mb-2 text-sm text-white/50">
+                            <span>Sous-total</span>
+                            <span className="line-through">{basePrice.toFixed(2)}€</span>
+                        </div>
                     )}
-                </button>
-            </div>
-        </form>
+                    {discount && (
+                        <div className="flex justify-between items-center mb-2 text-sm text-green-400">
+                            <span className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5" />Réduction</span>
+                            <span>{discountLabel}</span>
+                        </div>
+                    )}
+                    <div className="flex justify-between items-center mb-4 text-lg font-bold">
+                        <span>Total à payer</span>
+                        <span>{finalPrice.toFixed(2)}€<span className="text-sm font-normal text-white/40">{PLANS[plan].label}</span></span>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={!stripe || loading}
+                        className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {loading ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                            <>
+                                <Lock className="w-4 h-4" />
+                                Confirmer et payer
+                            </>
+                        )}
+                    </button>
+                </div>
+            </form>
+
+            {/* Disclaimer modal */}
+            <AnimatePresence>
+                {showDisclaimer && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setShowDisclaimer(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            role="alertdialog"
+                            aria-modal="true"
+                            aria-labelledby="disclaimer-title"
+                            className="relative w-full max-w-md rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl p-6 sm:p-8"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Close button */}
+                            <button
+                                onClick={() => setShowDisclaimer(false)}
+                                className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+                                aria-label="Fermer"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+
+                            {/* Icon */}
+                            <div className="w-12 h-12 rounded-full bg-purple-500/15 border border-purple-500/20 flex items-center justify-center mb-5">
+                                <Heart className="w-6 h-6 text-purple-400" />
+                            </div>
+
+                            {/* Title */}
+                            <h3 id="disclaimer-title" className="text-xl font-bold mb-4">Avant de continuer...</h3>
+
+                            {/* Message */}
+                            <div className="space-y-3 text-sm text-white/70 leading-relaxed">
+                                <p>
+                                    Expedition est un projet indépendant, porté par une petite équipe passionnée.
+                                    Notre ambition : créer les meilleurs outils pour les créateurs, à un prix juste — main dans la main avec vous.
+                                </p>
+                                <p>
+                                    Le produit évolue en permanence. Il est possible que vous rencontriez des bugs ou des imperfections en cours de route.
+                                    C&apos;est le propre d&apos;un projet vivant, et chaque retour nous aide à progresser.
+                                </p>
+                                <p className="text-white/80 font-medium">Si vous rencontrez le moindre souci, deux canaux directs :</p>
+                                <div className="space-y-2">
+                                    <a
+                                        href="https://discord.gg/expedition"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/30 hover:bg-white/[0.07] transition-all group"
+                                    >
+                                        <MessageCircle className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                                        <div>
+                                            <span className="text-white font-medium text-sm">Discord</span>
+                                            <span className="block text-white/40 text-xs">Réponse rapide, communauté active</span>
+                                        </div>
+                                    </a>
+                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+                                        <Phone className="w-5 h-5 text-purple-400" />
+                                        <div>
+                                            <span className="text-white font-medium text-sm">Téléphone</span>
+                                            <span className="block text-white/40 text-xs">07 XX XX XX XX</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p className="text-white/50 text-xs pt-1">Merci de faire partie de l&apos;aventure.</p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex flex-col gap-3 mt-6">
+                                <button
+                                    ref={confirmBtnRef}
+                                    onClick={confirmPayment}
+                                    className="w-full py-3.5 rounded-xl bg-white text-black font-bold text-sm hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2"
+                                >
+                                    <Check className="w-4 h-4" />
+                                    J&apos;ai compris, confirmer le paiement
+                                </button>
+                                <button
+                                    onClick={() => setShowDisclaimer(false)}
+                                    className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 font-medium text-sm hover:bg-white/10 hover:text-white/80 transition-all"
+                                >
+                                    Retour
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 }
 
