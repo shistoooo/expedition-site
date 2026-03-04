@@ -332,11 +332,20 @@ function CheckoutContent() {
 
             const registerData = await registerRes.json();
 
-            if (registerRes.ok && registerData.clientSecret) {
+            if (registerRes.ok && registerData.success) {
                 if (registerData.discount) setDiscount(registerData.discount);
-                setClientSecret(registerData.clientSecret);
-                setStep("payment");
-                return;
+
+                // 100% discount: subscription is already active, no payment needed
+                if (!registerData.clientSecret && registerData.subscriptionId) {
+                    window.location.href = "/checkout/success";
+                    return;
+                }
+
+                if (registerData.clientSecret) {
+                    setClientSecret(registerData.clientSecret);
+                    setStep("payment");
+                    return;
+                }
             }
 
             // 2. Account already exists (409) OR register succeeded but Stripe failed (200 without clientSecret)
@@ -371,11 +380,20 @@ function CheckoutContent() {
 
                 const subData = await subRes.json();
 
-                if (subRes.ok && subData.clientSecret) {
+                if (subRes.ok) {
                     if (subData.discount) setDiscount(subData.discount);
-                    setClientSecret(subData.clientSecret);
-                    setStep("payment");
-                    return;
+
+                    // 100% discount: subscription is already active, no payment needed
+                    if (!subData.clientSecret && subData.subscriptionId) {
+                        window.location.href = "/checkout/success";
+                        return;
+                    }
+
+                    if (subData.clientSecret) {
+                        setClientSecret(subData.clientSecret);
+                        setStep("payment");
+                        return;
+                    }
                 }
 
                 if (subRes.status === 409) {
