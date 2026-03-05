@@ -103,10 +103,10 @@ export default function ToolsSection() {
             </motion.ul>
 
             <a
-              href="/launcher"
+              href="/pricing"
               className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all duration-300 shadow-lg shadow-white/10"
             >
-              En savoir plus <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+              Obtenir ClipForge <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
             </a>
           </div>
 

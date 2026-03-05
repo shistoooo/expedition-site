@@ -594,7 +594,7 @@ export default function AccountPage() {
                                             </h2>
 
                                             {/* Stats Grid */}
-                                            <div className="grid grid-cols-2 gap-3 mb-6">
+                                            <div className="grid grid-cols-2 gap-3 mb-4">
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                                                         <Users className="w-3.5 h-3.5" />
@@ -624,6 +624,29 @@ export default function AccountPage() {
                                                     <div className="text-2xl font-bold text-purple-400">{(ambassadorStatus.stats.pendingEarnings / 100).toFixed(2)}€</div>
                                                 </div>
                                             </div>
+
+                                            {/* Earnings projection based on active referrals */}
+                                            {ambassadorStatus.stats.activeReferrals > 0 && (
+                                                <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-6">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <TrendingUp className="w-4 h-4 text-purple-400" />
+                                                        <span className="text-sm font-semibold text-white">Projection</span>
+                                                    </div>
+                                                    <p className="text-white/60 text-sm">
+                                                        Avec vos <span className="text-white font-bold">{ambassadorStatus.stats.activeReferrals} filleul{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""} actif{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""}</span>, vous pouvez toucher jusqu&apos;à{" "}
+                                                        <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                                                            ~{Math.round(ambassadorStatus.stats.activeReferrals * 9.99 * 0.5 * 6)}€
+                                                        </span>{" "}
+                                                        sur 6 mois.
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {ambassadorStatus.stats.activeReferrals === 0 && (
+                                                <div className="p-4 rounded-xl bg-white/5 border border-white/5 mb-6 text-center">
+                                                    <p className="text-white/40 text-sm mb-1">Partagez votre lien pour commencer à gagner</p>
+                                                    <p className="text-xs text-white/25">1 seul filleul = <span className="text-purple-300">~30€</span> sur 6 mois</p>
+                                                </div>
+                                            )}
 
                                             {/* Referral Code */}
                                             <div className="mb-4">
@@ -765,44 +788,74 @@ export default function AccountPage() {
                                         </div>
                                     ) : (
                                         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
-                                            <div className="text-center">
+                                            <div className="text-center mb-6">
                                                 <Gift className="w-10 h-10 text-purple-400 mx-auto mb-4" />
                                                 <h2 className="text-lg font-bold mb-2">Devenez Ambassadeur</h2>
-                                                <p className="text-white/50 text-sm mb-6">
-                                                    Partagez Expédition et gagnez 50% de commission récurrente sur chaque abonnement généré.
+                                                <p className="text-white/50 text-sm">
+                                                    Partagez Expédition et touchez <span className="text-white font-semibold">50% de commission</span> sur chaque abonnement généré, pendant 6 mois.
                                                 </p>
-                                                <button
-                                                    onClick={handleBecomeAmbassador}
-                                                    disabled={ambassadorLoading}
-                                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-purple-500/25"
-                                                >
-                                                    {ambassadorLoading ? (
-                                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                                    ) : (
-                                                        <>
-                                                            <Gift className="w-4 h-4" />
-                                                            Activer le programme
-                                                        </>
-                                                    )}
-                                                </button>
+                                            </div>
+
+                                            {/* Earnings projection */}
+                                            <div className="mb-6 space-y-2">
+                                                <p className="text-xs font-mono text-white/40 uppercase">Combien vous pourriez gagner</p>
+                                                {[
+                                                    { referrals: 5, emoji: "🔥" },
+                                                    { referrals: 10, emoji: "🚀" },
+                                                    { referrals: 25, emoji: "💎" },
+                                                    { referrals: 50, emoji: "👑" },
+                                                ].map((tier) => {
+                                                    const monthlyPerReferral = 9.99 * 0.5;
+                                                    const total6Months = Math.round(tier.referrals * monthlyPerReferral * 6);
+                                                    return (
+                                                        <div key={tier.referrals} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/20 transition-colors">
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-lg">{tier.emoji}</span>
+                                                                <span className="text-sm text-white/70">{tier.referrals} filleuls</span>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">~{total6Months}€</span>
+                                                                <span className="text-white/30 text-xs ml-1">sur 6 mois</span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                                <p className="text-[10px] text-white/25 text-center">Basé sur l&apos;abonnement mensuel à 9,99€ — 50% de commission pendant 6 mois par filleul.</p>
+                                            </div>
+
+                                            <button
+                                                onClick={handleBecomeAmbassador}
+                                                disabled={ambassadorLoading}
+                                                className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-purple-500/25"
+                                            >
+                                                {ambassadorLoading ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <Gift className="w-4 h-4" />
+                                                        Activer le programme
+                                                    </>
+                                                )}
+                                            </button>
+                                            <div className="text-center">
                                                 <Link
                                                     href="/ambassador"
                                                     className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 transition-colors mt-4"
                                                 >
                                                     En savoir plus <ExternalLink className="w-3.5 h-3.5" />
                                                 </Link>
-
-                                                {ambassadorError && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: -5 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
-                                                    >
-                                                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                                                        {ambassadorError}
-                                                    </motion.div>
-                                                )}
                                             </div>
+
+                                            {ambassadorError && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: -5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                                                >
+                                                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                                    {ambassadorError}
+                                                </motion.div>
+                                            )}
                                         </div>
                                     )
                                 )}

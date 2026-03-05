@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function Hero() {
@@ -12,10 +12,13 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-xs md:text-sm font-medium mb-6 backdrop-blur-sm"
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs md:text-sm font-medium mb-6 backdrop-blur-sm"
         >
-          <Sparkles className="w-4 h-4" />
-          <span>L&apos;AVENTURE COMMENCE ICI</span>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+          </span>
+          <span>Vague Pionnier — Places ouvertes</span>
         </motion.div>
 
         <motion.h1
@@ -24,20 +27,31 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 tracking-tight"
         >
-          Votre prochaine <br />
-          <span className="gradient-text">EXPÉDITION</span>
+          Tous vos outils de cr&eacute;ation.
+          <br />
+          <span className="gradient-text">Un seul abonnement.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl leading-relaxed mx-auto"
+          className="text-lg md:text-xl text-white/60 mb-4 max-w-2xl leading-relaxed mx-auto"
         >
-          Les outils essentiels pour les créateurs de contenu.
+          ClipForge, TubeForge et tous les futurs outils Exp&eacute;dition.
           <br className="hidden md:block" />
-          Pensés par la communauté, pour la communauté.
+          Construits avec la communaut&eacute;, pour les cr&eacute;ateurs qui veulent aller plus loin.
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="flex items-center gap-3 mb-10"
+        >
+          <span className="text-3xl md:text-4xl font-bold text-white">9,99&euro;</span>
+          <span className="text-white/40 text-sm">/mois<br />prix bloqu&eacute; &agrave; vie</span>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -46,18 +60,17 @@ export default function Hero() {
           className="flex flex-col sm:flex-row items-center gap-4"
         >
           <Link
-            href="/pricing"
+            href="/checkout"
             className="px-8 py-4 rounded-xl bg-white text-black font-bold transition-all flex items-center gap-2 shadow-lg shadow-white/10 hover:bg-gray-100"
           >
-            Voir les tarifs
+            Commencer maintenant
             <ArrowRight className="w-5 h-5" />
           </Link>
           <Link
-            href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL || "https://discord.gg/expedition"}
-            target="_blank"
+            href="#clipforge"
             className="px-8 py-4 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold transition-all backdrop-blur-sm"
           >
-            Rejoindre Discord
+            D&eacute;couvrir les outils
           </Link>
         </motion.div>
       </div>

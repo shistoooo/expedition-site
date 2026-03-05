@@ -30,9 +30,7 @@ export default function Navbar() {
   };
 
   const navItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [
-    { name: "Accueil", href: "/" },
-    { name: "L'Expédition", href: "/expedition", onClick: handleExpeditionClick },
-    { name: "Launcher", href: "/launcher" },
+    { name: "Outils", href: "/#clipforge" },
     { name: "Tarifs", href: "/pricing" },
     { name: "Ambassadeur", href: "/ambassador" },
     { name: "Discord", href: "/#discord" },

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Phone } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Phone, Monitor } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
@@ -256,6 +256,22 @@ function PaymentForm({ discount, plan }: { discount: { percentOff: number | null
                                             </div>
                                         </div>
                                     </div>
+                                    {/* Avertissement signature */}
+                                    <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                                        <div className="flex items-start gap-2.5">
+                                            <Monitor className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                                            <div>
+                                                <p className="text-amber-200/90 text-xs font-medium mb-1">Windows Defender / macOS Gatekeeper</p>
+                                                <p className="text-white/50 text-xs leading-relaxed">
+                                                    Lors de l&apos;installation, votre système peut afficher un avertissement de sécurité.
+                                                    C&apos;est normal : en tant que projet indépendant, nous n&apos;avons pas encore de certificat de signature
+                                                    (coûteux pour une petite équipe). Des créateurs comme ceux que vous retrouverez
+                                                    sur notre page d&apos;accueil utilisent Expedition au quotidien sans aucun souci.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <p className="text-white/50 text-xs pt-1">Merci de faire partie de l&apos;aventure.</p>
                                 </div>
 
