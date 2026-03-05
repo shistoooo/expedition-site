@@ -105,14 +105,30 @@ export default function CGVPage() {
 
                     <h2 className="text-xl font-bold text-white mt-8">7. Responsabilit&eacute; et garanties</h2>
                     <p>
-                        Les outils sont fournis &quot;en l&apos;&eacute;tat&quot;. Exp&eacute;dition est un projet
-                        ind&eacute;pendant en d&eacute;veloppement actif. Le Client accepte que les logiciels
-                        puissent contenir des imperfections ou des bugs.
+                        Les outils sont fournis &laquo;&nbsp;en l&apos;&eacute;tat&nbsp;&raquo; et &laquo;&nbsp;selon disponibilit&eacute;&nbsp;&raquo;.
+                        Exp&eacute;dition est un projet ind&eacute;pendant en d&eacute;veloppement actif. Le Client accepte
+                        que les logiciels puissent contenir des imperfections, bugs ou limitations temporaires.
                     </p>
                     <p>
-                        Nous nous engageons &agrave; corriger les bugs signal&eacute;s dans des d&eacute;lais raisonnables
-                        et &agrave; maintenir le service op&eacute;rationnel. Nous ne saurions &ecirc;tre tenus responsables
-                        des dommages indirects li&eacute;s &agrave; l&apos;utilisation des outils.
+                        <strong>Obligation de moyens :</strong> L&apos;&Eacute;diteur s&apos;engage &agrave; fournir ses meilleurs efforts
+                        pour maintenir le service op&eacute;rationnel et corriger les bugs signal&eacute;s dans des d&eacute;lais raisonnables.
+                        Il ne s&apos;agit en aucun cas d&apos;une obligation de r&eacute;sultat. Aucune garantie
+                        de disponibilit&eacute; (SLA), de performance ou de fonctionnement ininterrompu n&apos;est accord&eacute;e.
+                    </p>
+                    <p>
+                        <strong>Mises &agrave; jour :</strong> L&apos;&Eacute;diteur ne prend aucun engagement sur un calendrier
+                        de mises &agrave; jour, de correctifs ou d&apos;ajout de fonctionnalit&eacute;s. Les mises &agrave; jour sont
+                        fournies au fil du d&eacute;veloppement, sans fr&eacute;quence garantie.
+                    </p>
+                    <p>
+                        <strong>&Eacute;volution de la suite :</strong> L&apos;&Eacute;diteur se r&eacute;serve le droit de modifier,
+                        remplacer ou retirer des outils de la suite, &agrave; condition que la valeur globale
+                        du service ne soit pas substantiellement diminu&eacute;e.
+                    </p>
+                    <p>
+                        L&apos;&Eacute;diteur ne saurait &ecirc;tre tenu responsable des dommages directs ou indirects
+                        li&eacute;s &agrave; l&apos;utilisation des outils, incluant mais ne se limitant pas &agrave; : pertes de donn&eacute;es,
+                        interruptions de service, incompatibilit&eacute;s mat&eacute;rielles ou logicielles.
                     </p>
                     <p>
                         Les logiciels Exp&eacute;dition ne disposent pas actuellement de certificat de signature
