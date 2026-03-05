@@ -49,7 +49,7 @@ export default function HomePricing() {
             </div>
           ))}
           <div className="col-span-3 text-center">
-            <p className="text-xs text-white/30">Les nouveaux abonnés paieront <span className="text-red-400/70">~15&euro;</span> puis <span className="text-red-400/70">~25&euro;</span> pour la même suite.</p>
+            <p className="text-xs text-white/30">Les nouveaux abonnés paieront <span className="text-red-400/70">~15&euro;</span>, <span className="text-red-400/70">~25&euro;</span> puis jusqu&apos;&agrave; <span className="text-red-400/70">50-70&euro;</span> pour la même suite.</p>
           </div>
         </motion.div>
 
