@@ -46,7 +46,7 @@ function TubeForgeMockup() {
     if (!dragging) return;
     const bar = e.currentTarget as HTMLDivElement;
     const rect = bar.getBoundingClientRect();
-    const pct = Math.round(Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100)));
+    const pct = Math.round(Math.max(2, Math.min(98, ((e.clientX - rect.left) / rect.width) * 100)));
     if (dragging === "start") {
       setTrimStart(Math.min(pct, trimEnd - 5));
     } else {
@@ -223,29 +223,21 @@ function TubeForgeMockup() {
                   <div className="mt-2 rounded-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="p-3">
                       <div
-                        className="relative h-3 rounded-full cursor-pointer touch-none overflow-hidden"
+                        className="relative h-3 rounded-full cursor-pointer touch-none"
                         style={{ background: 'rgba(255,255,255,0.05)' }}
                         onClick={handleBarClick}
                         onPointerMove={handlePointerMove}
                         onPointerUp={handlePointerUp}
                         onPointerLeave={handlePointerUp}
                       >
-                        {/* Selected range */}
+                        {/* Selected range — clamped to stay inside */}
                         <div
-                          className="absolute h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-500"
-                          style={{ left: `${trimStart}%`, width: `${trimEnd - trimStart}%`, transition: dragging ? 'none' : 'all 0.15s' }}
+                          className="absolute h-full bg-gradient-to-r from-orange-500 to-amber-500"
+                          style={{ left: `${trimStart}%`, right: `${100 - trimEnd}%`, transition: dragging ? 'none' : 'all 0.15s' }}
                         />
-                      </div>
-                      {/* Handles — outside the bar to avoid overflow clip */}
-                      <div
-                        className="relative h-0 touch-none"
-                        onPointerMove={handlePointerMove}
-                        onPointerUp={handlePointerUp}
-                        onPointerLeave={handlePointerUp}
-                      >
                         {/* Start handle */}
                         <div
-                          className={`absolute -top-[8px] -translate-x-1/2 w-3 h-3 bg-white rounded-full shadow-lg border-2 border-orange-500 hover:scale-125 transition-transform z-10 ${dragging === 'start' ? 'scale-125 cursor-grabbing' : 'cursor-grab'}`}
+                          className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg border-2 border-orange-500 hover:scale-125 transition-transform z-10 ${dragging === 'start' ? 'scale-125 cursor-grabbing' : 'cursor-grab'}`}
                           style={{ left: `${trimStart}%` }}
                           onPointerDown={(e) => { e.stopPropagation(); setDragging("start"); (e.target as HTMLElement).setPointerCapture(e.pointerId); }}
                           onPointerMove={handlePointerMove}
@@ -253,7 +245,7 @@ function TubeForgeMockup() {
                         />
                         {/* End handle */}
                         <div
-                          className={`absolute -top-[8px] -translate-x-1/2 w-3 h-3 bg-white rounded-full shadow-lg border-2 border-amber-500 hover:scale-125 transition-transform z-10 ${dragging === 'end' ? 'scale-125 cursor-grabbing' : 'cursor-grab'}`}
+                          className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg border-2 border-amber-500 hover:scale-125 transition-transform z-10 ${dragging === 'end' ? 'scale-125 cursor-grabbing' : 'cursor-grab'}`}
                           style={{ left: `${trimEnd}%` }}
                           onPointerDown={(e) => { e.stopPropagation(); setDragging("end"); (e.target as HTMLElement).setPointerCapture(e.pointerId); }}
                           onPointerMove={handlePointerMove}
