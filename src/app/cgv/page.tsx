@@ -17,9 +17,10 @@ export default function CGVPage() {
                     <h2 className="text-xl font-bold text-white mt-8">1. Objet</h2>
                     <p>
                         Les pr&eacute;sentes Conditions G&eacute;n&eacute;rales de Vente (CGV) r&eacute;gissent les relations contractuelles entre
-                        Exp&eacute;dition Studio, micro-entreprise en cours d&apos;immatriculation dont le si&egrave;ge social sera situ&eacute;
-                        &agrave; [&Agrave; COMPL&Eacute;TER] (&quot;nous&quot;, &quot;l&apos;&Eacute;diteur&quot;), et tout utilisateur (&quot;vous&quot;, &quot;le Client&quot;)
-                        souscrivant &agrave; un abonnement aux services Exp&eacute;dition.
+                        Exp&eacute;dition Studio (&quot;nous&quot;, &quot;l&apos;&Eacute;diteur&quot;), projet &eacute;dit&eacute; par une personne physique
+                        domicili&eacute;e en France, et tout utilisateur (&quot;vous&quot;, &quot;le Client&quot;)
+                        souscrivant &agrave; un abonnement aux services Exp&eacute;dition. Les coordonn&eacute;es compl&egrave;tes
+                        de l&apos;&Eacute;diteur figurent sur la page <a href="/mentions-legales" className="text-purple-400 hover:text-purple-300 transition-colors">Mentions l&eacute;gales</a>.
                     </p>
                     <p>
                         Les services incluent l&apos;acc&egrave;s au Launcher Exp&eacute;dition, aux logiciels ClipForge, TubeForge
@@ -161,7 +162,7 @@ export default function CGVPage() {
                     <p>
                         Pour toute question relative aux pr&eacute;sentes CGV, contactez-nous via notre
                         serveur <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">Discord</a> ou
-                        par email &agrave; [&Agrave; COMPL&Eacute;TER].
+                        par email &agrave; contact@expedition.studio.
                     </p>
                 </div>
             </main>

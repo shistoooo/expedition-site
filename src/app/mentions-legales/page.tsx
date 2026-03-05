@@ -19,20 +19,22 @@ export default function MentionsLegalesPage() {
                         Le site <strong>expedition.studio</strong> est &eacute;dit&eacute; par :
                     </p>
                     <ul className="list-none space-y-1">
-                        <li><strong>Nom :</strong> [&Agrave; COMPL&Eacute;TER — Nom Pr&eacute;nom]</li>
-                        <li><strong>Statut :</strong> Micro-entrepreneur (en cours d&apos;immatriculation)</li>
-                        <li><strong>SIRET :</strong> [&Agrave; COMPL&Eacute;TER]</li>
-                        <li><strong>Adresse :</strong> [&Agrave; COMPL&Eacute;TER]</li>
-                        <li><strong>Email :</strong> [&Agrave; COMPL&Eacute;TER]</li>
-                        <li><strong>T&eacute;l&eacute;phone :</strong> [&Agrave; COMPL&Eacute;TER]</li>
+                        <li><strong>Nom :</strong> Exp&eacute;dition Studio</li>
+                        <li><strong>Statut :</strong> Personne physique — Entrepreneur individuel</li>
+                        <li><strong>Email :</strong> contact@expedition.studio</li>
+                        <li><strong>Discord :</strong> <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">dsc.gg/expedition</a></li>
                     </ul>
+                    <p className="text-xs text-white/30">
+                        Les informations compl&eacute;mentaires (SIRET, adresse) seront mises &agrave; jour
+                        d&egrave;s finalisation des formalit&eacute;s administratives.
+                    </p>
                     <p>
                         TVA non applicable, article 293 B du Code G&eacute;n&eacute;ral des Imp&ocirc;ts
                         (sous r&eacute;serve de modification du r&eacute;gime fiscal).
                     </p>
 
                     <h2 className="text-xl font-bold text-white mt-8">2. Directeur de la publication</h2>
-                    <p>[&Agrave; COMPL&Eacute;TER — Nom Pr&eacute;nom], en qualit&eacute; de g&eacute;rant.</p>
+                    <p>Le responsable de la publication est le g&eacute;rant d&apos;Exp&eacute;dition Studio.</p>
 
                     <h2 className="text-xl font-bold text-white mt-8">3. H&eacute;bergeur</h2>
                     <p>Le site est h&eacute;berg&eacute; par :</p>
