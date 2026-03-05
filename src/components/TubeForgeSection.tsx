@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Zap, Sparkles, ListVideo, ArrowRight, Search, Video, Music, Download, CheckCircle2, Loader2, Clock, ChevronRight } from "lucide-react";
+import { Zap, Sparkles, ListVideo, ArrowRight, Search, Video, Music, Download, CheckCircle2, Clock, ChevronRight, Scissors, Play, FolderOpen } from "lucide-react";
 import Link from "next/link";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -67,30 +67,16 @@ export default function TubeForgeSection() {
               className="space-y-6 mb-10"
             >
               {[
-                {
-                  icon: Zap,
-                  title: "Ultra Rapide",
-                  desc: "Moteur multithread pour des t\u00e9l\u00e9chargements instantan\u00e9s.",
-                },
-                {
-                  icon: Sparkles,
-                  title: "Qualit\u00e9 8K & 60fps",
-                  desc: "Pr\u00e9servez chaque pixel. Extraction audio sans perte.",
-                },
-                {
-                  icon: ListVideo,
-                  title: "Playlists & Cha\u00eenes",
-                  desc: "T\u00e9l\u00e9chargez des s\u00e9ries enti\u00e8res en un seul clic.",
-                },
+                { icon: Zap, title: "Ultra Rapide", desc: "Moteur multithread pour des t\u00e9l\u00e9chargements instantan\u00e9s." },
+                { icon: Sparkles, title: "Qualit\u00e9 8K & 60fps", desc: "Pr\u00e9servez chaque pixel. Extraction audio sans perte." },
+                { icon: ListVideo, title: "Playlists & Cha\u00eenes", desc: "T\u00e9l\u00e9chargez des s\u00e9ries enti\u00e8res en un seul clic." },
               ].map((item, i) => (
                 <motion.li key={i} variants={itemVariants} className="flex gap-5">
                   <div className="mt-1 w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
                     <item.icon className="w-5 h-5 text-red-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white text-lg">
-                      {item.title}
-                    </h3>
+                    <h3 className="font-semibold text-white text-lg">{item.title}</h3>
                     <p className="text-white/50">{item.desc}</p>
                   </div>
                 </motion.li>
@@ -105,128 +91,152 @@ export default function TubeForgeSection() {
             </Link>
           </div>
 
-          {/* Mockup - Real TubeForge UI */}
+          {/* Mockup — Faithful to real TubeForge UI */}
           <div className="flex-1 w-full relative">
-            <div className="absolute -inset-10 bg-purple-500/10 blur-3xl rounded-full opacity-50" />
-            <div className="relative rounded-2xl border border-white/5 shadow-2xl overflow-hidden" style={{ background: '#0f0e17' }}>
+            <div className="absolute -inset-10 bg-purple-500/8 blur-3xl rounded-full opacity-40 pointer-events-none" />
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[50%] rounded-full blur-[120px] opacity-25 pointer-events-none" style={{ background: '#2e1065' }} />
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-purple-500/10"
+              style={{ background: '#0f0e17', border: '1px solid rgba(255,255,255,0.05)' }}
+            >
               {/* Window chrome */}
-              <div className="h-8 bg-[#0f0e20] border-b border-white/5 flex items-center px-3 gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
-                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/40" />
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500/40" />
-                <span className="text-[10px] text-white/20 ml-2 font-medium">TubeForge</span>
+              <div className="h-8 flex items-center px-3 gap-1.5" style={{ background: '#13122a', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+                <span className="text-[10px] text-white/25 ml-2 font-medium tracking-wide">TubeForge</span>
               </div>
 
               {/* Header bar */}
               <div className="px-5 pt-4 pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-orange-500 to-amber-500 shadow-lg shadow-orange-500/20" />
-                  <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">TubeForge</span>
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 shadow-lg shadow-orange-500/20" />
+                  <span className="text-sm font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">TubeForge</span>
                 </div>
                 {/* Tab nav */}
-                <div className="flex gap-1 p-0.5 rounded-lg bg-white/5 border border-white/10">
-                  <div className="px-3 py-1 rounded-md bg-white/10 text-[10px] text-white font-medium shadow-sm">Download</div>
-                  <div className="px-3 py-1 rounded-md text-[10px] text-white/50">Library</div>
+                <div className="flex gap-0.5 p-0.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="px-3.5 py-1.5 rounded-lg text-[10px] font-medium text-white shadow-sm" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                    <Download className="w-3 h-3 inline mr-1" />Download
+                  </div>
+                  <div className="px-3.5 py-1.5 rounded-lg text-[10px] text-white/40 font-medium">
+                    <FolderOpen className="w-3 h-3 inline mr-1" />Library
+                  </div>
                 </div>
               </div>
 
-              <div className="px-5 pb-5">
-                {/* Search input with gradient border */}
-                <div className="relative mb-4">
-                  <div className="absolute -inset-[1px] bg-gradient-to-r from-amber-500 via-orange-600 to-purple-600 rounded-xl opacity-30" />
-                  <div className="relative flex gap-2 p-1 rounded-xl" style={{ background: '#1e1b4b' }}>
-                    <div className="flex-1 h-9 flex items-center px-3 gap-2">
-                      <Search className="w-3.5 h-3.5 text-white/20" />
-                      <span className="text-xs text-white/20">T&eacute;l&eacute;chargez sans limites...</span>
+              <div className="px-5 pb-5 space-y-3">
+                {/* Search input — gradient border from real app */}
+                <div className="relative group">
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-amber-500 via-orange-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity" />
+                  <div className="relative flex items-center gap-2 p-2 pl-5 rounded-2xl shadow-2xl backdrop-blur-xl" style={{ background: 'rgba(30,27,75,0.8)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <Search className="w-4 h-4 text-white/20 shrink-0" />
+                    <span className="flex-1 text-[11px] text-white/20">T&eacute;l&eacute;chargez sans limites...</span>
+                    {/* Quality dropdown */}
+                    <div className="px-2 py-1 rounded-lg text-[9px] text-white/50 font-medium" style={{ background: 'rgba(30,27,75,0.8)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      1080p
                     </div>
-                    <div className="h-9 px-4 rounded-lg flex items-center gap-1.5 shadow-lg shadow-purple-900/50" style={{ background: '#4c1d95' }}>
-                      <Search className="w-3 h-3 text-white" />
-                      <span className="text-[10px] text-white font-semibold">Rechercher</span>
+                    <div className="px-4 py-2.5 rounded-2xl text-white text-[11px] font-medium flex items-center gap-1.5 shadow-lg" style={{ background: '#4c1d95', boxShadow: '0 10px 25px rgba(76,29,149,0.5)' }}>
+                      <Search className="w-3 h-3" />
+                      Rechercher
                     </div>
                   </div>
                 </div>
 
                 {/* Mode toggle */}
-                <div className="flex gap-1.5 mb-4">
-                  {["URL", "Recherche", "Script"].map((m, i) => (
-                    <div key={m} className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border ${i === 0 ? 'bg-white/10 border-white/10 text-white' : 'bg-white/[0.03] border-white/5 text-white/30'}`}>
-                      {m}
+                <div className="flex gap-1.5">
+                  {[
+                    { label: "URL", active: true },
+                    { label: "Recherche", active: false },
+                    { label: "Script", active: false },
+                  ].map((m) => (
+                    <div key={m.label} className={`px-3 py-1.5 rounded-xl text-[10px] font-medium ${m.active ? 'text-white shadow-sm' : 'text-white/30'}`} style={{ background: m.active ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid rgba(255,255,255,${m.active ? '0.08' : '0.03'})` }}>
+                      {m.label}
                     </div>
                   ))}
                 </div>
 
-                {/* Search results grid */}
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { title: "Comment j\u2019ai cr\u00e9\u00e9 ma cha\u00eene", duration: "14:32" },
-                    { title: "Mes 5 erreurs de d\u00e9butant", duration: "8:47" },
-                    { title: "Setup tour 2026", duration: "11:05" },
-                  ].map((video, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + i * 0.12 }}
-                      className="rounded-xl overflow-hidden border border-white/5 hover:border-white/20 transition-colors"
-                      style={{ background: 'rgba(30, 27, 75, 0.4)' }}
-                    >
-                      {/* Thumbnail */}
-                      <div className="aspect-video bg-black/30 relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent" />
-                        {/* Duration badge */}
-                        <div className="absolute bottom-1 right-1 px-1 py-0.5 rounded bg-black/70 text-[8px] text-white/80 font-mono flex items-center gap-0.5">
-                          <Clock className="w-2 h-2" />
-                          {video.duration}
-                        </div>
+                {/* Video info card — like URL mode result */}
+                <div className="rounded-2xl p-3 backdrop-blur-md" style={{ background: 'rgba(30,27,75,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="flex gap-3">
+                    {/* Thumbnail */}
+                    <div className="w-24 aspect-video rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)' }}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Play className="w-4 h-4 text-white/20" />
                       </div>
-                      {/* Title */}
-                      <div className="p-2">
-                        <p className="text-[10px] text-white/80 font-medium leading-tight line-clamp-2">{video.title}</p>
+                      <div className="absolute bottom-0.5 right-0.5 px-1 py-0.5 rounded text-[7px] text-white/70 font-mono" style={{ background: 'rgba(0,0,0,0.7)' }}>
+                        <Clock className="w-1.5 h-1.5 inline mr-0.5" />14:32
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Format buttons */}
-                <div className="flex gap-2 mt-3">
-                  <div className="flex-1 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center gap-1.5">
-                    <Video className="w-3 h-3 text-cyan-400" />
-                    <span className="text-[10px] font-semibold text-cyan-400">MP4</span>
+                    </div>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] text-white/90 font-bold leading-tight line-clamp-2 mb-1">Comment j&apos;ai cr&eacute;&eacute; ma cha&icirc;ne YouTube en partant de z&eacute;ro</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] text-white/35">14:32</span>
+                        <span className="px-1.5 py-0.5 rounded text-[8px] text-white/40 font-medium" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.03)' }}>YouTube</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 h-8 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center gap-1.5">
-                    <Music className="w-3 h-3 text-pink-400" />
-                    <span className="text-[10px] font-semibold text-pink-400">MP3</span>
+
+                  {/* Download buttons — MP4 cyan / MP3 pink */}
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <Video className="w-4 h-4 text-cyan-400" />
+                      <div>
+                        <p className="text-[10px] text-white/90 font-bold">T&eacute;l&eacute;charger MP4</p>
+                        <p className="text-[8px] text-white/30">Qualit&eacute;: 1080p</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <Music className="w-4 h-4 text-pink-400" />
+                      <div>
+                        <p className="text-[10px] text-white/90 font-bold">T&eacute;l&eacute;charger MP3</p>
+                        <p className="text-[8px] text-white/30">Audio haute fid&eacute;lit&eacute;</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Trim toggle */}
+                  <div className="mt-2 flex items-center justify-between px-2 py-1.5 rounded-lg" style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)' }}>
+                    <div className="flex items-center gap-1.5">
+                      <Scissors className="w-3 h-3 text-orange-400" />
+                      <span className="text-[9px] text-orange-400 font-medium">D&eacute;couper avant t&eacute;l&eacute;chargement</span>
+                    </div>
+                    <div className="text-[8px] text-orange-300/60 font-mono">00:30 &rarr; 05:12</div>
                   </div>
                 </div>
 
                 {/* Download tray */}
-                <div className="mt-3 rounded-xl border border-white/5 overflow-hidden" style={{ background: '#1a1840' }}>
-                  <div className="px-3 py-2 flex items-center justify-between border-b border-white/5">
+                <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(26,24,64,0.95)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div className="px-3 py-2 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="flex items-center gap-1.5">
                       <Download className="w-3 h-3 text-purple-400" />
-                      <span className="text-[10px] text-white/60 font-medium">2 en cours</span>
+                      <span className="text-[10px] text-white/50 font-medium">2 t&eacute;l&eacute;chargements</span>
                     </div>
                     <ChevronRight className="w-3 h-3 text-white/20 rotate-90" />
                   </div>
-                  {/* Download items */}
                   {[
                     { title: "Comment j\u2019ai cr\u00e9\u00e9 ma cha\u00eene.mp4", progress: 100 },
-                    { title: "Setup tour 2026.mp4", progress: 67 },
+                    { title: "Setup tour 2026.mp4", progress: 72 },
                   ].map((dl, i) => (
-                    <div key={i} className="px-3 py-2 flex items-center gap-2.5 border-b border-white/5 last:border-0">
-                      <div className="w-6 h-6 rounded bg-black/20 flex items-center justify-center shrink-0">
+                    <div key={i} className="px-3 py-2 flex items-center gap-2.5" style={{ borderBottom: i === 0 ? '1px solid rgba(255,255,255,0.03)' : 'none' }}>
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(0,0,0,0.15)' }}>
                         <Video className="w-3 h-3 text-white/15" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[9px] text-white/60 truncate">{dl.title}</p>
-                        <div className="mt-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div className="mt-1 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
                           <motion.div
                             initial={{ width: 0 }}
                             whileInView={{ width: `${dl.progress}%` }}
                             viewport={{ once: true }}
-                            transition={{ duration: 1, delay: 0.5 + i * 0.3, ease: easeOutExpo }}
-                            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                            transition={{ duration: 0.8, delay: 0.6 + i * 0.3, ease: easeOutExpo }}
+                            className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
                           />
                         </div>
                       </div>
@@ -241,7 +251,7 @@ export default function TubeForgeSection() {
                   ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>
