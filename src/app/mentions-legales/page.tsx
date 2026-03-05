@@ -24,10 +24,6 @@ export default function MentionsLegalesPage() {
                         <li><strong>Email :</strong> contact@expedition.studio</li>
                         <li><strong>Discord :</strong> <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">dsc.gg/expedition</a></li>
                     </ul>
-                    <p className="text-xs text-white/30">
-                        Les informations compl&eacute;mentaires (SIRET, adresse) seront mises &agrave; jour
-                        d&egrave;s finalisation des formalit&eacute;s administratives.
-                    </p>
                     <p>
                         TVA non applicable, article 293 B du Code G&eacute;n&eacute;ral des Imp&ocirc;ts
                         (sous r&eacute;serve de modification du r&eacute;gime fiscal).
