@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Video, Wand2, Scissors, Share2, ArrowRight, FileCheck, MonitorPlay } from "lucide-react";
+import { Wand2, Scissors, Share2, ArrowRight, FileCheck, Link2, Sparkles, Eye, TrendingUp, Anchor, Download } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -41,7 +41,7 @@ export default function ToolsSection() {
           viewport={{ once: true }}
           className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20"
         >
-          {/* Côté Texte */}
+          {/* Text */}
           <div className="flex-1 text-left">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium mb-8">
               <span className="relative flex h-2 w-2">
@@ -55,7 +55,7 @@ export default function ToolsSection() {
               Clip<span className="gradient-text">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              Transformez vos longues vidéos (YouTube, Twitch)
+              Transformez vos longues vid&eacute;os (YouTube, Twitch)
               en formats courts (TikTok, Shorts) facilement.
             </p>
 
@@ -69,8 +69,8 @@ export default function ToolsSection() {
               {[
                 {
                   icon: Wand2,
-                  title: "Découpage Intelligent",
-                  desc: "L'IA détecte les moments clés de vos vidéos.",
+                  title: "D\u00e9coupage Intelligent",
+                  desc: "L\u2019IA d\u00e9tecte les moments cl\u00e9s de vos vid\u00e9os.",
                 },
                 {
                   icon: Scissors,
@@ -80,12 +80,12 @@ export default function ToolsSection() {
                 {
                   icon: Share2,
                   title: "Sous-titres & Export",
-                  desc: "Sous-titres générés automatiquement et export 4K.",
+                  desc: "Sous-titres g\u00e9n\u00e9r\u00e9s automatiquement et export 4K.",
                 },
                 {
                   icon: FileCheck,
                   title: "Correction de Sous-titres",
-                  desc: "Importez vos .srt : l'IA corrige l'orthographe et le sens.",
+                  desc: "Importez vos .srt : l\u2019IA corrige l\u2019orthographe et le sens.",
                 },
               ].map((item, i) => (
                 <motion.li key={i} variants={itemVariants} className="flex gap-5">
@@ -110,68 +110,96 @@ export default function ToolsSection() {
             </a>
           </div>
 
-          {/* Côté Visuel / Mockup */}
+          {/* Mockup - Real ClipForge UI */}
           <div className="flex-1 w-full relative">
-            <div className="absolute -inset-10 bg-purple-500/10 blur-3xl rounded-full opacity-50" />
-            <div className="relative glass rounded-2xl border border-white/5 p-2 shadow-2xl">
-              <div className="aspect-video bg-[#0a0a0a] rounded-xl overflow-hidden relative border border-white/5 flex items-center justify-center group">
-                {/* Simulation d'interface */}
-                <div className="absolute inset-0 flex">
-                  {/* Sidebar */}
-                  <div className="w-16 border-r border-white/10 flex flex-col items-center py-4 gap-4 bg-[#0f0f12]">
-                    <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                      <Video className="w-4 h-4 text-purple-400" />
-                    </div>
-                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                      <Scissors className="w-4 h-4 text-white/30" />
-                    </div>
-                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                      <Wand2 className="w-4 h-4 text-white/30" />
-                    </div>
+            <div className="absolute -inset-10 bg-indigo-500/10 blur-3xl rounded-full opacity-50" />
+            <div className="relative rounded-2xl border border-white/5 shadow-2xl overflow-hidden" style={{ background: '#0a0a0f' }}>
+              {/* Window chrome */}
+              <div className="h-8 bg-[#0f0f15] border-b border-white/5 flex items-center px-3 gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/40" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500/40" />
+                <span className="text-[10px] text-white/20 ml-2 font-medium">ClipForge</span>
+              </div>
+
+              {/* Main content */}
+              <div className="p-5">
+                {/* URL Input */}
+                <div className="flex gap-2 mb-5">
+                  <div className="flex-1 h-10 bg-white/[0.03] rounded-xl border border-white/[0.06] flex items-center px-3 gap-2">
+                    <Link2 className="w-3.5 h-3.5 text-white/20" />
+                    <span className="text-xs text-white/20">Collez un lien YouTube...</span>
                   </div>
-                  {/* Main Content — Source → Output preview */}
-                  <div className="flex-1 p-4 relative h-full flex items-center justify-center gap-4">
-                    {/* Source 16:9 */}
-                    <div className="relative flex flex-col items-center gap-2">
-                      <div className="w-28 h-16 md:w-36 md:h-20 bg-[#1a1a22] rounded-lg border border-white/10 flex items-center justify-center overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent" />
-                        <MonitorPlay className="w-8 h-8 text-white/20" />
-                        <div className="absolute bottom-1 right-1 text-[9px] text-white/30 font-mono">16:9</div>
-                      </div>
-                      <span className="text-[10px] text-white/30 font-medium">Source</span>
-                    </div>
-
-                    {/* Arrow / Scissors */}
-                    <motion.div
-                      animate={{ scale: [1, 1.15, 1] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                      className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30"
-                    >
-                      <Scissors className="w-5 h-5 text-white" />
-                    </motion.div>
-
-                    {/* Output 9:16 */}
-                    <div className="relative flex flex-col items-center gap-2">
-                      <div className="w-12 h-20 md:w-14 md:h-24 bg-[#1a1a22] rounded-lg border border-purple-500/20 flex items-center justify-center overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent" />
-                        <motion.div
-                          animate={{ opacity: [0.3, 0.7, 0.3] }}
-                          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                          className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-purple-500/20 to-transparent flex items-center justify-center"
-                        >
-                          <div className="h-[3px] w-3/4 bg-white/20 rounded-full" />
-                        </motion.div>
-                        <Video className="w-5 h-5 text-purple-400/40" />
-                        <div className="absolute bottom-1 right-1 text-[9px] text-white/30 font-mono">9:16</div>
-                      </div>
-                      <span className="text-[10px] text-white/30 font-medium">Short</span>
-                    </div>
+                  <div className="h-10 px-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center gap-1.5 shadow-lg shadow-indigo-500/25">
+                    <Sparkles className="w-3.5 h-3.5 text-white" />
+                    <span className="text-xs text-white font-semibold">G&eacute;n&eacute;rer</span>
                   </div>
                 </div>
 
-                {/* Timeline */}
-                <div className="absolute bottom-4 left-20 right-4 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center px-2 overflow-hidden">
-                  <TimelineAnimation />
+                {/* Subtitle style presets */}
+                <div className="flex items-center gap-2 mb-5">
+                  <span className="text-[10px] text-white/25 uppercase tracking-wider">Style</span>
+                  {["Pop", "Smooth", "Glow", "Classique"].map((s, i) => (
+                    <div key={s} className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border ${i === 0 ? 'bg-indigo-500/20 border-indigo-500/30 text-indigo-300' : 'bg-white/[0.03] border-white/5 text-white/30'}`}>
+                      {s}
+                    </div>
+                  ))}
+                  <div className="flex gap-1 ml-auto">
+                    {['#fff', '#facc15', '#22d3ee', '#ef4444', '#22c55e', '#ec4899', '#fbbf24'].map((c) => (
+                      <div key={c} className="w-3.5 h-3.5 rounded-full border border-white/10" style={{ background: c }} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Results grid - 9:16 clips */}
+                <div className="grid grid-cols-3 gap-2.5">
+                  {[
+                    { score: 94, title: "Le moment cl\u00e9", duration: "0:42" },
+                    { score: 87, title: "R\u00e9action \u00e9pique", duration: "0:31" },
+                    { score: 78, title: "Conseil #1", duration: "0:55" },
+                  ].map((clip, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + i * 0.15 }}
+                      className="rounded-xl overflow-hidden border border-white/5 bg-white/[0.02]"
+                    >
+                      {/* 9:16 preview */}
+                      <div className="aspect-[9/16] bg-gradient-to-b from-indigo-500/5 to-transparent relative flex items-end justify-center">
+                        {/* Virality badge */}
+                        <div className={`absolute top-2 right-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold flex items-center gap-0.5 ${clip.score >= 90 ? 'bg-emerald-500/20 text-emerald-400' : clip.score >= 80 ? 'bg-amber-500/20 text-amber-400' : 'bg-orange-500/20 text-orange-400'}`}>
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          {clip.score}
+                        </div>
+                        {/* Duration */}
+                        <div className="absolute bottom-2 left-2 px-1.5 py-0.5 rounded bg-black/60 text-[9px] text-white/80 font-mono">
+                          {clip.duration}
+                        </div>
+                        {/* Fake subtitle */}
+                        <div className="mb-8 px-2">
+                          <div className="bg-black/50 backdrop-blur-sm rounded px-2 py-0.5">
+                            <span className="text-[9px] text-white font-bold uppercase tracking-wide">REGARDEZ &Ccedil;A</span>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Info */}
+                      <div className="p-2.5">
+                        <p className="text-[10px] text-white/70 font-medium truncate mb-1.5">{clip.title}</p>
+                        <div className="flex gap-2">
+                          <div className="flex items-center gap-0.5">
+                            <Anchor className="w-2.5 h-2.5 text-blue-400/60" />
+                            <span className="text-[9px] text-white/30">Hook</span>
+                          </div>
+                          <div className="flex items-center gap-0.5">
+                            <Eye className="w-2.5 h-2.5 text-pink-400/60" />
+                            <span className="text-[9px] text-white/30">R&eacute;tention</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -179,78 +207,5 @@ export default function ToolsSection() {
         </motion.div>
       </div>
     </section>
-  );
-}
-
-function TimelineAnimation() {
-  const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    // Check prefers-reduced-motion
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return;
-
-    const interval = setInterval(() => {
-      setStep((prev) => (prev + 1) % 3);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Playhead position synced with step
-  const playheadPositions = ["10%", "50%", "85%"];
-
-  return (
-    <>
-      {/* Segment Violet Gauche */}
-      <motion.div
-        animate={{
-          borderTopRightRadius: step === 0 ? "0px" : "4px",
-          borderBottomRightRadius: step === 0 ? "0px" : "4px",
-          marginRight: step >= 1 ? "4px" : "0px",
-        }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="h-8 w-1/2 shrink-0 bg-purple-500/20 border-y border-l border-purple-500/30 backdrop-blur-sm rounded-l-md relative"
-        style={{ borderRight: step === 0 ? "none" : "1px solid rgba(168, 85, 247, 0.3)" }}
-      >
-        {/* Ligne de cut qui flash */}
-        <motion.div
-          animate={{ opacity: step === 1 ? [0, 1, 0] : 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute right-0 top-0 bottom-0 w-0.5 bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] z-20"
-        />
-      </motion.div>
-
-      {/* Segment Bleu (Insertion Ripple) */}
-      <motion.div
-        initial={{ width: 0, opacity: 0 }}
-        animate={{
-          width: step === 2 ? "30%" : "0%",
-          opacity: step === 2 ? 1 : 0,
-          marginRight: step === 2 ? "4px" : "0px",
-          marginLeft: step === 2 ? "4px" : "0px",
-        }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="h-8 shrink-0 bg-blue-500/20 border border-blue-500/30 backdrop-blur-sm rounded-md overflow-hidden"
-      />
-
-      {/* Segment Violet Droit */}
-      <motion.div
-        animate={{
-          borderTopLeftRadius: step === 0 ? "0px" : "4px",
-          borderBottomLeftRadius: step === 0 ? "0px" : "4px",
-          marginLeft: step === 1 ? "4px" : "0px",
-        }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="h-8 w-1/2 shrink-0 bg-purple-500/20 border-y border-r border-purple-500/30 backdrop-blur-sm rounded-r-md"
-        style={{ borderLeft: step === 0 ? "none" : "1px solid rgba(168, 85, 247, 0.3)" }}
-      />
-
-      {/* Playhead — synced with step */}
-      <motion.div
-        animate={{ left: playheadPositions[step] }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute top-0 bottom-0 w-0.5 bg-white/50 z-10 pointer-events-none shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-      />
-    </>
   );
 }
