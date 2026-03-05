@@ -40,7 +40,7 @@ export default function Hero() {
         >
           Aujourd&apos;hui 2 outils. Demain 5, puis 10.
           <br className="hidden md:block" />
-          <span className="text-white/80">Votre prix ? Toujours 9,99&euro;.</span> Plus vous attendez, plus vous payez.
+          <span className="text-white/80">Votre prix ? Toujours 9,99&euro;.</span> M&ecirc;me quand la suite aura 10 outils.
         </motion.p>
 
         <motion.div

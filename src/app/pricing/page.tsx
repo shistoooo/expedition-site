@@ -217,7 +217,7 @@ export default function PricingPage() {
         >
           <AlertCircle className="w-6 h-6 text-orange-400 shrink-0 mt-1" />
           <div>
-            <h4 className="text-lg font-bold text-orange-300 mb-2">Plus vous attendez, plus vous payez</h4>
+            <h4 className="text-lg font-bold text-orange-300 mb-2">Pourquoi c&apos;est le meilleur moment pour rejoindre ?</h4>
             <p className="text-white/70 leading-relaxed mb-3">
               La suite Expédition grandit en permanence. À chaque nouvelle &quot;Vague&quot; d&apos;outils, le tarif d&apos;entrée augmente.
             </p>
