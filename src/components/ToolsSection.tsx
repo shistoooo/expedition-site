@@ -65,7 +65,7 @@ function SubtitlePreview({ style }: { style: string }) {
 
   return (
     <span
-      className="text-[7px] font-bold uppercase tracking-wide text-center whitespace-nowrap"
+      className="text-[5px] font-bold uppercase tracking-wide text-center whitespace-nowrap"
       style={{ color: '#fff', ...animations[style] }}
     >
       REGARDEZ
@@ -166,19 +166,19 @@ function ClipForgeMockup() {
         {/* Subtitle customizer */}
         <div className="flex items-center gap-3 p-3 rounded-[20px]" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.06)' }}>
           {/* Mini 9:16 preview */}
-          <div className="shrink-0 w-[42px] h-[75px] rounded-lg overflow-hidden relative flex items-end justify-center" style={{ background: 'linear-gradient(to bottom, rgba(30,30,40,0.8), #000)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="mb-2.5">
+          <div className="shrink-0 w-[36px] h-[64px] rounded-md overflow-hidden relative flex items-end justify-center" style={{ background: 'linear-gradient(to bottom, rgba(30,30,40,0.8), #000)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="mb-2">
               <SubtitlePreview style={subStyle} />
             </div>
           </div>
           {/* Style + Color */}
-          <div className="flex-1 space-y-2">
-            <div className="flex gap-1 flex-wrap">
+          <div className="flex-1 space-y-1.5">
+            <div className="flex gap-0.5 flex-wrap">
               {["Pop", "Smooth", "Glow", "Classique"].map((s) => (
                 <button
                   key={s}
                   onClick={() => setSubStyle(s)}
-                  className={`px-2 py-0.5 rounded-lg text-[9px] font-medium border transition-all duration-200 ${
+                  className={`px-1.5 py-0.5 rounded-md text-[8px] font-medium border transition-all duration-200 ${
                     subStyle === s
                       ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
                       : 'text-white/35 border-transparent hover:text-white/55'
@@ -189,12 +189,12 @@ function ClipForgeMockup() {
                 </button>
               ))}
             </div>
-            <div className="flex gap-1 items-center">
+            <div className="flex gap-0.5 items-center">
               {colors.map((c) => (
                 <button
                   key={c}
                   onClick={() => setSubColor(c)}
-                  className={`w-3.5 h-3.5 rounded-full transition-all duration-150 ${subColor === c ? 'ring-[1.5px] ring-white ring-offset-1 ring-offset-transparent scale-110' : 'opacity-60 hover:opacity-90'}`}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${subColor === c ? 'ring-[1.5px] ring-white ring-offset-1 ring-offset-transparent scale-110' : 'opacity-60 hover:opacity-90'}`}
                   style={{ background: c }}
                 />
               ))}
