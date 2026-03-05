@@ -37,10 +37,47 @@ function TubeForgeMockup() {
   const [mode, setMode] = useState<"url" | "search" | "script">("url");
   const [trimOpen, setTrimOpen] = useState(true);
   const [trimStart, setTrimStart] = useState(12);
+  const [trimEnd, setTrimEnd] = useState(47);
+  const [dragging, setDragging] = useState<"start" | "end" | null>(null);
   const [trayOpen, setTrayOpen] = useState(true);
+  const timelineRef = useState<HTMLDivElement | null>(null);
 
-  const totalDuration = 106; // 1:46 in minutes mapped to 100%
-  const trimEnd = trimStart + 35;
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!dragging) return;
+    const bar = e.currentTarget as HTMLDivElement;
+    const rect = bar.getBoundingClientRect();
+    const pct = Math.round(Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100)));
+    if (dragging === "start") {
+      setTrimStart(Math.min(pct, trimEnd - 5));
+    } else {
+      setTrimEnd(Math.max(pct, trimStart + 5));
+    }
+  };
+
+  const handlePointerUp = () => setDragging(null);
+
+  const handleBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (dragging) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+    // Move whichever handle is closer
+    const distStart = Math.abs(pct - trimStart);
+    const distEnd = Math.abs(pct - trimEnd);
+    if (distStart < distEnd) {
+      setTrimStart(Math.min(pct, trimEnd - 5));
+    } else {
+      setTrimEnd(Math.max(pct, trimStart + 5));
+    }
+  };
+
+  // Convert percent (0-100) to time string for a 1:46:23 video (6383 seconds)
+  const pctToTime = (pct: number) => {
+    const totalSec = Math.round((pct / 100) * 6383);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
 
   const downloads = [
     { title: "Pokemon Ultra Soleil mais uniquement avec des Shiny", progress: 100, status: "completed" as const, thumb: "/mockups/thumb-pokemon.jpg" },
@@ -186,24 +223,39 @@ function TubeForgeMockup() {
                   <div className="mt-2 rounded-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="p-3">
                       <div
-                        className="relative h-2.5 rounded-full cursor-pointer"
+                        className="relative h-3 rounded-full cursor-pointer touch-none"
                         style={{ background: 'rgba(255,255,255,0.05)' }}
-                        onClick={(e) => {
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          const pct = Math.round(((e.clientX - rect.left) / rect.width) * 100);
-                          setTrimStart(Math.max(0, Math.min(65, pct)));
-                        }}
+                        onClick={handleBarClick}
+                        onPointerMove={handlePointerMove}
+                        onPointerUp={handlePointerUp}
+                        onPointerLeave={handlePointerUp}
                       >
-                        <div className="absolute h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-150" style={{ left: `${trimStart}%`, width: '35%' }} />
-                        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-lg border-2 border-orange-500 cursor-grab hover:scale-125 transition-transform" style={{ left: `${trimStart}%` }} />
-                        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-lg border-2 border-amber-500 cursor-grab hover:scale-125 transition-transform" style={{ left: `${trimEnd}%` }} />
+                        {/* Selected range */}
+                        <div
+                          className="absolute h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-500"
+                          style={{ left: `${trimStart}%`, width: `${trimEnd - trimStart}%`, transition: dragging ? 'none' : 'all 0.15s' }}
+                        />
+                        {/* Start handle */}
+                        <div
+                          className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg border-2 border-orange-500 hover:scale-125 transition-transform z-10 ${dragging === 'start' ? 'scale-125 cursor-grabbing' : 'cursor-grab'}`}
+                          style={{ left: `${trimStart}%` }}
+                          onPointerDown={(e) => { e.stopPropagation(); setDragging("start"); (e.target as HTMLElement).setPointerCapture(e.pointerId); }}
+                          onPointerMove={handlePointerMove}
+                          onPointerUp={(e) => { handlePointerUp(); (e.target as HTMLElement).releasePointerCapture(e.pointerId); }}
+                        />
+                        {/* End handle */}
+                        <div
+                          className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg border-2 border-amber-500 hover:scale-125 transition-transform z-10 ${dragging === 'end' ? 'scale-125 cursor-grabbing' : 'cursor-grab'}`}
+                          style={{ left: `${trimEnd}%` }}
+                          onPointerDown={(e) => { e.stopPropagation(); setDragging("end"); (e.target as HTMLElement).setPointerCapture(e.pointerId); }}
+                          onPointerMove={handlePointerMove}
+                          onPointerUp={(e) => { handlePointerUp(); (e.target as HTMLElement).releasePointerCapture(e.pointerId); }}
+                        />
                       </div>
-                      <div className="flex justify-between mt-1.5 text-[8px] text-white/30 font-mono">
+                      <div className="flex justify-between mt-2 text-[8px] text-white/30 font-mono">
                         <span>00:00:00</span>
                         <span className="text-orange-400 font-bold">
-                          {String(Math.floor(trimStart * 1.06)).padStart(2, '0')}:{String(Math.floor((trimStart * 63.8) % 60)).padStart(2, '0')}
-                          {" \u2014 "}
-                          {String(Math.floor(trimEnd * 1.06)).padStart(2, '0')}:{String(Math.floor((trimEnd * 63.8) % 60)).padStart(2, '0')}
+                          {pctToTime(trimStart)} &rarr; {pctToTime(trimEnd)}
                         </span>
                         <span>1:46:23</span>
                       </div>
