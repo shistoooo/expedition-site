@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, Sparkles, ListVideo, ArrowRight, Search, Video, Music, Download, CheckCircle2, Clock, ChevronRight, Scissors, FolderOpen, Loader2, AlertCircle, FileText } from "lucide-react";
+import { Zap, Scissors, ImagePlus, FileText, FolderOpen, Search, Video, Music, Download, CheckCircle2, ChevronRight, Loader2, ArrowRight, ListVideo, Play } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -56,7 +56,7 @@ export default function TubeForgeSection() {
               Tube<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              Le t&eacute;l&eacute;chargeur ultime. Rapide, sans publicit&eacute; et con&ccedil;u pour les cr&eacute;ateurs exigeants.
+              Bien plus qu&apos;un t&eacute;l&eacute;chargeur. Un vrai outil de travail pour les cr&eacute;ateurs.
             </p>
 
             <motion.ul
@@ -64,20 +64,23 @@ export default function TubeForgeSection() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="space-y-6 mb-10"
+              className="space-y-5 mb-10"
             >
               {[
-                { icon: Zap, title: "Ultra Rapide", desc: "Moteur multithread pour des t\u00e9l\u00e9chargements instantan\u00e9s." },
-                { icon: Sparkles, title: "Qualit\u00e9 8K & 60fps", desc: "Pr\u00e9servez chaque pixel. Extraction audio sans perte." },
-                { icon: ListVideo, title: "Playlists & Cha\u00eenes", desc: "T\u00e9l\u00e9chargez des s\u00e9ries enti\u00e8res en un seul clic." },
+                { icon: Zap, title: "T\u00e9l\u00e9chargement acc\u00e9l\u00e9r\u00e9", desc: "4 fragments en parall\u00e8le, 3 t\u00e9l\u00e9chargements simultan\u00e9s. 30 \u00e0 60% plus rapide qu\u2019un t\u00e9l\u00e9chargeur classique." },
+                { icon: Scissors, title: "D\u00e9coupage avant t\u00e9l\u00e9chargement", desc: "Timeline interactive avec preview YouTube. D\u00e9coupez l\u2019extrait exact dont vous avez besoin \u2014 sans re-encoder." },
+                { icon: FileText, title: "Mode Script", desc: "Importez un fichier Word avec vos liens. TubeForge extrait, d\u00e9duplique et t\u00e9l\u00e9charge tout en batch. Id\u00e9al pour vos recherches vid\u00e9o." },
+                { icon: ImagePlus, title: "Extraction de frames", desc: "Extrayez les images cl\u00e9s de n\u2019importe quelle vid\u00e9o. Parfait pour cr\u00e9er des miniatures ou r\u00e9cup\u00e9rer des r\u00e9f\u00e9rences." },
+                { icon: ListVideo, title: "Playlists & Recherche int\u00e9gr\u00e9e", desc: "T\u00e9l\u00e9chargez des playlists enti\u00e8res ou cherchez directement sur YouTube sans quitter l\u2019app." },
+                { icon: FolderOpen, title: "Biblioth\u00e8que organis\u00e9e", desc: "Dossiers, covers, drag-and-drop, lecteur int\u00e9gr\u00e9 avec raccourcis clavier. Tout reste rang\u00e9." },
               ].map((item, i) => (
-                <motion.li key={i} variants={itemVariants} className="flex gap-5">
-                  <div className="mt-1 w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                    <item.icon className="w-5 h-5 text-red-400" />
+                <motion.li key={i} variants={itemVariants} className="flex gap-4">
+                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                    <item.icon className="w-4 h-4 text-red-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white text-lg">{item.title}</h3>
-                    <p className="text-white/50">{item.desc}</p>
+                    <h3 className="font-semibold text-white">{item.title}</h3>
+                    <p className="text-white/45 text-sm leading-relaxed">{item.desc}</p>
                   </div>
                 </motion.li>
               ))}
@@ -134,7 +137,7 @@ export default function TubeForgeSection() {
                 {/* Hero text — real app */}
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70 tracking-tight">T&eacute;l&eacute;chargez sans limites</h3>
-                  <p className="text-[10px] text-white/40 mt-1">Transformez vos liens YouTube en fichiers MP4 et MP3.</p>
+                  <p className="text-[10px] text-white/40 mt-1">Transformez vos liens YouTube en fichiers MP4 et MP3 de haute qualit&eacute;, instantan&eacute;ment.</p>
                 </div>
 
                 {/* Mode Toggle — real app */}
@@ -192,14 +195,14 @@ export default function TubeForgeSection() {
                         <span className="text-[11px] font-bold text-white group-hover:text-cyan-400 transition-colors">T&eacute;l&eacute;charger MP4</span>
                         <Video className="w-3.5 h-3.5 text-white/20 group-hover:text-cyan-400 transition-colors" />
                       </div>
-                      <p className="text-[8px] text-white/40">Qualit&eacute;: 1080p</p>
+                      <p className="text-[8px] text-white/40">Qualit&eacute;: 1080p &bull; 4 fragments parall&egrave;les</p>
                     </div>
                     <div className="group bg-white/5 hover:bg-white/10 border border-white/10 p-3 rounded-xl transition-all text-left">
                       <div className="flex items-center justify-between mb-0.5">
                         <span className="text-[11px] font-bold text-white group-hover:text-pink-400 transition-colors">T&eacute;l&eacute;charger MP3</span>
                         <Music className="w-3.5 h-3.5 text-white/20 group-hover:text-pink-400 transition-colors" />
                       </div>
-                      <p className="text-[8px] text-white/40">Audio haute fid&eacute;lit&eacute;</p>
+                      <p className="text-[8px] text-white/40">Audio haute fid&eacute;lit&eacute; &bull; 320kbps</p>
                     </div>
                   </div>
 
@@ -210,6 +213,23 @@ export default function TubeForgeSection() {
                       <span className="text-orange-400">Couper un extrait</span>
                     </div>
                     <ChevronRight className="w-3.5 h-3.5 text-orange-400 rotate-90" />
+                  </div>
+
+                  {/* Trim timeline preview — expanded */}
+                  <div className="mt-2 rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div className="p-3">
+                      {/* Timeline bar */}
+                      <div className="relative h-2.5 rounded-full" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                        <div className="absolute h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-500" style={{ left: '12%', width: '35%' }} />
+                        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white rounded-full shadow-lg border-2 border-orange-500" style={{ left: '12%' }} />
+                        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white rounded-full shadow-lg border-2 border-amber-500" style={{ left: '47%' }} />
+                      </div>
+                      <div className="flex justify-between mt-1.5 text-[8px] text-white/30 font-mono">
+                        <span>00:00:00</span>
+                        <span className="text-orange-400 font-bold">00:12:34 &mdash; dur&eacute;e s&eacute;lectionn&eacute;e</span>
+                        <span>1:46:23</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -229,17 +249,15 @@ export default function TubeForgeSection() {
                 {/* Downloads list */}
                 <div style={{ background: '#0f0e2a', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                   {[
-                    { title: "Pokemon Ultra Soleil mais uniquement avec des Shiny", duration: "2:34:17", progress: 100, status: "completed" as const, thumb: "/mockups/thumb-pokemon.jpg" },
-                    { title: "22 minutes pour sauver l\u2019univers (ok un peu plus)", duration: "22:41", progress: 100, status: "completed" as const, thumb: "/mockups/thumb-fantasy.jpg" },
-                    { title: "1H46 pour t\u2019expliquer le jeu qui m\u2019a bris\u00e9", duration: "1:46:23", progress: 67, status: "downloading" as const, thumb: "/mockups/thumb-anime.jpg" },
-                    { title: "POKOPIA VA (vraiment) \u00caTRE EXCEPTIONNEL", duration: "18:32", progress: 34, status: "downloading" as const, thumb: "/mockups/thumb-pokopia.jpg" },
+                    { title: "Pokemon Ultra Soleil mais uniquement avec des Shiny", progress: 100, status: "completed" as const, thumb: "/mockups/thumb-pokemon.jpg" },
+                    { title: "22 minutes pour sauver l\u2019univers (ok un peu plus)", progress: 100, status: "completed" as const, thumb: "/mockups/thumb-fantasy.jpg" },
+                    { title: "1H46 pour t\u2019expliquer le jeu qui m\u2019a bris\u00e9", progress: 67, status: "downloading" as const, thumb: "/mockups/thumb-anime.jpg" },
+                    { title: "POKOPIA VA (vraiment) \u00caTRE EXCEPTIONNEL", progress: 34, status: "downloading" as const, thumb: "/mockups/thumb-pokopia.jpg" },
                   ].map((dl, i) => (
                     <div key={i} className="px-4 py-2.5 flex items-center gap-3" style={{ borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-                      {/* Thumbnail */}
                       <div className="w-10 h-10 rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
                         <Image src={dl.thumb} alt="" fill className="object-cover" />
                       </div>
-                      {/* Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-[10px] text-white/80 truncate">{dl.title}</p>
@@ -261,7 +279,6 @@ export default function TubeForgeSection() {
                           <p className="text-[9px] text-green-400 mt-0.5">T&eacute;l&eacute;charg&eacute;</p>
                         )}
                       </div>
-                      {/* Status */}
                       <div className="flex items-center gap-1.5 shrink-0">
                         {dl.status === "completed" && <CheckCircle2 className="w-4 h-4 text-green-400" />}
                         {dl.status === "downloading" && <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />}
