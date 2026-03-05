@@ -116,13 +116,8 @@ export default function TubeForgeSection() {
                 <span className="text-[10px] text-white/25 ml-2 font-medium tracking-wide">TubeForge</span>
               </div>
 
-              {/* Header — like real app */}
-              <div className="px-5 pt-4 pb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 shadow-lg shadow-orange-500/20" />
-                  <span className="text-base font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">TubeForge</span>
-                </div>
-                {/* Tab nav — real app style */}
+              {/* Header — tabs centered */}
+              <div className="px-5 pt-4 pb-3 flex items-center justify-center">
                 <div className="flex items-center gap-1 p-1 rounded-xl border border-white/10 backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <div className="px-3 py-1.5 rounded-lg text-[10px] font-medium text-white shadow-sm" style={{ background: 'rgba(255,255,255,0.1)' }}>
                     T&eacute;l&eacute;charger
