@@ -81,9 +81,9 @@ function ClipForgeMockup() {
 
   const colors = ['#FFFFFF', '#FACC15', '#22D3EE', '#EF4444', '#22C55E', '#EC4899', '#FBBF24'];
   const clips = [
-    { score: 94, title: "Le moment cl\u00e9", duration: "0:42", hook: 91, retention: 88 },
-    { score: 87, title: "R\u00e9action \u00e9pique", duration: "0:31", hook: 85, retention: 82 },
-    { score: 78, title: "Conseil #1", duration: "0:55", hook: 72, retention: 80 },
+    { score: 94, title: "Le moment cl\u00e9", duration: "0:42", hook: 91, retention: 88, video: "/mockups/clip-1.mp4" },
+    { score: 87, title: "R\u00e9action \u00e9pique", duration: "0:31", hook: 85, retention: 82, video: "/mockups/clip-2.mp4" },
+    { score: 78, title: "Conseil #1", duration: "0:55", hook: 72, retention: 80, video: "/mockups/clip-3.mp4" },
   ];
 
   return (
@@ -215,11 +215,16 @@ function ClipForgeMockup() {
               style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               {/* 9:16 preview area */}
-              <div className="aspect-[9/16] relative flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.3)' }}>
+              <div className="aspect-[9/16] relative flex items-center justify-center overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)' }}>
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src={clip.video}
+                />
                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 via-transparent to-black/20" />
-                <div className="p-2.5 bg-black/30 rounded-full backdrop-blur-sm">
-                  <Play className="w-4 h-4 text-white/70" fill="rgba(255,255,255,0.7)" />
-                </div>
                 <div className={`absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full text-[8px] font-semibold flex items-center gap-0.5 ring-1 bg-gradient-to-r ${clip.score >= 90 ? 'from-emerald-500/20 to-emerald-500/5 text-emerald-400 ring-emerald-500/30' : clip.score >= 80 ? 'from-amber-500/20 to-amber-500/5 text-amber-400 ring-amber-500/30' : 'from-orange-500/20 to-orange-500/5 text-orange-400 ring-orange-500/30'}`}>
                   <TrendingUp className="w-2 h-2" />
                   {clip.score}
