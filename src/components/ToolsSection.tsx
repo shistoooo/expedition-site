@@ -90,10 +90,8 @@ export default function ToolsSection() {
               {[
                 { icon: Sparkles, title: "L\u2019IA trouve vos meilleurs moments", desc: "Analyse sp\u00e9cialis\u00e9e selon votre contenu : gaming, podcast, tuto, vlog. Elle d\u00e9tecte les punchlines, les r\u00e9actions, les fails \u2014 pas juste les silences." },
                 { icon: TrendingUp, title: "Score de viralit\u00e9, hook et r\u00e9tention", desc: "Chaque clip est not\u00e9 sur 100. Vous voyez en un coup d\u2019\u0153il quels extraits vont performer et lesquels sont \u00e0 jeter." },
-                { icon: ScanFace, title: "Recadrage intelligent qui suit le visage", desc: "Le cadrage 9:16 suit votre visage frame par frame. Deux speakers ? Il passe en split-screen automatiquement. Gaming avec cam ? Il stack votre face + le gameplay." },
+                { icon: ScanFace, title: "Recadrage intelligent qui suit le visage", desc: "Le cadrage 9:16 suit votre visage frame par frame. Smooth, sans saccade, avec un lissage cin\u00e9matographique. Vous restez toujours au centre." },
                 { icon: Type, title: "Sous-titres anim\u00e9s, \u00e9ditables", desc: "4 styles d\u2019animation (Pop, Smooth, Glow, Classique), couleurs personnalisables, \u00e9diteur int\u00e9gr\u00e9. Modifiez un mot, reg\u00e9n\u00e9rez le clip en un clic." },
-                { icon: Layers, title: "Combinez des moments s\u00e9par\u00e9s en un seul clip", desc: "L\u2019IA d\u00e9tecte les liens narratifs entre vos segments et sugg\u00e8re des compilations qui racontent une histoire compl\u00e8te." },
-                { icon: Scissors, title: "V\u00e9rifiez avant d\u2019exporter", desc: "Mode v\u00e9rification : pr\u00e9visualisez chaque clip, choisissez le cadrage parmi plusieurs options, ajustez les sous-titres. Rien ne sort sans votre validation." },
               ].map((item, i) => (
                 <motion.li key={i} variants={itemVariants} className="flex gap-4">
                   <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
