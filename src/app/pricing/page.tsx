@@ -103,7 +103,7 @@ export default function PricingPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-sm font-medium mb-6">
               <Lock className="w-4 h-4" />
-              <span>Modèle &quot;Grandfathering&quot; : Votre prix ne bougera jamais</span>
+              <span>Plus la suite grandit, plus votre offre prend de la valeur</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Un abonnement unique.<br />
@@ -217,12 +217,16 @@ export default function PricingPage() {
         >
           <AlertCircle className="w-6 h-6 text-orange-400 shrink-0 mt-1" />
           <div>
-            <h4 className="text-lg font-bold text-orange-300 mb-2">Pourquoi rejoindre maintenant ?</h4>
-            <p className="text-white/70 leading-relaxed">
-              Nous construisons Expédition en public. Le prix augmentera à chaque nouvelle &quot;Vague&quot; d&apos;outils.
-              <br />
-              <strong>Les membres de la Vague Pionnier (vous) ne subiront jamais ces augmentations.</strong>
-              Votre tarif de 9,99€ ne changera jamais tant que votre abonnement reste actif.
+            <h4 className="text-lg font-bold text-orange-300 mb-2">Plus vous attendez, plus vous payez</h4>
+            <p className="text-white/70 leading-relaxed mb-3">
+              La suite Expédition grandit en permanence. À chaque nouvelle &quot;Vague&quot; d&apos;outils, le tarif d&apos;entrée augmente.
+            </p>
+            <p className="text-white/70 leading-relaxed mb-3">
+              <strong className="text-orange-200">Mais les Pionniers gardent leur tarif de 9,99&euro; pour toujours</strong> — même quand la suite vaudra 25&euro;/mois avec 10+ outils.
+              C&apos;est le même principe que Netflix à ses débuts : ceux qui ont souscrit tôt ont payé moins longtemps après.
+            </p>
+            <p className="text-white/50 text-sm">
+              Votre tarif reste le même tant que votre abonnement est actif. Annulable à tout moment.
             </p>
           </div>
         </motion.div>

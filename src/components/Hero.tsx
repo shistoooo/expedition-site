@@ -38,9 +38,9 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg md:text-xl text-white/60 mb-4 max-w-2xl leading-relaxed mx-auto"
         >
-          ClipForge, TubeForge et tous les futurs outils Exp&eacute;dition.
+          Aujourd&apos;hui 2 outils. Demain 5, puis 10.
           <br className="hidden md:block" />
-          Construits avec la communaut&eacute;, pour les cr&eacute;ateurs qui veulent aller plus loin.
+          <span className="text-white/80">Votre prix ? Toujours 9,99&euro;.</span> Plus vous attendez, plus vous payez.
         </motion.p>
 
         <motion.div

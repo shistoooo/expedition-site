@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Lock, ArrowRight } from "lucide-react";
+import { Check, Lock, ArrowRight, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePricing() {
@@ -19,12 +19,38 @@ export default function HomePricing() {
             <span>Tarif Pionnier — garanti sans augmentation</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Un prix simple. Tout inclus.
+            La suite grossit. Votre prix, non.
           </h2>
           <p className="text-lg text-white/50 max-w-xl mx-auto">
-            Pas de formule &quot;Basic&quot; ou &quot;Pro&quot;. Tout le monde a acc&egrave;s &agrave; tout.
-            Le prix augmentera avec les prochaines vagues d&apos;outils — mais pas pour vous.
+            Chaque nouveau outil augmente la valeur de votre abonnement.
+            Les nouveaux membres paieront plus cher — mais pas vous.
           </p>
+        </motion.div>
+
+        {/* Value escalator */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="grid grid-cols-3 gap-3 mb-10"
+        >
+          {[
+            { period: "Aujourd\u2019hui", tools: "2 outils", price: "9,99\u20AC", you: true },
+            { period: "\u00C9t\u00E9 2026", tools: "5 outils", price: "9,99\u20AC", you: true },
+            { period: "Fin 2026", tools: "10+ outils", price: "9,99\u20AC", you: true },
+          ].map((step, i) => (
+            <div key={i} className="relative text-center p-4 rounded-xl bg-white/[0.03] border border-white/10">
+              <p className="text-xs text-white/30 mb-1">{step.period}</p>
+              <p className="text-lg font-bold text-white mb-0.5">{step.tools}</p>
+              <p className="text-sm font-bold text-green-400">{step.price}</p>
+              {i < 2 && (
+                <TrendingUp className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 z-10" />
+              )}
+            </div>
+          ))}
+          <div className="col-span-3 text-center">
+            <p className="text-xs text-white/30">Les nouveaux abonnés paieront <span className="text-red-400/70">~15&euro;</span> puis <span className="text-red-400/70">~25&euro;</span> pour la même suite.</p>
+          </div>
         </motion.div>
 
         <motion.div
