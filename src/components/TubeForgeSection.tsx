@@ -161,88 +161,49 @@ export default function TubeForgeSection() {
                   ))}
                 </div>
 
-                {/* Video info card — like URL mode result */}
-                <div className="rounded-2xl p-3 backdrop-blur-md" style={{ background: 'rgba(30,27,75,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="flex gap-3">
-                    {/* Thumbnail */}
-                    <div className="w-24 aspect-video rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)' }}>
-                      <Image src="/mockups/thumb-anime.jpg" alt="Thumbnail" fill className="object-cover" />
-                      <div className="absolute bottom-0.5 right-0.5 px-1 py-0.5 rounded text-[7px] text-white/70 font-mono" style={{ background: 'rgba(0,0,0,0.7)' }}>
-                        <Clock className="w-1.5 h-1.5 inline mr-0.5" />1:46:23
-                      </div>
-                    </div>
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] text-white/90 font-bold leading-tight line-clamp-2 mb-1">1H46 pour t&apos;expliquer le jeu qui m&apos;a bris&eacute;.</p>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] text-white/35">1:46:23</span>
-                        <span className="px-1.5 py-0.5 rounded text-[8px] text-white/40 font-medium" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.03)' }}>YouTube</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Download buttons — MP4 cyan / MP3 pink */}
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div className="flex items-center gap-2 p-2.5 rounded-xl transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <Video className="w-4 h-4 text-cyan-400" />
-                      <div>
-                        <p className="text-[10px] text-white/90 font-bold">T&eacute;l&eacute;charger MP4</p>
-                        <p className="text-[8px] text-white/30">Qualit&eacute;: 1080p</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 p-2.5 rounded-xl transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <Music className="w-4 h-4 text-pink-400" />
-                      <div>
-                        <p className="text-[10px] text-white/90 font-bold">T&eacute;l&eacute;charger MP3</p>
-                        <p className="text-[8px] text-white/30">Audio haute fid&eacute;lit&eacute;</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Trim toggle */}
-                  <div className="mt-2 flex items-center justify-between px-2 py-1.5 rounded-lg" style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)' }}>
-                    <div className="flex items-center gap-1.5">
-                      <Scissors className="w-3 h-3 text-orange-400" />
-                      <span className="text-[9px] text-orange-400 font-medium">D&eacute;couper avant t&eacute;l&eacute;chargement</span>
-                    </div>
-                    <div className="text-[8px] text-orange-300/60 font-mono">00:30 &rarr; 05:12</div>
-                  </div>
-                </div>
-
-                {/* Download tray */}
+                {/* Download tray — 4 real videos */}
                 <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(26,24,64,0.95)', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <div className="px-3 py-2 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="flex items-center gap-1.5">
                       <Download className="w-3 h-3 text-purple-400" />
-                      <span className="text-[10px] text-white/50 font-medium">2 t&eacute;l&eacute;chargements</span>
+                      <span className="text-[10px] text-white/50 font-medium">4 t&eacute;l&eacute;chargements</span>
                     </div>
                     <ChevronRight className="w-3 h-3 text-white/20 rotate-90" />
                   </div>
                   {[
-                    { title: "Pokemon Ultra Soleil uniquement avec des Shiny.mp4", progress: 100, thumb: "/mockups/thumb-pokemon.jpg" },
-                    { title: "POKOPIA VA (vraiment) \u00catre EXCEPTIONNEL.mp4", progress: 72, thumb: "/mockups/thumb-pokopia.jpg" },
+                    { title: "Pokemon Ultra Soleil mais uniquement avec des Shiny.mp4", duration: "2:34:17", progress: 100, thumb: "/mockups/thumb-pokemon.jpg" },
+                    { title: "22 minutes pour sauver l\u2019univers (ok un peu plus).mp4", duration: "22:41", progress: 100, thumb: "/mockups/thumb-fantasy.jpg" },
+                    { title: "1H46 pour t\u2019expliquer le jeu qui m\u2019a bris\u00e9.mp4", duration: "1:46:23", progress: 87, thumb: "/mockups/thumb-anime.jpg" },
+                    { title: "POKOPIA VA (vraiment) \u00caTRE EXCEPTIONNEL.mp4", duration: "18:32", progress: 45, thumb: "/mockups/thumb-pokopia.jpg" },
                   ].map((dl, i) => (
-                    <div key={i} className="px-3 py-2 flex items-center gap-2.5" style={{ borderBottom: i === 0 ? '1px solid rgba(255,255,255,0.03)' : 'none' }}>
-                      <div className="w-7 h-7 rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.15)' }}>
+                    <div key={i} className="px-3 py-2.5 flex items-center gap-3" style={{ borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.03)' : 'none' }}>
+                      <div className="w-14 aspect-video rounded-md shrink-0 relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.15)' }}>
                         <Image src={dl.thumb} alt="" fill className="object-cover" />
+                        <div className="absolute bottom-0 right-0 px-0.5 py-px rounded-tl text-[6px] text-white/80 font-mono" style={{ background: 'rgba(0,0,0,0.75)' }}>
+                          {dl.duration}
+                        </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] text-white/60 truncate">{dl.title}</p>
-                        <div className="mt-1 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                        <p className="text-[9px] text-white/70 font-medium truncate">{dl.title}</p>
+                        <div className="mt-1.5 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
                           <motion.div
                             initial={{ width: 0 }}
                             whileInView={{ width: `${dl.progress}%` }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.6 + i * 0.3, ease: easeOutExpo }}
+                            transition={{ duration: 0.8, delay: 0.4 + i * 0.2, ease: easeOutExpo }}
                             className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
                           />
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[7px] text-white/25">{dl.duration}</span>
+                          <span className="text-[7px] text-white/25">MP4 1080p</span>
                         </div>
                       </div>
                       <div className="shrink-0">
                         {dl.progress === 100 ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
+                          <CheckCircle2 className="w-4 h-4 text-green-400" />
                         ) : (
-                          <span className="text-[9px] text-purple-300 font-medium">{dl.progress}%</span>
+                          <span className="text-[10px] text-purple-300 font-semibold">{dl.progress}%</span>
                         )}
                       </div>
                     </div>
