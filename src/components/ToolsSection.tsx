@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Wand2, Scissors, Share2, ArrowRight, FileCheck, Link2, Upload, ArrowRight as Arrow, Focus, Crop, TrendingUp, Anchor, Eye, Download, Edit, Trash2, Play } from "lucide-react";
+import { Wand2, Scissors, Share2, ArrowRight, FileCheck, Link2, Upload, ArrowRight as Arrow, Focus, Crop, TrendingUp, Anchor, Eye, Download, Edit, Trash2, Play, ScanFace, Type, Layers, Sparkles } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -77,8 +77,7 @@ export default function ToolsSection() {
               Clip<span className="gradient-text">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              Transformez vos longues vid&eacute;os (YouTube, Twitch)
-              en formats courts (TikTok, Shorts) facilement.
+              Collez un lien YouTube. ClipForge trouve les moments viraux, recadre, sous-titre et exporte vos clips pr&ecirc;ts &agrave; poster.
             </p>
 
             <motion.ul
@@ -86,21 +85,23 @@ export default function ToolsSection() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="space-y-6 mb-10"
+              className="space-y-5 mb-10"
             >
               {[
-                { icon: Wand2, title: "D\u00e9coupage Intelligent", desc: "L\u2019IA d\u00e9tecte les moments cl\u00e9s de vos vid\u00e9os." },
-                { icon: Scissors, title: "Recadrage Auto", desc: "Passez du format 16:9 au 9:16 sans perdre le sujet." },
-                { icon: Share2, title: "Sous-titres & Export", desc: "Sous-titres g\u00e9n\u00e9r\u00e9s automatiquement et export 4K." },
-                { icon: FileCheck, title: "Correction de Sous-titres", desc: "Importez vos .srt : l\u2019IA corrige l\u2019orthographe et le sens." },
+                { icon: Sparkles, title: "L\u2019IA trouve vos meilleurs moments", desc: "Analyse sp\u00e9cialis\u00e9e selon votre contenu : gaming, podcast, tuto, vlog. Elle d\u00e9tecte les punchlines, les r\u00e9actions, les fails \u2014 pas juste les silences." },
+                { icon: TrendingUp, title: "Score de viralit\u00e9, hook et r\u00e9tention", desc: "Chaque clip est not\u00e9 sur 100. Vous voyez en un coup d\u2019\u0153il quels extraits vont performer et lesquels sont \u00e0 jeter." },
+                { icon: ScanFace, title: "Recadrage intelligent qui suit le visage", desc: "Le cadrage 9:16 suit votre visage frame par frame. Deux speakers ? Il passe en split-screen automatiquement. Gaming avec cam ? Il stack votre face + le gameplay." },
+                { icon: Type, title: "Sous-titres anim\u00e9s, \u00e9ditables", desc: "4 styles d\u2019animation (Pop, Smooth, Glow, Classique), couleurs personnalisables, \u00e9diteur int\u00e9gr\u00e9. Modifiez un mot, reg\u00e9n\u00e9rez le clip en un clic." },
+                { icon: Layers, title: "Combinez des moments s\u00e9par\u00e9s en un seul clip", desc: "L\u2019IA d\u00e9tecte les liens narratifs entre vos segments et sugg\u00e8re des compilations qui racontent une histoire compl\u00e8te." },
+                { icon: Scissors, title: "V\u00e9rifiez avant d\u2019exporter", desc: "Mode v\u00e9rification : pr\u00e9visualisez chaque clip, choisissez le cadrage parmi plusieurs options, ajustez les sous-titres. Rien ne sort sans votre validation." },
               ].map((item, i) => (
-                <motion.li key={i} variants={itemVariants} className="flex gap-5">
-                  <div className="mt-1 w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                    <item.icon className="w-5 h-5 text-purple-400" />
+                <motion.li key={i} variants={itemVariants} className="flex gap-4">
+                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                    <item.icon className="w-4 h-4 text-purple-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white text-lg">{item.title}</h3>
-                    <p className="text-white/50">{item.desc}</p>
+                    <h3 className="font-semibold text-white">{item.title}</h3>
+                    <p className="text-white/45 text-sm leading-relaxed">{item.desc}</p>
                   </div>
                 </motion.li>
               ))}
