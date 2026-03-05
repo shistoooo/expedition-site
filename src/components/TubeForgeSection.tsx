@@ -56,7 +56,7 @@ export default function TubeForgeSection() {
               Tube<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              Bien plus qu&apos;un t&eacute;l&eacute;chargeur. Un vrai outil de travail pour les cr&eacute;ateurs.
+              T&eacute;l&eacute;chargez, d&eacute;coupez, organisez. Tout ce dont vous avez besoin pour pr&eacute;parer vos montages.
             </p>
 
             <motion.ul
@@ -67,12 +67,12 @@ export default function TubeForgeSection() {
               className="space-y-5 mb-10"
             >
               {[
-                { icon: Zap, title: "T\u00e9l\u00e9chargement acc\u00e9l\u00e9r\u00e9", desc: "4 fragments en parall\u00e8le, 3 t\u00e9l\u00e9chargements simultan\u00e9s. 30 \u00e0 60% plus rapide qu\u2019un t\u00e9l\u00e9chargeur classique." },
-                { icon: Scissors, title: "D\u00e9coupage avant t\u00e9l\u00e9chargement", desc: "Timeline interactive avec preview YouTube. D\u00e9coupez l\u2019extrait exact dont vous avez besoin \u2014 sans re-encoder." },
-                { icon: FileText, title: "Mode Script", desc: "Importez un fichier Word avec vos liens. TubeForge extrait, d\u00e9duplique et t\u00e9l\u00e9charge tout en batch. Id\u00e9al pour vos recherches vid\u00e9o." },
-                { icon: ImagePlus, title: "Extraction de frames", desc: "Extrayez les images cl\u00e9s de n\u2019importe quelle vid\u00e9o. Parfait pour cr\u00e9er des miniatures ou r\u00e9cup\u00e9rer des r\u00e9f\u00e9rences." },
-                { icon: ListVideo, title: "Playlists & Recherche int\u00e9gr\u00e9e", desc: "T\u00e9l\u00e9chargez des playlists enti\u00e8res ou cherchez directement sur YouTube sans quitter l\u2019app." },
-                { icon: FolderOpen, title: "Biblioth\u00e8que organis\u00e9e", desc: "Dossiers, covers, drag-and-drop, lecteur int\u00e9gr\u00e9 avec raccourcis clavier. Tout reste rang\u00e9." },
+                { icon: Zap, title: "Vos t\u00e9l\u00e9chargements, en quelques secondes", desc: "Pendant que les sites en ligne vous font attendre, TubeForge t\u00e9l\u00e9charge 3 vid\u00e9os en m\u00eame temps avec 4 flux parall\u00e8les. Une playlist de 20 vid\u00e9os ? Lancez et allez monter." },
+                { icon: Scissors, title: "T\u00e9l\u00e9chargez uniquement le passage qui vous int\u00e9resse", desc: "Vous avez rep\u00e9r\u00e9 30 secondes utiles dans une vid\u00e9o de 2h ? S\u00e9lectionnez l\u2019extrait exact sur la timeline et t\u00e9l\u00e9chargez juste ce passage. Pas besoin de couper apr\u00e8s." },
+                { icon: FileText, title: "Importez votre script, t\u00e9l\u00e9chargez toutes les r\u00e9f\u00e9rences", desc: "Vous pr\u00e9parez une vid\u00e9o avec des liens YouTube dans vos notes pour vos monteurs ? Importez votre document : TubeForge d\u00e9tecte chaque lien et t\u00e9l\u00e9charge tous les passages en un clic." },
+                { icon: ImagePlus, title: "Capturez n\u2019importe quelle image d\u2019une vid\u00e9o", desc: "Besoin d\u2019une r\u00e9f\u00e9rence visuelle, d\u2019un frame pr\u00e9cis pour votre miniature ? Extrayez toutes les images cl\u00e9s d\u2019une vid\u00e9o en un clic. Plus besoin de faire des captures \u00e9cran." },
+                { icon: ListVideo, title: "Cherchez et t\u00e9l\u00e9chargez sans quitter l\u2019app", desc: "Recherche YouTube int\u00e9gr\u00e9e. Trouvez la vid\u00e9o, s\u00e9lectionnez la qualit\u00e9, lancez le t\u00e9l\u00e9chargement. Tout \u00e7a sans ouvrir votre navigateur." },
+                { icon: FolderOpen, title: "Toutes vos vid\u00e9os, rang\u00e9es et accessibles", desc: "Organisez par projet avec des dossiers, pr\u00e9visualisez avec le lecteur int\u00e9gr\u00e9, d\u00e9placez en drag-and-drop. Fini le dossier T\u00e9l\u00e9chargements en bordel." },
               ].map((item, i) => (
                 <motion.li key={i} variants={itemVariants} className="flex gap-4">
                   <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
