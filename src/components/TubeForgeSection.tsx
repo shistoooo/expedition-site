@@ -168,14 +168,14 @@ export default function TubeForgeSection() {
                     <div className="w-24 aspect-video rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)' }}>
                       <Image src="/mockups/thumb-anime.jpg" alt="Thumbnail" fill className="object-cover" />
                       <div className="absolute bottom-0.5 right-0.5 px-1 py-0.5 rounded text-[7px] text-white/70 font-mono" style={{ background: 'rgba(0,0,0,0.7)' }}>
-                        <Clock className="w-1.5 h-1.5 inline mr-0.5" />18:47
+                        <Clock className="w-1.5 h-1.5 inline mr-0.5" />1:46:23
                       </div>
                     </div>
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] text-white/90 font-bold leading-tight line-clamp-2 mb-1">Les Sc&egrave;nes les Plus BRUTALES de Tokyo Ghoul</p>
+                      <p className="text-[11px] text-white/90 font-bold leading-tight line-clamp-2 mb-1">1H46 pour t&apos;expliquer le jeu qui m&apos;a bris&eacute;.</p>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] text-white/35">18:47</span>
+                        <span className="text-[9px] text-white/35">1:46:23</span>
                         <span className="px-1.5 py-0.5 rounded text-[8px] text-white/40 font-medium" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.03)' }}>YouTube</span>
                       </div>
                     </div>
@@ -219,8 +219,8 @@ export default function TubeForgeSection() {
                     <ChevronRight className="w-3 h-3 text-white/20 rotate-90" />
                   </div>
                   {[
-                    { title: "12982 RESETS pour ce SHINY.mp4", progress: 100, thumb: "/mockups/thumb-pokemon.jpg" },
-                    { title: "CE NOUVEAU JEU POK\u00c9MON EST DINGUE.mp4", progress: 72, thumb: "/mockups/thumb-pokopia.jpg" },
+                    { title: "Pokemon Ultra Soleil uniquement avec des Shiny.mp4", progress: 100, thumb: "/mockups/thumb-pokemon.jpg" },
+                    { title: "POKOPIA VA (vraiment) \u00catre EXCEPTIONNEL.mp4", progress: 72, thumb: "/mockups/thumb-pokopia.jpg" },
                   ].map((dl, i) => (
                     <div key={i} className="px-3 py-2 flex items-center gap-2.5" style={{ borderBottom: i === 0 ? '1px solid rgba(255,255,255,0.03)' : 'none' }}>
                       <div className="w-7 h-7 rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.15)' }}>
