@@ -38,7 +38,10 @@ export default function Footer() {
                 CGV
               </Link>
               <Link href="/confidentialite" className="hover:text-white/60 transition-colors">
-                Confidentialité
+                Confidentialit&eacute;
+              </Link>
+              <Link href="/mentions-legales" className="hover:text-white/60 transition-colors">
+                Mentions l&eacute;gales
               </Link>
             </div>
           </motion.div>

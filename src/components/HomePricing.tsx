@@ -82,7 +82,7 @@ export default function HomePricing() {
             </div>
 
             <p className="text-center text-xs text-white/25 mt-4">
-              Annulable &agrave; tout moment. Garantie 14 jours satisfait ou rembours&eacute;.
+              Annulable &agrave; tout moment. Sans engagement.
             </p>
           </div>
         </motion.div>

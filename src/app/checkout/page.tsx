@@ -674,11 +674,12 @@ function CheckoutContent() {
                                     </button>
 
                                     <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
-                                        Paiement sécurisé par Stripe. En cliquant, vous acceptez les{" "}
+                                        Paiement s&eacute;curis&eacute; par Stripe. En continuant, vous acceptez les{" "}
                                         <Link href="/cgv" target="_blank" className="underline hover:text-white/50 transition-colors">CGV</Link>
                                         {" "}et la{" "}
-                                        <Link href="/confidentialite" target="_blank" className="underline hover:text-white/50 transition-colors">politique de confidentialité</Link>
-                                        {" "}d&apos;Expédition.
+                                        <Link href="/confidentialite" target="_blank" className="underline hover:text-white/50 transition-colors">politique de confidentialit&eacute;</Link>
+                                        {" "}d&apos;Exp&eacute;dition, et vous consentez &agrave; l&apos;acc&egrave;s imm&eacute;diat au service
+                                        avec renonciation au droit de r&eacute;tractation (art. L221-28 C. conso.).
                                     </p>
                                 </motion.form>
                             )}

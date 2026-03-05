@@ -201,7 +201,7 @@ export default function PricingPage() {
 
                 {wave.status === 'open' && (
                   <p className="text-center text-xs text-white/40 mt-3">
-                    Garantie satisfait ou remboursé 14 jours.
+                    Annulable à tout moment. Sans engagement.
                   </p>
                 )}
               </div>
