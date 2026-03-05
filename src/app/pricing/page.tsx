@@ -48,7 +48,7 @@ export default function PricingPage() {
         "Licence ClipForge Illimitée",
         "Licence TubeForge Pro",
         "badge Discord 'Pionnier'",
-        "Prix bloqué à vie"
+        "Votre tarif n'augmentera jamais"
       ],
       color: "from-purple-500 to-blue-500",
       glow: "purple"
@@ -110,7 +110,7 @@ export default function PricingPage() {
               <span className="gradient-text">Une infinité d&apos;outils.</span>
             </h1>
             <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
-              Rejoignez l&apos;Expédition dès maintenant pour bloquer le tarif le plus bas de l&apos;histoire du projet.
+              Rejoignez l&apos;Expédition dès maintenant pour profiter du tarif le plus bas — il ne changera jamais pour vous.
               Accédez immédiatement à tous nos outils actuels et futurs.
             </p>
           </motion.div>
@@ -222,7 +222,7 @@ export default function PricingPage() {
               Nous construisons Expédition en public. Le prix augmentera à chaque nouvelle &quot;Vague&quot; d&apos;outils.
               <br />
               <strong>Les membres de la Vague Pionnier (vous) ne subiront jamais ces augmentations.</strong>
-              Votre tarif de 9,99€ est verrouillé à vie tant que votre abonnement reste actif.
+              Votre tarif de 9,99€ ne changera jamais tant que votre abonnement reste actif.
             </p>
           </div>
         </motion.div>

@@ -50,7 +50,8 @@ export default function Hero() {
           className="flex items-center gap-3 mb-10"
         >
           <span className="text-3xl md:text-4xl font-bold text-white">9,99&euro;</span>
-          <span className="text-white/40 text-sm">/mois<br />prix bloqu&eacute; &agrave; vie</span>
+          <span className="text-white/40 text-sm">/mois</span>
+          <span className="ml-2 px-2.5 py-1 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium">Ce tarif ne bougera jamais</span>
         </motion.div>
 
         <motion.div

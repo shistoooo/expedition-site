@@ -16,7 +16,7 @@ export default function HomePricing() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-sm font-medium mb-6">
             <Lock className="w-4 h-4" />
-            <span>Tarif Pionnier — bloqu&eacute; &agrave; vie</span>
+            <span>Tarif Pionnier — garanti sans augmentation</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
             Un prix simple. Tout inclus.
@@ -56,7 +56,7 @@ export default function HomePricing() {
                 "TubeForge Pro — 8K, sans pub",
                 "Tous les futurs outils inclus",
                 "Badge Discord Pionnier",
-                "Prix bloqu&eacute; &agrave; vie",
+                "Votre tarif n&apos;augmentera jamais",
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-white/70">
                   <Check className="w-4 h-4 text-purple-400 shrink-0" />

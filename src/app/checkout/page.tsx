@@ -491,7 +491,7 @@ function CheckoutContent() {
                             <div className="flex justify-between items-start border-b border-white/5 pb-6">
                                 <div>
                                     <h3 className="text-xl font-bold text-white">Vague Pionnier ({plan === "yearly" ? "Annuel" : "Mensuel"})</h3>
-                                    <p className="text-purple-400 text-sm font-medium mt-1">Acc&egrave;s Anticip&eacute; &bull; Prix Bloqu&eacute; &agrave; Vie</p>
+                                    <p className="text-purple-400 text-sm font-medium mt-1">Acc&egrave;s Anticip&eacute; &bull; Ce tarif ne changera jamais</p>
                                 </div>
                                 <div className="text-right">
                                     <div className="text-2xl font-bold">{PLANS[plan].price.toFixed(2).replace(".", ",")}€</div>
@@ -527,7 +527,7 @@ function CheckoutContent() {
                                     <div>
                                         <p className="mb-2">
                                             <strong>Garantie &quot;Early Adopter&quot; & Droit au Retour :</strong><br />
-                                            Votre tarif de {PLANS[plan].price.toFixed(2).replace(".", ",")}€{PLANS[plan].label} est maintenu &agrave; vie tant que l&apos;abonnement est actif.
+                                            Votre tarif de {PLANS[plan].price.toFixed(2).replace(".", ",")}€{PLANS[plan].label} ne changera jamais tant que votre abonnement est actif.
                                         </p>
                                         <p className="text-xs opacity-80 mb-1">En cas de désabonnement, vous conservez votre tarif préférentiel pendant une période de grâce :</p>
                                         <ul className="text-xs opacity-70 list-disc pl-4 space-y-1">
