@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Zap, Sparkles, ListVideo, ArrowRight, Search, Video, Music, Download, CheckCircle2, Clock, ChevronRight, Scissors, Play, FolderOpen } from "lucide-react";
+import { Zap, Sparkles, ListVideo, ArrowRight, Search, Video, Music, Download, CheckCircle2, Clock, ChevronRight, Scissors, FolderOpen, Loader2, AlertCircle, FileText } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -94,15 +93,16 @@ export default function TubeForgeSection() {
 
           {/* Mockup — Faithful to real TubeForge UI */}
           <div className="flex-1 w-full relative">
-            <div className="absolute -inset-10 bg-purple-500/8 blur-3xl rounded-full opacity-40 pointer-events-none" />
-            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[50%] rounded-full blur-[120px] opacity-25 pointer-events-none" style={{ background: '#2e1065' }} />
+            {/* Ambient glow like real app */}
+            <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[90%] h-[60%] rounded-full blur-[150px] opacity-40 pointer-events-none" style={{ background: '#2e1065' }} />
+            <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[60%] h-[40%] rounded-full blur-[120px] opacity-25 pointer-events-none" style={{ background: '#4c1d95' }} />
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-purple-500/10"
+              className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-purple-500/10 flex flex-col"
               style={{ background: '#0f0e17', border: '1px solid rgba(255,255,255,0.05)' }}
             >
               {/* Window chrome */}
@@ -113,98 +113,159 @@ export default function TubeForgeSection() {
                 <span className="text-[10px] text-white/25 ml-2 font-medium tracking-wide">TubeForge</span>
               </div>
 
-              {/* Header bar */}
+              {/* Header — like real app */}
               <div className="px-5 pt-4 pb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 shadow-lg shadow-orange-500/20" />
-                  <span className="text-sm font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">TubeForge</span>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 shadow-lg shadow-orange-500/20" />
+                  <span className="text-base font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">TubeForge</span>
                 </div>
-                {/* Tab nav */}
-                <div className="flex gap-0.5 p-0.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="px-3.5 py-1.5 rounded-lg text-[10px] font-medium text-white shadow-sm" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                    <Download className="w-3 h-3 inline mr-1" />Download
+                {/* Tab nav — real app style */}
+                <div className="flex items-center gap-1 p-1 rounded-xl border border-white/10 backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                  <div className="px-3 py-1.5 rounded-lg text-[10px] font-medium text-white shadow-sm" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                    T&eacute;l&eacute;charger
                   </div>
-                  <div className="px-3.5 py-1.5 rounded-lg text-[10px] text-white/40 font-medium">
-                    <FolderOpen className="w-3 h-3 inline mr-1" />Library
+                  <div className="px-3 py-1.5 rounded-lg text-[10px] text-white/50 font-medium">
+                    Biblioth&egrave;que
                   </div>
                 </div>
               </div>
 
-              <div className="px-5 pb-5 space-y-3">
-                {/* Search input — gradient border from real app */}
-                <div className="relative group">
-                  <div className="absolute -inset-[1px] bg-gradient-to-r from-amber-500 via-orange-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity" />
-                  <div className="relative flex items-center gap-2 p-2 pl-5 rounded-2xl shadow-2xl backdrop-blur-xl" style={{ background: 'rgba(30,27,75,0.8)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                    <Search className="w-4 h-4 text-white/20 shrink-0" />
-                    <span className="flex-1 text-[11px] text-white/20">T&eacute;l&eacute;chargez sans limites...</span>
-                    {/* Quality dropdown */}
-                    <div className="px-2 py-1 rounded-lg text-[9px] text-white/50 font-medium" style={{ background: 'rgba(30,27,75,0.8)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      1080p
-                    </div>
-                    <div className="px-4 py-2.5 rounded-2xl text-white text-[11px] font-medium flex items-center gap-1.5 shadow-lg" style={{ background: '#4c1d95', boxShadow: '0 10px 25px rgba(76,29,149,0.5)' }}>
-                      <Search className="w-3 h-3" />
-                      Rechercher
-                    </div>
-                  </div>
+              <div className="px-5 pb-0 flex flex-col items-center">
+                {/* Hero text — real app */}
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70 tracking-tight">T&eacute;l&eacute;chargez sans limites</h3>
+                  <p className="text-[10px] text-white/40 mt-1">Transformez vos liens YouTube en fichiers MP4 et MP3.</p>
                 </div>
 
-                {/* Mode toggle */}
-                <div className="flex gap-1.5">
+                {/* Mode Toggle — real app */}
+                <div className="flex items-center gap-1 p-1 rounded-xl border border-white/10 mb-4" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   {[
                     { label: "URL", active: true },
                     { label: "Recherche", active: false },
-                    { label: "Script", active: false },
+                    { label: "Script", active: false, icon: true },
                   ].map((m) => (
-                    <div key={m.label} className={`px-3 py-1.5 rounded-xl text-[10px] font-medium ${m.active ? 'text-white shadow-sm' : 'text-white/30'}`} style={{ background: m.active ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid rgba(255,255,255,${m.active ? '0.08' : '0.03'})` }}>
+                    <div key={m.label} className={`px-3 py-1.5 rounded-lg text-[10px] font-medium transition-all ${m.active ? 'bg-white/10 text-white' : 'text-white/50'}`}>
+                      {m.icon && <FileText className="w-2.5 h-2.5 inline mr-1" />}
                       {m.label}
                     </div>
                   ))}
                 </div>
 
-                {/* Download tray — 4 real videos */}
-                <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(26,24,64,0.95)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div className="px-3 py-2 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div className="flex items-center gap-1.5">
-                      <Download className="w-3 h-3 text-purple-400" />
-                      <span className="text-[10px] text-white/50 font-medium">4 t&eacute;l&eacute;chargements</span>
-                    </div>
-                    <ChevronRight className="w-3 h-3 text-white/20 rotate-90" />
+                {/* Search input — gradient glow like real app */}
+                <div className="w-full relative group flex gap-2 mb-4">
+                  <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
+                  <div className="relative flex-1 flex items-center gap-2 p-2 pl-4 rounded-2xl shadow-2xl backdrop-blur-xl" style={{ background: 'rgba(30,27,75,0.8)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <Search className="w-3.5 h-3.5 text-white/20 shrink-0" />
+                    <span className="flex-1 text-[11px] text-white/20">Collez un lien YouTube...</span>
+                    <div className="h-5 w-px bg-white/10 mx-1" />
+                    <span className="text-[9px] text-white/70 font-medium">1080p</span>
+                    <div className="h-5 w-px bg-white/10 mx-1" />
+                    <FolderOpen className="w-3 h-3 text-white/30" />
                   </div>
+                  <div className="relative px-4 py-2.5 rounded-2xl text-white text-[11px] font-medium flex items-center gap-1.5 shadow-lg" style={{ background: '#4c1d95', boxShadow: '0 8px 20px rgba(76,29,149,0.5)' }}>
+                    <Search className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+
+                {/* Video Result Card — like real app's result */}
+                <div className="w-full rounded-3xl p-4 backdrop-blur-md mb-3 shadow-2xl" style={{ background: 'rgba(30,27,75,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div className="flex gap-4 items-start">
+                    {/* Thumbnail — larger like real app */}
+                    <div className="w-28 aspect-video rounded-xl shrink-0 relative overflow-hidden shadow-lg shadow-black/40">
+                      <Image src="/mockups/thumb-anime.jpg" alt="Thumbnail" fill className="object-cover" />
+                    </div>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      <p className="text-[12px] text-white font-bold leading-tight line-clamp-2">1H46 pour t&apos;expliquer le jeu qui m&apos;a bris&eacute;.</p>
+                      <div className="flex items-center gap-2 text-[9px] text-white/40 font-mono">
+                        <span className="px-1.5 py-0.5 bg-white/5 rounded border border-white/5">1:46:23</span>
+                        <span>&bull;</span>
+                        <span>YouTube</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Download buttons — MP4 cyan / MP3 pink — like real app */}
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    <div className="group bg-white/5 hover:bg-white/10 border border-white/10 p-3 rounded-xl transition-all text-left">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className="text-[11px] font-bold text-white group-hover:text-cyan-400 transition-colors">T&eacute;l&eacute;charger MP4</span>
+                        <Video className="w-3.5 h-3.5 text-white/20 group-hover:text-cyan-400 transition-colors" />
+                      </div>
+                      <p className="text-[8px] text-white/40">Qualit&eacute;: 1080p</p>
+                    </div>
+                    <div className="group bg-white/5 hover:bg-white/10 border border-white/10 p-3 rounded-xl transition-all text-left">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className="text-[11px] font-bold text-white group-hover:text-pink-400 transition-colors">T&eacute;l&eacute;charger MP3</span>
+                        <Music className="w-3.5 h-3.5 text-white/20 group-hover:text-pink-400 transition-colors" />
+                      </div>
+                      <p className="text-[8px] text-white/40">Audio haute fid&eacute;lit&eacute;</p>
+                    </div>
+                  </div>
+
+                  {/* Trim toggle — like real app */}
+                  <div className="mt-3 flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all text-[10px] font-medium" style={{ background: 'rgba(249,115,22,0.08)', borderColor: 'rgba(249,115,22,0.25)' }}>
+                    <div className="flex items-center gap-2">
+                      <Scissors className="w-3.5 h-3.5 text-orange-400" />
+                      <span className="text-orange-400">Couper un extrait</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-orange-400 rotate-90" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Download Tray — fixed bottom, like real app */}
+              <div style={{ background: '#1a1840', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                {/* Toggle bar */}
+                <div className="px-4 py-2 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Download className="w-3.5 h-3.5 text-purple-400" />
+                    <span className="text-[11px] text-white/70 font-medium">2 en cours</span>
+                    <span className="text-[10px] text-white/30">(4)</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-white/30 rotate-90" />
+                </div>
+
+                {/* Downloads list */}
+                <div style={{ background: '#0f0e2a', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                   {[
-                    { title: "Pokemon Ultra Soleil mais uniquement avec des Shiny.mp4", duration: "2:34:17", progress: 100, thumb: "/mockups/thumb-pokemon.jpg" },
-                    { title: "22 minutes pour sauver l\u2019univers (ok un peu plus).mp4", duration: "22:41", progress: 100, thumb: "/mockups/thumb-fantasy.jpg" },
-                    { title: "1H46 pour t\u2019expliquer le jeu qui m\u2019a bris\u00e9.mp4", duration: "1:46:23", progress: 87, thumb: "/mockups/thumb-anime.jpg" },
-                    { title: "POKOPIA VA (vraiment) \u00caTRE EXCEPTIONNEL.mp4", duration: "18:32", progress: 45, thumb: "/mockups/thumb-pokopia.jpg" },
+                    { title: "Pokemon Ultra Soleil mais uniquement avec des Shiny", duration: "2:34:17", progress: 100, status: "completed" as const, thumb: "/mockups/thumb-pokemon.jpg" },
+                    { title: "22 minutes pour sauver l\u2019univers (ok un peu plus)", duration: "22:41", progress: 100, status: "completed" as const, thumb: "/mockups/thumb-fantasy.jpg" },
+                    { title: "1H46 pour t\u2019expliquer le jeu qui m\u2019a bris\u00e9", duration: "1:46:23", progress: 67, status: "downloading" as const, thumb: "/mockups/thumb-anime.jpg" },
+                    { title: "POKOPIA VA (vraiment) \u00caTRE EXCEPTIONNEL", duration: "18:32", progress: 34, status: "downloading" as const, thumb: "/mockups/thumb-pokopia.jpg" },
                   ].map((dl, i) => (
-                    <div key={i} className="px-3 py-2.5 flex items-center gap-3" style={{ borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.03)' : 'none' }}>
-                      <div className="w-14 aspect-video rounded-md shrink-0 relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.15)' }}>
+                    <div key={i} className="px-4 py-2.5 flex items-center gap-3" style={{ borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                      {/* Thumbnail */}
+                      <div className="w-10 h-10 rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
                         <Image src={dl.thumb} alt="" fill className="object-cover" />
-                        <div className="absolute bottom-0 right-0 px-0.5 py-px rounded-tl text-[6px] text-white/80 font-mono" style={{ background: 'rgba(0,0,0,0.75)' }}>
-                          {dl.duration}
-                        </div>
                       </div>
+                      {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] text-white/70 font-medium truncate">{dl.title}</p>
-                        <div className="mt-1.5 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${dl.progress}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.4 + i * 0.2, ease: easeOutExpo }}
-                            className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
-                          />
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-[10px] text-white/80 truncate">{dl.title}</p>
+                          {dl.status === "downloading" && (
+                            <span className="text-[10px] text-purple-300 font-medium tabular-nums shrink-0">{dl.progress}%</span>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[7px] text-white/25">{dl.duration}</span>
-                          <span className="text-[7px] text-white/25">MP4 1080p</span>
-                        </div>
-                      </div>
-                      <div className="shrink-0">
-                        {dl.progress === 100 ? (
-                          <CheckCircle2 className="w-4 h-4 text-green-400" />
+                        {dl.status === "downloading" ? (
+                          <div className="mt-1 h-1.5 w-full rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${dl.progress}%` }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 0.8, delay: 0.4 + i * 0.15, ease: easeOutExpo }}
+                              className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                            />
+                          </div>
                         ) : (
-                          <span className="text-[10px] text-purple-300 font-semibold">{dl.progress}%</span>
+                          <p className="text-[9px] text-green-400 mt-0.5">T&eacute;l&eacute;charg&eacute;</p>
                         )}
+                      </div>
+                      {/* Status */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {dl.status === "completed" && <CheckCircle2 className="w-4 h-4 text-green-400" />}
+                        {dl.status === "downloading" && <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />}
+                        <span className="text-white/20 text-[10px] cursor-pointer hover:text-white/50">&times;</span>
                       </div>
                     </div>
                   ))}
