@@ -232,11 +232,6 @@ function ClipForgeMockup() {
                 <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-[8px] text-white/80 font-medium">
                   {clip.duration}
                 </div>
-                <div className="absolute bottom-6 inset-x-0 flex justify-center">
-                  <span className="text-[7px] font-bold uppercase tracking-wide text-white" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
-                    REGARDEZ &Ccedil;A
-                  </span>
-                </div>
               </div>
 
               {/* Info */}
