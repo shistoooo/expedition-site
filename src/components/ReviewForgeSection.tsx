@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Shield, Eye, Clock, Lock, Link2, Copy, Check, Zap, LayoutDashboard, FolderOpen, Share2, Wifi } from "lucide-react";
+import { ArrowRight, Shield, Eye, Clock, Lock, Link2, Copy, Check, Zap, LayoutDashboard, FolderOpen, Share2, Wifi, Play, MessageSquare, Send, Film } from "lucide-react";
 import Link from "next/link";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -32,6 +32,7 @@ const itemVariants = {
 };
 
 function ReviewForgeMockup() {
+  const [side, setSide] = useState<"creator" | "reviewer">("creator");
   const [page, setPage] = useState<"dashboard" | "share">("dashboard");
   const [copied, setCopied] = useState(false);
 
@@ -39,6 +40,12 @@ function ReviewForgeMockup() {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+
+  const reviewComments = [
+    { author: "Lucas", initials: "LU", color: "#6366f1", time: "02:34", body: "Le cut ici est trop brusque, on peut adoucir la transition ?", ago: "il y a 12min" },
+    { author: "Emma", initials: "EM", color: "#8b5cf6", time: "05:12", body: "J\u2019adore ce passage ! On le garde tel quel.", ago: "il y a 8min" },
+    { author: "Lucas", initials: "LU", color: "#6366f1", time: "08:47", body: "La musique est un peu forte par rapport \u00e0 la voix ici.", ago: "il y a 3min" },
+  ];
 
   const links = [
     { name: "Montage_Final_v3.mp4", reviewer: "Lucas", views: 3, maxViews: 10, expires: "23h restantes", hasPassword: true },
@@ -52,9 +59,125 @@ function ReviewForgeMockup() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-emerald-500/10 select-none flex"
-      style={{ background: '#0c0c12', border: '1px solid rgba(255,255,255,0.06)', minHeight: 380 }}
+      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-emerald-500/10 select-none"
+      style={{ background: '#0c0c12', border: '1px solid rgba(255,255,255,0.06)' }}
     >
+      {/* Side toggle */}
+      <div className="flex items-center justify-center gap-1 p-2" style={{ background: '#08080c', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        {(["creator", "reviewer"] as const).map((s) => (
+          <button
+            key={s}
+            onClick={() => setSide(s)}
+            className={`px-4 py-1.5 rounded-lg text-[10px] font-medium transition-all ${
+              side === s ? 'bg-white/10 text-white' : 'text-white/30 hover:text-white/50'
+            }`}
+          >
+            {s === "creator" ? "C\u00f4t\u00e9 cr\u00e9ateur" : "C\u00f4t\u00e9 reviewer"}
+          </button>
+        ))}
+      </div>
+
+      {side === "reviewer" ? (
+        /* ── Reviewer view ── */
+        <div className="flex" style={{ minHeight: 340 }}>
+          {/* Video area */}
+          <div className="flex-1 flex flex-col min-w-0">
+            {/* Header */}
+            <div className="flex items-center justify-between px-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.18)' }}>
+                  <Film className="w-3 h-3 text-indigo-400" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] text-white/80 font-semibold truncate">Montage_Final_v3</p>
+                  <p className="text-[8px] text-white/35">Partag&eacute; par Mohamed &mdash; pour Lucas</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="px-1.5 py-0.5 rounded-full text-[8px] font-medium" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', color: 'rgba(99,102,241,0.8)' }}>3 notes</span>
+                <span className="px-2 py-0.5 rounded-full text-[8px] font-bold" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.15)', color: 'rgba(99,102,241,0.8)', letterSpacing: '0.04em' }}>ReviewForge</span>
+              </div>
+            </div>
+
+            {/* Video player mockup */}
+            <div className="flex-1 relative bg-black flex items-center justify-center min-h-[200px]">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-contain"
+                src="/mockups/review-clip.mp4"
+              />
+              {/* Watermark */}
+              <div className="absolute top-[25%] left-[15%] pointer-events-none select-none">
+                <span className="text-[11px] font-medium text-white/[0.15]" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>Lucas &mdash; 06 Mar 2026</span>
+              </div>
+            </div>
+
+            {/* Timeline */}
+            <div className="px-3 py-2" style={{ background: 'rgba(8,8,16,0.98)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="flex items-center gap-2 mb-1.5">
+                <Play className="w-3 h-3 text-white" fill="white" strokeWidth={0} />
+                <span className="text-[9px] text-white/40 font-mono">02:34 / 12:45</span>
+              </div>
+              <div className="relative h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <div className="absolute h-full rounded-full" style={{ width: '20%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)' }} />
+                {/* Comment markers */}
+                {[20, 41, 68].map((pct, i) => (
+                  <div key={i} className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full border-2" style={{ left: `${pct}%`, background: i % 2 === 0 ? '#6366f1' : '#8b5cf6', borderColor: 'rgba(8,8,16,0.9)', boxShadow: '0 0 6px rgba(99,102,241,0.4)' }} />
+                ))}
+                {/* Playhead */}
+                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white rounded-full" style={{ left: '20%', boxShadow: '0 0 0 2px rgba(99,102,241,0.4), 0 2px 8px rgba(0,0,0,0.5)' }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Comment panel */}
+          <div className="w-[160px] md:w-[200px] shrink-0 flex flex-col" style={{ background: 'rgba(11,11,20,0.97)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
+            {/* Header */}
+            <div className="flex items-center gap-1.5 px-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <MessageSquare className="w-3 h-3 text-indigo-500" />
+              <span className="text-[10px] font-semibold text-white/80">Commentaires</span>
+              <span className="px-1 py-0.5 rounded-full text-[8px] font-mono text-indigo-400" style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)' }}>3</span>
+            </div>
+
+            {/* Comments list */}
+            <div className="flex-1 overflow-hidden px-2 py-2 space-y-1.5">
+              {reviewComments.map((c, i) => (
+                <div key={i} className="p-2 rounded-lg cursor-pointer transition-all hover:bg-white/[0.04]" style={{ background: i === 0 ? 'rgba(99,102,241,0.08)' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)'}` }}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center text-[6px] font-bold text-white shrink-0" style={{ background: c.color }}>{c.initials}</div>
+                    <span className="text-[8px] font-semibold text-white/70 flex-1 truncate">{c.author}</span>
+                    <span className="text-[7px] font-mono px-1 py-0.5 rounded" style={{ background: i === 0 ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.08)', color: '#818cf8' }}>{c.time}</span>
+                  </div>
+                  <p className="text-[8px] text-white/50 leading-relaxed line-clamp-2 pl-[22px]">{c.body}</p>
+                  <p className="text-[7px] text-white/25 pl-[22px] mt-0.5">{c.ago}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Add comment form */}
+            <div className="px-2 py-2 space-y-1.5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', background: 'rgba(8,8,16,0.6)' }}>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" style={{ boxShadow: '0 0 6px rgba(99,102,241,0.6)' }} />
+                <span className="text-[8px] text-white/35">Note &agrave; <span className="text-indigo-400 font-mono">02:34</span></span>
+              </div>
+              <div className="h-10 rounded-md px-2 py-1 flex items-start" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <span className="text-[8px] text-white/15">Ajouter une note...</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[7px] text-white/20">&amp;#8984;&amp;#9166; envoyer</span>
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md text-[8px] font-semibold text-white/40" style={{ background: 'rgba(99,102,241,0.15)' }}>
+                  Envoyer <Send className="w-2 h-2" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+      /* ── Creator view ── */
+      <div className="flex" style={{ minHeight: 340 }}>
       {/* Sidebar */}
       <div className="w-[52px] md:w-[140px] shrink-0 flex flex-col border-r border-white/5" style={{ background: '#08080c' }}>
         {/* Logo */}
@@ -226,6 +349,8 @@ function ReviewForgeMockup() {
           </div>
         )}
       </div>
+      </div>
+      )}
     </motion.div>
   );
 }
