@@ -6,6 +6,7 @@ import Hero from "@/components/Hero";
 import SocialProofSection from "@/components/SocialProofSection";
 import ToolsSection from "@/components/ToolsSection";
 import TubeForgeSection from "@/components/TubeForgeSection";
+import TransparencySection from "@/components/TransparencySection";
 import HomePricing from "@/components/HomePricing";
 import PhilosophySection from "@/components/PhilosophySection";
 import DiscordSection from "@/components/DiscordSection";
@@ -21,6 +22,7 @@ export default function Home() {
         <SocialProofSection />
         <ToolsSection />
         <TubeForgeSection />
+        <TransparencySection />
         <HomePricing />
         <PhilosophySection />
         <DiscordSection />
