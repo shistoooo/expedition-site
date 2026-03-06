@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Shield, MessageCircle, Rocket, Download, Sparkles } from "lucide-react";
+import { Shield, MessageCircle, Rocket, Download, Sparkles, Link2 } from "lucide-react";
 
 const tools = [
   {
@@ -24,6 +24,13 @@ const tools = [
     status: "Beta",
     statusColor: "bg-amber-500",
     desc: "Excellent sur les vid\u00e9os face cam et \u00e0 sujet unique. Le recadrage peut \u00eatre impr\u00e9cis sur les podcasts ou les lives multi-personnes. On am\u00e9liore \u00e7a activement.",
+  },
+  {
+    name: "ReviewForge",
+    icon: Link2,
+    status: "Bient\u00f4t",
+    statusColor: "bg-emerald-500",
+    desc: "En cours de d\u00e9veloppement pour la Vague 2. Partage s\u00e9curis\u00e9 de vid\u00e9os avec liens temporaires, tunnel direct et dashboard de suivi.",
   },
 ];
 
