@@ -507,11 +507,11 @@ function CheckoutContent() {
                                 <ul className="space-y-2">
                                     {[
                                         "Expedition Launcher (Mac/Windows)",
-                                        "Licence ClipForge Illimitée",
-                                        "Licence TubeForge Pro (8K/No-Ads)",
+                                        "TubeForge Pro — 8K, sans pub (Vague 1)",
+                                        "ClipForge — Clips IA illimités (Vague 2)",
+                                        "ReviewForge — Review sécurisé (Vague 3)",
                                         "Badge Discord Exclusif 'Pionnier'",
-                                        "Accès aux mises à jour Vague 1",
-                                        "Accès garanti à TOUTES les futures vagues (sans surcoût)"
+                                        "Votre tarif n'augmentera jamais"
                                     ].map((item, i) => (
                                         <li key={i} className="flex items-center gap-3 text-white/70 text-sm">
                                             <CheckCircle2 className="w-4 h-4 text-green-500" />

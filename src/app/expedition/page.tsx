@@ -25,25 +25,25 @@ const benefits = [
 
 const waves = [
   {
-    id: "wave-alpha",
-    name: "Vague Alpha",
-    date: "En cours",
-    status: "active", // active, upcoming, past
-    spots: "Complet",
+    id: "wave-1",
+    name: "Vague 1 — TubeForge",
+    date: "Disponible",
+    status: "active",
+    spots: "Ouverte",
   },
   {
-    id: "wave-beta",
-    name: "Vague Bêta",
-    date: "Mars 2026",
+    id: "wave-2",
+    name: "Vague 2 — ClipForge",
+    date: "Prochainement",
     status: "upcoming",
-    spots: "Candidatures ouvertes",
+    spots: "Inclus pour les Pionniers",
   },
   {
-    id: "wave-gamma",
-    name: "Vague Gamma",
-    date: "Mai 2026",
+    id: "wave-3",
+    name: "Vague 3 — ReviewForge",
+    date: "Été 2026",
     status: "future",
-    spots: "Bientôt",
+    spots: "Inclus pour les Pionniers",
   },
 ];
 
@@ -186,7 +186,7 @@ export default function ExpeditionPage() {
             <Rocket className="w-5 h-5" />
           </a>
           <p className="mt-4 text-sm text-white/30">
-            Accès immédiat au Launcher et aux outils de la Vague 1.
+            Accès immédiat au Launcher et à TubeForge (Vague 1). ClipForge (Vague 2) et ReviewForge (Vague 3) arrivent bientôt.
           </p>
         </div>
       </section>

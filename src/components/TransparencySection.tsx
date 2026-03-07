@@ -30,7 +30,7 @@ const tools = [
     icon: Link2,
     status: "Bient\u00f4t",
     statusColor: "bg-emerald-500",
-    desc: "En cours de d\u00e9veloppement pour la Vague 2. Partage s\u00e9curis\u00e9 de vid\u00e9os avec liens temporaires, tunnel direct et dashboard de suivi.",
+    desc: "En cours de développement pour la Vague 3. Partage sécurisé de vidéos avec liens temporaires, tunnel direct et dashboard de suivi.",
   },
 ];
 

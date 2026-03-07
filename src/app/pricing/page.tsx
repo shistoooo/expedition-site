@@ -15,20 +15,20 @@ const includedTools = [
     color: "bg-blue-500/20 text-blue-400"
   },
   {
-    name: "ClipForge",
-    desc: "Transformez vos vidéos YouTube en TikToks/Shorts viraux en quelques clics.",
-    icon: Sparkles,
-    color: "bg-purple-500/20 text-purple-400"
-  },
-  {
-    name: "TubeForge",
-    desc: "Le téléchargeur ultime. 8K, 60fps, sans pub. Archivez le web.",
+    name: "TubeForge (Vague 1)",
+    desc: "Le téléchargeur ultime. 8K, 60fps, sans pub. Disponible maintenant.",
     icon: Download,
     color: "bg-red-500/20 text-red-400"
   },
   {
-    name: "Mises à jour Futures",
-    desc: "Accès inclus à ThumbCraft (IA Miniatures) et aux prochains outils de la Vague 1.",
+    name: "ClipForge (Vague 2)",
+    desc: "Transformez vos vidéos YouTube en TikToks/Shorts viraux. Arrive prochainement.",
+    icon: Sparkles,
+    color: "bg-purple-500/20 text-purple-400"
+  },
+  {
+    name: "ReviewForge (Vague 3)",
+    desc: "Partage vidéo sécurisé avec liens temporaires et review en temps réel. Été 2026.",
     icon: Layers,
     color: "bg-green-500/20 text-green-400"
   }
@@ -38,16 +38,16 @@ export default function PricingPage() {
   const waves = [
     {
       id: 1,
-      name: "Vague Pionnier",
-      date: "20 Février",
+      name: "Vague 1 — TubeForge",
+      date: "Disponible",
       price: "9,99€",
       period: "/mois",
-      status: "open", // open, closed, upcoming
+      status: "open",
       features: [
         "Accès complet au Launcher",
-        "Licence ClipForge Illimitée",
-        "Licence TubeForge Pro",
-        "badge Discord 'Pionnier'",
+        "Licence TubeForge Pro (8K, sans pub)",
+        "Badge Discord 'Pionnier'",
+        "Accès garanti aux Vagues 2 et 3",
         "Votre tarif n'augmentera jamais"
       ],
       color: "from-purple-500 to-blue-500",
@@ -55,32 +55,32 @@ export default function PricingPage() {
     },
     {
       id: 2,
-      name: "Vague Expansion",
-      date: "Mai 2026",
+      name: "Vague 2 — ClipForge",
+      date: "Prochainement",
       price: "~15€",
       period: "/mois",
       status: "upcoming",
       features: [
-        "Tous les outils Vague 1",
-        "Nouveaux outils de Mai",
-        "Prix plus élevé",
-        "Pas de badge Pionnier"
+        "Tout de la Vague 1",
+        "ClipForge — Clips IA illimités",
+        "Prix plus élevé pour les nouveaux",
+        "Pionniers : inclus sans surcoût"
       ],
       color: "from-blue-500 to-cyan-500",
       glow: "blue"
     },
     {
       id: 3,
-      name: "Vague Ultime",
-      date: "Juillet 2026",
-      price: "~25€",
+      name: "Vague 3 — ReviewForge",
+      date: "Été 2026",
+      price: "~25-50€",
       period: "/mois",
       status: "upcoming",
       features: [
-        "Suite complète (+10 outils)",
-        "Accès API",
+        "Tout des Vagues 1 et 2",
+        "ReviewForge — Partage vidéo sécurisé",
         "Prix standard final",
-        "Support standard"
+        "Pionniers : inclus sans surcoût"
       ],
       color: "from-cyan-500 to-emerald-500",
       glow: "cyan"

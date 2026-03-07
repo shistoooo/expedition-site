@@ -35,9 +35,9 @@ export default function HomePricing() {
           className="grid grid-cols-3 gap-3 mb-10"
         >
           {[
-            { period: "Aujourd\u2019hui", tools: "2 outils", price: "9,99\u20AC", you: true },
-            { period: "\u00C9t\u00E9 2026", tools: "5 outils", price: "9,99\u20AC", you: true },
-            { period: "Fin 2026", tools: "10+ outils", price: "9,99\u20AC", you: true },
+            { period: "Vague 1", tools: "TubeForge", price: "9,99€", you: true },
+            { period: "Vague 2", tools: "+ ClipForge", price: "9,99€", you: true },
+            { period: "Vague 3", tools: "+ ReviewForge", price: "9,99€", you: true },
           ].map((step, i) => (
             <div key={i} className="relative text-center p-4 rounded-xl bg-white/[0.03] border border-white/10">
               <p className="text-xs text-white/30 mb-1">{step.period}</p>
@@ -78,11 +78,11 @@ export default function HomePricing() {
             <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 mb-8">
               {[
                 "Expedition Launcher (Mac/Windows)",
-                "ClipForge — Clips illimit&eacute;s",
-                "TubeForge Pro — 8K, sans pub",
-                "Tous les futurs outils inclus",
+                "TubeForge Pro — 8K, sans pub (Vague 1)",
+                "ClipForge — Clips IA illimités (Vague 2)",
+                "ReviewForge — Review sécurisé (Vague 3)",
                 "Badge Discord Pionnier",
-                "Votre tarif n&apos;augmentera jamais",
+                "Votre tarif n'augmentera jamais",
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-white/70">
                   <Check className="w-4 h-4 text-purple-400 shrink-0" />
