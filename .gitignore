@@ -47,6 +47,6 @@ next-env.d.ts
 # wrangler
 .wrangler/
 
-# claude
+# editor/tool configs
 .claude/
 CLAUDE.md
