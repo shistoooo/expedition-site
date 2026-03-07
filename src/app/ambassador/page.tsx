@@ -26,7 +26,7 @@ const steps = [
   },
 ];
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
 
 const channels = [
   { id: "youtube", label: "YouTube" },
@@ -66,7 +66,7 @@ export default function AmbassadorPage() {
       });
       setSent(true);
     } catch {
-      setSent(true);
+      setError("Une erreur est survenue. Veuillez réessayer.");
     } finally {
       setLoading(false);
     }

@@ -34,7 +34,7 @@ export default function DownloadButtons({
   showWebButton = false,
   webLabel = "Version Web (Bient\u00f4t)",
 }: DownloadButtonsProps) {
-  const r2 = process.env.NEXT_PUBLIC_R2_BUCKET_URL || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev";
+  const r2 = process.env.NEXT_PUBLIC_R2_BUCKET_URL;
 
   return (
     <div className="flex flex-col sm:flex-row gap-4">

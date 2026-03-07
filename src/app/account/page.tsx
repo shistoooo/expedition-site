@@ -12,7 +12,9 @@ import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
 import { useState } from "react";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
+
+const ALLOWED_REDIRECT_HOSTS = ["dashboard.stripe.com", "connect.stripe.com", "billing.stripe.com"];
 
 type AccountStep = "login" | "dashboard";
 
@@ -115,6 +117,10 @@ export default function AccountPage() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
+            const redirectUrl = new URL(data.url);
+            if (!ALLOWED_REDIRECT_HOSTS.some(h => redirectUrl.hostname === h || redirectUrl.hostname.endsWith("." + h))) {
+                throw new Error("URL de redirection non autorisée");
+            }
             window.open(data.url, "_blank");
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'ouverture du portail");
@@ -242,6 +248,10 @@ export default function AccountPage() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Erreur Stripe");
+            const redirectUrl = new URL(data.url);
+            if (!ALLOWED_REDIRECT_HOSTS.some(h => redirectUrl.hostname === h || redirectUrl.hostname.endsWith("." + h))) {
+                throw new Error("URL de redirection non autorisée");
+            }
             window.open(data.url, "_blank");
         } catch (err: unknown) {
             setAmbassadorError(err instanceof Error ? err.message : "Erreur Stripe");
@@ -261,6 +271,10 @@ export default function AccountPage() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Erreur Stripe");
+            const redirectUrl = new URL(data.url);
+            if (!ALLOWED_REDIRECT_HOSTS.some(h => redirectUrl.hostname === h || redirectUrl.hostname.endsWith("." + h))) {
+                throw new Error("URL de redirection non autorisée");
+            }
             window.open(data.url, "_blank");
         } catch (err: unknown) {
             setAmbassadorError(err instanceof Error ? err.message : "Erreur Stripe");
@@ -420,7 +434,7 @@ export default function AccountPage() {
                                         </h2>
                                         <div className="flex flex-col sm:flex-row gap-3">
                                             <a
-                                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.zip"
+                                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
                                                 download
                                                 className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
                                             >
@@ -428,7 +442,7 @@ export default function AccountPage() {
                                                 Launcher Mac
                                             </a>
                                             <a
-                                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"
+                                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows"
                                                 download
                                                 className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
                                             >

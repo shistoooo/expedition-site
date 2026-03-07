@@ -19,14 +19,17 @@ const syne = Syne({
   weight: ["700", "800"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expedition.so";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Expédition | Les outils pour les créateurs",
   description: "Découvrez les outils développés par la communauté Expédition. TubeForge, ClipForge, ReviewForge et bien plus pour booster votre création de contenu.",
-  keywords: ["expedition", "tools", "clipforge", "youtube", "tiktok", "discord", "création", "vidéo", "ia"],
+  keywords: ["expedition", "tools", "clipforge", "tubeforge", "youtube", "tiktok", "discord", "création", "vidéo", "ia"],
   openGraph: {
     title: "Expédition | Les outils pour les créateurs",
     description: "Rejoignez l'aventure Expédition et accédez aux meilleurs outils pour créateurs de contenu.",
-    url: "https://expedition.so",
+    url: siteUrl,
     siteName: "Expédition",
     locale: "fr_FR",
     type: "website",
@@ -36,6 +39,20 @@ export const metadata: Metadata = {
     title: "Expédition | Les outils pour les créateurs",
     description: "Rejoignez l'aventure Expédition et accédez aux meilleurs outils pour créateurs de contenu.",
   },
+  // TODO: Remplacer par votre vrai code Google Search Console
+  // verification: { google: "VOTRE_CODE_GOOGLE_SEARCH_CONSOLE" },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Expédition Studio",
+  url: siteUrl,
+  description: "Suite d'outils pour créateurs de contenu : TubeForge, ClipForge, ReviewForge.",
+  email: "contact@expedition.studio",
+  sameAs: [
+    process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition",
+  ].filter(Boolean),
 };
 
 export default function RootLayout({
@@ -45,6 +62,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} antialiased`}
       >

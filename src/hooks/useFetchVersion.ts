@@ -20,7 +20,7 @@ export function useFetchVersion(appKey: string) {
     const fetchVersion = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_R2_BUCKET_URL || "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev"}/version.json`,
+          `${process.env.NEXT_PUBLIC_WORKER_URL}/downloads/version.json`,
           { cache: "no-store", signal: controller.signal }
         );
         if (!response.ok) throw new Error(`HTTP ${response.status}`);

@@ -46,7 +46,7 @@ export default function CheckoutSuccessPage() {
 
                         <div className="flex flex-col sm:flex-row gap-3">
                             <a
-                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Install-Expedition.zip"
+                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
                                 download
                                 className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
                             >
@@ -54,7 +54,7 @@ export default function CheckoutSuccessPage() {
                                 Mac
                             </a>
                             <a
-                                href="https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"
+                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows"
                                 download
                                 className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
                             >

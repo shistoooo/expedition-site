@@ -86,7 +86,7 @@ export default function HomePricing() {
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-white/70">
                   <Check className="w-4 h-4 text-purple-400 shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: feature }} />
+                  <span>{feature}</span>
                 </div>
               ))}
             </div>

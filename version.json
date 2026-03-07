@@ -1,25 +1,46 @@
 {
   "clipforge": {
-    "version": "1.0.7",
-    "release_date": "2026-01-28",
-    "critical": false,
-    "message": "Interface responsive améliorée : Mobile (tabs), Medium (2 colonnes), XL (3 colonnes).",
-    "download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge.app.zip",
-    "windows_download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/ClipForge-Windows-Installer.zip"
+    "version": "1.0.109",
+    "release_date": "2026-03-07",
+    "critical": true,
+    "message": "fix: timeline scrubbing + subtitle quality",
+    "download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/clipforge/macos",
+    "windows_download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/clipforge/windows",
+    "sha256_mac": "e10ff7781c0e953cf898afac7f73c0d6a7a15b1ff25ddabc74ee287809756342",
+    "sha256_windows": "76cca52a879f230b70f27126366ede28ab2d9fc2533ac22895e4c5202eb3c046"
   },
   "tubeforge": {
-    "version": "2.0.1",
-    "release_date": "2026-01-25",
-    "critical": false,
-    "message": "Améliorations mineures.",
-    "windows_download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/TubeForge-Windows-Installer.zip"
+    "version": "2.5.25",
+    "release_date": "2026-03-05",
+    "critical": true,
+    "message": "perf: concurrent-fragments 4 + abort-on-unavailable + remove no-cache-dir",
+    "download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/tubeforge/macos",
+    "windows_download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/tubeforge/windows",
+    "sha256_mac": "df8af221c2f6a1d1c3a9c93df2aff6595c065afa1f8a725be8a77b5410f3f237",
+    "sha256_windows": "10fc5e076fb916fd2e4c017811a119babb5cfe52ff257a8a56d6ab32aae61a1f"
+  },
+  "reviewforge": {
+    "version": "0.1.2",
+    "release_date": "2026-03-06",
+    "critical": true,
+    "message": "feat: écran de connexion vidéo côté reviewer",
+    "download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/reviewforge/macos",
+    "windows_download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/reviewforge/windows",
+    "sha256_mac": "1497b35c4f4eda38a955fd962256e85be66dc93aa3ffaa476d1381f31b0d6aa4",
+    "sha256_windows": ""
   },
   "launcher": {
-    "version": "0.1.6",
-    "release_date": "2026-01-28",
+    "version": "0.3.4",
+    "release_date": "2026-03-07",
     "critical": true,
-    "message": "Fix critique Windows : Lancement des apps corrigé (working directory). Les apps ClipForge et TubeForge démarrent maintenant correctement.",
-    "download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Mac.zip",
-    "windows_download_url": "https://pub-a36a12c960fe437a9b884e6b7db5b56c.r2.dev/Expedition-Launcher-Windows.zip"
+    "message": "security: migrate downloads to authenticated Worker, disable public R2 access",
+    "download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher/macos",
+    "windows_download_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher/windows",
+    "sha256_mac": "f0ef372c55ff7aec9d706cd467fd82e4e75aa0ace6a3982fe612725b9f2ed909",
+    "sha256_windows": "7347fd998db761a4e6d2b65ef7fad50483047af7bab3ec4e2bebd2a728deeb83",
+    "update_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher/macos",
+    "windows_update_url": "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher/windows",
+    "sha256_update_mac": "158c1d24df951c4f1036959e0eeab7fb7c1db199e316fc418049775e8c911195",
+    "sha256_update_windows": "8ee8840d84f7e1dde57dca94fd272e81a2345c01688feaef6e24c8a58fdcdca5"
   }
 }
