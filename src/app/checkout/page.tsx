@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Phone, Monitor } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Monitor } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
@@ -12,8 +12,8 @@ import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 // Stripe Elements dark theme matching Expedition style
 const stripeAppearance = {
@@ -248,13 +248,13 @@ function PaymentForm({ discount, plan }: { discount: { percentOff: number | null
                                                 <span className="block text-white/40 text-xs">Réponse rapide, communauté active</span>
                                             </div>
                                         </a>
-                                        <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                                            <Phone className="w-5 h-5 text-purple-400" />
+                                        <a href="mailto:contact@expedition.studio" className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
+                                            <Mail className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
                                             <div>
-                                                <span className="text-white font-medium text-sm">Téléphone</span>
-                                                <span className="block text-white/40 text-xs">07 XX XX XX XX</span>
+                                                <span className="text-white font-medium text-sm">Email</span>
+                                                <span className="block text-white/40 text-xs">contact@expedition.studio</span>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                     {/* Avertissement signature */}
                                     <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">

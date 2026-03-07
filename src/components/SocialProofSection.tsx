@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 
-// TODO: Remplacer par les vrais créateurs quand les témoignages sont prêts
 const creators = [
   {
     name: "Créateur 1",
