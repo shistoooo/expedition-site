@@ -38,7 +38,7 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg md:text-xl text-white/60 mb-4 max-w-2xl leading-relaxed mx-auto"
         >
-          Aujourd&apos;hui 2 outils. Demain 5, puis 10.
+          Aujourd&apos;hui 1 outil. Demain 3, puis 10.
           <br className="hidden md:block" />
           <span className="text-white/80">Votre prix ? Toujours 9,99&euro;.</span> M&ecirc;me quand la suite aura 10 outils.
         </motion.p>

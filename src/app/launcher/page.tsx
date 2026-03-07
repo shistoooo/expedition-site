@@ -60,7 +60,7 @@ const sellingPoints = [
   {
     icon: Layers,
     title: "Tous vos outils, un seul endroit",
-    description: "ClipForge, TubeForge et tous les futurs outils accessibles depuis une interface unique."
+    description: "TubeForge, ClipForge, ReviewForge et tous les futurs outils accessibles depuis une interface unique."
   },
   {
     icon: Shield,
@@ -233,7 +233,7 @@ export default function LauncherPage() {
           <div className="container-main">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4">Disponible maintenant</h2>
-              <p className="text-white/50">Deux outils inclus dans votre abonnement, accessibles depuis le Launcher.</p>
+              <p className="text-white/50">TubeForge disponible maintenant, ClipForge et ReviewForge arrivent prochainement.</p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8">

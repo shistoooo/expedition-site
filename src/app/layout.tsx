@@ -21,7 +21,7 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   title: "Expédition | Les outils pour les créateurs",
-  description: "Découvrez les outils développés par la communauté Expédition. ClipForge et bien plus pour booster votre création de contenu sur YouTube, TikTok et Twitch.",
+  description: "Découvrez les outils développés par la communauté Expédition. TubeForge, ClipForge, ReviewForge et bien plus pour booster votre création de contenu.",
   keywords: ["expedition", "tools", "clipforge", "youtube", "tiktok", "discord", "création", "vidéo", "ia"],
   openGraph: {
     title: "Expédition | Les outils pour les créateurs",
