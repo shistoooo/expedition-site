@@ -21,8 +21,8 @@ export default function Home() {
       <main className="w-full">
         <Hero />
         <SocialProofSection />
-        <ToolsSection />
         <TubeForgeSection />
+        <ToolsSection />
         <ReviewForgeSection />
         <TransparencySection />
         <HomePricing />

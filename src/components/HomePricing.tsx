@@ -79,7 +79,7 @@ export default function HomePricing() {
               {[
                 "Expedition Launcher (Mac/Windows)",
                 "TubeForge Pro — 8K, sans pub (Vague 1)",
-                "ClipForge — Clips IA illimités (Vague 2)",
+                "ClipForge — Clips auto 8h + sélection illimitée (Vague 2)",
                 "ReviewForge — Review sécurisé (Vague 3)",
                 "Badge Discord Pionnier",
                 "Votre tarif n'augmentera jamais",

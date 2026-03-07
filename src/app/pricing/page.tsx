@@ -62,7 +62,7 @@ export default function PricingPage() {
       status: "upcoming",
       features: [
         "Tout de la Vague 1",
-        "ClipForge — Clips IA illimités",
+        "ClipForge — Clips auto 8h + sélection illimitée",
         "Prix plus élevé pour les nouveaux",
         "Pionniers : inclus sans surcoût"
       ],
