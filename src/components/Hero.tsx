@@ -52,7 +52,7 @@ export default function Hero() {
           <span className="text-3xl md:text-4xl font-bold text-white">11,99&euro;</span>
           <span className="text-white/40 text-sm">/mois</span>
           <span className="ml-3 text-sm text-white/40 line-through">ou</span>
-          <span className="text-3xl md:text-4xl font-bold text-green-400">9,99&euro;</span>
+          <span className="text-3xl md:text-4xl font-bold text-green-400">7,99&euro;</span>
           <span className="text-white/40 text-sm">/mois</span>
           <span className="ml-2 px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-300 text-xs font-medium">avec Discord</span>
         </motion.div>

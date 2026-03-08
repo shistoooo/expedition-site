@@ -41,7 +41,7 @@ export default function PricingPage() {
       name: "Vague 1 — TubeForge",
       date: "Disponible",
       price: "11,99€",
-      discordPrice: "9,99€",
+      discordPrice: "7,99€",
       period: "/mois",
       status: "open",
       features: [

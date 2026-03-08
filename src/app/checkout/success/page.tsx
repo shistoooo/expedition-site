@@ -35,7 +35,7 @@ export default function CheckoutSuccessPage() {
                         Votre paiement a été confirmé avec succès.
                     </p>
                     <p className="text-white/40 text-sm mb-10">
-                        Vous faites désormais partie de la Vague Pionnier. Votre tarif de 9,99€/mois ne changera jamais.
+                        Vous faites désormais partie de la Vague Pionnier. Votre tarif est bloqué tant que votre abonnement reste actif.
                     </p>
 
                     <div className="p-6 rounded-2xl bg-white/5 border border-white/10 mb-8 text-left">

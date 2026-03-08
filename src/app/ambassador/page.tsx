@@ -173,7 +173,7 @@ export default function AmbassadorPage() {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
                 <div className="text-center sm:text-left">
                   <div className="text-sm text-white/40 mb-1">L&apos;abonné paie</div>
-                  <div className="text-4xl font-bold">9,99€</div>
+                  <div className="text-4xl font-bold">11,99€</div>
                   <div className="text-white/40 text-sm">/mois</div>
                 </div>
 

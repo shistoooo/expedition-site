@@ -71,7 +71,7 @@ export default function HomePricing() {
                   <span className="text-4xl md:text-5xl font-bold text-white">11,99&euro;</span>
                   <span className="text-white/40">/mois</span>
                 </div>
-                <p className="text-xs text-green-300 mt-1">9,99&euro;/mois pour les membres Discord</p>
+                <p className="text-xs text-green-300 mt-1">7,99&euro;/mois pour les membres Discord</p>
                 <p className="text-xs text-purple-300 mt-0.5">ou 99,99&euro;/an (soit 8,33&euro;/mois — 4 mois offerts)</p>
               </div>
             </div>
