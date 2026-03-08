@@ -285,7 +285,7 @@ export default function ToolsSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
               </span>
-              Vague 2 — Prochainement
+              Vague 2 — Disponible en Beta
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-6">

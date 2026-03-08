@@ -490,7 +490,7 @@ export default function ReviewForgeSection() {
           <div className="flex-1 text-left">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm font-medium mb-8">
               <Clock className="w-4 h-4" />
-              Bientôt disponible — Vague 3
+              Vague 3 — Disponible
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-6">

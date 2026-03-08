@@ -57,7 +57,7 @@ export default function PricingPage() {
     {
       id: 2,
       name: "Vague 2 — ClipForge",
-      date: "Prochainement",
+      date: "Beta",
       price: "~15€",
       period: "/mois",
       status: "upcoming",
@@ -73,7 +73,7 @@ export default function PricingPage() {
     {
       id: 3,
       name: "Vague 3 — ReviewForge",
-      date: "Été 2026",
+      date: "Disponible",
       price: "~25-50€",
       period: "/mois",
       status: "upcoming",
@@ -227,7 +227,7 @@ export default function PricingPage() {
             </p>
             <p className="text-white/70 leading-relaxed mb-3">
               <strong className="text-orange-200">Les Pionniers gardent leur tarif d&apos;entr&eacute;e tant qu&apos;ils restent abonn&eacute;s</strong> — m&ecirc;me quand la suite vaudra 25&euro;/mois avec 10+ outils.
-              C&apos;est le m&ecirc;me principe que Netflix &agrave; ses d&eacute;buts : ceux qui ont souscrit t&ocirc;t ont pay&eacute; moins longtemps apr&egrave;s.
+              Plus vous rejoignez t&ocirc;t, plus vous &eacute;conomisez sur le long terme.
             </p>
             <p className="text-white/50 text-sm">
               Votre tarif reste le même tant que votre abonnement est actif. Annulable à tout moment.

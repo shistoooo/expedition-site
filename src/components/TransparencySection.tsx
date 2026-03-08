@@ -28,9 +28,9 @@ const tools = [
   {
     name: "ReviewForge",
     icon: Link2,
-    status: "Bient\u00f4t",
-    statusColor: "bg-emerald-500",
-    desc: "En cours de développement pour la Vague 3. Partage sécurisé de vidéos avec liens temporaires, tunnel direct et dashboard de suivi.",
+    status: "Stable",
+    statusColor: "bg-green-500",
+    desc: "Partage sécurisé de vidéos avec liens temporaires, tunnel direct et dashboard de suivi. En production.",
   },
 ];
 

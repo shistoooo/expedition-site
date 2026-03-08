@@ -461,7 +461,7 @@ function CheckoutContent() {
                         className="flex-1"
                     >
                         <h1 className="text-3xl md:text-4xl font-bold mb-2">Récapitulatif de votre commande</h1>
-                        <p className="text-white/60 mb-8">Vous êtes sur le point de rejoindre l&apos;élite des créateurs.</p>
+                        <p className="text-white/60 mb-8">V&eacute;rifiez votre commande avant de continuer.</p>
 
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
                             {/* Plan Toggle */}

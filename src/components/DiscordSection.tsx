@@ -6,7 +6,7 @@ import { Users, MessageCircle, Headphones } from "lucide-react";
 const stats = [
   { icon: Users, label: "Membres", value: "200+" },
   { icon: MessageCircle, label: "Messages/jour", value: "200" },
-  { icon: Headphones, label: "Support 24/7", value: "Oui" },
+  { icon: Headphones, label: "Support", value: "Ultra réactif" },
 ];
 
 export default function DiscordSection() {

@@ -22,7 +22,7 @@ const steps = [
   {
     icon: Banknote,
     title: "Gagnez de l'argent",
-    desc: "Recevez 50% de commission sur chaque abonnement généré. Paiement récurrent, chaque mois, tant que l'abonné reste actif.",
+    desc: "Recevez 50% de commission sur chaque abonnement généré, pendant 6 mois par filleul.",
   },
 ];
 
@@ -101,8 +101,8 @@ export default function AmbassadorPage() {
 
             <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
               Recommandez Expédition à votre communauté et gagnez{" "}
-              <span className="text-purple-300 font-semibold">50% de commission récurrente</span>{" "}
-              sur chaque abonnement généré.
+              <span className="text-purple-300 font-semibold">50% de commission</span>{" "}
+              sur chaque abonnement généré, pendant 6 mois par filleul.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -160,7 +160,7 @@ export default function AmbassadorPage() {
         <div className="container-main">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Vos gains, en détail</h2>
-            <p className="text-white/60">Une commission généreuse, récurrente, sans plafond.</p>
+            <p className="text-white/60">Une commission g&eacute;n&eacute;reuse, pendant 6 mois par filleul, sans plafond.</p>
           </div>
 
           <div className="max-w-2xl mx-auto">
@@ -196,7 +196,7 @@ export default function AmbassadorPage() {
               <div className="flex items-center gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
                 <Repeat className="w-5 h-5 text-purple-400 shrink-0" />
                 <p className="text-sm text-purple-200">
-                  <strong>Commission récurrente :</strong> vous gagnez chaque mois, tant que votre filleul reste abonné. 10 filleuls = ~50€/mois passifs.
+                  <strong>Commission pendant 6 mois :</strong> vous gagnez chaque mois pendant 6 mois par filleul. 10 filleuls = ~50€/mois pendant 6 mois.
                 </p>
               </div>
             </motion.div>
