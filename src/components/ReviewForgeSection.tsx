@@ -456,7 +456,7 @@ function ReviewForgeMockup() {
                 <span className="text-[8px] text-emerald-400 font-medium">Lien actif</span>
               </div>
               <div className="flex items-center gap-2">
-                <code className="flex-1 text-[8px] text-white/50 font-mono truncate bg-black/20 px-2 py-1.5 rounded-md">https://review.expedition.studio/s/xK9mQ2...</code>
+                <code className="flex-1 text-[8px] text-white/50 font-mono truncate bg-black/20 px-2 py-1.5 rounded-md">https://review.expeditionlauncher.store/s/xK9mQ2...</code>
                 <button
                   onClick={handleCopy}
                   className="p-1.5 rounded-md shrink-0 transition-all"

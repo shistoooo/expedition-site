@@ -16,12 +16,12 @@ export default function MentionsLegalesPage() {
 
                     <h2 className="text-xl font-bold text-white mt-8">1. &Eacute;diteur du site</h2>
                     <p>
-                        Le site <strong>expedition.studio</strong> est &eacute;dit&eacute; par :
+                        Le site <strong>expeditionlauncher.store</strong> est &eacute;dit&eacute; par :
                     </p>
                     <ul className="list-none space-y-1">
                         <li><strong>Nom :</strong> Exp&eacute;dition Studio</li>
                         <li><strong>Statut :</strong> Personne physique — Entrepreneur individuel</li>
-                        <li><strong>Email :</strong> contact@expedition.studio</li>
+                        <li><strong>Email :</strong> contact@expeditionlauncher.store</li>
                         <li><strong>Discord :</strong> <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">dsc.gg/expedition</a></li>
                     </ul>
                     <p>

@@ -248,11 +248,11 @@ function PaymentForm({ discount, plan }: { discount: { percentOff: number | null
                                                 <span className="block text-white/40 text-xs">Réponse rapide, communauté active</span>
                                             </div>
                                         </a>
-                                        <a href="mailto:contact@expedition.studio" className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
+                                        <a href="mailto:contact@expeditionlauncher.store" className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
                                             <Mail className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
                                             <div>
                                                 <span className="text-white font-medium text-sm">Email</span>
-                                                <span className="block text-white/40 text-xs">contact@expedition.studio</span>
+                                                <span className="block text-white/40 text-xs">contact@expeditionlauncher.store</span>
                                             </div>
                                         </a>
                                     </div>

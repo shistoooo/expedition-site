@@ -160,7 +160,7 @@ export default function CGVPage() {
                     <p>
                         Pour toute question relative aux pr&eacute;sentes CGV, contactez-nous via notre
                         serveur <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">Discord</a> ou
-                        par email &agrave; contact@expedition.studio.
+                        par email &agrave; contact@expeditionlauncher.store.
                     </p>
                 </div>
             </main>

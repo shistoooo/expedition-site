@@ -285,7 +285,7 @@ export default function AccountPage() {
 
     const handleCopyCode = async () => {
         if (!ambassadorStatus) return;
-        const link = `https://expedition.studio/checkout?ref=${ambassadorStatus.referralCode}`;
+        const link = `https://expeditionlauncher.store/checkout?ref=${ambassadorStatus.referralCode}`;
         await navigator.clipboard.writeText(link);
         setCodeCopied(true);
         setTimeout(() => setCodeCopied(false), 2000);
@@ -667,7 +667,7 @@ export default function AccountPage() {
                                                 <label className="text-xs font-mono text-white/40 uppercase mb-2 block">Votre lien de parrainage</label>
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex-1 h-11 px-4 bg-white/5 rounded-xl border border-white/10 text-white text-sm flex items-center truncate">
-                                                        expedition.studio/checkout?ref={ambassadorStatus.referralCode}
+                                                        expeditionlauncher.store/checkout?ref={ambassadorStatus.referralCode}
                                                     </div>
                                                     <button
                                                         onClick={handleCopyCode}

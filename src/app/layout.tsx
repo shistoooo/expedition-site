@@ -49,7 +49,7 @@ const jsonLd = {
   name: "Expédition Studio",
   url: siteUrl,
   description: "Suite d'outils pour créateurs de contenu : TubeForge, ClipForge, ReviewForge.",
-  email: "contact@expedition.studio",
+  email: "contact@expeditionlauncher.store",
   sameAs: [
     process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition",
   ].filter(Boolean),
