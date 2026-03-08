@@ -47,7 +47,7 @@ export default function CGVPage() {
                         article 293 B du Code G&eacute;n&eacute;ral des Imp&ocirc;ts, sous r&eacute;serve de modification du r&eacute;gime fiscal).
                     </p>
                     <p>
-                        Deux formules sont propos&eacute;es : mensuelle (9,99&euro;/mois) et annuelle (99,99&euro;/an).
+                        Deux formules sont propos&eacute;es : mensuelle (11,99&euro;/mois) et annuelle (99,99&euro;/an). Un tarif r&eacute;duit (9,99&euro;/mois) est disponible pour les membres du serveur Discord Exp&eacute;dition.
                         Le paiement est g&eacute;r&eacute; exclusivement par le prestataire de paiement Stripe.
                         L&apos;abonnement est renouvel&eacute; automatiquement &agrave; chaque &eacute;ch&eacute;ance (mensuelle ou annuelle).
                     </p>
@@ -87,9 +87,7 @@ export default function CGVPage() {
                         jusqu&apos;&agrave; cette date. Aucun remboursement au prorata ne sera effectu&eacute;.
                     </p>
                     <p>
-                        En cas de r&eacute;siliation, une p&eacute;riode de gr&acirc;ce permet au Client de
-                        revenir au tarif pr&eacute;f&eacute;rentiel : 3 mois de gr&acirc;ce apr&egrave;s 6 mois d&apos;abonnement
-                        continu, 6 mois de gr&acirc;ce apr&egrave;s 12 mois d&apos;abonnement continu.
+                        En cas de r&eacute;siliation, le tarif pr&eacute;f&eacute;rentiel est perdu. Le tarif en vigueur au moment de la r&eacute;inscription s&apos;appliquera.
                     </p>
 
                     <h2 className="text-xl font-bold text-white mt-8">6. Programme Ambassadeur</h2>

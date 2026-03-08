@@ -61,7 +61,7 @@ const stripeAppearance = {
 type PlanType = "monthly" | "yearly";
 
 const PLANS = {
-    monthly: { price: 9.99, label: "/mois", period: "mois" },
+    monthly: { price: 11.99, label: "/mois", period: "mois" },
     yearly: { price: 99.99, label: "/an", period: "an" },
 };
 
@@ -484,14 +484,14 @@ function CheckoutContent() {
                                     className={`relative z-10 flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${plan === "yearly" ? "text-black" : "text-white/50 hover:text-white/80"}`}
                                 >
                                     Annuel
-                                    <span className="absolute -top-2 -right-1 px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full z-20">-17%</span>
+                                    <span className="absolute -top-2 -right-1 px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full z-20">-30%</span>
                                 </button>
                             </div>
 
                             <div className="flex justify-between items-start border-b border-white/5 pb-6">
                                 <div>
                                     <h3 className="text-xl font-bold text-white">Vague Pionnier ({plan === "yearly" ? "Annuel" : "Mensuel"})</h3>
-                                    <p className="text-purple-400 text-sm font-medium mt-1">Acc&egrave;s Anticip&eacute; &bull; Ce tarif ne changera jamais</p>
+                                    <p className="text-purple-400 text-sm font-medium mt-1">Acc&egrave;s Anticip&eacute; &bull; Tarif bloqu&eacute; tant que vous restez abonn&eacute;</p>
                                 </div>
                                 <div className="text-right">
                                     <div className="text-2xl font-bold">{PLANS[plan].price.toFixed(2).replace(".", ",")}€</div>
@@ -511,7 +511,7 @@ function CheckoutContent() {
                                         "ClipForge — Clips auto 8h + sélection illimitée (Vague 2)",
                                         "ReviewForge — Review sécurisé (Vague 3)",
                                         "Badge Discord Exclusif 'Pionnier'",
-                                        "Votre tarif n'augmentera jamais"
+                                        "Tarif bloqué tant que vous restez abonné"
                                     ].map((item, i) => (
                                         <li key={i} className="flex items-center gap-3 text-white/70 text-sm">
                                             <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -525,16 +525,10 @@ function CheckoutContent() {
                                 <div className="flex gap-3">
                                     <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="mb-2">
-                                            <strong>Garantie &quot;Early Adopter&quot; & Droit au Retour :</strong><br />
-                                            Votre tarif de {PLANS[plan].price.toFixed(2).replace(".", ",")}€{PLANS[plan].label} ne changera jamais tant que votre abonnement est actif.
+                                        <p>
+                                            <strong>Garantie &quot;Early Adopter&quot; :</strong><br />
+                                            Votre tarif de {PLANS[plan].price.toFixed(2).replace(".", ",")}€{PLANS[plan].label} reste bloqu&eacute; tant que votre abonnement reste actif et continu. En cas de r&eacute;siliation, le tarif en vigueur au moment de la r&eacute;inscription s&apos;appliquera.
                                         </p>
-                                        <p className="text-xs opacity-80 mb-1">En cas de désabonnement, vous conservez votre tarif préférentiel pendant une période de grâce :</p>
-                                        <ul className="text-xs opacity-70 list-disc pl-4 space-y-1">
-                                            <li>Abonné +6 mois : <strong>3 mois</strong> pour revenir à 9,99€.</li>
-                                            <li>Abonné +12 mois : <strong>6 mois</strong> pour revenir à 9,99€.</li>
-                                            <li>Délai maximum de récupération : 6 mois.</li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>

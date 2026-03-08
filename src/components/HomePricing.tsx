@@ -16,7 +16,7 @@ export default function HomePricing() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-sm font-medium mb-6">
             <Lock className="w-4 h-4" />
-            <span>Tarif Pionnier — garanti sans augmentation</span>
+            <span>Tarif Pionnier — bloqu&eacute; tant que vous restez abonn&eacute;</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
             La suite grossit. Votre prix, non.
@@ -35,9 +35,9 @@ export default function HomePricing() {
           className="grid grid-cols-3 gap-3 mb-10"
         >
           {[
-            { period: "Vague 1", tools: "TubeForge", price: "9,99€", you: true },
-            { period: "Vague 2", tools: "+ ClipForge", price: "9,99€", you: true },
-            { period: "Vague 3", tools: "+ ReviewForge", price: "9,99€", you: true },
+            { period: "Vague 1", tools: "TubeForge", price: "11,99€", you: true },
+            { period: "Vague 2", tools: "+ ClipForge", price: "11,99€", you: true },
+            { period: "Vague 3", tools: "+ ReviewForge", price: "11,99€", you: true },
           ].map((step, i) => (
             <div key={i} className="relative text-center p-4 rounded-xl bg-white/[0.03] border border-white/10">
               <p className="text-xs text-white/30 mb-1">{step.period}</p>
@@ -68,10 +68,11 @@ export default function HomePricing() {
               </div>
               <div className="text-left md:text-right">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl md:text-5xl font-bold text-white">9,99&euro;</span>
+                  <span className="text-4xl md:text-5xl font-bold text-white">11,99&euro;</span>
                   <span className="text-white/40">/mois</span>
                 </div>
-                <p className="text-xs text-purple-300 mt-1">ou 99,99&euro;/an (soit 8,33&euro;/mois)</p>
+                <p className="text-xs text-green-300 mt-1">9,99&euro;/mois pour les membres Discord</p>
+                <p className="text-xs text-purple-300 mt-0.5">ou 99,99&euro;/an (soit 8,33&euro;/mois — 4 mois offerts)</p>
               </div>
             </div>
 
@@ -82,7 +83,7 @@ export default function HomePricing() {
                 "ClipForge — Clips auto 8h + sélection illimitée (Vague 2)",
                 "ReviewForge — Review sécurisé (Vague 3)",
                 "Badge Discord Pionnier",
-                "Votre tarif n'augmentera jamais",
+                "Tarif bloqué tant que vous restez abonné",
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-white/70">
                   <Check className="w-4 h-4 text-purple-400 shrink-0" />

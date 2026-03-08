@@ -40,7 +40,8 @@ export default function PricingPage() {
       id: 1,
       name: "Vague 1 — TubeForge",
       date: "Disponible",
-      price: "9,99€",
+      price: "11,99€",
+      discordPrice: "9,99€",
       period: "/mois",
       status: "open",
       features: [
@@ -48,7 +49,7 @@ export default function PricingPage() {
         "Licence TubeForge Pro (8K, sans pub)",
         "Badge Discord 'Pionnier'",
         "Accès garanti aux Vagues 2 et 3",
-        "Votre tarif n'augmentera jamais"
+        "Tarif bloqué tant que vous restez abonné"
       ],
       color: "from-purple-500 to-blue-500",
       glow: "purple"
@@ -110,8 +111,8 @@ export default function PricingPage() {
               <span className="gradient-text">Une infinité d&apos;outils.</span>
             </h1>
             <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
-              Rejoignez l&apos;Expédition dès maintenant pour profiter du tarif le plus bas — il ne changera jamais pour vous.
-              Accédez immédiatement à tous nos outils actuels et futurs.
+              Rejoignez l&apos;Exp&eacute;dition d&egrave;s maintenant pour profiter du tarif le plus bas — il reste bloqu&eacute; tant que vous restez abonn&eacute;.
+              Acc&eacute;dez imm&eacute;diatement &agrave; tous nos outils actuels et futurs.
             </p>
           </motion.div>
         </div>
@@ -172,6 +173,9 @@ export default function PricingPage() {
                     <span className="text-4xl font-bold text-white">{wave.price}</span>
                     <span className="text-white/50">{wave.period}</span>
                   </div>
+                  {wave.discordPrice && (
+                    <p className="text-xs text-green-300 mt-1">{wave.discordPrice}/mois pour les membres Discord</p>
+                  )}
                 </div>
 
                 <div className="flex-1 space-y-4 mb-8">
@@ -222,8 +226,8 @@ export default function PricingPage() {
               La suite Expédition grandit en permanence. À chaque nouvelle &quot;Vague&quot; d&apos;outils, le tarif d&apos;entrée augmente.
             </p>
             <p className="text-white/70 leading-relaxed mb-3">
-              <strong className="text-orange-200">Mais les Pionniers gardent leur tarif de 9,99&euro; pour toujours</strong> — même quand la suite vaudra 25&euro;/mois avec 10+ outils.
-              C&apos;est le même principe que Netflix à ses débuts : ceux qui ont souscrit tôt ont payé moins longtemps après.
+              <strong className="text-orange-200">Les Pionniers gardent leur tarif d&apos;entr&eacute;e tant qu&apos;ils restent abonn&eacute;s</strong> — m&ecirc;me quand la suite vaudra 25&euro;/mois avec 10+ outils.
+              C&apos;est le m&ecirc;me principe que Netflix &agrave; ses d&eacute;buts : ceux qui ont souscrit t&ocirc;t ont pay&eacute; moins longtemps apr&egrave;s.
             </p>
             <p className="text-white/50 text-sm">
               Votre tarif reste le même tant que votre abonnement est actif. Annulable à tout moment.

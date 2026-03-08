@@ -40,7 +40,7 @@ export default function Hero() {
         >
           Aujourd&apos;hui 1 outil. Demain 3, puis 10.
           <br className="hidden md:block" />
-          <span className="text-white/80">Votre prix ? Toujours 9,99&euro;.</span> M&ecirc;me quand la suite aura 10 outils.
+          <span className="text-white/80">Votre prix reste bloqu&eacute; tant que vous restez abonn&eacute;.</span> M&ecirc;me quand la suite aura 10 outils.
         </motion.p>
 
         <motion.div
@@ -49,9 +49,12 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.25 }}
           className="flex items-center gap-3 mb-10"
         >
-          <span className="text-3xl md:text-4xl font-bold text-white">9,99&euro;</span>
+          <span className="text-3xl md:text-4xl font-bold text-white">11,99&euro;</span>
           <span className="text-white/40 text-sm">/mois</span>
-          <span className="ml-2 px-2.5 py-1 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs font-medium">Ce tarif ne bougera jamais</span>
+          <span className="ml-3 text-sm text-white/40 line-through">ou</span>
+          <span className="text-3xl md:text-4xl font-bold text-green-400">9,99&euro;</span>
+          <span className="text-white/40 text-sm">/mois</span>
+          <span className="ml-2 px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-300 text-xs font-medium">avec Discord</span>
         </motion.div>
 
         <motion.div
