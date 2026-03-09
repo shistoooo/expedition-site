@@ -332,6 +332,9 @@ function CheckoutContent() {
     const [discordVerified, setDiscordVerified] = useState(false);
     const [discordError, setDiscordError] = useState<string | null>(null);
 
+    // Discord user ID for linking
+    const [discordUserId, setDiscordUserId] = useState<string | null>(null);
+
     // Check Discord verification on mount
     useEffect(() => {
         const discordParam = searchParams.get("discord_verified");
@@ -341,9 +344,10 @@ function CheckoutContent() {
             // Verify the cookie server-side
             fetch("/api/discord/verify")
                 .then((r) => r.json())
-                .then((data) => {
+                .then((data: { verified: boolean; discordUserId?: string | null }) => {
                     if (data.verified) {
                         setDiscordVerified(true);
+                        if (data.discordUserId) setDiscordUserId(data.discordUserId);
                         // Auto-apply Discord promo code
                         setPromoCode("DISCORD837204");
                         setShowPromo(true);
@@ -389,7 +393,7 @@ function CheckoutContent() {
             const registerRes = await fetch(`${WORKER_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, promoCode: promoTrimmed, plan }),
+                body: JSON.stringify({ email, password, promoCode: promoTrimmed, plan, discordUserId: discordUserId || undefined }),
             });
 
             const registerData = await registerRes.json();
@@ -437,7 +441,7 @@ function CheckoutContent() {
                         "Authorization": `Bearer ${loginData.accessToken}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ plan, promoCode: promoTrimmed }),
+                    body: JSON.stringify({ plan, promoCode: promoTrimmed, discordUserId: discordUserId || undefined }),
                 });
 
                 const subData = await subRes.json();

@@ -10,7 +10,10 @@ export async function GET() {
         return NextResponse.json({ verified: false });
     }
 
-    const [timestamp, signature] = cookie.value.split(".");
+    const parts = cookie.value.split(".");
+    const timestamp = parts[0];
+    const signature = parts[1];
+    const discordUserId = parts[2] || "";
     if (!timestamp || !signature) {
         return NextResponse.json({ verified: false });
     }
@@ -29,5 +32,5 @@ export async function GET() {
         return NextResponse.json({ verified: false });
     }
 
-    return NextResponse.json({ verified: true });
+    return NextResponse.json({ verified: true, discordUserId: discordUserId || null });
 }

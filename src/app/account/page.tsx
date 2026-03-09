@@ -15,7 +15,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
 
 const stripeAppearance = {
@@ -152,11 +152,11 @@ function DownloadSection() {
     }, []);
 
     const primaryHref = isMac
-        ? "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
-        : "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows";
+        ? "https://api.clipapp.uk/downloads/launcher-install/macos"
+        : "https://api.clipapp.uk/downloads/launcher-install/windows";
     const secondaryHref = isMac
-        ? "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows"
-        : "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos";
+        ? "https://api.clipapp.uk/downloads/launcher-install/windows"
+        : "https://api.clipapp.uk/downloads/launcher-install/macos";
 
     return (
         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">

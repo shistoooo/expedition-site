@@ -50,7 +50,7 @@ export default function CheckoutSuccessPage() {
 
                         <div className="flex flex-col sm:flex-row gap-3">
                             <a
-                                href={`https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/${isMac ? "macos" : "windows"}`}
+                                href={`https://api.clipapp.uk/downloads/launcher-install/${isMac ? "macos" : "windows"}`}
                                 download
                                 className="flex-1 py-3 px-6 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)]"
                             >
@@ -58,7 +58,7 @@ export default function CheckoutSuccessPage() {
                                 {isMac ? "Mac" : "Windows"}
                             </a>
                             <a
-                                href={`https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/${isMac ? "windows" : "macos"}`}
+                                href={`https://api.clipapp.uk/downloads/launcher-install/${isMac ? "windows" : "macos"}`}
                                 download
                                 className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
                             >

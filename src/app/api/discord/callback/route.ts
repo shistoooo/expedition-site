@@ -53,15 +53,21 @@ export async function GET(req: NextRequest) {
         const tokenData = await tokenRes.json();
         const accessToken = tokenData.access_token;
 
-        // 2. Get user's guilds
-        const guildsRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        // 2. Get user profile + guilds in parallel
+        const [userRes, guildsRes] = await Promise.all([
+            fetch(`${DISCORD_API}/users/@me`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            }),
+            fetch(`${DISCORD_API}/users/@me/guilds`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            }),
+        ]);
 
         if (!guildsRes.ok) {
             return NextResponse.redirect(new URL("/checkout?discord_error=guilds_failed", req.url));
         }
 
+        const discordUser = userRes.ok ? await userRes.json() as { id: string } : null;
         const guilds: { id: string }[] = await guildsRes.json();
         const isMember = guilds.some((g) => g.id === guildId);
 
@@ -71,11 +77,12 @@ export async function GET(req: NextRequest) {
             return NextResponse.redirect(new URL(`/checkout?${params}`, req.url));
         }
 
-        // 3. Set signed cookie to prove Discord membership
+        // 3. Set signed cookie to prove Discord membership (includes Discord user ID for linking)
+        const discordUserId = discordUser?.id || "";
         const timestamp = Date.now().toString();
         const payload = `discord_verified:${timestamp}`;
         const signature = signToken(payload, secret);
-        const cookieValue = `${timestamp}.${signature}`;
+        const cookieValue = `${timestamp}.${signature}.${discordUserId}`;
 
         const redirectParams = new URLSearchParams({ plan, discord_verified: "true" });
         if (ref) redirectParams.set("ref", ref);
