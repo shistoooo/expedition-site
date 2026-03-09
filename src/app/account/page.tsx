@@ -10,6 +10,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
+import WalletSection from "@/components/WalletSection";
 import { useState } from "react";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
@@ -597,6 +598,11 @@ export default function AccountPage() {
                                             Souscrire
                                         </Link>
                                     </div>
+                                )}
+
+                                {/* Wallet Section */}
+                                {subscription && subscription.status !== "canceled" && (
+                                    <WalletSection />
                                 )}
 
                                 {/* Ambassador Section */}
