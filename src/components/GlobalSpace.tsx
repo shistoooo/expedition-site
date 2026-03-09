@@ -137,6 +137,7 @@ export default function GlobalSpace() {
         dpr={[1, 1.5]}
         gl={{ antialias: false, powerPreference: "high-performance" }}
         performance={{ min: 0.5 }}
+        style={{ pointerEvents: "none" }}
       >
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
 
@@ -148,7 +149,7 @@ export default function GlobalSpace() {
 
         <CameraController />
       </Canvas>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#06051a]/20 to-[#06051a] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#06051a]/40 pointer-events-none" />
     </div>
   );
 }
