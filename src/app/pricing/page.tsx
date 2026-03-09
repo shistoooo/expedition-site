@@ -89,10 +89,16 @@ export default function PricingPage() {
 
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
+      {/* Ambient background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(139,92,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.3) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-purple-600/8 rounded-full blur-[150px]" />
+        <div className="absolute top-[20%] right-[10%] w-[300px] h-[300px] bg-blue-600/5 rounded-full blur-[120px]" />
+      </div>
 
       <Navbar />
 
-      <main className="pt-32 pb-24 container-main">
+      <main className="pt-32 pb-24 container-main relative z-10">
         {/* Header Content */}
         <div className="text-center max-w-4xl mx-auto mb-20">
           <motion.div

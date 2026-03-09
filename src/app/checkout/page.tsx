@@ -487,9 +487,15 @@ function CheckoutContent() {
 
     return (
         <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden">
+            {/* Ambient background */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(139,92,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.3) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-purple-600/8 rounded-full blur-[150px]" />
+            </div>
+
             <Navbar />
 
-            <main className="pt-32 pb-24 container-main">
+            <main className="pt-32 pb-24 container-main relative z-10">
                 {/* Back Link */}
                 <Link href="/pricing" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-8">
                     <ChevronLeft className="w-4 h-4" />
