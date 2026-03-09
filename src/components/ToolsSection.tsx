@@ -280,10 +280,13 @@ export default function ToolsSection() {
         >
           {/* Text */}
           <div className="flex-1 text-left">
-            <p className="text-xs font-mono uppercase tracking-widest text-purple-400/70 mb-6">Vague 2 &mdash; Beta</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-6 flex items-center gap-2">
+              <span className="w-3 h-px bg-purple-400/50 inline-block" />
+              Vague 2 &mdash; Beta
+            </p>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              ClipForge
+              Clip<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
               Collez un lien YouTube. ClipForge trouve les moments viraux, recadre, sous-titre et exporte vos clips pr&ecirc;ts &agrave; poster.

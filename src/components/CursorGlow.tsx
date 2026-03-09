@@ -19,9 +19,9 @@ export default function CursorGlow() {
     <motion.div
       className="pointer-events-none fixed top-0 left-0 w-screen h-screen z-30 hidden md:block"
       animate={{
-        background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.06), transparent 40%)`,
+        background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.15), transparent 40%)`,
       }}
-      transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
+      transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
     />
   );
 }

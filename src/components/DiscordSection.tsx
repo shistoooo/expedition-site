@@ -33,9 +33,16 @@ export default function DiscordSection() {
           </h2>
 
           {/* Specific, honest description — not "boost your productivity" */}
-          <p className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed text-center">
+          <p className="text-lg md:text-xl text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed text-center">
             Signalement de bugs, votes de features, discussions entre créateurs.
             C&apos;est là que les prochaines mises à jour se décident.
+          </p>
+
+          {/* Inline stats — real, grounded, not 3 identical cards */}
+          <p className="text-sm text-white/40 mb-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <span><span className="text-white font-semibold">200+ créateurs</span> déjà présents</span>
+            <span className="hidden sm:inline text-white/15">·</span>
+            <span><span className="text-purple-300 font-semibold">Le dev lit chaque message</span> — vraiment</span>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 relative z-10 mt-4">

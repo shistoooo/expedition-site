@@ -84,18 +84,25 @@ export default function AmbassadorPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-8">Programme Ambassadeur</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-10 flex items-center justify-center gap-2">
+              <span className="w-3 h-px bg-purple-400/50 inline-block" />
+              Programme Ambassadeur
+            </p>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-              50% de commission.{" "}
-              <br />
-              <span className="text-white/90">Pendant 6 mois.</span>
+            {/* The number IS the hook — give it impossible-to-miss scale */}
+            <div className="mb-4">
+              <span className="text-[120px] md:text-[180px] font-black leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-200 to-purple-500 select-none">
+                50%
+              </span>
+            </div>
+
+            <h1 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-white/90">
+              de commission. Pendant 6 mois.
             </h1>
 
-            <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Recommandez Expédition à votre communauté et gagnez{" "}
-              <span className="text-purple-300 font-semibold">50% de commission</span>{" "}
-              sur chaque abonnement généré, pendant 6 mois par filleul.
+            <p className="text-xl md:text-2xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Recommandez Expédition à votre communauté et gagnez sur chaque abonnement généré,{" "}
+              <span className="text-white font-medium">pendant 6 mois par filleul</span>. Sans plafond.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

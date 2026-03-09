@@ -96,7 +96,7 @@ export default function Footer() {
           className="mt-8 pt-8 border-t border-white/5 text-center"
         >
           <p className="text-white/40 text-sm">
-            Fait par l&apos;&eacute;quipe Exp&eacute;dition
+            Construit avec passion depuis Paris — Expédition
           </p>
           <p className="text-white/30 text-xs mt-3">
             © {new Date().getFullYear()} Expédition. Tous droits réservés.

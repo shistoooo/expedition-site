@@ -16,7 +16,10 @@ export default function PhilosophySection() {
             transition={{ duration: 0.6 }}
             className="flex-1"
           >
-            <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-8">Notre Manifeste</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-8 flex items-center gap-2">
+              <span className="w-3 h-px bg-white/20 inline-block" />
+              Notre Manifeste
+            </p>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
               L&apos;alternative <br />
@@ -66,8 +69,8 @@ export default function PhilosophySection() {
                 transition={{ delay, duration: 0.5 }}
                 className="py-8 first:pt-0 last:pb-0"
               >
-                <span className="text-[10px] font-mono text-white/20 tracking-widest mb-3 block">{label}</span>
-                <p className="text-xl font-semibold text-white leading-snug mb-2">&ldquo;{quote}&rdquo;</p>
+                <span className="text-lg font-black text-purple-500/70 tracking-tight mb-3 block">{label}</span>
+                <p className="text-2xl font-semibold text-white leading-snug mb-3">&ldquo;{quote}&rdquo;</p>
                 <p className="text-sm text-white/40 font-mono">{note}</p>
               </motion.div>
             ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
+import CursorGlow from "@/components/CursorGlow";
 import Hero from "@/components/Hero";
 import SocialProofSection from "@/components/SocialProofSection";
 import ToolsSection from "@/components/ToolsSection";
@@ -15,6 +16,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative">
+      <CursorGlow />
       <Navbar />
       <main className="w-full">
         <Hero />

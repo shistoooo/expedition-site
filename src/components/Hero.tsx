@@ -29,7 +29,7 @@ export default function Hero() {
         >
           Tous vos outils de cr&eacute;ation.
           <br />
-          <span className="text-purple-400">Un seul abonnement.</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400">Un seul abonnement.</span>
         </motion.h1>
 
         <motion.p

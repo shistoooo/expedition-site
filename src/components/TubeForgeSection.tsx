@@ -360,7 +360,10 @@ export default function TubeForgeSection() {
         >
           {/* Text */}
           <div className="flex-1 text-left">
-            <p className="text-xs font-mono uppercase tracking-widest text-red-400/70 mb-6">Vague 1 &mdash; Stable</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-red-400/60 mb-6 flex items-center gap-2">
+              <span className="w-3 h-px bg-red-400/50 inline-block" />
+              Vague 1 &mdash; Stable
+            </p>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Tube<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Forge</span>

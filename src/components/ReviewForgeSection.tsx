@@ -488,7 +488,10 @@ export default function ReviewForgeSection() {
         >
           {/* Text */}
           <div className="flex-1 text-left">
-            <p className="text-xs font-mono uppercase tracking-widest text-emerald-400/70 mb-6">Vague 3 &mdash; Stable</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-emerald-400/60 mb-6 flex items-center gap-2">
+              <span className="w-3 h-px bg-emerald-400/50 inline-block" />
+              Vague 3 &mdash; Stable
+            </p>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Review<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Forge</span>
