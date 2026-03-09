@@ -141,8 +141,8 @@ export default function GlobalSpace() {
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
 
         <Suspense fallback={null}>
-          <Stars radius={300} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-          <Sparkles count={500} scale={20} size={4} speed={0.4} opacity={0.5} color="#8b5cf6" />
+          <Stars radius={300} depth={50} count={2000} factor={3} saturation={0} fade speed={0.8} />
+          <Sparkles count={200} scale={20} size={3} speed={0.3} opacity={0.4} color="#8b5cf6" />
           <WarpStars />
         </Suspense>
 
