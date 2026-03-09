@@ -6,12 +6,13 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Discord not configured" }, { status: 500 });
     }
 
-    // Preserve the plan query param through the OAuth flow
+    // Preserve query params through the OAuth flow
     const plan = req.nextUrl.searchParams.get("plan") || "monthly";
     const ref = req.nextUrl.searchParams.get("ref") || "";
+    const from = req.nextUrl.searchParams.get("from") || "";
 
     const redirectUri = `${req.nextUrl.origin}/api/discord/callback`;
-    const state = Buffer.from(JSON.stringify({ plan, ref })).toString("base64url");
+    const state = Buffer.from(JSON.stringify({ plan, ref, from })).toString("base64url");
 
     const params = new URLSearchParams({
         client_id: clientId,

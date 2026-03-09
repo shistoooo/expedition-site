@@ -18,11 +18,13 @@ export async function GET(req: NextRequest) {
 
     let plan = "monthly";
     let ref = "";
+    let from = "";
     if (stateParam) {
         try {
             const parsed = JSON.parse(Buffer.from(stateParam, "base64url").toString());
             plan = parsed.plan || "monthly";
             ref = parsed.ref || "";
+            from = parsed.from || "";
         } catch { /* ignore */ }
     }
 
@@ -31,6 +33,8 @@ export async function GET(req: NextRequest) {
     const guildId = process.env.DISCORD_GUILD_ID!;
     const secret = process.env.DISCORD_SIGN_SECRET || clientSecret;
     const redirectUri = `${req.nextUrl.origin}/api/discord/callback`;
+
+    const errorRedirect = from === "account" ? "/account" : "/checkout";
 
     try {
         // 1. Exchange code for token
@@ -47,7 +51,7 @@ export async function GET(req: NextRequest) {
         });
 
         if (!tokenRes.ok) {
-            return NextResponse.redirect(new URL("/checkout?discord_error=token_failed", req.url));
+            return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=token_failed`, req.url));
         }
 
         const tokenData = await tokenRes.json();
@@ -64,7 +68,7 @@ export async function GET(req: NextRequest) {
         ]);
 
         if (!guildsRes.ok) {
-            return NextResponse.redirect(new URL("/checkout?discord_error=guilds_failed", req.url));
+            return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=guilds_failed`, req.url));
         }
 
         const discordUser = userRes.ok ? await userRes.json() as { id: string } : null;
@@ -72,6 +76,9 @@ export async function GET(req: NextRequest) {
         const isMember = guilds.some((g) => g.id === guildId);
 
         if (!isMember) {
+            if (from === "account") {
+                return NextResponse.redirect(new URL("/account?discord_error=not_member", req.url));
+            }
             const params = new URLSearchParams({ plan, discord_error: "not_member" });
             if (ref) params.set("ref", ref);
             return NextResponse.redirect(new URL(`/checkout?${params}`, req.url));
@@ -84,21 +91,28 @@ export async function GET(req: NextRequest) {
         const signature = signToken(payload, secret);
         const cookieValue = `${timestamp}.${signature}.${discordUserId}`;
 
-        const redirectParams = new URLSearchParams({ plan, discord_verified: "true" });
-        if (ref) redirectParams.set("ref", ref);
+        // Redirect based on origin
+        let redirectUrl: URL;
+        if (from === "account") {
+            redirectUrl = new URL(`/account?discord_linked=${discordUserId}`, req.url);
+        } else {
+            const redirectParams = new URLSearchParams({ plan, discord_verified: "true" });
+            if (ref) redirectParams.set("ref", ref);
+            redirectUrl = new URL(`/checkout?${redirectParams}`, req.url);
+        }
 
-        const response = NextResponse.redirect(new URL(`/checkout?${redirectParams}`, req.url));
+        const response = NextResponse.redirect(redirectUrl);
 
         (await cookies()).set("discord_member", cookieValue, {
             httpOnly: true,
             secure: true,
             sameSite: "lax",
-            maxAge: 60 * 30, // 30 minutes — just needs to last through checkout
+            maxAge: 60 * 30,
             path: "/",
         });
 
         return response;
     } catch {
-        return NextResponse.redirect(new URL("/checkout?discord_error=server_error", req.url));
+        return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=server_error`, req.url));
     }
 }
