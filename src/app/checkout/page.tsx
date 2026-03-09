@@ -668,7 +668,7 @@ function CheckoutContent() {
                                                 className="w-full py-3 rounded-xl bg-[#5865F2]/10 border border-[#5865F2]/20 text-[#5865F2] hover:bg-[#5865F2]/20 hover:border-[#5865F2]/30 transition-all text-sm font-medium flex items-center justify-center gap-2"
                                             >
                                                 <DiscordIcon className="w-5 h-5" />
-                                                V&eacute;rifier mon compte Discord pour -33%
+                                                D&eacute;bloquer mon prix membre Discord
                                             </button>
                                         )}
                                         {discordError && (
