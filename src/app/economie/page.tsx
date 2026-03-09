@@ -810,12 +810,46 @@ export default function EconomiePage() {
         </div>
       </section>
 
+      {/* ================================================================
+          1.5 HOW IT WORKS — 3 steps
+      ================================================================ */}
+      <section className="py-16 relative">
+        <div className="container-main">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { step: "1", title: "Soyez actif sur Discord", desc: "Vos messages et votre présence vocale vous rapportent du Bronze (BR) automatiquement.", color: "#f97316", icon: MessageSquare },
+              { step: "2", title: "Convertissez en Or", desc: "20 BR = 1 EX. L'Or sert à acheter des services, cosmétiques, et tirages.", color: "#f59e0b", icon: Coins },
+              { step: "3", title: "Débloquez le premium", desc: "100 EX = 1 Éclat. Les Éclats donnent accès à la boutique exclusive.", color: "#8b5cf6", icon: Gem },
+            ].map((item, i) => (
+              <motion.div
+                key={item.step}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={i * 0.12}
+                className="relative p-6 rounded-2xl bg-[#0F0F12] border border-white/8 text-center"
+              >
+                <div
+                  className="w-10 h-10 rounded-full mx-auto mb-4 flex items-center justify-center font-black text-lg"
+                  style={{ background: `${item.color}20`, color: item.color, border: `1px solid ${item.color}30` }}
+                >
+                  {item.step}
+                </div>
+                <h3 className="text-base font-bold text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <div className="container-main"><SectionDivider accent="#f59e0b" /></div>
 
       {/* ================================================================
           2. CURRENCY EXPLAINER
       ================================================================ */}
-      <section className="py-20 relative">
+      <section className="py-24 relative">
         <div className="container-main">
           <motion.div
             variants={fadeUp}
@@ -828,7 +862,8 @@ export default function EconomiePage() {
             <SectionLabel color="text-amber-400/60" lineColor="bg-amber-400/50">
               Les Devises
             </SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight">Trois monnaies, un écosystème</h2>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight">Les 3 monnaies du serveur</h2>
+            <p className="text-white/40 mt-3 text-sm max-w-md mx-auto">Chacune a un rôle précis dans l&apos;écosystème.</p>
           </motion.div>
 
           {/* Currency cards */}
@@ -880,7 +915,7 @@ export default function EconomiePage() {
       {/* ================================================================
           3. WALLET SECTION
       ================================================================ */}
-      <section className="py-20 relative" aria-labelledby="wallet-heading">
+      <section className="py-24 relative" aria-labelledby="wallet-heading">
         <div className="container-main">
           <motion.div
             variants={fadeUp}
@@ -918,7 +953,7 @@ export default function EconomiePage() {
       {/* ================================================================
           4. BOUTIQUE ÉCLATS
       ================================================================ */}
-      <section className="py-20 relative" aria-labelledby="boutique-heading">
+      <section className="py-24 relative" aria-labelledby="boutique-heading">
         {/* Section ambient glow */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -939,10 +974,10 @@ export default function EconomiePage() {
               Boutique
             </SectionLabel>
             <h2 id="boutique-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
-              Boutique Éclats
+              Dépensez vos Éclats
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto">
-              Avantages exclusifs payables en Éclats.
+              La boutique premium du serveur. Chaque article a un prix en Éclats (ECL).
             </p>
           </motion.div>
 
@@ -970,7 +1005,7 @@ export default function EconomiePage() {
       {/* ================================================================
           5. COSMÉTIQUES
       ================================================================ */}
-      <section className="py-20 relative" aria-labelledby="cosmetiques-heading">
+      <section className="py-24 relative" aria-labelledby="cosmetiques-heading">
         <div className="container-main">
           <motion.div
             variants={fadeUp}
@@ -984,10 +1019,10 @@ export default function EconomiePage() {
               Cosmétiques
             </SectionLabel>
             <h2 id="cosmetiques-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
-              Personnalisez votre profil
+              Dépensez votre Or
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto">
-              Payables en Or (EX).
+              Badges, rôles colorés et frames achetables en Or (EX).
             </p>
           </motion.div>
 
@@ -1066,7 +1101,7 @@ export default function EconomiePage() {
       {/* ================================================================
           6. GACHA SECTION
       ================================================================ */}
-      <section className="py-20 relative overflow-hidden" aria-labelledby="gacha-heading">
+      <section className="py-24 relative overflow-hidden" aria-labelledby="gacha-heading">
         {/* Gacha ambient */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -1087,7 +1122,7 @@ export default function EconomiePage() {
               Tirage
             </SectionLabel>
             <h2 id="gacha-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
-              La Roue de l&apos;Expédition
+              Tentez votre chance
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto mb-2">
               15 EX par tirage. Bronze, cosmétiques, ou Éclats.
@@ -1186,7 +1221,7 @@ export default function EconomiePage() {
       {/* ================================================================
           7. GUIDE DES TARIFS
       ================================================================ */}
-      <section className="py-20 relative" aria-labelledby="tarifs-heading">
+      <section className="py-24 relative" aria-labelledby="tarifs-heading">
         <div className="container-main">
           <motion.div
             variants={fadeUp}
@@ -1200,10 +1235,10 @@ export default function EconomiePage() {
               Tarifs Services
             </SectionLabel>
             <h2 id="tarifs-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
-              Guide des prix
+              Combien coûtent les services ?
             </h2>
             <p className="text-white/45 text-sm max-w-md mx-auto">
-              Fourchettes de prix par type de service.
+              Prix en Or (EX) selon la complexité du travail demandé.
             </p>
           </motion.div>
 
@@ -1298,7 +1333,7 @@ export default function EconomiePage() {
       {/* ================================================================
           8. MINING SOCIAL
       ================================================================ */}
-      <section className="py-20 relative" aria-labelledby="mining-heading">
+      <section className="py-24 relative" aria-labelledby="mining-heading">
         <div className="container-main">
           <motion.div
             variants={fadeUp}
@@ -1312,10 +1347,10 @@ export default function EconomiePage() {
               Mining Social
             </SectionLabel>
             <h2 id="mining-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
-              Gagnez du Bronze
+              Comment gagner du Bronze ?
             </h2>
             <p className="text-white/45 text-sm max-w-md mx-auto">
-              Votre activité Discord vous rapporte du Bronze.
+              Chattez ou parlez sur Discord, le bot vous récompense automatiquement.
             </p>
           </motion.div>
 
@@ -1438,7 +1473,7 @@ export default function EconomiePage() {
       </section>
 
       {/* Final CTA to Discord */}
-      <section className="py-20 relative overflow-hidden">
+      <section className="py-28 relative overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.07) 0%, transparent 70%)" }}
