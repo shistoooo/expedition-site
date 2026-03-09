@@ -539,8 +539,7 @@ export default function ReviewForgeSection() {
           {/* Mockup */}
           <div className="flex-1 w-full relative">
             {/* Emerald-cyan nebula — ReviewForge identity glow */}
-            <div className="absolute -inset-10 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(16,185,129,0.16) 0%, rgba(6,182,212,0.08) 45%, transparent 70%)', filter: 'blur(1px)' }} />
-            <div className="absolute top-[-10%] right-[15%] w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.14) 0%, transparent 65%)', filter: 'blur(40px)' }} />
+            <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(16,185,129,0.06) 0%, rgba(6,182,212,0.03) 45%, transparent 70%)', filter: 'blur(60px)' }} />
             <ReviewForgeMockup />
           </div>
         </motion.div>

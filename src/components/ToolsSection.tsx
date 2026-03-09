@@ -328,8 +328,7 @@ export default function ToolsSection() {
           {/* Mockup */}
           <div className="flex-1 w-full relative">
             {/* Indigo-purple nebula — ClipForge identity */}
-            <div className="absolute -inset-10 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.1) 40%, transparent 70%)', filter: 'blur(1px)' }} />
-            <div className="absolute top-[-10%] right-[15%] w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 65%)', filter: 'blur(40px)' }} />
+            <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.07) 0%, rgba(139,92,246,0.04) 40%, transparent 70%)', filter: 'blur(60px)' }} />
             <ClipForgeMockup />
           </div>
         </motion.div>
