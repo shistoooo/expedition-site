@@ -49,7 +49,7 @@ const waves = [
 
 export default function ExpeditionPage() {
   return (
-    <div className="w-full min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
+    <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-hidden">
       <Navbar />
 
       {/* Hero Section with 3D Rocket */}

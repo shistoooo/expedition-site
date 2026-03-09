@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import CursorGlow from "@/components/CursorGlow";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -89,9 +88,8 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative bg-[#0a0a0a] text-white">
+    <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
 
-      <CursorGlow />
       <Navbar />
 
       <main className="pt-32 pb-24 container-main">
@@ -108,7 +106,7 @@ export default function PricingPage() {
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Un abonnement unique.<br />
-              <span className="gradient-text">Une infinité d&apos;outils.</span>
+              <span className="text-white">Une infinit&eacute; d&apos;outils.</span>
             </h1>
             <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
               Rejoignez l&apos;Exp&eacute;dition d&egrave;s maintenant pour profiter du tarif le plus bas — il reste bloqu&eacute; tant que vous restez abonn&eacute;.

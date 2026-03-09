@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export default function ConfidentialitePage() {
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white">
+        <div className="min-h-screen bg-[#06051a] text-white">
             <Navbar />
             <main className="pt-32 pb-24 container-main max-w-3xl mx-auto">
                 <Link href="/" className="text-white/40 hover:text-white text-sm transition-colors">&larr; Retour</Link>

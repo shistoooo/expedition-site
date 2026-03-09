@@ -4,12 +4,9 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Download, Apple, Monitor } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CursorGlow from "@/components/CursorGlow";
-
 export default function CheckoutSuccessPage() {
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-purple-500/30 overflow-x-hidden">
-            <CursorGlow />
+        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden">
             <Navbar />
 
             <main className="pt-32 pb-24 container-main flex items-center justify-center min-h-[80vh]">

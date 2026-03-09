@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Monitor } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CursorGlow from "@/components/CursorGlow";
 import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { useSearchParams } from "next/navigation";
@@ -487,8 +486,7 @@ function CheckoutContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-purple-500/30 overflow-x-hidden">
-            <CursorGlow />
+        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden">
             <Navbar />
 
             <main className="pt-32 pb-24 container-main">

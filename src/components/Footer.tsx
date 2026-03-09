@@ -15,9 +15,9 @@ export default function Footer() {
             viewport={{ once: true }}
             className="text-center md:text-left"
           >
-            <span className="text-xl font-bold gradient-text">EXPÉDITION</span>
+            <span className="text-xl font-bold tracking-wider text-white">EXPÉDITION</span>
             <p className="text-white/50 text-sm mt-1">
-              Les outils dont vous avez besoin.
+              Suite d&apos;outils pour cr&eacute;ateurs YouTube.
             </p>
             <div className="mt-4 flex gap-6 justify-center md:justify-start text-sm font-medium text-white/60">
               <Link href="/pricing" className="hover:text-purple-400 transition-colors">
@@ -95,9 +95,8 @@ export default function Footer() {
           viewport={{ once: true }}
           className="mt-8 pt-8 border-t border-white/5 text-center"
         >
-          <p className="text-white/40 text-sm flex items-center justify-center gap-1">
-            Fait avec <Heart className="w-4 h-4 text-red-500" /> par la communauté
-            Expédition
+          <p className="text-white/40 text-sm">
+            Fait par l&apos;&eacute;quipe Exp&eacute;dition
           </p>
           <p className="text-white/30 text-xs mt-3">
             © {new Date().getFullYear()} Expédition. Tous droits réservés.

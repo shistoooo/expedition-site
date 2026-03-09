@@ -71,7 +71,7 @@ const sellingPoints = [
 
 export default function LauncherPage() {
   return (
-    <div className="min-h-screen bg-[#030304] text-white selection:bg-blue-500/30 font-sans">
+    <div className="min-h-screen bg-[#06051a] text-white selection:bg-blue-500/30 font-sans">
       <Navbar />
 
       {/* Background Grid Pattern */}

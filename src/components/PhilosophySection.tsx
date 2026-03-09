@@ -1,15 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { HeartHandshake, Scale, Users, Gem } from "lucide-react";
 
 export default function PhilosophySection() {
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="container-main relative">
-        <div className="flex flex-col lg:flex-row items-center gap-16">
+        <div className="flex flex-col lg:flex-row items-start gap-20">
 
-          {/* Content */}
+          {/* Left: manifesto text */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -17,14 +16,11 @@ export default function PhilosophySection() {
             transition={{ duration: 0.6 }}
             className="flex-1"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/70 text-sm font-medium mb-8">
-              <Gem className="w-4 h-4 text-purple-400" />
-              <span>Notre Manifeste</span>
-            </div>
+            <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-8">Notre Manifeste</p>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
               L&apos;alternative <br />
-              <span className="gradient-text">Accessible & Honnête</span>
+              <span className="text-white">Accessible &amp; Honn&ecirc;te</span>
             </h2>
 
             <div className="space-y-6 text-lg text-white/60 leading-relaxed">
@@ -40,49 +36,41 @@ export default function PhilosophySection() {
             </div>
           </motion.div>
 
-          {/* Cards / Visuals */}
-          <div className="flex-1 w-full grid gap-6 sm:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="glass p-6 rounded-2xl border border-white/5 bg-white/[0.02]"
-            >
-              <Scale className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Prix Juste</h3>
-              <p className="text-white/50 text-sm">
-                Pourquoi payer 10x plus cher ? Nous rendons la technologie abordable pour tous les créateurs, petits ou grands.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="glass p-6 rounded-2xl border border-white/5 bg-white/[0.02] sm:translate-y-8"
-            >
-              <Users className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Co-Construction</h3>
-              <p className="text-white/50 text-sm">
-                Nous sommes à l&apos;écoute. Vos retours sur Discord façonnent directement les prochaines mises à jour.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="glass p-6 rounded-2xl border border-white/5 bg-white/[0.02]"
-            >
-              <HeartHandshake className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Transparence</h3>
-              <p className="text-white/50 text-sm">
-                Pas de promesses intenables. Nous sommes une petite équipe passionnée qui construit des outils utiles, jour après jour.
-              </p>
-            </motion.div>
+          {/* Right: pull quotes — three convictions stated plainly */}
+          <div className="flex-1 w-full flex flex-col gap-0 divide-y divide-white/8">
+            {[
+              {
+                label: "01",
+                quote: "Pourquoi payer 10x le prix pour les mêmes fonctionnalités ?",
+                note: "Prix juste — pas de forfait «Pro» à 30€ par outil.",
+                delay: 0.2,
+              },
+              {
+                label: "02",
+                quote: "Vos retours sur Discord façonnent directement les mises à jour suivantes.",
+                note: "Co-construction — pas une feuille de route gravée dans le marbre.",
+                delay: 0.3,
+              },
+              {
+                label: "03",
+                quote: "Pas de promesses intenables. Nous sommes une petite équipe qui construit, jour après jour.",
+                note: "Transparence — vous savez toujours où nous en sommes.",
+                delay: 0.4,
+              },
+            ].map(({ label, quote, note, delay }) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay, duration: 0.5 }}
+                className="py-8 first:pt-0 last:pb-0"
+              >
+                <span className="text-[10px] font-mono text-white/20 tracking-widest mb-3 block">{label}</span>
+                <p className="text-xl font-semibold text-white leading-snug mb-2">&ldquo;{quote}&rdquo;</p>
+                <p className="text-sm text-white/40 font-mono">{note}</p>
+              </motion.div>
+            ))}
           </div>
 
         </div>

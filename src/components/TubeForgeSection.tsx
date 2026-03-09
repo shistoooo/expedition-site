@@ -360,19 +360,13 @@ export default function TubeForgeSection() {
         >
           {/* Text */}
           <div className="flex-1 text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-300 text-sm font-medium mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-              </span>
-              Version 2.0 Disponible
-            </div>
+            <p className="text-xs font-mono uppercase tracking-widest text-red-400/70 mb-6">Vague 1 &mdash; Stable</p>
 
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Tube<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              T&eacute;l&eacute;chargez, d&eacute;coupez, organisez. Tout ce dont vous avez besoin pour pr&eacute;parer vos montages.
+              T&eacute;l&eacute;chargez en multithread, d&eacute;coupez l&apos;extrait exact, importez votre script. Plus jamais de captures &eacute;cran ou d&apos;onglets YouTube ouverts pendant le montage.
             </p>
 
             <motion.ul

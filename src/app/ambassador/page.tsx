@@ -2,7 +2,6 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CursorGlow from "@/components/CursorGlow";
 import { motion } from "framer-motion";
 import { Gift, Share2, Banknote, ArrowRight, Users, Repeat, ShieldCheck, Send, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -72,8 +71,7 @@ export default function AmbassadorPage() {
     }
   };
   return (
-    <div className="w-full min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      <CursorGlow />
+    <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-hidden">
       <Navbar />
 
       {/* Hero */}
@@ -86,17 +84,12 @@ export default function AmbassadorPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium mb-8 backdrop-blur-md">
-              <Gift className="w-4 h-4" />
-              <span>Programme Ambassadeur</span>
-            </div>
+            <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-8">Programme Ambassadeur</p>
 
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-              Partagez. Parrainez.{" "}
+              50% de commission.{" "}
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-                Gagnez.
-              </span>
+              <span className="text-white/90">Pendant 6 mois.</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -186,7 +179,7 @@ export default function AmbassadorPage() {
 
                 <div className="text-center sm:text-right">
                   <div className="text-sm text-purple-300 mb-1">Vous recevez</div>
-                  <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+                  <div className="text-4xl font-bold text-white">
                     ~5€
                   </div>
                   <div className="text-purple-300/60 text-sm">/mois par filleul</div>
@@ -346,7 +339,7 @@ export default function AmbassadorPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-100 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

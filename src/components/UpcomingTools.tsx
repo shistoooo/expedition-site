@@ -70,7 +70,7 @@ export default function UpcomingTools() {
             Coming Soon
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Prochains <span className="gradient-text">outils</span>
+            Prochains outils
           </h2>
           <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed">
             Découvrez en avant-première les outils sur lesquels nous travaillons
