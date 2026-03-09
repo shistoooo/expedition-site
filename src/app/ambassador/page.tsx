@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageBackground from "@/components/PageBackground";
 import { motion } from "framer-motion";
 import { Gift, Share2, Banknote, ArrowRight, Users, Repeat, ShieldCheck, Send, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -72,11 +73,11 @@ export default function AmbassadorPage() {
   };
   return (
     <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-hidden">
+      <PageBackground />
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-24 md:pt-48 md:pb-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 to-transparent pointer-events-none" />
+      <section className="pt-32 pb-16 md:pt-40 md:pb-20 relative overflow-hidden">
 
         <div className="container-main flex flex-col items-center text-center relative z-10">
           <motion.div
@@ -245,7 +246,6 @@ export default function AmbassadorPage() {
 
       {/* Formulaire de candidature */}
       <section id="candidature" className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none" />
 
         <div className="container-main max-w-xl mx-auto relative z-10">
           <div className="text-center mb-10">

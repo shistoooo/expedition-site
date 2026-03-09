@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Check, Lock, Calendar, AlertCircle, Rocket, Zap, Download, Layers, Sparkles, Terminal } from "lucide-react";
+import PageBackground from "@/components/PageBackground";
 
 const includedTools = [
   {
@@ -89,12 +90,7 @@ export default function PricingPage() {
 
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
-      {/* Ambient background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(139,92,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.3) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-purple-600/8 rounded-full blur-[150px]" />
-        <div className="absolute top-[20%] right-[10%] w-[300px] h-[300px] bg-blue-600/5 rounded-full blur-[120px]" />
-      </div>
+      <PageBackground />
 
       <Navbar />
 
@@ -106,7 +102,7 @@ export default function PricingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium mb-6">
               <Lock className="w-4 h-4" />
               <span>Plus la suite grandit, plus votre offre prend de la valeur</span>
             </div>
@@ -150,15 +146,15 @@ export default function PricingPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`relative rounded-2xl p-1 overflow-hidden ${wave.status === 'open' ? 'ring-2 ring-purple-500/50 shadow-2xl shadow-purple-500/20' : 'opacity-60 scale-95 grayscale'}`}
+              className={`relative rounded-2xl p-1 overflow-hidden ${wave.status === 'open' ? 'ring-2 ring-purple-500/50 shadow-2xl shadow-purple-500/20' : 'opacity-80'}`}
             >
               {/* Background Gradient Border */}
               <div className={`absolute inset-0 bg-gradient-to-b ${wave.color} opacity-20`} />
 
               <div className="relative h-full bg-[#0f0f12] rounded-xl p-8 flex flex-col border border-white/10">
                 {wave.status === 'open' && (
-                  <div className="absolute top-0 right-0 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
-                    MEILLEURE OFFRE
+                  <div className="absolute top-0 right-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                    DISPONIBLE
                   </div>
                 )}
                 {wave.status === 'upcoming' && (
@@ -178,7 +174,7 @@ export default function PricingPage() {
                     <span className="text-white/50">{wave.period}</span>
                   </div>
                   {wave.discordPrice && (
-                    <p className="text-xs text-green-300 mt-1">{wave.discordPrice}/mois pour les membres Discord</p>
+                    <p className="text-xs text-purple-300 mt-1">{wave.discordPrice}/mois pour les membres Discord</p>
                   )}
                 </div>
 
@@ -221,16 +217,16 @@ export default function PricingPage() {
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          className="max-w-3xl mx-auto mt-20 p-6 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex gap-4 items-start"
+          className="max-w-3xl mx-auto mt-20 p-6 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex gap-4 items-start"
         >
-          <AlertCircle className="w-6 h-6 text-orange-400 shrink-0 mt-1" />
+          <AlertCircle className="w-6 h-6 text-purple-400 shrink-0 mt-1" />
           <div>
-            <h4 className="text-lg font-bold text-orange-300 mb-2">Pourquoi c&apos;est le meilleur moment pour rejoindre ?</h4>
+            <h4 className="text-lg font-bold text-purple-300 mb-2">Pourquoi c&apos;est le meilleur moment pour rejoindre ?</h4>
             <p className="text-white/70 leading-relaxed mb-3">
               La suite Expédition grandit en permanence. À chaque nouvelle &quot;Vague&quot; d&apos;outils, le tarif d&apos;entrée augmente.
             </p>
             <p className="text-white/70 leading-relaxed mb-3">
-              <strong className="text-orange-200">Les Pionniers gardent leur tarif d&apos;entr&eacute;e tant qu&apos;ils restent abonn&eacute;s</strong> — m&ecirc;me quand la suite vaudra 25&euro;/mois avec 10+ outils.
+              <strong className="text-purple-200">Les Pionniers gardent leur tarif d&apos;entr&eacute;e tant qu&apos;ils restent abonn&eacute;s</strong> — m&ecirc;me quand la suite vaudra 25&euro;/mois avec 10+ outils.
               Plus vous rejoignez t&ocirc;t, plus vous &eacute;conomisez sur le long terme.
             </p>
             <p className="text-white/50 text-sm">

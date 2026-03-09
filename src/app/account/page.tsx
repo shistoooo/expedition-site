@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageBackground from "@/components/PageBackground";
 import { useState } from "react";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
@@ -300,19 +301,15 @@ export default function AccountPage() {
 
     const getStatusLabel = (status: string, cancelAtPeriodEnd: boolean) => {
         if (cancelAtPeriodEnd) return { text: "Annulation programm\u00e9e", color: "text-orange-400", bg: "bg-orange-400/10 border-orange-400/20" };
-        if (status === "active") return { text: "Actif", color: "text-green-400", bg: "bg-green-400/10 border-green-400/20" };
-        if (status === "trialing") return { text: "Essai", color: "text-blue-400", bg: "bg-blue-400/10 border-blue-400/20" };
+        if (status === "active") return { text: "Actif", color: "text-purple-400", bg: "bg-purple-400/10 border-purple-400/20" };
+        if (status === "trialing") return { text: "Essai", color: "text-purple-300", bg: "bg-purple-300/10 border-purple-300/20" };
         if (status === "past_due") return { text: "Paiement en retard", color: "text-red-400", bg: "bg-red-400/10 border-red-400/20" };
         return { text: status, color: "text-white/60", bg: "bg-white/5 border-white/10" };
     };
 
     return (
         <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden">
-            {/* Ambient background */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(139,92,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.3) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-purple-600/8 rounded-full blur-[150px]" />
-            </div>
+            <PageBackground />
 
             <Navbar />
 
@@ -433,14 +430,14 @@ export default function AccountPage() {
                                 {subscription && subscription.status !== "canceled" && (
                                     <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
                                         <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
-                                            <Download className="w-5 h-5 text-blue-400" />
+                                            <Download className="w-5 h-5 text-purple-400" />
                                             T&eacute;l&eacute;chargements
                                         </h2>
                                         <div className="flex flex-col sm:flex-row gap-3">
                                             <a
                                                 href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
                                                 download
-                                                className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+                                                className="flex-1 py-3 px-6 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)]"
                                             >
                                                 <Apple className="w-5 h-5" />
                                                 Launcher Mac

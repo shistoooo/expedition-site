@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageBackground from "@/components/PageBackground";
 
 export default function CGVPage() {
     return (
         <div className="min-h-screen bg-[#06051a] text-white">
+            <PageBackground />
             <Navbar />
             <main className="pt-32 pb-24 container-main max-w-3xl mx-auto">
                 <Link href="/" className="text-white/40 hover:text-white text-sm transition-colors">&larr; Retour</Link>

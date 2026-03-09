@@ -4,9 +4,11 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Download, Apple, Monitor } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageBackground from "@/components/PageBackground";
 export default function CheckoutSuccessPage() {
     return (
         <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden">
+            <PageBackground />
             <Navbar />
 
             <main className="pt-32 pb-24 container-main flex items-center justify-center min-h-[80vh]">
@@ -45,7 +47,7 @@ export default function CheckoutSuccessPage() {
                             <a
                                 href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
                                 download
-                                className="flex-1 py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+                                className="flex-1 py-3 px-6 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)]"
                             >
                                 <Apple className="w-5 h-5" />
                                 Mac

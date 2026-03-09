@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageBackground from "@/components/PageBackground";
 import { motion } from "framer-motion";
 import { Users, Calendar, Target, Rocket, ArrowRight, CheckCircle2 } from "lucide-react";
 
@@ -50,6 +51,7 @@ const waves = [
 export default function ExpeditionPage() {
   return (
     <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-hidden">
+      <PageBackground />
       <Navbar />
 
       {/* Hero Section with 3D Rocket */}

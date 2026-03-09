@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import CursorGlow from "@/components/CursorGlow";
+import PageBackground from "@/components/PageBackground";
 import Hero from "@/components/Hero";
 import SocialProofSection from "@/components/SocialProofSection";
 import ToolsSection from "@/components/ToolsSection";
@@ -15,7 +16,8 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative">
+    <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
+      <PageBackground />
       <CursorGlow />
       <Navbar />
       <main className="w-full">

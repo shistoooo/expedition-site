@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Download, Rocket, Layers, Sparkles, Terminal, Hammer, Palette, Brain, FileCheck, Languages, Youtube, ArrowRight, RefreshCw, Shield, Scissors, Captions, Video, Wand2, Zap, ListVideo, Search, FolderOpen } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageBackground from "@/components/PageBackground";
 
 const roadmapTools = [
   {
@@ -72,12 +73,8 @@ const sellingPoints = [
 export default function LauncherPage() {
   return (
     <div className="min-h-screen bg-[#06051a] text-white selection:bg-blue-500/30 font-sans">
+      <PageBackground />
       <Navbar />
-
-      {/* Background Grid Pattern */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03]"
-        style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}
-      />
 
       <main className="relative overflow-hidden pt-24">
 
