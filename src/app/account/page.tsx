@@ -144,6 +144,54 @@ interface AmbassadorInfo {
     };
 }
 
+function DownloadSection() {
+    const [isMac, setIsMac] = useState(true);
+    useEffect(() => {
+        const ua = navigator.userAgent.toLowerCase();
+        setIsMac(/mac|iphone|ipad|ipod/.test(ua));
+    }, []);
+
+    const primaryHref = isMac
+        ? "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
+        : "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows";
+    const secondaryHref = isMac
+        ? "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows"
+        : "https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos";
+
+    return (
+        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
+                <Download className="w-5 h-5 text-purple-400" />
+                T&eacute;l&eacute;chargements
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                    href={primaryHref}
+                    download
+                    className="flex-1 py-3 px-6 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)]"
+                >
+                    {isMac ? <Apple className="w-5 h-5" /> : <Monitor className="w-5 h-5" />}
+                    {isMac ? "Launcher Mac" : "Launcher Windows"}
+                </a>
+                <a
+                    href={secondaryHref}
+                    download
+                    className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
+                >
+                    {isMac ? <Monitor className="w-5 h-5" /> : <Apple className="w-5 h-5" />}
+                    {isMac ? "Launcher Windows" : "Launcher Mac"}
+                </a>
+            </div>
+            <p className="text-white/30 text-xs mt-4">
+                {isMac
+                    ? "Mac : double-cliquez sur le fichier téléchargé pour lancer l'installation automatique."
+                    : "Windows : exécutez le fichier téléchargé pour lancer l'installation."
+                }
+            </p>
+        </div>
+    );
+}
+
 export default function AccountPage() {
     const [step, setStep] = useState<AccountStep>("login");
     const [authMode, setAuthMode] = useState<"login" | "register">("login");
@@ -697,33 +745,7 @@ export default function AccountPage() {
 
                                 {/* Download Section */}
                                 {subscription && subscription.status !== "canceled" && (
-                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
-                                        <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
-                                            <Download className="w-5 h-5 text-purple-400" />
-                                            T&eacute;l&eacute;chargements
-                                        </h2>
-                                        <div className="flex flex-col sm:flex-row gap-3">
-                                            <a
-                                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
-                                                download
-                                                className="flex-1 py-3 px-6 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)]"
-                                            >
-                                                <Apple className="w-5 h-5" />
-                                                Launcher Mac
-                                            </a>
-                                            <a
-                                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows"
-                                                download
-                                                className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
-                                            >
-                                                <Monitor className="w-5 h-5" />
-                                                Launcher Windows
-                                            </a>
-                                        </div>
-                                        <p className="text-white/30 text-xs mt-4">
-                                            Mac : double-cliquez sur le fichier t&eacute;l&eacute;charg&eacute; pour lancer l&apos;installation automatique.
-                                        </p>
-                                    </div>
+                                    <DownloadSection />
                                 )}
 
                                 {/* Subscription Card */}

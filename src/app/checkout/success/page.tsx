@@ -1,11 +1,16 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Download, Apple, Monitor } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 export default function CheckoutSuccessPage() {
+    const [isMac, setIsMac] = useState(true);
+    useEffect(() => {
+        setIsMac(/mac|iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()));
+    }, []);
     return (
         <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden">
             <PageBackground />
@@ -45,25 +50,28 @@ export default function CheckoutSuccessPage() {
 
                         <div className="flex flex-col sm:flex-row gap-3">
                             <a
-                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/macos"
+                                href={`https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/${isMac ? "macos" : "windows"}`}
                                 download
                                 className="flex-1 py-3 px-6 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)]"
                             >
-                                <Apple className="w-5 h-5" />
-                                Mac
+                                {isMac ? <Apple className="w-5 h-5" /> : <Monitor className="w-5 h-5" />}
+                                {isMac ? "Mac" : "Windows"}
                             </a>
                             <a
-                                href="https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/windows"
+                                href={`https://expedition-licensing.expedition-studio.workers.dev/downloads/launcher-install/${isMac ? "windows" : "macos"}`}
                                 download
                                 className="flex-1 py-3 px-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium flex items-center justify-center gap-2 transition-all"
                             >
-                                <Monitor className="w-5 h-5" />
-                                Windows
+                                {isMac ? <Monitor className="w-5 h-5" /> : <Apple className="w-5 h-5" />}
+                                {isMac ? "Windows" : "Mac"}
                             </a>
                         </div>
 
                         <p className="text-white/30 text-xs mt-4">
-                            Mac : double-cliquez sur le fichier téléchargé pour lancer l&apos;installation automatique.
+                            {isMac
+                                ? "Mac : double-cliquez sur le fichier téléchargé pour lancer l'installation automatique."
+                                : "Windows : exécutez le fichier téléchargé pour lancer l'installation."
+                            }
                         </p>
                     </div>
 
