@@ -410,7 +410,7 @@ export default function TubeForgeSection() {
           {/* Mockup */}
           <div className="flex-1 w-full relative">
             {/* Red-orange nebula — TubeForge identity glow */}
-            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.07) 0%, rgba(249,115,22,0.04) 35%, transparent 70%)', filter: 'blur(60px)' }} />
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.12) 0%, rgba(249,115,22,0.06) 35%, transparent 70%)', filter: 'blur(80px)' }} />
             <TubeForgeMockup />
           </div>
         </motion.div>
