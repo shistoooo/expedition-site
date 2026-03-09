@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Twitter, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -55,24 +55,6 @@ export default function Footer() {
             viewport={{ once: true }}
             className="flex items-center gap-5"
           >
-            <a
-              href={process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/shistoooo"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full glass hover:bg-white/10 transition-colors"
-              aria-label="GitHub"
-            >
-              <Github className="w-5 h-5" />
-            </a>
-            <a
-              href={process.env.NEXT_PUBLIC_TWITTER_URL || "https://twitter.com"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full glass hover:bg-white/10 transition-colors"
-              aria-label="Twitter"
-            >
-              <Twitter className="w-5 h-5" />
-            </a>
             <a
               href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition"}
               target="_blank"
