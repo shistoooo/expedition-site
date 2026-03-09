@@ -575,21 +575,21 @@ export default function AccountPage() {
                                 {/* Auth mode toggle */}
                                 <div className="relative flex p-1 rounded-xl bg-white/5 border border-white/10 mb-6">
                                     <motion.div
-                                        className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-lg bg-purple-600"
+                                        className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-lg bg-white shadow-md"
                                         animate={{ x: authMode === "login" ? 0 : "calc(100% + 4px)" }}
                                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => { setAuthMode("login"); setError(null); }}
-                                        className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${authMode === "login" ? "text-white" : "text-white/50 hover:text-white/80"}`}
+                                        className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${authMode === "login" ? "text-black" : "text-white/50 hover:text-white/80"}`}
                                     >
                                         Connexion
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => { setAuthMode("register"); setError(null); }}
-                                        className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${authMode === "register" ? "text-white" : "text-white/50 hover:text-white/80"}`}
+                                        className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${authMode === "register" ? "text-black" : "text-white/50 hover:text-white/80"}`}
                                     >
                                         Inscription
                                     </button>
