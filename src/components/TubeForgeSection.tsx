@@ -349,7 +349,7 @@ function TubeForgeMockup() {
 
 export default function TubeForgeSection() {
   return (
-    <section id="tubeforge" className="py-32 md:py-40 relative overflow-hidden section-fade-top">
+    <section id="tubeforge" className="py-32 md:py-40 relative section-fade-top">
       <div className="container-main">
         <motion.div
           variants={containerVariants}

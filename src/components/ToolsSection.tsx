@@ -269,7 +269,7 @@ function ClipForgeMockup() {
 
 export default function ToolsSection() {
   return (
-    <section id="clipforge" className="py-32 md:py-40 relative overflow-hidden section-fade-top">
+    <section id="clipforge" className="py-32 md:py-40 relative section-fade-top">
       <div className="container-main">
         <motion.div
           variants={containerVariants}

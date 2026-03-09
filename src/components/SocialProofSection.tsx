@@ -25,7 +25,7 @@ const creators = [
 
 export default function SocialProofSection() {
   return (
-    <section className="py-24 relative overflow-hidden section-fade-top">
+    <section className="py-24 relative section-fade-top">
       <div className="container-main">
         <motion.p
           initial={{ opacity: 0 }}

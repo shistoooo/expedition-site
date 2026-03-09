@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function PhilosophySection() {
   return (
-    <section className="py-32 md:py-40 relative overflow-hidden section-fade-top">
+    <section className="py-32 md:py-40 relative section-fade-top">
       <div className="container-main relative">
         <div className="flex flex-col lg:flex-row items-start gap-20">
 

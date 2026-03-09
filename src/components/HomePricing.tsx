@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function HomePricing() {
   return (
-    <section id="pricing" className="py-32 md:py-40 relative overflow-hidden section-fade-top">
+    <section id="pricing" className="py-32 md:py-40 relative section-fade-top">
       {/* Pricing nebula — violet ambient, signals high value */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] pointer-events-none"

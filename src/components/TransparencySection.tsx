@@ -36,7 +36,7 @@ const tools = [
 
 export default function TransparencySection() {
   return (
-    <section className="py-32 md:py-40 relative overflow-hidden section-fade-top">
+    <section className="py-32 md:py-40 relative section-fade-top">
       <div className="container-main max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
