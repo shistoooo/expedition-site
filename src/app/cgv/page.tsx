@@ -8,7 +8,7 @@ export default function CGVPage() {
         <div className="min-h-screen bg-[#06051a] text-white">
             <PageBackground />
             <Navbar />
-            <main className="pt-32 pb-24 container-main max-w-3xl mx-auto">
+            <main className="pt-32 pb-24 container-main max-w-3xl mx-auto relative z-10">
                 <Link href="/" className="text-white/40 hover:text-white text-sm transition-colors">&larr; Retour</Link>
 
                 <h1 className="text-3xl font-bold mt-8 mb-8">Conditions G&eacute;n&eacute;rales de Vente</h1>

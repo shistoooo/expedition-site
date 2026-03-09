@@ -69,7 +69,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} antialiased noise-overlay`}
       >
         <GlobalSpace />
         {children}

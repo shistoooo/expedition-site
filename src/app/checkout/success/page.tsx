@@ -11,7 +11,7 @@ export default function CheckoutSuccessPage() {
             <PageBackground />
             <Navbar />
 
-            <main className="pt-32 pb-24 container-main flex items-center justify-center min-h-[80vh]">
+            <main className="pt-32 pb-24 container-main flex items-center justify-center min-h-[80vh] relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}

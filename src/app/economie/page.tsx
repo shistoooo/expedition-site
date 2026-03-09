@@ -714,9 +714,12 @@ const STARTING_CAPITAL = [
 
 export default function EconomiePage() {
   return (
-    <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-hidden">
+    <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-hidden relative">
       <PageBackground />
       <Navbar />
+
+      {/* All content above stars */}
+      <div className="relative z-10">
 
       {/* ================================================================
           1. HERO SECTION
@@ -1524,6 +1527,7 @@ export default function EconomiePage() {
       </section>
 
       <Footer />
+      </div>{/* close z-10 wrapper */}
     </div>
   );
 }

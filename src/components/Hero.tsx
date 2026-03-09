@@ -65,10 +65,10 @@ export default function Hero() {
         >
           <Link
             href="/checkout"
-            className="px-8 py-4 rounded-xl bg-white text-black font-bold transition-all flex items-center gap-2 shadow-lg shadow-white/10 hover:bg-gray-100"
+            className="group px-8 py-4 rounded-xl bg-white text-black font-bold transition-all flex items-center gap-2 shadow-[0_0_30px_rgba(139,92,246,0.25)] hover:shadow-[0_0_50px_rgba(139,92,246,0.4)] hover:scale-[1.03]"
           >
             Commencer maintenant
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
             href="#clipforge"

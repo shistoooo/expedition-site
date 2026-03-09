@@ -20,7 +20,7 @@ export default function Home() {
       <PageBackground />
       <CursorGlow />
       <Navbar />
-      <main className="w-full">
+      <main className="w-full relative z-10">
         <Hero />
         <SocialProofSection />
         <TubeForgeSection />

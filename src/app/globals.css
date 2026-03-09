@@ -90,6 +90,39 @@ h1, h2 {
   50% { opacity: 1; }
 }
 
+/* CTA button with animated glow border */
+.cta-glow {
+  position: relative;
+  overflow: hidden;
+}
+.cta-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--cta-angle, 0deg), transparent 60%, rgba(139,92,246,0.6) 80%, rgba(139,92,246,0.8) 90%, transparent 100%);
+  z-index: -1;
+  animation: cta-spin 3s linear infinite;
+}
+.cta-glow::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: inherit;
+  z-index: -1;
+}
+
+@keyframes cta-spin {
+  to { --cta-angle: 360deg; }
+}
+
+@property --cta-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 @keyframes gradient-shift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -151,6 +184,19 @@ input:-webkit-autofill:focus {
   -webkit-text-fill-color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Film grain overlay — cinematic space feel */
+.noise-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
 /* Accessibility: focus-visible */
