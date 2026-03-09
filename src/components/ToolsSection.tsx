@@ -81,9 +81,9 @@ function ClipForgeMockup() {
 
   const colors = ['#FFFFFF', '#FACC15', '#22D3EE', '#EF4444', '#22C55E', '#EC4899', '#FBBF24'];
   const clips = [
-    { score: 94, title: "\"J'ai tout perdu en 3s\"", duration: "0:42", hook: 91, retention: 88, video: "/mockups/clip-1.mp4" },
-    { score: 87, title: "Le rage quit légendaire", duration: "0:31", hook: 85, retention: 82, video: "/mockups/clip-2.mp4" },
-    { score: 78, title: "Astuce build cachée", duration: "0:55", hook: 72, retention: 80, video: "/mockups/clip-3.mp4" },
+    { score: 94, title: "\"Non non non...\"", duration: "0:42", hook: 91, retention: 88, video: "/mockups/clip-1.mp4" },
+    { score: 87, title: "Plot twist en direct", duration: "0:31", hook: 85, retention: 82, video: "/mockups/clip-2.mp4" },
+    { score: 78, title: "Le tip que personne connaît", duration: "0:55", hook: 72, retention: 80, video: "/mockups/clip-3.mp4" },
   ];
 
   return (
