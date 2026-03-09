@@ -440,7 +440,7 @@ const SHOP_CARDS: ShopCardData[] = [
     icon: Megaphone,
     name: "Annonce Vitrine",
     cost: "2",
-    description: "Mettez en avant votre service dans le salon dédié pendant 7 jours. Maximum de visibilité auprès des membres actifs.",
+    description: "Votre service mis en avant 7 jours dans le salon dédié.",
     rarity: "common",
     visualColor: "rgba(99,102,241,0.8)",
     visualGradient: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)",
@@ -449,7 +449,7 @@ const SHOP_CARDS: ShopCardData[] = [
     icon: Film,
     name: "Portfolio Vidéo",
     cost: "5",
-    description: "Votre meilleure vidéo épinglée dans le salon Portfolio. Montrez votre travail à toute la communauté.",
+    description: "Vidéo épinglée dans le salon Portfolio.",
     rarity: "rare",
     visualColor: "rgba(59,130,246,0.8)",
     visualGradient: "linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)",
@@ -458,7 +458,7 @@ const SHOP_CARDS: ShopCardData[] = [
     icon: Youtube,
     name: "Shoutout YouTube",
     cost: "10",
-    description: "Mise en avant de votre chaîne dans les annonces officielles. 2 places disponibles par mois. Réservé aux créateurs actifs.",
+    description: "Votre chaîne dans les annonces officielles. 2 places/mois.",
     rarity: "epic",
     visualColor: "rgba(239,68,68,0.8)",
     visualGradient: "linear-gradient(135deg, #1a0a0a 0%, #450a0a 40%, #7f1d1d 70%, #1a0a0a 100%)",
@@ -467,7 +467,7 @@ const SHOP_CARDS: ShopCardData[] = [
     icon: Ticket,
     name: "Ticket d'Or",
     cost: "3 – 7",
-    description: "Accès prioritaire à la prochaine saison de l'Expédition. Le coût varie selon la taille du serveur. La pièce maîtresse de la boutique.",
+    description: "Accès prioritaire à la prochaine saison. Coût variable.",
     rarity: "legendary",
     visualColor: "rgba(245,158,11,0.9)",
     visualGradient: "linear-gradient(135deg, #1a1100 0%, #451a00 30%, #78350f 60%, #d97706 80%, #f59e0b 100%)",
@@ -766,8 +766,7 @@ export default function EconomiePage() {
             transition={{ duration: 0.7, ease: EASE_OUT_EXPO, delay: 0.25 }}
             className="text-lg md:text-xl text-white/55 max-w-xl mx-auto leading-relaxed mb-16"
           >
-            La monnaie fait circuler les talents, pas les interactions.
-            Gagnez, échangez, et dépensez dans un marché
+            Gagnez, échangez et dépensez dans un marché
             <span className="text-white/80 font-medium"> géré par la communauté</span>.
           </motion.p>
 
@@ -830,7 +829,6 @@ export default function EconomiePage() {
               Les Devises
             </SectionLabel>
             <h2 className="text-3xl md:text-5xl font-black tracking-tight">Trois monnaies, un écosystème</h2>
-            <p className="text-white/45 mt-3 text-sm max-w-md mx-auto">Chaque devise a son rôle. Comprendre le flux, c&apos;est maîtriser l&apos;économie.</p>
           </motion.div>
 
           {/* Currency cards */}
@@ -839,7 +837,7 @@ export default function EconomiePage() {
               icon={Coins}
               name="Pièces d'Or"
               ticker="EX"
-              description="La monnaie principale. Utilisée pour tous les services, échanges, et achats en boutique. Plafonnée à 500 EX pour maintenir l'équilibre."
+              description="Monnaie principale. Services, échanges, boutique. Plafonnée à 500."
               gradient="linear-gradient(135deg, #fbbf24, #f59e0b)"
               borderColor="border-amber-500/20"
               glowColor="#f59e0b"
@@ -851,7 +849,7 @@ export default function EconomiePage() {
               icon={Coins}
               name="Bronze"
               ticker="BR"
-              description="Gagnée passivement via votre activité Discord. Convertissez-la en Or pour accéder aux services. Récompense les membres actifs et présents."
+              description="Gagnée via l'activité Discord. Se convertit en Or."
               gradient="linear-gradient(135deg, #fb923c, #f97316)"
               borderColor="border-orange-500/20"
               glowColor="#f97316"
@@ -863,7 +861,7 @@ export default function EconomiePage() {
               icon={Gem}
               name="Points d'Éclat"
               ticker="ECL"
-              description="Monnaie de prestige. Convertissez vos Pièces d'Or en Éclats pour accéder aux avantages exclusifs de la boutique premium."
+              description="Monnaie premium. Donne accès à la boutique Éclats."
               gradient="linear-gradient(135deg, #a78bfa, #8b5cf6)"
               borderColor="border-purple-500/25"
               glowColor="#8b5cf6"
@@ -899,7 +897,7 @@ export default function EconomiePage() {
               Votre solde
             </h2>
             <p className="text-white/40 text-sm">
-              Connectez votre compte Discord pour voir votre portefeuille en temps réel.
+              Connectez Discord pour voir vos soldes.
             </p>
           </motion.div>
 
@@ -944,7 +942,7 @@ export default function EconomiePage() {
               Boutique Éclats
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto">
-              Des avantages rares, payants en Éclats. Chaque achat passe par le salon Discord officiel.
+              Avantages exclusifs payables en Éclats.
             </p>
           </motion.div>
 
@@ -989,7 +987,7 @@ export default function EconomiePage() {
               Personnalisez votre profil
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto">
-              Payables en Or (EX). Affichez votre statut, votre style, votre rang.
+              Payables en Or (EX).
             </p>
           </motion.div>
 
@@ -1092,7 +1090,7 @@ export default function EconomiePage() {
               La Roue de l&apos;Expédition
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto mb-2">
-              15 EX par tirage. Les récompenses vont du Bronze aux Éclats en passant par des cosmétiques exclusifs.
+              15 EX par tirage. Bronze, cosmétiques, ou Éclats.
             </p>
           </motion.div>
 
@@ -1205,7 +1203,7 @@ export default function EconomiePage() {
               Guide des prix
             </h2>
             <p className="text-white/45 text-sm max-w-md mx-auto">
-              Des fourchettes équitables pour chaque type de travail. Le prix final est toujours validé par écrit avant de commencer.
+              Fourchettes de prix par type de service.
             </p>
           </motion.div>
 
@@ -1289,8 +1287,7 @@ export default function EconomiePage() {
           >
             <Info className="w-4 h-4 text-white/40 shrink-0 mt-0.5" />
             <p className="text-xs text-white/45 leading-relaxed">
-              <span className="text-white/70 font-semibold">Règle d&apos;or :</span> Le prix final doit être validé par écrit avant le début du travail.
-              Toute prestation commencée sans accord tarifaire écrit est réalisée à titre gracieux.
+              <span className="text-white/70 font-semibold">Règle d&apos;or :</span> Prix validé par écrit avant de commencer.
             </p>
           </motion.div>
         </div>
@@ -1318,7 +1315,7 @@ export default function EconomiePage() {
               Gagnez du Bronze
             </h2>
             <p className="text-white/45 text-sm max-w-md mx-auto">
-              L&apos;activité Discord est récompensée. Participez, contribuez, progressez.
+              Votre activité Discord vous rapporte du Bronze.
             </p>
           </motion.div>
 
@@ -1327,7 +1324,7 @@ export default function EconomiePage() {
             <MiningCard
               icon={MessageSquare}
               title="Activité Chat"
-              detail="Écrivez dans les salons texte actifs pour gagner du Bronze. Chaque message compte — la qualité est valorisée, pas la quantité."
+              detail="Messages dans les salons texte actifs."
               max="50 BR"
               color="#f97316"
               delay={0.08}
@@ -1335,7 +1332,7 @@ export default function EconomiePage() {
             <MiningCard
               icon={Mic}
               title="Activité Vocal"
-              detail="Parlez dans les salons vocaux de la communauté. Le temps de présence active est comptabilisé automatiquement."
+              detail="Présence active dans les salons vocaux."
               max="60 BR"
               color="#f59e0b"
               delay={0.16}
@@ -1343,7 +1340,7 @@ export default function EconomiePage() {
             <MiningCard
               icon={Shield}
               title="Coworking"
-              detail="Les salons coworking sont des espaces de travail silencieux. Aucune récompense n'y est distribuée pour préserver la concentration."
+              detail="Espaces silencieux, pas de récompense."
               color="#6b7280"
               delay={0.24}
             />
@@ -1360,8 +1357,7 @@ export default function EconomiePage() {
           >
             <Zap className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
             <p className="text-xs text-white/50 leading-relaxed">
-              <span className="text-orange-400 font-semibold">Anti-AFK actif :</span> Un système de surveillance détecte et exclut les comportements passifs ou automatisés.
-              Seule la participation authentique est récompensée.
+              <span className="text-orange-400 font-semibold">Anti-AFK actif :</span> Seule la participation authentique est récompensée.
             </p>
           </motion.div>
 
@@ -1470,7 +1466,7 @@ export default function EconomiePage() {
               </span> ?
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto mb-8">
-              Rejoignez le Discord Expédition, réclamez votre capital de départ, et commencez à construire votre réputation.
+              Rejoignez le Discord et réclamez votre capital de départ.
             </p>
             <a
               href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition"}
