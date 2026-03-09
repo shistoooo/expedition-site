@@ -118,7 +118,7 @@ export default function GlobalSpace() {
   const pathname = usePathname();
   const isDesktop = useIsDesktop();
 
-  const EXCLUDED_ROUTES = ['/checkout', '/checkout/success', '/account', '/coin-green-screen', '/avatar-editor'];
+  const EXCLUDED_ROUTES = ['/checkout', '/checkout/success', '/coin-green-screen', '/avatar-editor'];
   if (EXCLUDED_ROUTES.includes(pathname)) return null;
 
   // Mobile: lightweight static background instead of 3D canvas

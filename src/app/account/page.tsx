@@ -330,11 +330,11 @@ export default function AccountPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 onSubmit={handleLogin}
-                                className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl"
+                                className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5"
                             >
                                 <div className="flex items-center justify-between mb-6">
                                     <h1 className="text-2xl font-bold">Mon compte</h1>
-                                    <Lock className="w-5 h-5 text-white/40" />
+                                    <Lock className="w-5 h-5 text-purple-400/50" />
                                 </div>
 
                                 <p className="text-white/50 text-sm mb-6">
@@ -388,7 +388,7 @@ export default function AccountPage() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+                                    className="w-full py-4 rounded-xl bg-purple-600 text-white font-bold text-lg hover:bg-purple-500 transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
                                 >
                                     {loading ? (
                                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -409,7 +409,7 @@ export default function AccountPage() {
                                 className="space-y-6"
                             >
                                 {/* Header */}
-                                <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                     <div className="flex items-center justify-between mb-1">
                                         <h1 className="text-2xl font-bold">Mon compte</h1>
                                         <button
@@ -428,7 +428,7 @@ export default function AccountPage() {
 
                                 {/* Download Section */}
                                 {subscription && subscription.status !== "canceled" && (
-                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                         <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
                                             <Download className="w-5 h-5 text-purple-400" />
                                             T&eacute;l&eacute;chargements
@@ -459,7 +459,7 @@ export default function AccountPage() {
 
                                 {/* Subscription Card */}
                                 {subscription ? (
-                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                         <div className="flex items-center justify-between mb-6">
                                             <h2 className="text-lg font-bold flex items-center gap-2">
                                                 <CreditCard className="w-5 h-5 text-purple-400" />
@@ -586,7 +586,7 @@ export default function AccountPage() {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl text-center">
+                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5 text-center">
                                         <CreditCard className="w-10 h-10 text-white/20 mx-auto mb-4" />
                                         <h2 className="text-lg font-bold mb-2">Aucun abonnement actif</h2>
                                         <p className="text-white/50 text-sm mb-6">Rejoignez la Vague Pionnier pour acc&eacute;der &agrave; tous les outils.</p>
@@ -602,7 +602,7 @@ export default function AccountPage() {
                                 {/* Ambassador Section */}
                                 {subscription && subscription.status !== "canceled" && (
                                     ambassadorStatus?.isAmbassador ? (
-                                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                             <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
                                                 <Gift className="w-5 h-5 text-purple-400" />
                                                 Programme Ambassadeur
@@ -802,7 +802,7 @@ export default function AccountPage() {
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                             <div className="text-center mb-6">
                                                 <Gift className="w-10 h-10 text-purple-400 mx-auto mb-4" />
                                                 <h2 className="text-lg font-bold mb-2">Devenez Ambassadeur</h2>
