@@ -182,24 +182,9 @@ section {
   overflow-x: hidden;
 }
 
-/* Section transition — soft gradient fade instead of hard border-t.
-   Creates an atmospheric separation that reads as depth, not a cut. */
+/* Section transition class — kept for markup compatibility, no visible line */
 .section-fade-top::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.02) 20%,
-    rgba(255, 255, 255, 0.035) 50%,
-    rgba(255, 255, 255, 0.02) 80%,
-    transparent 100%
-  );
-  pointer-events: none;
+  display: none;
 }
 
 /* Enhanced glass: stronger blur, subtle top highlight line */
