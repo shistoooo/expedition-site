@@ -1146,7 +1146,7 @@ export default function AccountPage() {
                                                     <p className="text-white/60 text-sm">
                                                         Avec vos <span className="text-white font-bold">{ambassadorStatus.stats.activeReferrals} filleul{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""} actif{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""}</span>, vous pouvez toucher jusqu&apos;à{" "}
                                                         <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                                                            ~{Math.round(ambassadorStatus.stats.activeReferrals * 9.99 * 0.5 * 6)}€
+                                                            ~{Math.round(ambassadorStatus.stats.activeReferrals * 9.99 * 0.42 * 6)}€
                                                         </span>{" "}
                                                         sur 6 mois.
                                                     </p>
@@ -1303,7 +1303,7 @@ export default function AccountPage() {
                                                 <Gift className="w-10 h-10 text-purple-400 mx-auto mb-4" />
                                                 <h2 className="text-lg font-bold mb-2">Devenez Ambassadeur</h2>
                                                 <p className="text-white/50 text-sm">
-                                                    Partagez Expédition et touchez <span className="text-white font-semibold">50% de commission</span> sur chaque abonnement généré, pendant 6 mois.
+                                                    Partagez Expédition et touchez <span className="text-white font-semibold">42% de commission</span> sur chaque abonnement généré, pendant 6 mois.
                                                 </p>
                                             </div>
 
@@ -1316,7 +1316,7 @@ export default function AccountPage() {
                                                     { referrals: 25, emoji: "💎" },
                                                     { referrals: 50, emoji: "👑" },
                                                 ].map((tier) => {
-                                                    const monthlyPerReferral = 9.99 * 0.5;
+                                                    const monthlyPerReferral = 9.99 * 0.42;
                                                     const total6Months = Math.round(tier.referrals * monthlyPerReferral * 6);
                                                     return (
                                                         <div key={tier.referrals} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/20 transition-colors">
@@ -1331,7 +1331,7 @@ export default function AccountPage() {
                                                         </div>
                                                     );
                                                 })}
-                                                <p className="text-[10px] text-white/25 text-center">Bas&eacute; sur l&apos;abonnement mensuel &agrave; 11,99€ — 50% de commission pendant 6 mois par filleul.</p>
+                                                <p className="text-[10px] text-white/25 text-center">Bas&eacute; sur l&apos;abonnement mensuel &agrave; 11,99€ — 42% de commission pendant 6 mois par filleul.</p>
                                             </div>
 
                                             <button

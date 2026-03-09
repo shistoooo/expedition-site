@@ -22,7 +22,7 @@ const steps = [
   {
     icon: Banknote,
     title: "Gagnez de l'argent",
-    desc: "Recevez 50% de commission sur chaque abonnement généré, pendant 6 mois par filleul.",
+    desc: "Recevez 42% de commission sur chaque abonnement généré, pendant 6 mois par filleul.",
   },
 ];
 
@@ -93,7 +93,7 @@ export default function AmbassadorPage() {
             {/* The number IS the hook — give it impossible-to-miss scale */}
             <div className="mb-4">
               <span className="text-[120px] md:text-[180px] font-black leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-200 to-purple-500 select-none">
-                50%
+                42%
               </span>
             </div>
 

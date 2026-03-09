@@ -95,7 +95,7 @@ export default function CGVPage() {
                     <h2 className="text-xl font-bold text-white mt-8">6. Programme Ambassadeur</h2>
                     <p>
                         Le programme Ambassadeur permet aux abonn&eacute;s actifs de parrainer de nouveaux
-                        utilisateurs. L&apos;ambassadeur per&ccedil;oit une commission de 50% sur les abonnements
+                        utilisateurs. L&apos;ambassadeur per&ccedil;oit une commission de 42% sur les abonnements
                         g&eacute;n&eacute;r&eacute;s via son code de parrainage, pendant une dur&eacute;e de 6 mois par filleul.
                     </p>
                     <p>
