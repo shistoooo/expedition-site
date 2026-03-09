@@ -6,7 +6,22 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="pt-32 pb-40 md:pt-48 md:pb-56 relative overflow-hidden">
+    <section className="pt-36 pb-48 md:pt-56 md:pb-64 relative overflow-hidden">
+      {/* Nebula ambient — violet core fading to transparent, anchored behind the h1 */}
+      <div
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.18) 0%, rgba(99,60,200,0.08) 40%, transparent 75%)',
+          filter: 'blur(1px)',
+        }}
+      />
+      {/* Secondary cyan nebula — lower right, echoes space depth */}
+      <div
+        className="absolute bottom-0 right-1/4 w-[600px] h-[400px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 50% 60% at 70% 80%, rgba(6,182,212,0.09) 0%, transparent 65%)',
+        }}
+      />
       <div className="container-main flex flex-col items-center text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -24,8 +39,8 @@ export default function Hero() {
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 tracking-tight"
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.95] tracking-[-0.04em]"
         >
           Tous vos outils de cr&eacute;ation.
           <br />
@@ -36,7 +51,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl text-white/60 mb-4 max-w-2xl leading-relaxed mx-auto"
+          className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto"
         >
           Aujourd&apos;hui 1 outil. Demain 3, puis 10.
           <br className="hidden md:block" />
@@ -65,14 +80,14 @@ export default function Hero() {
         >
           <Link
             href="/checkout"
-            className="group px-8 py-4 rounded-xl bg-white text-black font-bold transition-all flex items-center gap-2 shadow-[0_0_30px_rgba(139,92,246,0.25)] hover:shadow-[0_0_50px_rgba(139,92,246,0.4)] hover:scale-[1.03]"
+            className="group px-8 py-4 rounded-xl bg-white text-black font-bold transition-all duration-300 flex items-center gap-2 shadow-[0_0_40px_rgba(139,92,246,0.3),0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_0_70px_rgba(139,92,246,0.55),0_12px_40px_rgba(0,0,0,0.5)] hover:scale-[1.04] active:scale-[0.98]"
           >
             Commencer maintenant
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-200" />
           </Link>
           <Link
             href="#clipforge"
-            className="px-8 py-4 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-semibold transition-all backdrop-blur-sm"
+            className="px-8 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 hover:border-white/20 font-semibold transition-all duration-300 backdrop-blur-sm hover:scale-[1.02]"
           >
             D&eacute;couvrir les outils
           </Link>

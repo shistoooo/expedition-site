@@ -477,7 +477,7 @@ function ReviewForgeMockup() {
 
 export default function ReviewForgeSection() {
   return (
-    <section id="reviewforge" className="py-24 md:py-32 relative overflow-hidden border-t border-white/5">
+    <section id="reviewforge" className="py-32 md:py-40 relative overflow-hidden section-fade-top">
       <div className="container-main">
         <motion.div
           variants={containerVariants}
@@ -493,7 +493,7 @@ export default function ReviewForgeSection() {
               Vague 3 &mdash; Stable
             </p>
 
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-[-0.03em]">
               Review<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
@@ -513,9 +513,9 @@ export default function ReviewForgeSection() {
                 { icon: Eye, title: "Suivez qui regarde, en temps r\u00e9el", desc: "Dashboard en direct : nombre de vues par lien, qui a regard\u00e9, quand le lien expire. R\u00e9voquez un acc\u00e8s en un clic si besoin." },
                 { icon: Link2, title: "Un lien, un clic, c\u2019est partag\u00e9", desc: "S\u00e9lectionnez votre fichier, configurez les restrictions, copiez le lien. Votre client n\u2019a rien \u00e0 installer \u2014 il ouvre le lien dans son navigateur." },
               ].map((item, i) => (
-                <motion.li key={i} variants={itemVariants} className="flex gap-4">
-                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                    <item.icon className="w-4 h-4 text-emerald-400" />
+                <motion.li key={i} variants={itemVariants} className="flex gap-4 group/item">
+                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover/item:bg-emerald-500/10 group-hover/item:border-emerald-500/25 group-hover/item:shadow-[0_0_20px_rgba(16,185,129,0.12)]">
+                    <item.icon className="w-4 h-4 text-emerald-400 transition-transform duration-300 group-hover/item:scale-110" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-white">{item.title}</h3>
@@ -528,9 +528,9 @@ export default function ReviewForgeSection() {
             <div className="flex items-center gap-4">
               <Link
                 href="/pricing"
-                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300 shadow-lg shadow-white/10"
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_50px_rgba(16,185,129,0.4),0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
               >
-                Inclus dans votre abonnement <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+                Inclus dans votre abonnement <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
               </Link>
             </div>
             <p className="text-xs text-white/25 mt-3">Les Pionniers y auront acc&egrave;s d&egrave;s la sortie, sans surco&ucirc;t.</p>
@@ -538,8 +538,9 @@ export default function ReviewForgeSection() {
 
           {/* Mockup */}
           <div className="flex-1 w-full relative">
-            <div className="absolute -inset-10 bg-emerald-500/10 blur-3xl rounded-full opacity-30 pointer-events-none" />
-            <div className="absolute top-0 right-1/4 w-48 h-48 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+            {/* Emerald-cyan nebula — ReviewForge identity glow */}
+            <div className="absolute -inset-10 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(16,185,129,0.16) 0%, rgba(6,182,212,0.08) 45%, transparent 70%)', filter: 'blur(1px)' }} />
+            <div className="absolute top-[-10%] right-[15%] w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.14) 0%, transparent 65%)', filter: 'blur(40px)' }} />
             <ReviewForgeMockup />
           </div>
         </motion.div>

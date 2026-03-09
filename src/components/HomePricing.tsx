@@ -6,7 +6,15 @@ import Link from "next/link";
 
 export default function HomePricing() {
   return (
-    <section id="pricing" className="py-24 md:py-32 relative overflow-hidden border-t border-white/5">
+    <section id="pricing" className="py-32 md:py-40 relative overflow-hidden section-fade-top">
+      {/* Pricing nebula — violet ambient, signals high value */}
+      <div
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,92,246,0.14) 0%, rgba(99,60,200,0.07) 45%, transparent 72%)',
+          filter: 'blur(2px)',
+        }}
+      />
       <div className="container-main max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -18,7 +26,7 @@ export default function HomePricing() {
             <Lock className="w-4 h-4" />
             <span>Tarif Pionnier — bloqu&eacute; tant que vous restez abonn&eacute;</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-[-0.03em]">
             La suite grossit. Votre prix, non.
           </h2>
           <p className="text-lg text-white/50 max-w-xl mx-auto">
@@ -57,10 +65,14 @@ export default function HomePricing() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative rounded-2xl p-1 overflow-hidden ring-1 ring-white/10"
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="relative rounded-2xl p-[1px] overflow-hidden shadow-[0_0_80px_rgba(139,92,246,0.18),0_20px_60px_rgba(0,0,0,0.5)]"
+          style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.35) 0%, rgba(255,255,255,0.08) 40%, rgba(99,102,241,0.2) 100%)' }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-500/10 to-transparent" />
-          <div className="relative bg-[#0f0f12] rounded-xl p-8 md:p-10">
+          <div className="relative rounded-2xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-purple-500/15 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent pointer-events-none" />
+            <div className="relative bg-[#0d0d16] rounded-xl p-8 md:p-10">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
               <div>
                 <h3 className="text-2xl font-bold text-white mb-1">Vague Pionnier</h3>
@@ -95,14 +107,14 @@ export default function HomePricing() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/checkout"
-                className="flex-1 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-100 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2"
+                className="group flex-1 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-50 transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.4),0_8px_32px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 Rejoindre la Vague Pionnier
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/pricing"
-                className="py-4 px-6 rounded-xl bg-white/5 border border-white/10 text-white/50 font-medium hover:bg-white/10 hover:text-white/70 transition-all flex items-center justify-center text-sm"
+                className="py-4 px-6 rounded-xl bg-white/[0.04] border border-white/10 text-white/50 font-medium hover:bg-white/[0.08] hover:border-white/20 hover:text-white/70 transition-all duration-300 flex items-center justify-center text-sm"
               >
                 Comparer les vagues
               </Link>
@@ -111,6 +123,7 @@ export default function HomePricing() {
             <p className="text-center text-xs text-white/25 mt-4">
               Annulable &agrave; tout moment. Sans engagement.
             </p>
+            </div>
           </div>
         </motion.div>
       </div>

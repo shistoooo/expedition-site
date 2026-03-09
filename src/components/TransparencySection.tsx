@@ -36,7 +36,7 @@ const tools = [
 
 export default function TransparencySection() {
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden border-t border-white/5">
+    <section className="py-32 md:py-40 relative overflow-hidden section-fade-top">
       <div className="container-main max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -48,7 +48,7 @@ export default function TransparencySection() {
             <Shield className="w-4 h-4" />
             <span>Transparence</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-[-0.03em]">
             On pr&eacute;f&egrave;re &ecirc;tre honn&ecirc;tes.
           </h2>
           <p className="text-lg text-white/50 max-w-2xl mx-auto">
@@ -65,10 +65,10 @@ export default function TransparencySection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/10"
+              className="group flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/15 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_32px_rgba(0,0,0,0.3)]"
             >
-              <div className="mt-0.5 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                <tool.icon className="w-5 h-5 text-white/60" />
+              <div className="mt-0.5 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover:bg-white/10 group-hover:border-white/20">
+                <tool.icon className="w-5 h-5 text-white/50 transition-all duration-300 group-hover:text-white/80" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-1">

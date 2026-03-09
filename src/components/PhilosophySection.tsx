@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function PhilosophySection() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-32 md:py-40 relative overflow-hidden section-fade-top">
       <div className="container-main relative">
         <div className="flex flex-col lg:flex-row items-start gap-20">
 
@@ -21,7 +21,7 @@ export default function PhilosophySection() {
               Notre Manifeste
             </p>
 
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
+            <h2 className="text-5xl md:text-6xl font-black mb-8 leading-[1.0] tracking-[-0.03em]">
               L&apos;alternative <br />
               <span className="text-white">Accessible &amp; Honn&ecirc;te</span>
             </h2>
@@ -40,7 +40,7 @@ export default function PhilosophySection() {
           </motion.div>
 
           {/* Right: pull quotes — three convictions stated plainly */}
-          <div className="flex-1 w-full flex flex-col gap-0 divide-y divide-white/8">
+          <div className="flex-1 w-full flex flex-col gap-0 divide-y divide-white/[0.06]">
             {[
               {
                 label: "01",
@@ -69,9 +69,9 @@ export default function PhilosophySection() {
                 transition={{ delay, duration: 0.5 }}
                 className="py-8 first:pt-0 last:pb-0"
               >
-                <span className="text-lg font-black text-purple-500/70 tracking-tight mb-3 block">{label}</span>
-                <p className="text-2xl font-semibold text-white leading-snug mb-3">&ldquo;{quote}&rdquo;</p>
-                <p className="text-sm text-white/40 font-mono">{note}</p>
+                <span className="text-xs font-mono font-bold text-purple-400/50 tracking-[0.15em] uppercase mb-4 block">{label}</span>
+                <p className="text-2xl md:text-3xl font-semibold text-white leading-snug mb-3">&ldquo;{quote}&rdquo;</p>
+                <p className="text-sm text-white/35 font-mono tracking-wide">{note}</p>
               </motion.div>
             ))}
           </div>

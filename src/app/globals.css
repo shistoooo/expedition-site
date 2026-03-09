@@ -36,8 +36,14 @@ body {
   overflow-x: hidden;
 }
 
-/* Display font for headings */
-h1, h2 {
+/* Display font for headings — 900 for h1 hero impact, 800 for h2 section titles */
+h1 {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+h2 {
   font-family: var(--font-display), var(--font-sans), sans-serif;
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -174,6 +180,41 @@ h1, h2 {
 section {
   width: 100%;
   overflow-x: hidden;
+}
+
+/* Section transition — soft gradient fade instead of hard border-t.
+   Creates an atmospheric separation that reads as depth, not a cut. */
+.section-fade-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 20%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(255, 255, 255, 0.04) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Enhanced glass: stronger blur, subtle top highlight line */
+.glass {
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(48px) !important;
+  -webkit-backdrop-filter: blur(48px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Upgrade glow class — more diffuse, more atmospheric */
+.glow {
+  box-shadow: 0 0 80px rgba(139, 92, 246, 0.22),
+              0 0 160px rgba(139, 92, 246, 0.08),
+              0 20px 60px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Override browser autofill white background */

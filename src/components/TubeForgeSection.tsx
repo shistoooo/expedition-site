@@ -349,7 +349,7 @@ function TubeForgeMockup() {
 
 export default function TubeForgeSection() {
   return (
-    <section id="tubeforge" className="py-24 md:py-32 relative overflow-hidden border-t border-white/5 bg-white/[0.01]">
+    <section id="tubeforge" className="py-32 md:py-40 relative overflow-hidden section-fade-top">
       <div className="container-main">
         <motion.div
           variants={containerVariants}
@@ -365,7 +365,7 @@ export default function TubeForgeSection() {
               Vague 1 &mdash; Stable
             </p>
 
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-[-0.03em]">
               Tube<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
@@ -387,9 +387,9 @@ export default function TubeForgeSection() {
                 { icon: ListVideo, title: "Cherchez et t\u00e9l\u00e9chargez sans quitter l\u2019app", desc: "Recherche YouTube int\u00e9gr\u00e9e. Trouvez la vid\u00e9o, s\u00e9lectionnez la qualit\u00e9, lancez le t\u00e9l\u00e9chargement. Tout \u00e7a sans ouvrir votre navigateur." },
                 { icon: FolderOpen, title: "Toutes vos vid\u00e9os, rang\u00e9es et accessibles", desc: "Organisez par projet avec des dossiers, pr\u00e9visualisez avec le lecteur int\u00e9gr\u00e9, d\u00e9placez en drag-and-drop. Fini le dossier T\u00e9l\u00e9chargements en bordel." },
               ].map((item, i) => (
-                <motion.li key={i} variants={itemVariants} className="flex gap-4">
-                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                    <item.icon className="w-4 h-4 text-red-400" />
+                <motion.li key={i} variants={itemVariants} className="flex gap-4 group/item">
+                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover/item:bg-red-500/10 group-hover/item:border-red-500/25 group-hover/item:shadow-[0_0_20px_rgba(239,68,68,0.12)]">
+                    <item.icon className="w-4 h-4 text-red-400 transition-transform duration-300 group-hover/item:scale-110" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-white">{item.title}</h3>
@@ -401,16 +401,17 @@ export default function TubeForgeSection() {
 
             <Link
               href="/pricing"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_30px_rgba(239,68,68,0.3)] transition-all duration-300 shadow-lg shadow-white/10"
+              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_50px_rgba(239,68,68,0.4),0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
             >
-              Obtenir TubeForge <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+              Obtenir TubeForge <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
             </Link>
           </div>
 
           {/* Mockup */}
           <div className="flex-1 w-full relative">
-            <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[90%] h-[60%] rounded-full blur-[150px] opacity-40 pointer-events-none" style={{ background: '#2e1065' }} />
-            <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[60%] h-[40%] rounded-full blur-[120px] opacity-25 pointer-events-none" style={{ background: '#4c1d95' }} />
+            {/* Red-orange nebula — TubeForge identity glow */}
+            <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[110%] h-[70%] rounded-full pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.18) 0%, rgba(249,115,22,0.1) 35%, transparent 70%)', filter: 'blur(2px)' }} />
+            <div className="absolute bottom-[-15%] left-1/4 w-[70%] h-[50%] rounded-full pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 60%, rgba(76,29,149,0.3) 0%, transparent 65%)', filter: 'blur(60px)' }} />
             <TubeForgeMockup />
           </div>
         </motion.div>

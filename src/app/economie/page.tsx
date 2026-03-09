@@ -49,7 +49,7 @@ const scaleIn = {
   }),
 };
 
-// ─── Section divider (game-UI style) ────────────────────────────────────────
+// ─── Section divider (game-UI style) — kept for legacy, no longer rendered ───
 
 function SectionDivider({ accent = "#8b5cf6" }: { accent?: string }) {
   return (
@@ -61,6 +61,26 @@ function SectionDivider({ accent = "#8b5cf6" }: { accent?: string }) {
       />
       <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${accent}30, transparent)` }} />
     </div>
+  );
+}
+
+// ─── Gradient fade transition between sections ────────────────────────────────
+// Replaces hard SectionDivider lines with a soft atmospheric bleed.
+
+function SectionFade({ fromColor, toColor }: { fromColor: string; toColor: string }) {
+  return (
+    <div
+      className="w-full h-32 pointer-events-none select-none"
+      style={{
+        background: `linear-gradient(180deg,
+          ${fromColor}00 0%,
+          ${fromColor}18 20%,
+          ${toColor}18 80%,
+          ${toColor}00 100%
+        )`,
+      }}
+      aria-hidden="true"
+    />
   );
 }
 
@@ -190,13 +210,13 @@ function CurrencyCard({
       viewport={{ once: true }}
       custom={delay}
       className={`relative flex-1 p-6 rounded-2xl bg-[#0F0F12] border ${borderColor} overflow-hidden group cursor-default`}
-      style={{ boxShadow: `0 8px 40px ${glowColor}06` }}
-      whileHover={{ y: -4, transition: { duration: 0.3, ease: EASE_OUT_EXPO } }}
+      style={{ boxShadow: `0 8px 40px ${glowColor}10` }}
+      whileHover={{ y: -6, scale: 1.01, transition: { duration: 0.35, ease: EASE_OUT_EXPO } }}
     >
-      {/* Hover glow */}
+      {/* Hover glow — intensified on hover */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at 50% -20%, ${glowColor}20 0%, transparent 65%)` }}
+        style={{ background: `radial-gradient(ellipse at 50% -10%, ${glowColor}35 0%, transparent 60%)` }}
         aria-hidden="true"
       />
 
@@ -316,11 +336,12 @@ const RARITY_CONFIG: Record<ShopRarity, {
   glowColor: string;
   badgeColor: string;
   badgeBg: string;
+  outerGlow: string;
 }> = {
-  common:    { label: "Commun",    borderColor: "border-white/12",        glowColor: "rgba(255,255,255,0.06)", badgeColor: "text-white/50",   badgeBg: "bg-white/8"          },
-  rare:      { label: "Rare",      borderColor: "border-blue-500/30",     glowColor: "rgba(59,130,246,0.15)",  badgeColor: "text-blue-400",   badgeBg: "bg-blue-500/10"     },
-  epic:      { label: "Épique",    borderColor: "border-purple-500/40",   glowColor: "rgba(139,92,246,0.18)",  badgeColor: "text-purple-400", badgeBg: "bg-purple-500/12"   },
-  legendary: { label: "Légendaire",borderColor: "border-amber-500/50",    glowColor: "rgba(245,158,11,0.22)",  badgeColor: "text-amber-400",  badgeBg: "bg-amber-500/12"    },
+  common:    { label: "Commun",    borderColor: "border-white/12",        glowColor: "rgba(255,255,255,0.06)", badgeColor: "text-white/50",   badgeBg: "bg-white/8",         outerGlow: "none"                                                            },
+  rare:      { label: "Rare",      borderColor: "border-blue-500/30",     glowColor: "rgba(59,130,246,0.18)",  badgeColor: "text-blue-400",   badgeBg: "bg-blue-500/10",     outerGlow: "0 0 30px rgba(59,130,246,0.12)"                                   },
+  epic:      { label: "Épique",    borderColor: "border-purple-500/40",   glowColor: "rgba(139,92,246,0.22)",  badgeColor: "text-purple-400", badgeBg: "bg-purple-500/12",   outerGlow: "0 0 40px rgba(139,92,246,0.18), 0 0 80px rgba(139,92,246,0.06)"  },
+  legendary: { label: "Légendaire",borderColor: "border-amber-500/60",    glowColor: "rgba(245,158,11,0.30)",  badgeColor: "text-amber-400",  badgeBg: "bg-amber-500/12",    outerGlow: "0 0 50px rgba(245,158,11,0.25), 0 0 100px rgba(245,158,11,0.10)" },
 };
 
 function ShopCard({ card, index }: { card: ShopCardData; index: number }) {
@@ -336,17 +357,32 @@ function ShopCard({ card, index }: { card: ShopCardData; index: number }) {
       viewport={{ once: true }}
       custom={index * 0.1}
       className={`relative rounded-2xl bg-[#0F0F12] border ${rarity.borderColor} overflow-hidden group cursor-default`}
-      style={{ boxShadow: hovered ? `0 0 40px ${rarity.glowColor}, 0 20px 60px ${rarity.glowColor}` : `0 8px 30px ${rarity.glowColor}` }}
+      style={{
+        boxShadow: hovered
+          ? `0 0 60px ${rarity.glowColor}, 0 20px 80px ${rarity.glowColor}, ${rarity.outerGlow}`
+          : `${rarity.outerGlow}`,
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      whileHover={{ y: -6, transition: { duration: 0.35, ease: EASE_OUT_EXPO } }}
+      whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.35, ease: EASE_OUT_EXPO } }}
     >
+      {/* Legendary: persistent ambient bottom bleed */}
+      {card.rarity === "legendary" && (
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(245,158,11,0.12) 0%, transparent 70%)" }}
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Top glow border on hover */}
       <div
         className="absolute top-0 left-0 right-0 h-px transition-opacity duration-500"
         style={{
           background: `linear-gradient(90deg, transparent, ${card.visualColor}, transparent)`,
-          opacity: hovered ? 1 : 0.3,
+          opacity: hovered ? 1 : card.rarity === "legendary" ? 0.7 : 0.3,
         }}
         aria-hidden="true"
       />
@@ -676,28 +712,37 @@ function MiningCard({ icon: Icon, title, detail, max, color, delay }: {
       whileInView="visible"
       viewport={{ once: true }}
       custom={delay}
-      className="flex-1 p-5 rounded-2xl bg-[#0F0F12] border border-white/8 hover:border-white/15 transition-all group cursor-default"
-      whileHover={{ y: -3, transition: { duration: 0.25, ease: EASE_OUT_EXPO } }}
+      className="flex-1 p-6 rounded-2xl bg-[#0F0F12] border border-white/8 overflow-hidden relative group cursor-default"
+      style={{ transition: "border-color 0.3s ease" }}
+      whileHover={{ y: -5, transition: { duration: 0.3, ease: EASE_OUT_EXPO } }}
     >
+      {/* Hover glow */}
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-        style={{ background: `${color}18`, border: `1px solid ${color}25` }}
-      >
-        <span style={{ color }}>
-          <Icon className="w-5 h-5" />
-        </span>
-      </div>
-      <h3 className="text-sm font-bold text-white mb-1">{title}</h3>
-      <p className="text-xs text-white/45 leading-relaxed mb-3">{detail}</p>
-      {max && (
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(ellipse at 50% 100%, ${color}18 0%, transparent 65%)` }}
+        aria-hidden="true"
+      />
+      <div className="relative z-10">
         <div
-          className="inline-flex items-center gap-1.5 text-[10px] font-mono px-2.5 py-1 rounded-full"
-          style={{ background: `${color}12`, border: `1px solid ${color}20`, color }}
+          className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+          style={{ background: `${color}18`, border: `1px solid ${color}25` }}
         >
-          <Zap className="w-2.5 h-2.5" />
-          Max {max}/jour
+          <span style={{ color }}>
+            <Icon className="w-5 h-5" />
+          </span>
         </div>
-      )}
+        <h3 className="text-sm font-bold text-white mb-1">{title}</h3>
+        <p className="text-xs text-white/45 leading-relaxed mb-3">{detail}</p>
+        {max && (
+          <div
+            className="inline-flex items-center gap-1.5 text-[10px] font-mono px-2.5 py-1 rounded-full"
+            style={{ background: `${color}12`, border: `1px solid ${color}20`, color }}
+          >
+            <Zap className="w-2.5 h-2.5" />
+            Max {max}/jour
+          </div>
+        )}
+      </div>
     </motion.div>
   );
 }
@@ -724,11 +769,17 @@ export default function EconomiePage() {
       {/* ================================================================
           1. HERO SECTION
       ================================================================ */}
-      <section className="relative pt-32 pb-20 md:pt-44 md:pb-28 overflow-hidden">
-        {/* Extra ambient glow specific to this page */}
+      <section className="relative pt-36 pb-24 md:pt-52 md:pb-36 overflow-hidden">
+        {/* Extra ambient glow specific to this page — gold-meets-purple energy */}
         <div
-          className="absolute top-20 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full blur-[180px] pointer-events-none"
-          style={{ background: "radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, rgba(139,92,246,0.04) 50%, transparent 80%)" }}
+          className="absolute top-10 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] rounded-full blur-[200px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(245,158,11,0.10) 0%, rgba(167,139,250,0.06) 45%, transparent 75%)" }}
+          aria-hidden="true"
+        />
+        {/* Secondary glow — lower, shifts purple emphasis */}
+        <div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(139,92,246,0.08) 0%, transparent 65%)" }}
           aria-hidden="true"
         />
 
@@ -747,7 +798,7 @@ export default function EconomiePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: EASE_OUT_EXPO, delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-6"
+            className="text-6xl md:text-8xl lg:text-[9rem] font-black tracking-tight leading-[0.9] mb-8"
           >
             L&apos;Économie{" "}
             <span
@@ -767,7 +818,7 @@ export default function EconomiePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE_OUT_EXPO, delay: 0.25 }}
-            className="text-lg md:text-xl text-white/55 max-w-xl mx-auto leading-relaxed mb-16"
+            className="text-xl md:text-2xl text-white/55 max-w-xl mx-auto leading-relaxed mb-20"
           >
             Gagnez, échangez et dépensez dans un marché
             <span className="text-white/80 font-medium"> géré par la communauté</span>.
@@ -816,13 +867,32 @@ export default function EconomiePage() {
       {/* ================================================================
           1.5 HOW IT WORKS — 3 steps
       ================================================================ */}
-      <section className="py-16 relative">
-        <div className="container-main">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="py-20 md:py-28 relative">
+        {/* Subtle section label */}
+        <div className="container-main mb-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+          >
+            <SectionLabel color="text-white/30" lineColor="bg-white/20">Comment ça marche</SectionLabel>
+          </motion.div>
+        </div>
+
+        <div className="container-main relative">
+          {/* Desktop connecting line running through step numbers */}
+          <div
+            className="hidden md:block absolute top-[2.75rem] left-0 right-0 h-px pointer-events-none"
+            style={{ background: "linear-gradient(90deg, transparent 8%, rgba(245,158,11,0.25) 25%, rgba(245,158,11,0.15) 50%, rgba(139,92,246,0.25) 75%, transparent 92%)" }}
+            aria-hidden="true"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
-              { step: "1", title: "Soyez actif sur Discord", desc: "Vos messages et votre présence vocale vous rapportent du Bronze (BR) automatiquement.", color: "#f97316", icon: MessageSquare },
-              { step: "2", title: "Convertissez en Or", desc: "20 BR = 1 EX. L'Or sert à acheter des services, cosmétiques, et tirages.", color: "#f59e0b", icon: Coins },
-              { step: "3", title: "Débloquez le premium", desc: "100 EX = 1 Éclat. Les Éclats donnent accès à la boutique exclusive.", color: "#8b5cf6", icon: Gem },
+              { step: "01", title: "Soyez actif sur Discord", desc: "Vos messages et votre présence vocale vous rapportent du Bronze (BR) automatiquement.", color: "#f97316", StepIcon: MessageSquare },
+              { step: "02", title: "Convertissez en Or", desc: "20 BR = 1 EX. L'Or sert à acheter des services, cosmétiques, et tirages.", color: "#f59e0b", StepIcon: Coins },
+              { step: "03", title: "Débloquez le premium", desc: "100 EX = 1 Éclat. Les Éclats donnent accès à la boutique exclusive.", color: "#8b5cf6", StepIcon: Gem },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -830,43 +900,84 @@ export default function EconomiePage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                custom={i * 0.12}
-                className="relative p-6 rounded-2xl bg-[#0F0F12] border border-white/8 text-center"
+                custom={i * 0.15}
+                className="relative p-7 rounded-2xl bg-[#0F0F12] border border-white/8 text-center group cursor-default overflow-hidden"
+                whileHover={{ y: -6, transition: { duration: 0.3, ease: EASE_OUT_EXPO } }}
+                style={{ boxShadow: `0 0 0 0 ${item.color}00` }}
               >
+                {/* Hover glow from bottom */}
                 <div
-                  className="w-10 h-10 rounded-full mx-auto mb-4 flex items-center justify-center font-black text-lg"
-                  style={{ background: `${item.color}20`, color: item.color, border: `1px solid ${item.color}30` }}
-                >
-                  {item.step}
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: `radial-gradient(ellipse at 50% 100%, ${item.color}20 0%, transparent 65%)` }}
+                  aria-hidden="true"
+                />
+                {/* Top accent bar */}
+                <div
+                  className="absolute top-0 left-1/4 right-1/4 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ background: `linear-gradient(90deg, transparent, ${item.color}80, transparent)` }}
+                  aria-hidden="true"
+                />
+
+                {/* Step number badge — sits on the connecting line */}
+                <div className="relative z-10 flex flex-col items-center">
+                  <div
+                    className="w-11 h-11 rounded-full mx-auto mb-5 flex items-center justify-center font-black text-sm font-mono relative"
+                    style={{
+                      background: `${item.color}18`,
+                      color: item.color,
+                      border: `1.5px solid ${item.color}40`,
+                      boxShadow: `0 0 20px ${item.color}25`,
+                    }}
+                  >
+                    {/* Subtle ring pulse */}
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{ border: `1px solid ${item.color}30` }}
+                      animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0.6] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.8 }}
+                      aria-hidden="true"
+                    />
+                    {item.step}
+                  </div>
+
+                  <item.StepIcon className="w-6 h-6 mb-4" style={{ color: item.color, opacity: 0.7 }} aria-hidden="true" />
+
+                  <h3 className="text-base font-black text-white mb-2 tracking-tight">{item.title}</h3>
+                  <p className="text-sm text-white/45 leading-relaxed">{item.desc}</p>
                 </div>
-                <h3 className="text-base font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <div className="container-main"><SectionDivider accent="#f59e0b" /></div>
+      {/* Gradient fade: bronze-orange → amber (currencies section) */}
+      <SectionFade fromColor="#f97316" toColor="#f59e0b" />
 
       {/* ================================================================
           2. CURRENCY EXPLAINER
       ================================================================ */}
-      <section className="py-24 relative">
-        <div className="container-main">
+      <section className="py-28 md:py-36 relative">
+        {/* Amber nebula glow for gold section */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] rounded-full blur-[200px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(245,158,11,0.07) 0%, rgba(249,115,22,0.04) 40%, transparent 70%)" }}
+          aria-hidden="true"
+        />
+        <div className="container-main relative z-10">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="mb-12 text-center"
+            className="mb-14 text-center"
           >
             <SectionLabel color="text-amber-400/60" lineColor="bg-amber-400/50">
               Les Devises
             </SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight">Les 3 monnaies du serveur</h2>
-            <p className="text-white/40 mt-3 text-sm max-w-md mx-auto">Chacune a un rôle précis dans l&apos;écosystème.</p>
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.0]">Les 3 monnaies du serveur</h2>
+            <p className="text-white/40 mt-4 text-base max-w-md mx-auto">Chacune a un rôle précis dans l&apos;écosystème.</p>
           </motion.div>
 
           {/* Currency cards */}
@@ -913,25 +1024,32 @@ export default function EconomiePage() {
         </div>
       </section>
 
-      <div className="container-main"><SectionDivider accent="#8b5cf6" /></div>
+      {/* Gradient fade: amber → purple (wallet section) */}
+      <SectionFade fromColor="#f59e0b" toColor="#8b5cf6" />
 
       {/* ================================================================
           3. WALLET SECTION
       ================================================================ */}
-      <section className="py-24 relative" aria-labelledby="wallet-heading">
-        <div className="container-main">
+      <section className="py-28 md:py-36 relative" aria-labelledby="wallet-heading">
+        {/* Purple nebula glow for wallet/éclats */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full blur-[180px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(139,92,246,0.08) 0%, transparent 65%)" }}
+          aria-hidden="true"
+        />
+        <div className="container-main relative z-10">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="mb-10 text-center"
+            className="mb-12 text-center"
           >
             <SectionLabel color="text-amber-400/60" lineColor="bg-amber-400/50">
               Portefeuille
             </SectionLabel>
-            <h2 id="wallet-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
+            <h2 id="wallet-heading" className="text-4xl md:text-6xl font-black tracking-tight mb-4">
               Votre solde
             </h2>
             <p className="text-white/40 text-sm">
@@ -951,18 +1069,22 @@ export default function EconomiePage() {
         </div>
       </section>
 
-      <div className="container-main"><SectionDivider accent="#f59e0b" /></div>
+      {/* Gradient fade: purple → purple (boutique) */}
+      <SectionFade fromColor="#8b5cf6" toColor="#7c3aed" />
 
       {/* ================================================================
           4. BOUTIQUE ÉCLATS
       ================================================================ */}
-      <section className="py-24 relative" aria-labelledby="boutique-heading">
-        {/* Section ambient glow */}
+      <section className="py-28 md:py-36 relative" aria-labelledby="boutique-heading">
+        {/* Purple nebula — denser for the premium shop */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 50% 40%, rgba(139,92,246,0.04) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(139,92,246,0.10) 0%, rgba(109,40,217,0.05) 45%, transparent 70%)" }}
           aria-hidden="true"
         />
+        {/* Side bleeding glows */}
+        <div className="absolute top-1/2 left-0 w-64 h-96 blur-[120px] pointer-events-none" style={{ background: "rgba(139,92,246,0.08)", transform: "translateY(-50%)" }} aria-hidden="true" />
+        <div className="absolute top-1/2 right-0 w-64 h-96 blur-[120px] pointer-events-none" style={{ background: "rgba(139,92,246,0.08)", transform: "translateY(-50%)" }} aria-hidden="true" />
 
         <div className="container-main relative z-10">
           <motion.div
@@ -971,12 +1093,12 @@ export default function EconomiePage() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="mb-12 text-center"
+            className="mb-14 text-center"
           >
             <SectionLabel color="text-purple-400/60" lineColor="bg-purple-400/50">
               Boutique
             </SectionLabel>
-            <h2 id="boutique-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
+            <h2 id="boutique-heading" className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4">
               Dépensez vos Éclats
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto">
@@ -1003,25 +1125,32 @@ export default function EconomiePage() {
         </div>
       </section>
 
-      <div className="container-main"><SectionDivider accent="#22d3ee" /></div>
+      {/* Gradient fade: purple → amber (cosmetics = gold-purchased) */}
+      <SectionFade fromColor="#7c3aed" toColor="#f59e0b" />
 
       {/* ================================================================
           5. COSMÉTIQUES
       ================================================================ */}
-      <section className="py-24 relative" aria-labelledby="cosmetiques-heading">
-        <div className="container-main">
+      <section className="py-28 md:py-36 relative" aria-labelledby="cosmetiques-heading">
+        {/* Amber nebula for gold-purchased cosmetics */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(245,158,11,0.07) 0%, transparent 65%)" }}
+          aria-hidden="true"
+        />
+        <div className="container-main relative z-10">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="mb-12 text-center"
+            className="mb-14 text-center"
           >
             <SectionLabel color="text-cyan-400/60" lineColor="bg-cyan-400/50">
               Cosmétiques
             </SectionLabel>
-            <h2 id="cosmetiques-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
+            <h2 id="cosmetiques-heading" className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4">
               Dépensez votre Or
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto">
@@ -1099,18 +1228,37 @@ export default function EconomiePage() {
         </div>
       </section>
 
-      <div className="container-main"><SectionDivider accent="#fbbf24" /></div>
+      {/* Gradient fade: amber → golden-amber (gacha) */}
+      <SectionFade fromColor="#f59e0b" toColor="#fbbf24" />
 
       {/* ================================================================
           6. GACHA SECTION
       ================================================================ */}
-      <section className="py-24 relative overflow-hidden" aria-labelledby="gacha-heading">
-        {/* Gacha ambient */}
+      <section className="py-28 md:py-36 relative overflow-hidden" aria-labelledby="gacha-heading">
+        {/* Gacha ambient — richer, multi-color */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(251,191,36,0.05) 0%, transparent 65%)" }}
+          style={{ background: "radial-gradient(ellipse at 50% 25%, rgba(251,191,36,0.09) 0%, rgba(167,139,250,0.05) 50%, transparent 70%)" }}
           aria-hidden="true"
         />
+        {/* Scattered star points in the bg */}
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={`star-${i}`}
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              width: i % 3 === 0 ? 3 : 2,
+              height: i % 3 === 0 ? 3 : 2,
+              background: i % 2 === 0 ? "#fbbf24" : "#a78bfa",
+              top: `${10 + i * 10}%`,
+              left: `${5 + i * 12}%`,
+              opacity: 0.4,
+            }}
+            animate={{ opacity: [0.2, 0.8, 0.2], scale: [1, 1.5, 1] }}
+            transition={{ duration: 2 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+            aria-hidden="true"
+          />
+        ))}
 
         <div className="container-main relative z-10">
           <motion.div
@@ -1119,12 +1267,12 @@ export default function EconomiePage() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="mb-4 text-center"
+            className="mb-6 text-center"
           >
             <SectionLabel color="text-amber-400/60" lineColor="bg-amber-400/50">
               Tirage
             </SectionLabel>
-            <h2 id="gacha-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
+            <h2 id="gacha-heading" className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4">
               Tentez votre chance
             </h2>
             <p className="text-white/45 text-sm max-w-sm mx-auto mb-2">
@@ -1156,40 +1304,76 @@ export default function EconomiePage() {
             ))}
           </div>
 
-          {/* The big draw button */}
+          {/* The big draw button — disabled but visually aspirational */}
           <motion.div
             variants={scaleIn}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.2}
-            className="flex justify-center mb-12"
+            className="flex justify-center mb-14"
           >
             <div className="relative">
-              {/* Outer glow ring */}
+              {/* Far outer aura — large diffuse glow */}
               <motion.div
-                className="absolute inset-0 rounded-full blur-xl"
-                style={{ background: "rgba(251,191,36,0.2)" }}
-                animate={{ opacity: [0.4, 0.8, 0.4] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  inset: "-32px",
+                  background: "radial-gradient(ellipse, rgba(251,191,36,0.18) 0%, rgba(167,139,250,0.10) 50%, transparent 70%)",
+                  filter: "blur(24px)",
+                }}
+                animate={{ opacity: [0.5, 1, 0.5], scale: [0.95, 1.05, 0.95] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 aria-hidden="true"
               />
+
+              {/* Mid glow ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full blur-lg pointer-events-none"
+                style={{ background: "rgba(251,191,36,0.25)" }}
+                animate={{ opacity: [0.3, 0.7, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                aria-hidden="true"
+              />
+
+              {/* Spinning conic border ring */}
+              <motion.div
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  inset: "-2px",
+                  background: "conic-gradient(from 0deg, transparent 50%, rgba(251,191,36,0.5) 75%, rgba(167,139,250,0.5) 90%, transparent 100%)",
+                  borderRadius: "9999px",
+                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                aria-hidden="true"
+              />
+
               <button
                 disabled
                 aria-label="Tirer — bientôt disponible"
-                className="relative flex items-center gap-3 px-10 py-5 rounded-full font-black text-xl tracking-tight cursor-not-allowed select-none"
+                className="relative flex items-center gap-3 px-12 py-5 rounded-full font-black text-xl tracking-tight cursor-not-allowed select-none"
                 style={{
-                  background: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.08))",
-                  border: "1px solid rgba(245,158,11,0.3)",
-                  color: "rgba(255,255,255,0.35)",
-                  boxShadow: "0 0 30px rgba(245,158,11,0.1)",
+                  background: "linear-gradient(135deg, rgba(245,158,11,0.20), rgba(167,139,250,0.12))",
+                  border: "1px solid rgba(245,158,11,0.35)",
+                  color: "rgba(255,255,255,0.45)",
+                  boxShadow: "0 0 40px rgba(245,158,11,0.15), inset 0 1px 0 rgba(255,255,255,0.08)",
                 }}
               >
-                <Shuffle className="w-6 h-6" />
+                <motion.div
+                  animate={{ rotate: [0, 180, 360] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Shuffle className="w-6 h-6" />
+                </motion.div>
                 Tirer — 15 EX
                 <span
-                  className="text-xs font-mono ml-1 px-2 py-0.5 rounded-full"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  className="text-xs font-mono ml-1 px-2.5 py-1 rounded-full"
+                  style={{
+                    background: "rgba(251,191,36,0.12)",
+                    border: "1px solid rgba(251,191,36,0.25)",
+                    color: "rgba(251,191,36,0.6)",
+                  }}
                 >
                   Bientôt
                 </span>
@@ -1219,25 +1403,32 @@ export default function EconomiePage() {
         </div>
       </section>
 
-      <div className="container-main"><SectionDivider accent="#22d3ee" /></div>
+      {/* Gradient fade: amber → cyan (tarifs = cyan-accented) */}
+      <SectionFade fromColor="#fbbf24" toColor="#22d3ee" />
 
       {/* ================================================================
           7. GUIDE DES TARIFS
       ================================================================ */}
-      <section className="py-24 relative" aria-labelledby="tarifs-heading">
-        <div className="container-main">
+      <section className="py-28 md:py-36 relative" aria-labelledby="tarifs-heading">
+        {/* Cyan nebula — technical/pricing feel */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(34,211,238,0.06) 0%, transparent 60%)" }}
+          aria-hidden="true"
+        />
+        <div className="container-main relative z-10">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="mb-12 text-center"
+            className="mb-14 text-center"
           >
             <SectionLabel color="text-cyan-400/60" lineColor="bg-cyan-400/50">
               Tarifs Services
             </SectionLabel>
-            <h2 id="tarifs-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
+            <h2 id="tarifs-heading" className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4">
               Combien coûtent les services ?
             </h2>
             <p className="text-white/45 text-sm max-w-md mx-auto">
@@ -1254,14 +1445,16 @@ export default function EconomiePage() {
                 whileInView="visible"
                 viewport={{ once: true }}
                 custom={i * 0.12}
-                className={`flex-1 p-6 rounded-2xl bg-[#0F0F12] border overflow-hidden relative group cursor-default ${
+                className={`flex-1 p-7 rounded-2xl bg-[#0F0F12] border overflow-hidden relative group cursor-default ${
                   tier.highlight ? "" : "border-white/8"
                 }`}
                 style={{
-                  borderColor: tier.highlight ? `${tier.color}40` : undefined,
-                  boxShadow: tier.highlight ? `0 0 40px ${tier.color}10` : undefined,
+                  borderColor: tier.highlight ? `${tier.color}50` : undefined,
+                  boxShadow: tier.highlight
+                    ? `0 0 50px ${tier.color}15, 0 0 100px ${tier.color}06`
+                    : undefined,
                 }}
-                whileHover={{ y: -4, transition: { duration: 0.3, ease: EASE_OUT_EXPO } }}
+                whileHover={{ y: -6, scale: 1.01, transition: { duration: 0.3, ease: EASE_OUT_EXPO } }}
               >
                 {tier.highlight && (
                   <div
@@ -1331,25 +1524,32 @@ export default function EconomiePage() {
         </div>
       </section>
 
-      <div className="container-main"><SectionDivider accent="#f97316" /></div>
+      {/* Gradient fade: cyan → orange (mining = bronze/activity) */}
+      <SectionFade fromColor="#22d3ee" toColor="#f97316" />
 
       {/* ================================================================
           8. MINING SOCIAL
       ================================================================ */}
-      <section className="py-24 relative" aria-labelledby="mining-heading">
-        <div className="container-main">
+      <section className="py-28 md:py-36 relative" aria-labelledby="mining-heading">
+        {/* Orange nebula for mining/bronze section */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse, rgba(249,115,22,0.08) 0%, rgba(245,158,11,0.04) 45%, transparent 65%)" }}
+          aria-hidden="true"
+        />
+        <div className="container-main relative z-10">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             custom={0}
-            className="mb-12 text-center"
+            className="mb-14 text-center"
           >
             <SectionLabel color="text-orange-400/60" lineColor="bg-orange-400/50">
               Mining Social
             </SectionLabel>
-            <h2 id="mining-heading" className="text-3xl md:text-5xl font-black tracking-tight mb-3">
+            <h2 id="mining-heading" className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4">
               Comment gagner du Bronze ?
             </h2>
             <p className="text-white/45 text-sm max-w-md mx-auto">
@@ -1475,8 +1675,11 @@ export default function EconomiePage() {
         </div>
       </section>
 
+      {/* Gradient fade: orange → purple (final CTA) */}
+      <SectionFade fromColor="#f97316" toColor="#8b5cf6" />
+
       {/* Final CTA to Discord */}
-      <section className="py-28 relative overflow-hidden">
+      <section className="py-28 md:py-40 relative overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.07) 0%, transparent 70%)" }}
@@ -1490,7 +1693,7 @@ export default function EconomiePage() {
             viewport={{ once: true }}
             custom={0}
           >
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6">
               Prêt à rejoindre{" "}
               <span
                 style={{

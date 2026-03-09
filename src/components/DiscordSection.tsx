@@ -4,14 +4,22 @@ import { motion } from "framer-motion";
 
 export default function DiscordSection() {
   return (
-    <section id="discord" className="py-24 md:py-32 relative overflow-hidden">
+    <section id="discord" className="py-32 md:py-40 relative overflow-hidden">
+      {/* Discord nebula — indigo ambient behind card */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(88,101,242,0.12) 0%, transparent 68%)',
+          filter: 'blur(2px)',
+        }}
+      />
       <div className="container-main relative max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="glass rounded-3xl p-8 md:p-12 lg:p-16 text-center relative overflow-hidden flex flex-col items-center"
+          className="glass rounded-3xl p-8 md:p-12 lg:p-16 text-center relative overflow-hidden flex flex-col items-center shadow-[0_0_80px_rgba(88,101,242,0.12),0_20px_60px_rgba(0,0,0,0.4)]"
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-[#5865F2]/5 to-transparent pointer-events-none" />
 
@@ -27,7 +35,7 @@ export default function DiscordSection() {
             </svg>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-center">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-center tracking-[-0.03em] leading-[1.05]">
             Rejoignez la communauté{" "}
             <span className="text-white">Exp&eacute;dition</span>
           </h2>
@@ -50,7 +58,7 @@ export default function DiscordSection() {
               href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition"}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] transition-colors font-bold text-lg shadow-lg shadow-[#5865F2]/25"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] transition-all duration-300 font-bold text-lg shadow-[0_4px_24px_rgba(88,101,242,0.35)] hover:shadow-[0_0_50px_rgba(88,101,242,0.55),0_8px_32px_rgba(0,0,0,0.4)] hover:scale-[1.04] active:scale-[0.98]"
             >
               <svg
                 className="w-6 h-6"

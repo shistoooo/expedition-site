@@ -25,7 +25,7 @@ const creators = [
 
 export default function SocialProofSection() {
   return (
-    <section className="py-16 relative overflow-hidden border-t border-white/5">
+    <section className="py-24 relative overflow-hidden section-fade-top">
       <div className="container-main">
         <motion.p
           initial={{ opacity: 0 }}
@@ -44,7 +44,7 @@ export default function SocialProofSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-colors"
+              className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-white/15 hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_40px_rgba(139,92,246,0.08)]"
             >
               <p className="text-white/70 text-sm leading-relaxed mb-5">
                 &quot;{creator.quote}&quot;

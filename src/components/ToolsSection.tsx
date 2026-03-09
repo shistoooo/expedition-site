@@ -269,7 +269,7 @@ function ClipForgeMockup() {
 
 export default function ToolsSection() {
   return (
-    <section id="clipforge" className="py-24 md:py-32 relative overflow-hidden">
+    <section id="clipforge" className="py-32 md:py-40 relative overflow-hidden section-fade-top">
       <div className="container-main">
         <motion.div
           variants={containerVariants}
@@ -285,7 +285,7 @@ export default function ToolsSection() {
               Vague 2 &mdash; Beta
             </p>
 
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-[-0.03em]">
               Clip<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">Forge</span>
             </h2>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
@@ -305,9 +305,9 @@ export default function ToolsSection() {
                 { icon: ScanFace, title: "Recadrage intelligent qui suit le visage", desc: "Le cadrage 9:16 suit votre visage frame par frame. Smooth, sans saccade, avec un lissage cin\u00e9matographique. Vous restez toujours au centre." },
                 { icon: Type, title: "Sous-titres anim\u00e9s, \u00e9ditables", desc: "4 styles d\u2019animation (Pop, Smooth, Glow, Classique), couleurs personnalisables, \u00e9diteur int\u00e9gr\u00e9. Modifiez un mot, reg\u00e9n\u00e9rez le clip en un clic." },
               ].map((item, i) => (
-                <motion.li key={i} variants={itemVariants} className="flex gap-4">
-                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                    <item.icon className="w-4 h-4 text-purple-400" />
+                <motion.li key={i} variants={itemVariants} className="flex gap-4 group/item">
+                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover/item:bg-indigo-500/10 group-hover/item:border-indigo-500/25 group-hover/item:shadow-[0_0_20px_rgba(99,102,241,0.12)]">
+                    <item.icon className="w-4 h-4 text-purple-400 transition-transform duration-300 group-hover/item:scale-110" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-white">{item.title}</h3>
@@ -319,16 +319,17 @@ export default function ToolsSection() {
 
             <a
               href="/pricing"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all duration-300 shadow-lg shadow-white/10"
+              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_50px_rgba(168,85,247,0.45),0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
             >
-              Obtenir ClipForge <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+              Obtenir ClipForge <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
             </a>
           </div>
 
           {/* Mockup */}
           <div className="flex-1 w-full relative">
-            <div className="absolute -inset-10 bg-indigo-500/10 blur-3xl rounded-full opacity-40 pointer-events-none" />
-            <div className="absolute top-0 right-1/4 w-48 h-48 bg-purple-500/15 rounded-full blur-[100px] pointer-events-none" />
+            {/* Indigo-purple nebula — ClipForge identity */}
+            <div className="absolute -inset-10 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.1) 40%, transparent 70%)', filter: 'blur(1px)' }} />
+            <div className="absolute top-[-10%] right-[15%] w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 65%)', filter: 'blur(40px)' }} />
             <ClipForgeMockup />
           </div>
         </motion.div>
