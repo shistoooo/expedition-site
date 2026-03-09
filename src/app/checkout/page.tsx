@@ -345,7 +345,7 @@ function CheckoutContent() {
                     if (data.verified) {
                         setDiscordVerified(true);
                         // Auto-apply Discord promo code
-                        setPromoCode("DISCORD");
+                        setPromoCode("DISCORD837204");
                         setShowPromo(true);
                     }
                 })
