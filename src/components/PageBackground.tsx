@@ -1,6 +1,6 @@
 export default function PageBackground() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2]" aria-hidden="true">
       {/* Subtle grid */}
       <div
         className="absolute inset-0 opacity-[0.03]"

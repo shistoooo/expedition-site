@@ -124,7 +124,7 @@ export default function GlobalSpace() {
   // Mobile: lightweight static background instead of 3D canvas
   if (!isDesktop) {
     return (
-      <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
+      <div className="fixed inset-0 w-full h-full pointer-events-none z-[1]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.08)_0%,transparent_60%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(139,92,246,0.05)_0%,transparent_50%)]" />
       </div>
@@ -132,7 +132,7 @@ export default function GlobalSpace() {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
+    <div className="fixed inset-0 w-full h-full pointer-events-none z-[1]">
       <Canvas
         dpr={[1, 1.5]}
         gl={{ antialias: false, powerPreference: "high-performance" }}

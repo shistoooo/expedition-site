@@ -76,7 +76,7 @@ export default function LauncherPage() {
       <PageBackground />
       <Navbar />
 
-      <main className="relative overflow-hidden pt-24">
+      <main className="relative z-10 overflow-hidden pt-24">
 
         {/* Hero Section */}
         <section className="relative pt-20 pb-20 md:pt-32 md:pb-32 container-main">
