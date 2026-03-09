@@ -81,9 +81,9 @@ function ClipForgeMockup() {
 
   const colors = ['#FFFFFF', '#FACC15', '#22D3EE', '#EF4444', '#22C55E', '#EC4899', '#FBBF24'];
   const clips = [
-    { score: 94, title: "\"Non non non...\"", duration: "0:42", hook: 91, retention: 88, video: "/mockups/clip-1.mp4" },
-    { score: 87, title: "Plot twist en direct", duration: "0:31", hook: 85, retention: 82, video: "/mockups/clip-2.mp4" },
-    { score: 78, title: "Le tip que personne connaît", duration: "0:55", hook: 72, retention: 80, video: "/mockups/clip-3.mp4" },
+    { score: 94, title: "Le Barça nous a humilié", duration: "0:42", hook: 91, retention: 88, video: "/mockups/clip-1.mp4" },
+    { score: 87, title: "J'ai vendu 500 mille albums", duration: "0:31", hook: 85, retention: 82, video: "/mockups/clip-2.mp4" },
+    { score: 78, title: "Acceptez-vous ?", duration: "0:55", hook: 72, retention: 80, video: "/mockups/clip-3.mp4" },
   ];
 
   return (
