@@ -5,15 +5,122 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     CreditCard, Calendar, Shield, XCircle, RotateCcw, CheckCircle2, LogOut, Download, Apple, Monitor,
-    Users, TrendingUp, Banknote, Clock, Copy, Check, Gift, Share2, ExternalLink
+    Users, TrendingUp, Banknote, Clock, Copy, Check, Gift, Share2, ExternalLink, UserPlus, Tag
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import WalletSection from "@/components/WalletSection";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://expedition-licensing.expedition-studio.workers.dev";
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
+
+const stripeAppearance = {
+    theme: "night" as const,
+    variables: {
+        colorPrimary: "#a855f7",
+        colorBackground: "#0F0F12",
+        colorText: "#ffffff",
+        colorDanger: "#ef4444",
+        borderRadius: "12px",
+        colorTextSecondary: "#ffffff66",
+        colorTextPlaceholder: "#ffffff33",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+    },
+    rules: {
+        ".Input": {
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            boxShadow: "none",
+            color: "#ffffff",
+        },
+        ".Input:focus": {
+            border: "1px solid rgba(168, 85, 247, 0.5)",
+            backgroundColor: "rgba(255, 255, 255, 0.07)",
+            boxShadow: "none",
+        },
+        ".Label": {
+            color: "rgba(255, 255, 255, 0.4)",
+            fontSize: "0.75rem",
+            textTransform: "uppercase" as const,
+        },
+        ".Tab": {
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            color: "rgba(255, 255, 255, 0.6)",
+        },
+        ".Tab--selected": {
+            backgroundColor: "rgba(168, 85, 247, 0.15)",
+            border: "1px solid rgba(168, 85, 247, 0.3)",
+            color: "#ffffff",
+        },
+    },
+};
+
+type PlanType = "monthly" | "yearly";
+const PLANS = {
+    monthly: { price: 11.99, label: "/mois" },
+    yearly: { price: 99.99, label: "/an" },
+};
+
+function AccountPaymentForm({ onSuccess }: { onSuccess: () => void }) {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!stripe || !elements) return;
+        setLoading(true);
+        setError(null);
+
+        const { error: confirmError } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                return_url: `${window.location.origin}/checkout/success`,
+            },
+            redirect: "if_required",
+        });
+
+        if (confirmError) {
+            if (confirmError.type === "card_error" || confirmError.type === "validation_error") {
+                setError(confirmError.message || "Le paiement a échoué.");
+            } else {
+                setError("Une erreur inattendue est survenue.");
+            }
+            setLoading(false);
+        } else {
+            onSuccess();
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <PaymentElement options={{ layout: "tabs" }} />
+            {error && (
+                <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                >
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    {error}
+                </motion.div>
+            )}
+            <button
+                type="submit"
+                disabled={!stripe || loading}
+                className="w-full mt-6 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Lock className="w-4 h-4" /> Confirmer et payer</>}
+            </button>
+        </form>
+    );
+}
 
 const ALLOWED_REDIRECT_HOSTS = ["dashboard.stripe.com", "connect.stripe.com", "billing.stripe.com"];
 
@@ -39,6 +146,7 @@ interface AmbassadorInfo {
 
 export default function AccountPage() {
     const [step, setStep] = useState<AccountStep>("login");
+    const [authMode, setAuthMode] = useState<"login" | "register">("login");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -53,6 +161,126 @@ export default function AccountPage() {
     const [customCodeInput, setCustomCodeInput] = useState("");
     const [customCodeLoading, setCustomCodeLoading] = useState(false);
     const [codeCopied, setCodeCopied] = useState(false);
+
+    // Subscribe flow state
+    const [subscribePlan, setSubscribePlan] = useState<PlanType>("monthly");
+    const [subscribeLoading, setSubscribeLoading] = useState(false);
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
+
+        if (password.length < 8) {
+            setError("Le mot de passe doit contenir au moins 8 caractères");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const res = await fetch(`${WORKER_URL}/auth/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email.toLowerCase().trim(), password }),
+            });
+
+            const data = await res.json();
+
+            if (res.status === 409) {
+                setError("Un compte existe déjà avec cet email. Connectez-vous.");
+                setAuthMode("login");
+                setLoading(false);
+                return;
+            }
+
+            if (!res.ok) {
+                throw new Error(data.error || "Erreur lors de la création du compte");
+            }
+
+            // Registration returns accessToken now
+            if (data.accessToken) {
+                setAccessToken(data.accessToken);
+            } else {
+                // Fallback: login after register
+                const loginRes = await fetch(`${WORKER_URL}/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+                const loginData = await loginRes.json();
+                if (!loginRes.ok) throw new Error(loginData.error || "Erreur de connexion");
+                setAccessToken(loginData.accessToken);
+                if (loginData.subscription) setSubscription(loginData.subscription);
+            }
+
+            setStep("dashboard");
+            setSuccessMessage("Compte créé avec succès !");
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Une erreur est survenue");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubscribe = async () => {
+        if (!accessToken) return;
+        setSubscribeLoading(true);
+        setError(null);
+
+        try {
+            const res = await fetch(`${WORKER_URL}/portal/subscribe`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ plan: subscribePlan }),
+            });
+
+            const data = await res.json();
+
+            if (res.status === 409) {
+                // Already has active subscription, refresh
+                const subRes = await fetch(`${WORKER_URL}/portal/subscription`, {
+                    headers: { "Authorization": `Bearer ${accessToken}` },
+                });
+                const subData = await subRes.json();
+                if (subData.subscription) setSubscription(subData.subscription);
+                setSuccessMessage("Vous avez déjà un abonnement actif !");
+                return;
+            }
+
+            if (!res.ok) throw new Error(data.error || "Erreur lors de la souscription");
+
+            if (!data.clientSecret && data.subscriptionId) {
+                // 100% discount
+                window.location.href = "/checkout/success";
+                return;
+            }
+
+            if (data.clientSecret) {
+                setClientSecret(data.clientSecret);
+            }
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur lors de la souscription");
+        } finally {
+            setSubscribeLoading(false);
+        }
+    };
+
+    const handleSubscribeSuccess = async () => {
+        // Refresh subscription status
+        if (accessToken) {
+            const subRes = await fetch(`${WORKER_URL}/portal/subscription`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const subData = await subRes.json();
+            if (subData.subscription) setSubscription(subData.subscription);
+        }
+        setClientSecret(null);
+        setSuccessMessage("Abonnement activé ! Bienvenue dans la Vague Pionnier.");
+    };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -323,23 +551,55 @@ export default function AccountPage() {
                 <div className="max-w-lg mx-auto">
                     <AnimatePresence mode="wait">
 
-                        {/* Login Step */}
+                        {/* Login / Register Step */}
                         {step === "login" && (
                             <motion.form
                                 key="login"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
-                                onSubmit={handleLogin}
+                                onSubmit={authMode === "login" ? handleLogin : handleRegister}
                                 className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5"
                             >
                                 <div className="flex items-center justify-between mb-6">
-                                    <h1 className="text-2xl font-bold">Mon compte</h1>
-                                    <Lock className="w-5 h-5 text-purple-400/50" />
+                                    <h1 className="text-2xl font-bold">
+                                        {authMode === "login" ? "Mon compte" : "Créer un compte"}
+                                    </h1>
+                                    {authMode === "login" ? (
+                                        <Lock className="w-5 h-5 text-purple-400/50" />
+                                    ) : (
+                                        <UserPlus className="w-5 h-5 text-purple-400/50" />
+                                    )}
+                                </div>
+
+                                {/* Auth mode toggle */}
+                                <div className="relative flex p-1 rounded-xl bg-white/5 border border-white/10 mb-6">
+                                    <motion.div
+                                        className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-lg bg-purple-600"
+                                        animate={{ x: authMode === "login" ? 0 : "calc(100% + 4px)" }}
+                                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => { setAuthMode("login"); setError(null); }}
+                                        className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${authMode === "login" ? "text-white" : "text-white/50 hover:text-white/80"}`}
+                                    >
+                                        Connexion
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => { setAuthMode("register"); setError(null); }}
+                                        className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${authMode === "register" ? "text-white" : "text-white/50 hover:text-white/80"}`}
+                                    >
+                                        Inscription
+                                    </button>
                                 </div>
 
                                 <p className="text-white/50 text-sm mb-6">
-                                    Connectez-vous pour g&eacute;rer votre abonnement Exp&eacute;dition.
+                                    {authMode === "login"
+                                        ? "Connectez-vous pour gérer votre abonnement."
+                                        : "Créez votre compte Expédition. Vous pourrez souscrire plus tard."
+                                    }
                                 </p>
 
                                 <div className="space-y-4">
@@ -359,7 +619,9 @@ export default function AccountPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="password" className="text-xs font-mono text-white/40 uppercase">Mot de passe</label>
+                                        <label htmlFor="password" className="text-xs font-mono text-white/40 uppercase">
+                                            Mot de passe{authMode === "register" ? " (min. 8 caractères)" : ""}
+                                        </label>
                                         <div className="relative">
                                             <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                                             <input
@@ -368,7 +630,8 @@ export default function AccountPage() {
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
                                                 required
-                                                placeholder="Votre mot de passe"
+                                                minLength={authMode === "register" ? 8 : undefined}
+                                                placeholder={authMode === "register" ? "Choisissez un mot de passe" : "Votre mot de passe"}
                                                 className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.07] transition-all text-sm"
                                             />
                                         </div>
@@ -393,8 +656,13 @@ export default function AccountPage() {
                                 >
                                     {loading ? (
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                    ) : (
+                                    ) : authMode === "login" ? (
                                         "Se connecter"
+                                    ) : (
+                                        <>
+                                            <UserPlus className="w-4 h-4" />
+                                            Créer mon compte
+                                        </>
                                     )}
                                 </button>
                             </motion.form>
@@ -587,16 +855,121 @@ export default function AccountPage() {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5 text-center">
-                                        <CreditCard className="w-10 h-10 text-white/20 mx-auto mb-4" />
-                                        <h2 className="text-lg font-bold mb-2">Aucun abonnement actif</h2>
-                                        <p className="text-white/50 text-sm mb-6">Rejoignez la Vague Pionnier pour acc&eacute;der &agrave; tous les outils.</p>
-                                        <Link
-                                            href="/checkout"
-                                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-gray-200 transition-all"
-                                        >
-                                            Souscrire
-                                        </Link>
+                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                        {!clientSecret ? (
+                                            <>
+                                                <div className="text-center mb-6">
+                                                    <CreditCard className="w-10 h-10 text-white/20 mx-auto mb-4" />
+                                                    <h2 className="text-lg font-bold mb-2">Activer votre abonnement</h2>
+                                                    <p className="text-white/50 text-sm">Rejoignez la Vague Pionnier pour acc&eacute;der &agrave; tous les outils.</p>
+                                                </div>
+
+                                                {/* Plan Toggle */}
+                                                <div className="relative flex p-1 rounded-xl bg-white/5 border border-white/10 mb-6">
+                                                    <motion.div
+                                                        className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-lg bg-white shadow-md"
+                                                        animate={{ x: subscribePlan === "monthly" ? 0 : "calc(100% + 4px)" }}
+                                                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSubscribePlan("monthly")}
+                                                        className={`relative z-10 flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${subscribePlan === "monthly" ? "text-black" : "text-white/50 hover:text-white/80"}`}
+                                                    >
+                                                        Mensuel
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSubscribePlan("yearly")}
+                                                        className={`relative z-10 flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${subscribePlan === "yearly" ? "text-black" : "text-white/50 hover:text-white/80"}`}
+                                                    >
+                                                        Annuel
+                                                        <span className="absolute -top-2 -right-1 px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full z-20">-30%</span>
+                                                    </button>
+                                                </div>
+
+                                                {/* Price display */}
+                                                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mb-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <Shield className="w-5 h-5 text-purple-400" />
+                                                        <div>
+                                                            <div className="font-semibold">Vague Pionnier</div>
+                                                            <div className="text-sm text-white/40">Tarif bloqu&eacute; tant que vous restez abonn&eacute;</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className="text-xl font-bold">{PLANS[subscribePlan].price.toFixed(2).replace(".", ",")}€</div>
+                                                        <div className="text-xs text-white/40">{PLANS[subscribePlan].label}</div>
+                                                        {subscribePlan === "yearly" && (
+                                                            <div className="text-green-400 text-xs">soit 8,33€/mois</div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {error && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -5 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2"
+                                                    >
+                                                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                                        {error}
+                                                    </motion.div>
+                                                )}
+
+                                                {successMessage && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -5 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="mb-4 p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm flex items-start gap-2"
+                                                    >
+                                                        <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                                                        {successMessage}
+                                                    </motion.div>
+                                                )}
+
+                                                <button
+                                                    onClick={handleSubscribe}
+                                                    disabled={subscribeLoading}
+                                                    className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    {subscribeLoading ? (
+                                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                                    ) : (
+                                                        "Souscrire maintenant"
+                                                    )}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="flex items-center justify-between mb-6">
+                                                    <h2 className="text-lg font-bold flex items-center gap-2">
+                                                        <CreditCard className="w-5 h-5 text-purple-400" />
+                                                        Paiement
+                                                    </h2>
+                                                    <button
+                                                        onClick={() => setClientSecret(null)}
+                                                        className="text-sm text-white/40 hover:text-white transition-colors"
+                                                    >
+                                                        Retour
+                                                    </button>
+                                                </div>
+                                                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 mb-6 text-sm">
+                                                    <span className="text-white/60">Vague Pionnier ({subscribePlan === "yearly" ? "Annuel" : "Mensuel"})</span>
+                                                    <span className="font-bold">{PLANS[subscribePlan].price.toFixed(2).replace(".", ",")}€{PLANS[subscribePlan].label}</span>
+                                                </div>
+                                                <Elements
+                                                    stripe={stripePromise}
+                                                    options={{
+                                                        clientSecret,
+                                                        appearance: stripeAppearance,
+                                                        locale: "fr",
+                                                    }}
+                                                >
+                                                    <AccountPaymentForm onSuccess={handleSubscribeSuccess} />
+                                                </Elements>
+                                            </>
+                                        )}
                                     </div>
                                 )}
 
