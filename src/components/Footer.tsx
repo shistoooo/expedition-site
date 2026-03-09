@@ -23,6 +23,9 @@ export default function Footer() {
               <Link href="/pricing" className="hover:text-purple-400 transition-colors">
                 Tarifs
               </Link>
+              <Link href="/economie" className="hover:text-purple-400 transition-colors">
+                Économie
+              </Link>
               <Link href="/launcher" className="hover:text-purple-400 transition-colors">
                 Launcher
               </Link>

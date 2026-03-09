@@ -16,7 +16,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
+    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
       <PageBackground />
       <CursorGlow />
       <Navbar />
