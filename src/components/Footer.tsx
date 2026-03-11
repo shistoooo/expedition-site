@@ -56,7 +56,7 @@ export default function Footer() {
             className="flex items-center gap-5"
           >
             <a
-              href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition"}
+              href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT"}
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 rounded-full glass hover:bg-white/10 transition-colors"

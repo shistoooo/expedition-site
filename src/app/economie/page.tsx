@@ -1710,7 +1710,7 @@ export default function EconomiePage() {
               Rejoignez le Discord et réclamez votre capital de départ.
             </p>
             <a
-              href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition"}
+              href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT"}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold text-base transition-all duration-300 hover:scale-105"

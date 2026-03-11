@@ -92,7 +92,7 @@ export default function AmbassadorPage() {
 
             {/* The number IS the hook — give it impossible-to-miss scale */}
             <div className="mb-4">
-              <span className="text-[120px] md:text-[180px] font-black leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-200 to-purple-500 select-none">
+              <span className="text-[60px] sm:text-[100px] md:text-[140px] lg:text-[180px] font-black leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-200 to-purple-500 select-none">
                 42%
               </span>
             </div>

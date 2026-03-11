@@ -51,7 +51,7 @@ const jsonLd = {
   description: "Suite d'outils pour créateurs de contenu : TubeForge, ClipForge, ReviewForge.",
   email: "contact@expeditionlauncher.store",
   sameAs: [
-    process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition",
+    process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT",
   ].filter(Boolean),
 };
 

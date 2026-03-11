@@ -138,7 +138,7 @@ export default function UpcomingTools() {
           <p className="text-white/50">
             Rejoignez notre{" "}
             <a
-              href="https://dsc.gg/expedition"
+              href="https://discord.com/invite/QuV3bYDEYT"
               target="_blank"
               className="text-primary hover:underline"
             >

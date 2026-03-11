@@ -137,7 +137,7 @@ export default function LauncherPage() {
             }}
           />
 
-          <div className="flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12 lg:gap-16">
 
             {/* Left Content */}
             <motion.div
@@ -742,7 +742,7 @@ export default function LauncherPage() {
               </div>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
               {roadmapTools.map((tool, i) => {
                 const cfg = STATUS_CONFIG[tool.status] ?? STATUS_CONFIG["Concept"];
                 return (

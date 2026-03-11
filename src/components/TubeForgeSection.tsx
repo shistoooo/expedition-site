@@ -269,7 +269,7 @@ function TubeForgeMockup() {
       ) : (
         /* Library view */
         <div className="px-5 pb-5">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
               { thumb: "/mockups/thumb-pokemon.jpg", title: "Pokemon Ultra Soleil...", type: "MP4", size: "1.2 GB" },
               { thumb: "/mockups/thumb-fantasy.jpg", title: "22 minutes pour sauver...", type: "MP4", size: "340 MB" },

@@ -47,7 +47,7 @@ export default function DiscordSection() {
           </p>
 
           {/* Inline stats — real, grounded, not 3 identical cards */}
-          <p className="text-sm text-white/40 mb-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <p className="text-sm text-white/40 mb-10 flex flex-wrap items-center justify-center gap-x-3 md:gap-x-6 gap-y-2">
             <span><span className="text-white font-semibold">200+ créateurs</span> déjà présents</span>
             <span className="hidden sm:inline text-white/15">·</span>
             <span><span className="text-purple-300 font-semibold">Le dev lit chaque message</span> — vraiment</span>
@@ -55,7 +55,7 @@ export default function DiscordSection() {
 
           <div className="flex flex-col sm:flex-row items-center gap-4 relative z-10 mt-4">
             <a
-              href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://dsc.gg/expedition"}
+              href={process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT"}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] transition-all duration-300 font-bold text-lg shadow-[0_4px_24px_rgba(88,101,242,0.35)] hover:shadow-[0_0_50px_rgba(88,101,242,0.55),0_8px_32px_rgba(0,0,0,0.4)] hover:scale-[1.04] active:scale-[0.98]"

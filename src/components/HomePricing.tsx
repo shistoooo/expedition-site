@@ -40,7 +40,7 @@ export default function HomePricing() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid grid-cols-3 gap-3 mb-10"
+          className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-10"
         >
           {[
             { period: "Vague 1", tools: "TubeForge", price: "11,99€", you: true },
@@ -56,7 +56,7 @@ export default function HomePricing() {
               )}
             </div>
           ))}
-          <div className="col-span-3 text-center">
+          <div className="col-span-1 md:col-span-3 text-center">
             <p className="text-xs text-white/30">Les nouveaux abonnés paieront <span className="text-red-400/70">~15&euro;</span>, <span className="text-red-400/70">~25&euro;</span> puis jusqu&apos;&agrave; <span className="text-red-400/70">50-70&euro;</span> pour la même suite.</p>
           </div>
         </motion.div>

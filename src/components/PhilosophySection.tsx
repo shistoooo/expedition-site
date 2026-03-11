@@ -6,7 +6,7 @@ export default function PhilosophySection() {
   return (
     <section className="py-32 md:py-40 relative section-fade-top">
       <div className="container-main relative">
-        <div className="flex flex-col lg:flex-row items-start gap-20">
+        <div className="flex flex-col lg:flex-row items-start gap-8 md:gap-12 lg:gap-20">
 
           {/* Left: manifesto text */}
           <motion.div
@@ -21,7 +21,7 @@ export default function PhilosophySection() {
               Notre Manifeste
             </p>
 
-            <h2 className="text-5xl md:text-6xl font-black mb-8 leading-[1.0] tracking-[-0.03em]">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-[1.0] tracking-[-0.03em]">
               L&apos;alternative <br />
               <span className="text-white">Accessible &amp; Honn&ecirc;te</span>
             </h2>

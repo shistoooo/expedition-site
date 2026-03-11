@@ -8,7 +8,7 @@ export default function MentionsLegalesPage() {
         <div className="min-h-screen bg-[#06051a] text-white">
             <PageBackground />
             <Navbar />
-            <main className="pt-32 pb-24 container-main max-w-3xl mx-auto relative z-10">
+            <main className="pt-20 md:pt-32 pb-16 md:pb-24 container-main max-w-3xl mx-auto relative z-10">
                 <Link href="/" className="text-white/40 hover:text-white text-sm transition-colors">&larr; Retour</Link>
 
                 <h1 className="text-3xl font-bold mt-8 mb-8">Mentions L&eacute;gales</h1>
@@ -24,7 +24,7 @@ export default function MentionsLegalesPage() {
                         <li><strong>Nom :</strong> Exp&eacute;dition Studio</li>
                         <li><strong>Statut :</strong> Personne physique — Entrepreneur individuel</li>
                         <li><strong>Email :</strong> contact@expeditionlauncher.store</li>
-                        <li><strong>Discord :</strong> <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">dsc.gg/expedition</a></li>
+                        <li><strong>Discord :</strong> <a href="https://discord.com/invite/QuV3bYDEYT" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">discord.com/invite/QuV3bYDEYT</a></li>
                     </ul>
                     <p>
                         TVA non applicable, article 293 B du Code G&eacute;n&eacute;ral des Imp&ocirc;ts
@@ -70,7 +70,7 @@ export default function MentionsLegalesPage() {
                         de rectification, de suppression et de portabilit&eacute; de vos donn&eacute;es.
                         Pour exercer ces droits, contactez-nous &agrave; l&apos;adresse email indiqu&eacute;e ci-dessus
                         ou via notre serveur{" "}
-                        <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">Discord</a>.
+                        <a href="https://discord.com/invite/QuV3bYDEYT" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">Discord</a>.
                     </p>
 
                     <h2 className="text-xl font-bold text-white mt-8">6. Cookies</h2>

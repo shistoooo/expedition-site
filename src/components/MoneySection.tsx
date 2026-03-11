@@ -46,7 +46,7 @@ function CoinCanvas() {
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      className="h-[500px] w-full relative"
+      className="h-[300px] md:h-[400px] lg:h-[500px] w-full relative"
     >
       {isVisible && (
         <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
@@ -72,7 +72,7 @@ export default function MoneySection() {
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container-main relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
 
           {/* Text Content */}
           <motion.div

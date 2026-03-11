@@ -237,7 +237,7 @@ function PaymentForm({ discount, plan }: { discount: { percentOff: number | null
                                     <p className="text-white/80 font-medium">Si vous rencontrez le moindre souci, deux canaux directs :</p>
                                     <div className="space-y-2">
                                         <a
-                                            href="https://discord.gg/expedition"
+                                            href="https://discord.com/invite/QuV3bYDEYT"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/30 hover:bg-white/[0.07] transition-all group"
@@ -331,6 +331,8 @@ function CheckoutContent() {
     // Discord verification state
     const [discordVerified, setDiscordVerified] = useState(false);
     const [discordError, setDiscordError] = useState<string | null>(null);
+    const [acceptedImmediate, setAcceptedImmediate] = useState(false);
+    const [acceptedLossOfWithdrawal, setAcceptedLossOfWithdrawal] = useState(false);
 
     // Discord user ID for linking
     const [discordUserId, setDiscordUserId] = useState<string | null>(null);
@@ -687,7 +689,7 @@ function CheckoutContent() {
                                                     {discordError}
                                                     {discordError.includes("pas membre") && (
                                                         <a
-                                                            href="https://discord.gg/expedition"
+                                                            href="https://discord.com/invite/QuV3bYDEYT"
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="block mt-1 text-purple-400 hover:text-purple-300 underline transition-colors"
@@ -752,10 +754,38 @@ function CheckoutContent() {
                                         </p>
                                     </div>
 
+                                    <div className="space-y-3 mt-6">
+                                        <label className="flex items-start gap-3 cursor-pointer group">
+                                            <input
+                                                type="checkbox"
+                                                checked={acceptedImmediate}
+                                                onChange={(e) => setAcceptedImmediate(e.target.checked)}
+                                                className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 accent-purple-500 shrink-0"
+                                            />
+                                            <span className="text-xs text-white/50 leading-relaxed group-hover:text-white/70 transition-colors">
+                                                Je demande express&eacute;ment que l&apos;ex&eacute;cution du service commence <strong className="text-white/70">avant l&apos;expiration du d&eacute;lai de r&eacute;tractation de 14 jours</strong>.
+                                            </span>
+                                        </label>
+                                        <label className="flex items-start gap-3 cursor-pointer group">
+                                            <input
+                                                type="checkbox"
+                                                checked={acceptedLossOfWithdrawal}
+                                                onChange={(e) => setAcceptedLossOfWithdrawal(e.target.checked)}
+                                                className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 accent-purple-500 shrink-0"
+                                            />
+                                            <span className="text-xs text-white/50 leading-relaxed group-hover:text-white/70 transition-colors">
+                                                Je reconnais que ce commencement d&apos;ex&eacute;cution entra&icirc;ne la <strong className="text-white/70">perte de mon droit de r&eacute;tractation</strong> (art. L221-28, 13&deg; du Code de la consommation). J&apos;accepte les{" "}
+                                                <Link href="/cgv" target="_blank" className="underline text-purple-400 hover:text-purple-300 transition-colors">CGV</Link>
+                                                {" "}et la{" "}
+                                                <Link href="/confidentialite" target="_blank" className="underline text-purple-400 hover:text-purple-300 transition-colors">politique de confidentialit&eacute;</Link>.
+                                            </span>
+                                        </label>
+                                    </div>
+
                                     <button
                                         type="submit"
-                                        disabled={loading}
-                                        className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+                                        disabled={loading || !acceptedImmediate || !acceptedLossOfWithdrawal}
+                                        className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                                     >
                                         {loading ? (
                                             <Loader2 className="w-5 h-5 animate-spin" />
@@ -765,12 +795,7 @@ function CheckoutContent() {
                                     </button>
 
                                     <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
-                                        Paiement s&eacute;curis&eacute; par Stripe. En continuant, vous acceptez les{" "}
-                                        <Link href="/cgv" target="_blank" className="underline hover:text-white/50 transition-colors">CGV</Link>
-                                        {" "}et la{" "}
-                                        <Link href="/confidentialite" target="_blank" className="underline hover:text-white/50 transition-colors">politique de confidentialit&eacute;</Link>
-                                        {" "}d&apos;Exp&eacute;dition, et vous consentez &agrave; l&apos;acc&egrave;s imm&eacute;diat au service
-                                        avec renonciation au droit de r&eacute;tractation (art. L221-28 C. conso.).
+                                        Paiement s&eacute;curis&eacute; par Stripe.
                                     </p>
                                 </motion.form>
                             )}

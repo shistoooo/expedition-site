@@ -8,13 +8,13 @@ export default function CGVPage() {
         <div className="min-h-screen bg-[#06051a] text-white">
             <PageBackground />
             <Navbar />
-            <main className="pt-32 pb-24 container-main max-w-3xl mx-auto relative z-10">
+            <main className="pt-20 md:pt-32 pb-16 md:pb-24 container-main max-w-3xl mx-auto relative z-10">
                 <Link href="/" className="text-white/40 hover:text-white text-sm transition-colors">&larr; Retour</Link>
 
                 <h1 className="text-3xl font-bold mt-8 mb-8">Conditions G&eacute;n&eacute;rales de Vente</h1>
 
                 <div className="prose prose-invert prose-sm max-w-none space-y-6 text-white/70 leading-relaxed">
-                    <p><strong>Derni&egrave;re mise &agrave; jour :</strong> 5 mars 2026</p>
+                    <p><strong>Derni&egrave;re mise &agrave; jour :</strong> 10 mars 2026</p>
 
                     <h2 className="text-xl font-bold text-white mt-8">1. Objet</h2>
                     <p>
@@ -25,8 +25,8 @@ export default function CGVPage() {
                         de l&apos;&Eacute;diteur figurent sur la page <a href="/mentions-legales" className="text-purple-400 hover:text-purple-300 transition-colors">Mentions l&eacute;gales</a>.
                     </p>
                     <p>
-                        Les services incluent l&apos;acc&egrave;s au Launcher Exp&eacute;dition, aux logiciels ClipForge, TubeForge
-                        et &agrave; tout outil futur inclus dans la formule souscrite.
+                        Les services incluent l&apos;acc&egrave;s au Launcher Exp&eacute;dition, au logiciel TubeForge
+                        et &agrave; tout outil futur ajout&eacute; &agrave; la suite et inclus dans la formule souscrite.
                     </p>
                     <p>
                         Toute souscription implique l&apos;acceptation sans r&eacute;serve des pr&eacute;sentes CGV.
@@ -54,8 +54,13 @@ export default function CGVPage() {
                         L&apos;abonnement est renouvel&eacute; automatiquement &agrave; chaque &eacute;ch&eacute;ance (mensuelle ou annuelle).
                     </p>
                     <p>
-                        Le tarif souscrit lors de la premi&egrave;re inscription est garanti &agrave; vie
+                        Le tarif souscrit lors de la premi&egrave;re inscription est garanti
                         (&quot;grandfathering&quot;) tant que l&apos;abonnement reste actif et continu.
+                        En cas de modification tarifaire rendue n&eacute;cessaire par une &eacute;volution fiscale
+                        ou r&eacute;glementaire ind&eacute;pendante de la volont&eacute; de l&apos;&Eacute;diteur (notamment un changement
+                        de r&eacute;gime de TVA), le Client en sera inform&eacute; au moins 30 jours avant l&apos;entr&eacute;e
+                        en vigueur du nouveau tarif et pourra r&eacute;silier son abonnement sans p&eacute;nalit&eacute;
+                        avant cette date.
                     </p>
 
                     <h2 className="text-xl font-bold text-white mt-8">4. Droit de r&eacute;tractation — Renonciation</h2>
@@ -73,12 +78,13 @@ export default function CGVPage() {
                             en proc&eacute;dant au paiement ;
                         </li>
                         <li>
-                            Le Client <strong>renonce express&eacute;ment &agrave; son droit de r&eacute;tractation de 14 jours</strong> pr&eacute;vu
+                            Le Client <strong>reconna&icirc;t que ce commencement d&apos;ex&eacute;cution entra&icirc;ne la perte de son droit de r&eacute;tractation de 14 jours</strong> pr&eacute;vu
                             par l&apos;article L221-18 du Code de la consommation.
                         </li>
                     </ul>
                     <p>
-                        En cons&eacute;quence, aucun remboursement ne sera effectu&eacute; apr&egrave;s la validation du paiement.
+                        En cons&eacute;quence, aucun remboursement pour simple changement d&apos;avis ne sera effectu&eacute; apr&egrave;s la validation du paiement.
+                        La garantie l&eacute;gale de conformit&eacute; pr&eacute;vue aux articles L224-25-12 et suivants du Code de la consommation reste pleinement applicable (voir article 7 bis ci-dessous).
                     </p>
 
                     <h2 className="text-xl font-bold text-white mt-8">5. R&eacute;siliation</h2>
@@ -106,9 +112,9 @@ export default function CGVPage() {
 
                     <h2 className="text-xl font-bold text-white mt-8">7. Responsabilit&eacute; et garanties</h2>
                     <p>
-                        Les outils sont fournis &laquo;&nbsp;en l&apos;&eacute;tat&nbsp;&raquo; et &laquo;&nbsp;selon disponibilit&eacute;&nbsp;&raquo;.
                         Exp&eacute;dition est un projet ind&eacute;pendant en d&eacute;veloppement actif. Le Client accepte
-                        que les logiciels puissent contenir des imperfections, bugs ou limitations temporaires.
+                        que les logiciels puissent contenir des imperfections, bugs ou limitations temporaires
+                        inh&eacute;rentes &agrave; un service en &eacute;volution continue.
                     </p>
                     <p>
                         <strong>Obligation de moyens :</strong> L&apos;&Eacute;diteur s&apos;engage &agrave; fournir ses meilleurs efforts
@@ -127,15 +133,72 @@ export default function CGVPage() {
                         du service ne soit pas substantiellement diminu&eacute;e.
                     </p>
                     <p>
-                        L&apos;&Eacute;diteur ne saurait &ecirc;tre tenu responsable des dommages directs ou indirects
-                        li&eacute;s &agrave; l&apos;utilisation des outils, incluant mais ne se limitant pas &agrave; : pertes de donn&eacute;es,
-                        interruptions de service, incompatibilit&eacute;s mat&eacute;rielles ou logicielles.
+                        <strong>Responsabilit&eacute; :</strong> L&apos;&Eacute;diteur est responsable des dommages caus&eacute;s au Client
+                        r&eacute;sultant d&apos;un manquement &agrave; ses obligations contractuelles, dans les conditions
+                        du droit commun. La responsabilit&eacute; de l&apos;&Eacute;diteur ne pourra &ecirc;tre engag&eacute;e en cas
+                        de force majeure au sens de l&apos;article 1218 du Code civil, ni en cas de mauvaise utilisation
+                        du service par le Client.
                     </p>
                     <p>
                         Les logiciels Exp&eacute;dition ne disposent pas actuellement de certificat de signature
                         num&eacute;rique (code signing). Des avertissements de s&eacute;curit&eacute; peuvent appara&icirc;tre
                         lors de l&apos;installation sur Windows (Defender/SmartScreen) et macOS (Gatekeeper).
                         Cela n&apos;affecte en rien la s&eacute;curit&eacute; du logiciel.
+                    </p>
+
+                    <h2 className="text-xl font-bold text-white mt-8">7 bis. Garantie l&eacute;gale de conformit&eacute;</h2>
+
+                    <div className="border border-white/20 rounded-xl p-5 my-4 bg-white/5 text-white/70 text-sm leading-relaxed space-y-3">
+                        <p>
+                            Le consommateur b&eacute;n&eacute;ficie d&apos;un d&eacute;lai de deux ans &agrave; compter de la fourniture
+                            du contenu num&eacute;rique ou du service num&eacute;rique pour obtenir la mise en &oelig;uvre
+                            de la garantie l&eacute;gale de conformit&eacute; en cas d&apos;apparition d&apos;un d&eacute;faut de conformit&eacute;.
+                            Durant ce d&eacute;lai, le consommateur n&apos;est tenu d&apos;&eacute;tablir que l&apos;existence
+                            du d&eacute;faut de conformit&eacute; et non la date d&apos;apparition de celui-ci.
+                        </p>
+                        <p>
+                            Lorsque le contrat pr&eacute;voit la fourniture continue du contenu num&eacute;rique ou du service
+                            num&eacute;rique pendant une dur&eacute;e sup&eacute;rieure &agrave; deux ans, la garantie l&eacute;gale est applicable
+                            pendant toute la p&eacute;riode de fourniture pr&eacute;vue. Durant ce d&eacute;lai, le consommateur
+                            n&apos;est tenu d&apos;&eacute;tablir que l&apos;existence du d&eacute;faut de conformit&eacute; et non la date
+                            d&apos;apparition de celui-ci.
+                        </p>
+                        <p>
+                            La garantie l&eacute;gale de conformit&eacute; emporte obligation de fournir toutes les mises &agrave; jour
+                            n&eacute;cessaires au maintien de la conformit&eacute; du contenu num&eacute;rique ou du service num&eacute;rique
+                            durant la p&eacute;riode de fourniture.
+                        </p>
+                        <p>
+                            La garantie l&eacute;gale de conformit&eacute; donne au consommateur droit &agrave; la mise en conformit&eacute;
+                            du contenu num&eacute;rique ou du service num&eacute;rique sans retard injustifi&eacute; suivant sa demande,
+                            sans frais et sans inconv&eacute;nient majeur pour lui.
+                        </p>
+                        <p>
+                            Le consommateur peut obtenir une r&eacute;duction du prix en conservant le contenu num&eacute;rique
+                            ou le service num&eacute;rique, ou il peut mettre fin au contrat en se faisant rembourser
+                            int&eacute;gralement contre renoncement au contenu num&eacute;rique ou au service num&eacute;rique, si :
+                        </p>
+                        <ul className="list-disc pl-6 space-y-1">
+                            <li>Le professionnel refuse de mettre le contenu num&eacute;rique ou le service num&eacute;rique en conformit&eacute; ;</li>
+                            <li>La mise en conformit&eacute; est retard&eacute;e de mani&egrave;re injustifi&eacute;e ;</li>
+                            <li>La mise en conformit&eacute; ne peut intervenir sans frais impos&eacute;s au consommateur ;</li>
+                            <li>La mise en conformit&eacute; occasionne un inconv&eacute;nient majeur pour le consommateur ;</li>
+                            <li>Le d&eacute;faut de conformit&eacute; n&apos;est pas corrig&eacute; apr&egrave;s tentative de mise en conformit&eacute;.</li>
+                        </ul>
+                        <p>
+                            Le consommateur a &eacute;galement droit &agrave; une r&eacute;duction de prix ou &agrave; la r&eacute;solution du contrat
+                            lorsque le d&eacute;faut de conformit&eacute; est si grave qu&apos;il justifie que la r&eacute;duction de prix
+                            ou la r&eacute;solution du contrat soit imm&eacute;diate. Le consommateur n&apos;est alors pas tenu
+                            de demander la mise en conformit&eacute; au pr&eacute;alable.
+                        </p>
+                        <p className="text-white/50 italic">
+                            Articles L224-25-12 &agrave; L224-25-26 du Code de la consommation.
+                        </p>
+                    </div>
+
+                    <p>
+                        Cette garantie est ind&eacute;pendante de toute garantie commerciale &eacute;ventuellement propos&eacute;e
+                        et ne peut &ecirc;tre exclue ou limit&eacute;e par les pr&eacute;sentes CGV.
                     </p>
 
                     <h2 className="text-xl font-bold text-white mt-8">8. Propri&eacute;t&eacute; intellectuelle</h2>
@@ -149,8 +212,9 @@ export default function CGVPage() {
                     <h2 className="text-xl font-bold text-white mt-8">9. Droit applicable et litiges</h2>
                     <p>
                         Les pr&eacute;sentes CGV sont soumises au droit fran&ccedil;ais. En cas de litige, les parties
-                        s&apos;engagent &agrave; rechercher une solution amiable. &Agrave; d&eacute;faut, les tribunaux
-                        comp&eacute;tents seront ceux du lieu de domicile de l&apos;&Eacute;diteur.
+                        s&apos;engagent &agrave; rechercher une solution amiable. &Agrave; d&eacute;faut, le Client peut saisir
+                        le tribunal du lieu de son domicile ou celui du si&egrave;ge de l&apos;&Eacute;diteur,
+                        conform&eacute;ment &agrave; l&apos;article R631-3 du Code de la consommation.
                     </p>
                     <p>
                         Conform&eacute;ment &agrave; l&apos;article L612-1 du Code de la consommation, le Client peut
@@ -161,7 +225,7 @@ export default function CGVPage() {
                     <h2 className="text-xl font-bold text-white mt-8">10. Contact</h2>
                     <p>
                         Pour toute question relative aux pr&eacute;sentes CGV, contactez-nous via notre
-                        serveur <a href="https://dsc.gg/expedition" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">Discord</a> ou
+                        serveur <a href="https://discord.com/invite/QuV3bYDEYT" className="text-purple-400 hover:text-purple-300 transition-colors" target="_blank" rel="noopener noreferrer">Discord</a> ou
                         par email &agrave; contact@expeditionlauncher.store.
                     </p>
                 </div>

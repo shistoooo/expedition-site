@@ -237,7 +237,7 @@ function ReviewForgeMockup() {
           </div>
 
           {/* Comment panel */}
-          <div className="w-[160px] md:w-[200px] shrink-0 flex flex-col" style={{ background: 'rgba(11,11,20,0.97)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="w-[100px] sm:w-[140px] md:w-[200px] shrink-0 flex flex-col" style={{ background: 'rgba(11,11,20,0.97)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
             {/* Header */}
             <div className="flex items-center gap-1.5 px-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
               <MessageSquare className="w-3 h-3 text-indigo-500" />
