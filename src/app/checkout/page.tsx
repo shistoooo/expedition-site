@@ -331,8 +331,7 @@ function CheckoutContent() {
     // Discord verification state
     const [discordVerified, setDiscordVerified] = useState(false);
     const [discordError, setDiscordError] = useState<string | null>(null);
-    const [acceptedImmediate, setAcceptedImmediate] = useState(false);
-    const [acceptedLossOfWithdrawal, setAcceptedLossOfWithdrawal] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     // Discord user ID for linking
     const [discordUserId, setDiscordUserId] = useState<string | null>(null);
@@ -754,27 +753,16 @@ function CheckoutContent() {
                                         </p>
                                     </div>
 
-                                    <div className="space-y-3 mt-6">
-                                        <label className="flex items-start gap-3 cursor-pointer group">
+                                    <div className="mt-6">
+                                        <label className="flex items-start gap-3 cursor-pointer group p-3 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/20 transition-colors">
                                             <input
                                                 type="checkbox"
-                                                checked={acceptedImmediate}
-                                                onChange={(e) => setAcceptedImmediate(e.target.checked)}
-                                                className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 accent-purple-500 shrink-0"
+                                                checked={acceptedTerms}
+                                                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                                className="mt-0.5 w-4 h-4 rounded border-white/20 bg-white/5 accent-purple-500 shrink-0"
                                             />
                                             <span className="text-xs text-white/50 leading-relaxed group-hover:text-white/70 transition-colors">
-                                                Je demande express&eacute;ment que l&apos;ex&eacute;cution du service commence <strong className="text-white/70">avant l&apos;expiration du d&eacute;lai de r&eacute;tractation de 14 jours</strong>.
-                                            </span>
-                                        </label>
-                                        <label className="flex items-start gap-3 cursor-pointer group">
-                                            <input
-                                                type="checkbox"
-                                                checked={acceptedLossOfWithdrawal}
-                                                onChange={(e) => setAcceptedLossOfWithdrawal(e.target.checked)}
-                                                className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 accent-purple-500 shrink-0"
-                                            />
-                                            <span className="text-xs text-white/50 leading-relaxed group-hover:text-white/70 transition-colors">
-                                                Je reconnais que ce commencement d&apos;ex&eacute;cution entra&icirc;ne la <strong className="text-white/70">perte de mon droit de r&eacute;tractation</strong> (art. L221-28, 13&deg; du Code de la consommation). J&apos;accepte les{" "}
+                                                Je demande l&apos;acc&egrave;s imm&eacute;diat au service et <strong className="text-white/70">renonce &agrave; mon droit de r&eacute;tractation de 14 jours</strong> (art.&nbsp;L221-28 du Code de la consommation). J&apos;accepte les{" "}
                                                 <Link href="/cgv" target="_blank" className="underline text-purple-400 hover:text-purple-300 transition-colors">CGV</Link>
                                                 {" "}et la{" "}
                                                 <Link href="/confidentialite" target="_blank" className="underline text-purple-400 hover:text-purple-300 transition-colors">politique de confidentialit&eacute;</Link>.
@@ -784,7 +772,7 @@ function CheckoutContent() {
 
                                     <button
                                         type="submit"
-                                        disabled={loading || !acceptedImmediate || !acceptedLossOfWithdrawal}
+                                        disabled={loading || !acceptedTerms}
                                         className="w-full py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-200 transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                                     >
                                         {loading ? (
