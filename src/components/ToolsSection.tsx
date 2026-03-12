@@ -323,6 +323,7 @@ export default function ToolsSection() {
             >
               Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
             </a>
+            <p className="text-xs text-white/25 mt-3">Inclus dans l&apos;abonnement Pionnier &mdash; &agrave; partir de 7,99&euro;/mois</p>
           </div>
 
           {/* Mockup */}

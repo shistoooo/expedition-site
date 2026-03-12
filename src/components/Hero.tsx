@@ -55,14 +55,14 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex items-center gap-3 mb-10"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10 px-4"
         >
-          <span className="text-3xl md:text-4xl font-bold text-white">11,99&euro;</span>
+          <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">11,99&euro;</span>
           <span className="text-white/40 text-sm">/mois</span>
-          <span className="ml-3 text-sm text-white/40 line-through">ou</span>
-          <span className="text-3xl md:text-4xl font-bold text-green-400">7,99&euro;</span>
+          <span className="text-sm text-white/40">ou</span>
+          <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-400">7,99&euro;</span>
           <span className="text-white/40 text-sm">/mois</span>
-          <span className="ml-2 px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-300 text-xs font-medium">avec Discord</span>
+          <span className="px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-300 text-xs font-medium">avec Discord</span>
         </motion.div>
 
         <motion.div
@@ -75,7 +75,7 @@ export default function Hero() {
             href="/pricing"
             className="group px-8 py-4 rounded-xl bg-white text-black font-bold transition-all duration-300 flex items-center gap-2 shadow-[0_0_40px_rgba(139,92,246,0.3),0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_0_70px_rgba(139,92,246,0.55),0_12px_40px_rgba(0,0,0,0.5)] hover:scale-[1.04] active:scale-[0.98]"
           >
-            Rejoindre la Vague Pionnier
+            Voir les offres
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-200" />
           </Link>
           <Link

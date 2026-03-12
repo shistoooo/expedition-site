@@ -7,9 +7,8 @@ import Hero from "@/components/Hero";
 import ToolsSection from "@/components/ToolsSection";
 import TubeForgeSection from "@/components/TubeForgeSection";
 import ReviewForgeSection from "@/components/ReviewForgeSection";
-import TransparencySection from "@/components/TransparencySection";
+import WhyExpeditionSection from "@/components/WhyExpeditionSection";
 import HomePricing from "@/components/HomePricing";
-import PhilosophySection from "@/components/PhilosophySection";
 import DiscordSection from "@/components/DiscordSection";
 import Footer from "@/components/Footer";
 
@@ -24,9 +23,8 @@ export default function Home() {
         <TubeForgeSection />
         <ToolsSection />
         <ReviewForgeSection />
-        <TransparencySection />
+        <WhyExpeditionSection />
         <HomePricing />
-        <PhilosophySection />
         <DiscordSection />
       </main>
       <Footer />

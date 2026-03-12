@@ -81,7 +81,7 @@ export default function PricingPage() {
     {
       id: 3,
       name: "Vague 3 — ReviewForge",
-      date: "Disponible",
+      date: "Été 2026",
       price: "~25-50€",
       period: "/mois",
       status: "upcoming",

@@ -175,7 +175,7 @@ function TubeForgeMockup() {
               <div className="w-full rounded-3xl p-4 backdrop-blur-md mb-3 shadow-2xl" style={{ background: 'rgba(30,27,75,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <div className="flex gap-4 items-start">
                   <div className="w-28 aspect-video rounded-xl shrink-0 relative overflow-hidden shadow-lg shadow-black/40">
-                    <Image src="/mockups/thumb-anime.jpg" alt="Thumbnail" fill className="object-cover" />
+                    <Image src="/mockups/thumb-anime.jpg" alt="Miniature vid\u00e9o dans l'interface TubeForge" fill className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0 space-y-1.5">
                     <p className="text-[12px] text-white font-bold leading-tight line-clamp-2">1H46 pour t&apos;expliquer le jeu qui m&apos;a bris&eacute;.</p>
@@ -278,7 +278,7 @@ function TubeForgeMockup() {
             ].map((item, i) => (
               <div key={i} className="rounded-xl overflow-hidden cursor-pointer group transition-all hover:-translate-y-0.5" style={{ background: 'rgba(30,27,75,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="aspect-video relative overflow-hidden">
-                  <Image src={item.thumb} alt="" fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <Image src={item.thumb} alt={`${item.title} — vid\u00e9o dans la biblioth\u00e8que TubeForge`} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
                     <Play className="w-6 h-6 text-white" />
                   </div>
@@ -310,7 +310,7 @@ function TubeForgeMockup() {
             {downloads.map((dl, i) => (
               <div key={i} className="px-4 py-2.5 flex items-center gap-3" style={{ borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
                 <div className="w-10 h-10 rounded-lg shrink-0 relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                  <Image src={dl.thumb} alt="" fill className="object-cover" />
+                  <Image src={dl.thumb} alt={`${dl.title} — t\u00e9l\u00e9chargement en cours`} fill className="object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
@@ -405,6 +405,7 @@ export default function TubeForgeSection() {
             >
               Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
             </Link>
+            <p className="text-xs text-white/25 mt-3">Inclus dans l&apos;abonnement Pionnier &mdash; &agrave; partir de 7,99&euro;/mois</p>
           </div>
 
           {/* Mockup */}
