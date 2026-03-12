@@ -4,7 +4,6 @@ import Navbar from "@/components/Navbar";
 import CursorGlow from "@/components/CursorGlow";
 import PageBackground from "@/components/PageBackground";
 import Hero from "@/components/Hero";
-import SocialProofSection from "@/components/SocialProofSection";
 import ToolsSection from "@/components/ToolsSection";
 import TubeForgeSection from "@/components/TubeForgeSection";
 import ReviewForgeSection from "@/components/ReviewForgeSection";
@@ -22,7 +21,6 @@ export default function Home() {
       <Navbar />
       <main className="w-full relative z-10">
         <Hero />
-        <SocialProofSection />
         <TubeForgeSection />
         <ToolsSection />
         <ReviewForgeSection />
