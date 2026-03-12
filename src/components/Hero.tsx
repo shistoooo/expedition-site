@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Bell } from "lucide-react";
 import Link from "next/link";
+import { SALES_OPEN } from "@/lib/salesConfig";
 
 export default function Hero() {
   return (
@@ -26,7 +27,7 @@ export default function Hero() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
           </span>
-          <span>Vague Pionnier — Places ouvertes</span>
+          <span>{SALES_OPEN ? "Vague Pionnier — Places ouvertes" : "Lancement imminent"}</span>
         </motion.div>
 
         <motion.h1
@@ -72,11 +73,15 @@ export default function Hero() {
           className="flex flex-col sm:flex-row items-center gap-4"
         >
           <Link
-            href="/pricing"
+            href={SALES_OPEN ? "/pricing" : "/checkout"}
             className="group px-8 py-4 rounded-xl bg-white text-black font-bold transition-all duration-300 flex items-center gap-2 shadow-[0_0_40px_rgba(139,92,246,0.3),0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_0_70px_rgba(139,92,246,0.55),0_12px_40px_rgba(0,0,0,0.5)] hover:scale-[1.04] active:scale-[0.98]"
           >
-            Voir les offres
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-200" />
+            {SALES_OPEN ? "Voir les offres" : "\u00catre pr\u00e9venu au lancement"}
+            {SALES_OPEN ? (
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-200" />
+            ) : (
+              <Bell className="w-5 h-5" />
+            )}
           </Link>
           <Link
             href="#tubeforge"

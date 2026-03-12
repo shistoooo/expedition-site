@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Monitor } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, CheckCircle2, ChevronLeft, Loader2, Mail, KeyRound, AlertCircle, ArrowLeft, Tag, Check, Gift, Heart, X, MessageCircle, Monitor, Bell } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { SALES_OPEN } from "@/lib/salesConfig";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -858,7 +859,148 @@ function CheckoutContent() {
     );
 }
 
+function WaitlistContent() {
+    const [email, setEmail] = useState("");
+    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email.includes("@")) return;
+        setStatus("loading");
+        try {
+            const res = await fetch("/api/waitlist", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email.trim() }),
+            });
+            if (res.ok) setStatus("success");
+            else setStatus("error");
+        } catch {
+            setStatus("error");
+        }
+    };
+
+    return (
+        <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
+            <PageBackground />
+            <Navbar />
+            <main className="pt-36 pb-32 container-main relative z-10 flex items-center justify-center min-h-[70vh]">
+                <motion.div
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="max-w-lg w-full"
+                >
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/25 mb-6">
+                            <Bell className="w-7 h-7 text-purple-400" />
+                        </div>
+                        <h1 className="text-3xl md:text-4xl font-black mb-3 tracking-[-0.03em]">
+                            L&apos;Exp&eacute;dition arrive bient&ocirc;t
+                        </h1>
+                        <p className="text-white/50 text-lg leading-relaxed">
+                            Laissez votre email pour &ecirc;tre pr&eacute;venu d&egrave;s l&apos;ouverture
+                            des inscriptions &mdash; et profiter du tarif Pionnier.
+                        </p>
+                    </div>
+
+                    <div
+                        className="rounded-2xl p-8 relative overflow-hidden"
+                        style={{
+                            background: "rgba(255,255,255,0.03)",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                        }}
+                    >
+                        {status === "success" ? (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-center py-6"
+                            >
+                                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-green-500/15 border border-green-500/25 mb-4">
+                                    <Check className="w-6 h-6 text-green-400" />
+                                </div>
+                                <h2 className="text-xl font-bold mb-2">C&apos;est not&eacute;&nbsp;!</h2>
+                                <p className="text-white/50 text-sm">
+                                    On vous envoie un email d&egrave;s que les inscriptions ouvrent.
+                                </p>
+                            </motion.div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label htmlFor="waitlist-email" className="text-xs font-mono uppercase tracking-wider text-white/40 mb-2 block">
+                                        Votre email
+                                    </label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25" />
+                                        <input
+                                            id="waitlist-email"
+                                            type="email"
+                                            required
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            placeholder="vous@email.com"
+                                            className="w-full pl-11 pr-4 py-3.5 rounded-xl text-white placeholder:text-white/25 outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                                            style={{
+                                                background: "rgba(255,255,255,0.05)",
+                                                border: "1px solid rgba(255,255,255,0.1)",
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={status === "loading"}
+                                    className="w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                                    style={{
+                                        background: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%)",
+                                        color: "#fff",
+                                        boxShadow: "0 0 24px rgba(139,92,246,0.35), inset 0 1px 0 rgba(255,255,255,0.15)",
+                                    }}
+                                >
+                                    {status === "loading" ? (
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                    ) : (
+                                        <>
+                                            Me pr&eacute;venir au lancement
+                                            <Bell className="w-4 h-4" />
+                                        </>
+                                    )}
+                                </button>
+
+                                {status === "error" && (
+                                    <p className="text-red-400 text-sm text-center">
+                                        Erreur — r&eacute;essayez ou contactez-nous sur Discord.
+                                    </p>
+                                )}
+
+                                <p className="text-center text-xs text-white/25">
+                                    Pas de spam. Un seul email au lancement.
+                                </p>
+                            </form>
+                        )}
+                    </div>
+
+                    <div className="mt-8 text-center">
+                        <Link
+                            href="/"
+                            className="text-sm text-white/40 hover:text-white/60 transition-colors"
+                        >
+                            &larr; Retour &agrave; l&apos;accueil
+                        </Link>
+                    </div>
+                </motion.div>
+            </main>
+            <Footer />
+        </div>
+    );
+}
+
 export default function CheckoutPage() {
+    if (!SALES_OPEN) {
+        return <WaitlistContent />;
+    }
     return (
         <Suspense>
             <CheckoutContent />

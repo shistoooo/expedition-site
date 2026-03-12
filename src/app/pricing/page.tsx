@@ -4,8 +4,9 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import { Check, Lock, Calendar, AlertCircle, Rocket, Zap, Download, Layers, Sparkles, Terminal, Star } from "lucide-react";
+import { Check, Lock, Calendar, AlertCircle, Rocket, Zap, Download, Layers, Sparkles, Terminal, Star, Bell } from "lucide-react";
 import PageBackground from "@/components/PageBackground";
+import { SALES_OPEN } from "@/lib/salesConfig";
 
 const includedTools = [
   {
@@ -391,8 +392,8 @@ export default function PricingPage() {
                         />
                         {/* Scale on hover via CSS — framer-motion would fight the outer scale */}
                         <span className="relative z-10 transition-transform duration-200 group-hover/btn:scale-105 inline-flex items-center gap-2">
-                          Sécuriser mon prix
-                          <Rocket className="w-4 h-4" />
+                          {SALES_OPEN ? "S\u00e9curiser mon prix" : "\u00catre pr\u00e9venu au lancement"}
+                          {SALES_OPEN ? <Rocket className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
                         </span>
                       </Link>
                     ) : (

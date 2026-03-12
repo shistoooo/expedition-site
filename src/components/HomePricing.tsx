@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Lock, ArrowRight, TrendingUp } from "lucide-react";
+import { Check, Lock, ArrowRight, TrendingUp, Bell } from "lucide-react";
 import Link from "next/link";
+import { SALES_OPEN } from "@/lib/salesConfig";
 
 export default function HomePricing() {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -148,8 +149,12 @@ export default function HomePricing() {
                 href="/checkout"
                 className="group flex-1 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-50 transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.4),0_8px_32px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
               >
-                Rejoindre la Vague Pionnier
-                <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+                {SALES_OPEN ? "Rejoindre la Vague Pionnier" : "\u00catre pr\u00e9venu au lancement"}
+                {SALES_OPEN ? (
+                  <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+                ) : (
+                  <Bell className="w-5 h-5" />
+                )}
               </Link>
               <Link
                 href="/pricing"
