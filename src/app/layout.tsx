@@ -33,14 +33,23 @@ export const metadata: Metadata = {
     siteName: "Expédition",
     locale: "fr_FR",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Expédition — Suite d'outils pour créateurs de contenu",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Expédition | Les outils pour les créateurs",
     description: "Rejoignez l'aventure Expédition et accédez aux meilleurs outils pour créateurs de contenu.",
+    images: ["/og-image.jpg"],
   },
-  // TODO: Remplacer par votre vrai code Google Search Console
-  // verification: { google: "VOTRE_CODE_GOOGLE_SEARCH_CONSOLE" },
+  // TODO: Remplacer VOTRE_CODE par votre vrai code Google Search Console
+  // verification: { google: "VOTRE_CODE" },
 };
 
 const jsonLd = {
@@ -67,6 +76,20 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Google Analytics 4 — TODO: Remplacer G-XXXXXXXXXX par votre Measurement ID */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`,
+              }}
+            />
+          </>
+        )}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} antialiased noise-overlay`}

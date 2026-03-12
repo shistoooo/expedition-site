@@ -179,6 +179,8 @@ export default function PricingPage() {
           style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.2) 30%, rgba(59,130,246,0.2) 70%, transparent)" }}
         />
 
+        <h2 className="sr-only">Outils inclus dans votre abonnement</h2>
+
         <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto mb-28">
           {includedTools.map((tool, i) => (
             <motion.div
@@ -225,6 +227,7 @@ export default function PricingPage() {
         />
 
         {/* ── PRICING CARDS ────────────────────────────────────────────── */}
+        <h2 className="sr-only">Les Vagues — choisissez votre moment</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto leading-relaxed">
           {waves.map((wave, index) => {
             const isOpen = wave.status === "open";
@@ -505,6 +508,122 @@ export default function PricingPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* ── FAQ ──────────────────────────────────────────────────────── */}
+        <div
+          aria-hidden="true"
+          className="w-full max-w-3xl mx-auto mt-20 mb-10 h-px"
+          style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.2) 50%, transparent)" }}
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-3xl mx-auto"
+        >
+          <h2 className="text-3xl md:text-4xl font-black mb-10 text-center tracking-[-0.03em]">
+            Questions fr&eacute;quentes
+          </h2>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: "Puis-je annuler \u00e0 tout moment ?",
+                a: "Oui, sans engagement. Vous pouvez annuler votre abonnement \u00e0 tout moment depuis votre espace compte. Vous gardez l\u2019acc\u00e8s jusqu\u2019\u00e0 la fin de la p\u00e9riode pay\u00e9e.",
+              },
+              {
+                q: "Que veut dire \u00ab\u00a0tarif bloqu\u00e9\u00a0\u00bb ?",
+                a: "Le prix que vous payez aujourd\u2019hui reste le m\u00eame tant que votre abonnement est actif. M\u00eame quand de nouveaux outils seront ajout\u00e9s et que le prix d\u2019entr\u00e9e augmentera pour les nouveaux abonn\u00e9s, votre tarif ne change pas.",
+              },
+              {
+                q: "Comment fonctionne la r\u00e9duction Discord ?",
+                a: "Si vous \u00eates membre de notre serveur Discord avant de vous abonner, vous b\u00e9n\u00e9ficiez du tarif r\u00e9duit \u00e0 7,99\u20ac/mois au lieu de 11,99\u20ac. Rejoignez le Discord d\u2019abord, puis abonnez-vous.",
+              },
+              {
+                q: "Sur quelles plateformes fonctionnent les outils ?",
+                a: "Le Launcher et tous les outils (TubeForge, ClipForge, ReviewForge) fonctionnent sur Mac et Windows. Aucune installation suppl\u00e9mentaire n\u2019est n\u00e9cessaire.",
+              },
+              {
+                q: "Les futurs outils seront-ils inclus ?",
+                a: "Oui. Tous les outils actuels et futurs sont inclus dans votre abonnement Pionnier. Vous n\u2019aurez jamais \u00e0 payer de suppl\u00e9ment.",
+              },
+            ].map((faq, i) => (
+              <details
+                key={i}
+                className="group rounded-2xl overflow-hidden"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                }}
+              >
+                <summary
+                  className="flex items-center justify-between cursor-pointer p-6 text-white/90 font-semibold text-sm md:text-base select-none list-none [&::-webkit-details-marker]:hidden"
+                >
+                  {faq.q}
+                  <span className="ml-4 text-white/30 transition-transform duration-300 group-open:rotate-45 text-xl leading-none shrink-0">+</span>
+                </summary>
+                <div className="px-6 pb-6 text-white/50 text-sm leading-relaxed -mt-1">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* FAQ Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "Puis-je annuler \u00e0 tout moment ?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Oui, sans engagement. Vous pouvez annuler votre abonnement \u00e0 tout moment depuis votre espace compte. Vous gardez l\u2019acc\u00e8s jusqu\u2019\u00e0 la fin de la p\u00e9riode pay\u00e9e.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Que veut dire \u00ab tarif bloqu\u00e9 \u00bb ?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Le prix que vous payez aujourd\u2019hui reste le m\u00eame tant que votre abonnement est actif. M\u00eame quand de nouveaux outils seront ajout\u00e9s et que le prix d\u2019entr\u00e9e augmentera pour les nouveaux abonn\u00e9s, votre tarif ne change pas.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Comment fonctionne la r\u00e9duction Discord ?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Si vous \u00eates membre de notre serveur Discord avant de vous abonner, vous b\u00e9n\u00e9ficiez du tarif r\u00e9duit \u00e0 7,99\u20ac/mois au lieu de 11,99\u20ac. Rejoignez le Discord d\u2019abord, puis abonnez-vous.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Sur quelles plateformes fonctionnent les outils ?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Le Launcher et tous les outils (TubeForge, ClipForge, ReviewForge) fonctionnent sur Mac et Windows.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Les futurs outils seront-ils inclus ?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Oui. Tous les outils actuels et futurs sont inclus dans votre abonnement Pionnier. Vous n\u2019aurez jamais \u00e0 payer de suppl\u00e9ment.",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
 
       </main>
       <Footer />

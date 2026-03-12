@@ -839,8 +839,24 @@ function CheckoutContent() {
                                         <PaymentForm discount={discount} plan={plan} />
                                     </Elements>
 
-                                    <p className="text-center text-[10px] text-white/30 mt-4 leading-normal">
-                                        Paiement sécurisé par Stripe. Vos données bancaires ne transitent pas par nos serveurs.
+                                    {/* Trust badges */}
+                                    <div className="flex items-center justify-center gap-4 mt-5 flex-wrap">
+                                        <div className="flex items-center gap-1.5 text-white/30 text-[10px]">
+                                            <ShieldCheck className="w-3.5 h-3.5 text-green-400/60" />
+                                            <span>Paiement s&eacute;curis&eacute;</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-white/30 text-[10px]">
+                                            <CreditCard className="w-3.5 h-3.5 text-purple-400/60" />
+                                            <span>Visa, Mastercard, AMEX</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-white/30 text-[10px]">
+                                            <Lock className="w-3.5 h-3.5 text-blue-400/60" />
+                                            <span>Chiffrement SSL</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-center text-[10px] text-white/30 mt-3 leading-normal">
+                                        Paiement s&eacute;curis&eacute; par Stripe. Vos donn&eacute;es bancaires ne transitent pas par nos serveurs.
+                                        <br />Annulable &agrave; tout moment, sans engagement.
                                     </p>
                                 </motion.div>
                             )}

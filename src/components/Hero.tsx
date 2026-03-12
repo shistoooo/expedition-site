@@ -53,9 +53,9 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto"
         >
-          Aujourd&apos;hui 1 outil. Demain 3, puis 10.
+          Aujourd&apos;hui 1 outil. Demain 10.
           <br className="hidden md:block" />
-          <span className="text-white/80">Votre prix reste bloqu&eacute; tant que vous restez abonn&eacute;.</span> M&ecirc;me quand la suite aura 10 outils.
+          <span className="text-white/80">Votre prix ne bouge pas.</span>
         </motion.p>
 
         <motion.div
@@ -79,14 +79,14 @@ export default function Hero() {
           className="flex flex-col sm:flex-row items-center gap-4"
         >
           <Link
-            href="/checkout"
+            href="/pricing"
             className="group px-8 py-4 rounded-xl bg-white text-black font-bold transition-all duration-300 flex items-center gap-2 shadow-[0_0_40px_rgba(139,92,246,0.3),0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_0_70px_rgba(139,92,246,0.55),0_12px_40px_rgba(0,0,0,0.5)] hover:scale-[1.04] active:scale-[0.98]"
           >
-            Commencer maintenant
+            Rejoindre la Vague Pionnier
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-200" />
           </Link>
           <Link
-            href="#clipforge"
+            href="#tubeforge"
             className="px-8 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 hover:border-white/20 font-semibold transition-all duration-300 backdrop-blur-sm hover:scale-[1.02]"
           >
             D&eacute;couvrir les outils

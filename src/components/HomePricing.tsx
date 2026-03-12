@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Lock, ArrowRight, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePricing() {
+  const [isAnnual, setIsAnnual] = useState(false);
+
   return (
     <section id="pricing" className="py-32 md:py-40 relative section-fade-top">
       {/* Pricing nebula — violet ambient, signals high value */}
@@ -43,9 +46,9 @@ export default function HomePricing() {
           className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-10"
         >
           {[
-            { period: "Vague 1", tools: "TubeForge", price: "11,99€", you: true },
-            { period: "Vague 2", tools: "+ ClipForge", price: "11,99€", you: true },
-            { period: "Vague 3", tools: "+ ReviewForge", price: "11,99€", you: true },
+            { period: "Vague 1", tools: "TubeForge", price: "11,99\u20ac", you: true },
+            { period: "Vague 2", tools: "+ ClipForge", price: "11,99\u20ac", you: true },
+            { period: "Vague 3", tools: "+ ReviewForge", price: "11,99\u20ac", you: true },
           ].map((step, i) => (
             <div key={i} className="relative text-center p-4 rounded-xl bg-white/[0.03] border border-white/10">
               <p className="text-xs text-white/30 mb-1">{step.period}</p>
@@ -57,7 +60,7 @@ export default function HomePricing() {
             </div>
           ))}
           <div className="col-span-1 md:col-span-3 text-center">
-            <p className="text-xs text-white/30">Les nouveaux abonnés paieront <span className="text-red-400/70">~15&euro;</span>, <span className="text-red-400/70">~25&euro;</span> puis jusqu&apos;&agrave; <span className="text-red-400/70">50-70&euro;</span> pour la même suite.</p>
+            <p className="text-xs text-white/30">Les nouveaux abonn&eacute;s paieront <span className="text-red-400/70">~15&euro;</span>, <span className="text-red-400/70">~25&euro;</span> puis jusqu&apos;&agrave; <span className="text-red-400/70">50-70&euro;</span> pour la m&ecirc;me suite.</p>
           </div>
         </motion.div>
 
@@ -73,29 +76,65 @@ export default function HomePricing() {
             <div className="absolute inset-0 bg-gradient-to-b from-purple-500/15 via-transparent to-transparent pointer-events-none" />
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent pointer-events-none" />
             <div className="relative bg-[#0d0d16] rounded-xl p-8 md:p-10">
+
+            {/* Billing toggle */}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <span className={`text-sm font-medium transition-colors ${!isAnnual ? 'text-white' : 'text-white/40'}`}>Mensuel</span>
+              <button
+                onClick={() => setIsAnnual(!isAnnual)}
+                className="relative w-14 h-7 rounded-full transition-colors duration-300"
+                style={{ background: isAnnual ? 'rgba(139,92,246,0.5)' : 'rgba(255,255,255,0.1)' }}
+                aria-label="Basculer entre mensuel et annuel"
+              >
+                <div
+                  className="absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform duration-300 shadow-md"
+                  style={{ transform: isAnnual ? 'translateX(30px)' : 'translateX(2px)' }}
+                />
+              </button>
+              <span className={`text-sm font-medium transition-colors ${isAnnual ? 'text-white' : 'text-white/40'}`}>
+                Annuel
+              </span>
+              {isAnnual && (
+                <span className="px-2 py-0.5 rounded-full bg-green-500/15 border border-green-500/25 text-green-300 text-xs font-bold">
+                  4 mois offerts
+                </span>
+              )}
+            </div>
+
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
               <div>
                 <h3 className="text-2xl font-bold text-white mb-1">Vague Pionnier</h3>
                 <p className="text-white/40 text-sm">Acc&egrave;s anticip&eacute; &bull; Outils actuels et futurs</p>
               </div>
               <div className="text-left md:text-right">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl md:text-5xl font-bold text-white">11,99&euro;</span>
-                  <span className="text-white/40">/mois</span>
-                </div>
-                <p className="text-xs text-green-300 mt-1">7,99&euro;/mois pour les membres Discord</p>
-                <p className="text-xs text-purple-300 mt-0.5">ou 99,99&euro;/an (soit 8,33&euro;/mois — 4 mois offerts)</p>
+                {isAnnual ? (
+                  <>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl md:text-5xl font-bold text-white">99,99&euro;</span>
+                      <span className="text-white/40">/an</span>
+                    </div>
+                    <p className="text-xs text-green-300 mt-1">soit 8,33&euro;/mois — 4 mois offerts</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl md:text-5xl font-bold text-white">11,99&euro;</span>
+                      <span className="text-white/40">/mois</span>
+                    </div>
+                    <p className="text-xs text-green-300 mt-1">7,99&euro;/mois pour les membres Discord</p>
+                  </>
+                )}
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 mb-8">
               {[
                 "Expedition Launcher (Mac/Windows)",
-                "TubeForge Pro — 8K, sans pub (Vague 1)",
-                "ClipForge — Clips auto 8h + sélection illimitée (Vague 2)",
-                "ReviewForge — Review sécurisé (Vague 3)",
+                "TubeForge Pro \u2014 8K, sans pub (Vague 1)",
+                "ClipForge \u2014 Clips auto 8h + s\u00e9lection illimit\u00e9e (Vague 2)",
+                "ReviewForge \u2014 Review s\u00e9curis\u00e9 (Vague 3)",
                 "Badge Discord Pionnier",
-                "Tarif bloqué tant que vous restez abonné",
+                "Acc\u00e8s Discord priv\u00e9 : retours directs avec le dev, votes features",
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-white/70">
                   <Check className="w-4 h-4 text-purple-400 shrink-0" />
@@ -116,7 +155,7 @@ export default function HomePricing() {
                 href="/pricing"
                 className="py-4 px-6 rounded-xl bg-white/[0.04] border border-white/10 text-white/50 font-medium hover:bg-white/[0.08] hover:border-white/20 hover:text-white/70 transition-all duration-300 flex items-center justify-center text-sm"
               >
-                Comparer les vagues
+                Voir tous les d&eacute;tails
               </Link>
             </div>
 

@@ -530,10 +530,10 @@ export default function ReviewForgeSection() {
                 href="/pricing"
                 className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_50px_rgba(16,185,129,0.4),0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
               >
-                Inclus dans votre abonnement <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
+                Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
               </Link>
             </div>
-            <p className="text-xs text-white/25 mt-3">Les Pionniers y auront acc&egrave;s d&egrave;s la sortie, sans surco&ucirc;t.</p>
+            <p className="text-xs text-white/25 mt-3">D&eacute;j&agrave; inclus pour tous les Pionniers, sans surco&ucirc;t.</p>
           </div>
 
           {/* Mockup */}
