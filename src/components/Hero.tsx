@@ -15,13 +15,6 @@ export default function Hero() {
           filter: 'blur(1px)',
         }}
       />
-      {/* Secondary cyan nebula — lower right, echoes space depth */}
-      <div
-        className="absolute bottom-0 right-1/4 w-[600px] h-[400px] pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 50% 60% at 70% 80%, rgba(6,182,212,0.09) 0%, transparent 65%)',
-        }}
-      />
       <div className="container-main flex flex-col items-center text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
