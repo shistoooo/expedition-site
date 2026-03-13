@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Zap, Scissors, ImagePlus, FileText, FolderOpen, Search, Video, Music, Download, CheckCircle2, ChevronRight, Loader2, ArrowRight, ListVideo, Play, FileUp } from "lucide-react";
+import { Zap, Scissors, FileText, Search, Video, Music, Download, CheckCircle2, ChevronRight, Loader2, ArrowRight, Play, FileUp, FolderOpen } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -349,7 +349,7 @@ function TubeForgeMockup() {
 
 export default function TubeForgeSection() {
   return (
-    <section id="tubeforge" className="py-32 md:py-40 relative section-fade-top">
+    <section id="tubeforge" className="py-32 md:py-40 relative section-fade-top bg-[#06051a]/80">
       <div className="container-main">
         <motion.div
           variants={containerVariants}
@@ -365,11 +365,12 @@ export default function TubeForgeSection() {
               Vague 1 &mdash; Stable
             </p>
 
-            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-[-0.03em]">
+            <h2 className="text-5xl md:text-6xl font-black mb-3 tracking-[-0.03em]">
               Tube<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Forge</span>
             </h2>
+            <p className="text-sm text-white/35 mb-6 font-mono uppercase tracking-wider">L&apos;alternative &agrave; 4K Video Downloader</p>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              T&eacute;l&eacute;chargez en multithread, d&eacute;coupez l&apos;extrait exact, importez votre script. Plus jamais de captures &eacute;cran ou d&apos;onglets YouTube ouverts pendant le montage.
+              T&eacute;l&eacute;chargez vos r&eacute;f&eacute;rences YouTube en quelques secondes, d&eacute;coupez l&apos;extrait exact, importez votre script. Plus jamais d&apos;onglets YouTube ouverts pendant le montage.
             </p>
 
             <motion.ul
@@ -380,12 +381,9 @@ export default function TubeForgeSection() {
               className="space-y-5 mb-10"
             >
               {[
-                { icon: Zap, title: "Vos t\u00e9l\u00e9chargements, en quelques secondes", desc: "Pendant que les sites en ligne vous font attendre, TubeForge t\u00e9l\u00e9charge 3 vid\u00e9os en m\u00eame temps avec 4 flux parall\u00e8les. Une playlist de 20 vid\u00e9os ? Lancez et allez monter." },
-                { icon: Scissors, title: "T\u00e9l\u00e9chargez uniquement le passage qui vous int\u00e9resse", desc: "Vous avez rep\u00e9r\u00e9 30 secondes utiles dans une vid\u00e9o de 2h ? S\u00e9lectionnez l\u2019extrait exact sur la timeline et t\u00e9l\u00e9chargez juste ce passage. Pas besoin de couper apr\u00e8s." },
-                { icon: FileText, title: "Importez votre script, t\u00e9l\u00e9chargez toutes les r\u00e9f\u00e9rences", desc: "Vous pr\u00e9parez une vid\u00e9o avec des liens YouTube dans vos notes pour vos monteurs ? Importez votre document : TubeForge d\u00e9tecte chaque lien et t\u00e9l\u00e9charge tous les passages en un clic." },
-                { icon: ImagePlus, title: "Capturez n\u2019importe quelle image d\u2019une vid\u00e9o", desc: "Besoin d\u2019une r\u00e9f\u00e9rence visuelle, d\u2019un frame pr\u00e9cis pour votre miniature ? Extrayez toutes les images cl\u00e9s d\u2019une vid\u00e9o en un clic. Plus besoin de faire des captures \u00e9cran." },
-                { icon: ListVideo, title: "Cherchez et t\u00e9l\u00e9chargez sans quitter l\u2019app", desc: "Recherche YouTube int\u00e9gr\u00e9e. Trouvez la vid\u00e9o, s\u00e9lectionnez la qualit\u00e9, lancez le t\u00e9l\u00e9chargement. Tout \u00e7a sans ouvrir votre navigateur." },
-                { icon: FolderOpen, title: "Toutes vos vid\u00e9os, rang\u00e9es et accessibles", desc: "Organisez par projet avec des dossiers, pr\u00e9visualisez avec le lecteur int\u00e9gr\u00e9, d\u00e9placez en drag-and-drop. Fini le dossier T\u00e9l\u00e9chargements en bordel." },
+                { icon: Zap, title: "T\u00e9l\u00e9chargez en quelques secondes, jusqu\u2019en 8K", desc: "Pendant que les sites en ligne vous font attendre, TubeForge t\u00e9l\u00e9charge 3 vid\u00e9os en m\u00eame temps. Une playlist de 20 vid\u00e9os ? Lancez et allez monter." },
+                { icon: Scissors, title: "D\u00e9coupez l\u2019extrait exact avant de t\u00e9l\u00e9charger", desc: "Vous avez rep\u00e9r\u00e9 30 secondes utiles dans une vid\u00e9o de 2h ? S\u00e9lectionnez l\u2019extrait sur la timeline et t\u00e9l\u00e9chargez juste ce passage. Pas besoin de couper apr\u00e8s." },
+                { icon: FileText, title: "Importez votre script, toutes les r\u00e9f\u00e9rences se t\u00e9l\u00e9chargent", desc: "Vous pr\u00e9parez une vid\u00e9o avec des liens YouTube dans vos notes ? Importez votre document : TubeForge d\u00e9tecte chaque lien et t\u00e9l\u00e9charge tout en un clic." },
               ].map((item, i) => (
                 <motion.li key={i} variants={itemVariants} className="flex gap-4 group/item">
                   <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover/item:bg-red-500/10 group-hover/item:border-red-500/25 group-hover/item:shadow-[0_0_20px_rgba(239,68,68,0.12)]">
@@ -401,7 +399,7 @@ export default function TubeForgeSection() {
 
             <Link
               href="/pricing"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_50px_rgba(239,68,68,0.4),0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
+              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(239,68,68,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(239,68,68,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
             >
               Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
             </Link>

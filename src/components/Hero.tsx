@@ -36,7 +36,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.95] tracking-[-0.04em]"
         >
-          Tous vos outils de cr&eacute;ation.
+          T&eacute;l&eacute;chargement, clipping, retours vid&eacute;o.
           <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400">Un seul abonnement.</span>
         </motion.h1>
@@ -45,36 +45,22 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto"
+          className="text-lg md:text-xl text-white/55 mb-10 max-w-2xl leading-relaxed mx-auto"
         >
-          Aujourd&apos;hui 1 outil. Demain 10.
+          Plus on ajoute d&apos;outils, plus le prix d&apos;entr&eacute;e monte.
           <br className="hidden md:block" />
-          <span className="text-white/80">Votre prix ne bouge pas.</span>
+          <span className="text-white/80">Sauf pour vous.</span>
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10 px-4"
-        >
-          <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">11,99&euro;</span>
-          <span className="text-white/40 text-sm">/mois</span>
-          <span className="text-sm text-white/40">ou</span>
-          <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-400">7,99&euro;</span>
-          <span className="text-white/40 text-sm">/mois</span>
-          <span className="px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-300 text-xs font-medium">avec Discord</span>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center gap-4"
+          className="flex items-center"
         >
           <Link
             href={SALES_OPEN ? "/pricing" : "/checkout"}
-            className="group px-8 py-4 rounded-xl bg-white text-black font-bold transition-all duration-300 flex items-center gap-2 shadow-[0_0_40px_rgba(139,92,246,0.3),0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_0_70px_rgba(139,92,246,0.55),0_12px_40px_rgba(0,0,0,0.5)] hover:scale-[1.04] active:scale-[0.98]"
+            className="group px-8 py-4 rounded-xl bg-white text-black font-bold text-base transition-all duration-200 flex items-center gap-2 border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(139,92,246,0.25)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(139,92,246,0.4)] hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
           >
             {SALES_OPEN ? "Voir les offres" : "\u00catre pr\u00e9venu au lancement"}
             {SALES_OPEN ? (
@@ -82,12 +68,6 @@ export default function Hero() {
             ) : (
               <Bell className="w-5 h-5" />
             )}
-          </Link>
-          <Link
-            href="#tubeforge"
-            className="px-8 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 hover:border-white/20 font-semibold transition-all duration-300 backdrop-blur-sm hover:scale-[1.02]"
-          >
-            D&eacute;couvrir les outils
           </Link>
         </motion.div>
       </div>

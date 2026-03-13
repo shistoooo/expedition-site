@@ -477,7 +477,7 @@ function ReviewForgeMockup() {
 
 export default function ReviewForgeSection() {
   return (
-    <section id="reviewforge" className="pt-32 md:pt-40 pb-16 md:pb-20 relative section-fade-top">
+    <section id="reviewforge" className="pt-32 md:pt-40 pb-16 md:pb-20 relative section-fade-top bg-[#06051a]/80">
       <div className="container-main">
         <motion.div
           variants={containerVariants}
@@ -493,9 +493,10 @@ export default function ReviewForgeSection() {
               Vague 3 &mdash; Stable
             </p>
 
-            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-[-0.03em]">
+            <h2 className="text-5xl md:text-6xl font-black mb-3 tracking-[-0.03em]">
               Review<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Forge</span>
             </h2>
+            <p className="text-sm text-white/35 mb-6 font-mono uppercase tracking-wider">L&apos;alternative &agrave; Frame.io</p>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
               Partagez vos montages en cours avec vos clients ou votre &eacute;quipe. S&eacute;curis&eacute;, temporaire, sans upload.
             </p>
@@ -528,7 +529,7 @@ export default function ReviewForgeSection() {
             <div className="flex items-center gap-4">
               <Link
                 href="/pricing"
-                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_50px_rgba(16,185,129,0.4),0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(16,185,129,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(16,185,129,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
               >
                 Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
               </Link>

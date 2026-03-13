@@ -10,6 +10,7 @@ import ReviewForgeSection from "@/components/ReviewForgeSection";
 import WhyExpeditionSection from "@/components/WhyExpeditionSection";
 import HomePricing from "@/components/HomePricing";
 import DiscordSection from "@/components/DiscordSection";
+import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
         <WhyExpeditionSection />
         <HomePricing />
         <DiscordSection />
+        <FAQSection />
       </main>
       <Footer />
     </div>

@@ -147,7 +147,7 @@ export default function HomePricing() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/checkout"
-                className="group flex-1 py-4 rounded-xl bg-white text-black font-bold text-lg hover:bg-gray-50 transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.4),0_8px_32px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                className="group flex-1 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(139,92,246,0.25)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(139,92,246,0.4)] hover:translate-y-[-1px] active:translate-y-[1px] flex items-center justify-center gap-2"
               >
                 {SALES_OPEN ? "Rejoindre la Vague Pionnier" : "\u00catre pr\u00e9venu au lancement"}
                 {SALES_OPEN ? (

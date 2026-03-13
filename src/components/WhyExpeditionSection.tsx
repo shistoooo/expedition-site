@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Shield, Rocket, Download, Sparkles, Link2, MessageCircle } from "lucide-react";
+import { Shield, Rocket, Download, Sparkles, Link2, MessageCircle, Users, Zap } from "lucide-react";
 
 const tools = [
   {
@@ -34,28 +34,39 @@ const tools = [
   },
 ];
 
-const convictions = [
+const bentoItems = [
   {
-    label: "01",
-    quote: "Pourquoi payer 10x le prix pour les m\u00eames fonctionnalit\u00e9s\u00a0?",
-    note: "Prix juste \u2014 pas de forfait \u00abPro\u00bb \u00e0 30\u20ac par outil.",
+    icon: Zap,
+    title: "Prix juste",
+    desc: "Pourquoi payer 10x le prix pour les m\u00eames fonctionnalit\u00e9s ? Pas de forfait \u00abPro\u00bb \u00e0 30\u20ac par outil.",
+    span: "md:col-span-1",
   },
   {
-    label: "02",
-    quote: "Vos retours sur Discord fa\u00e7onnent directement les mises \u00e0 jour.",
-    note: "Co-construction \u2014 pas une feuille de route grav\u00e9e dans le marbre.",
+    icon: Users,
+    title: "Co-construit avec vous",
+    desc: "Vos retours sur Discord fa\u00e7onnent directement les mises \u00e0 jour. Pas une feuille de route grav\u00e9e dans le marbre.",
+    span: "md:col-span-1",
   },
   {
-    label: "03",
-    quote: "Pas de promesses intenables. On construit, jour apr\u00e8s jour.",
-    note: "Transparence \u2014 vous savez toujours o\u00f9 on en est.",
+    icon: Shield,
+    title: "Transparent",
+    desc: "Pas de promesses intenables. On construit, jour apr\u00e8s jour. Vous savez toujours o\u00f9 on en est.",
+    span: "md:col-span-1",
+  },
+  {
+    icon: MessageCircle,
+    title: "Discord d\u00e9di\u00e9",
+    desc: "Signalez un bug, proposez une am\u00e9lioration, votez les prochaines features. Acc\u00e8s direct au d\u00e9veloppeur.",
+    span: "md:col-span-1",
   },
 ];
 
 export default function WhyExpeditionSection() {
   return (
-    <section className="py-32 md:py-40 relative section-fade-top">
-      <div className="container-main max-w-5xl">
+    <section className="py-32 md:py-40 relative">
+      {/* Solid bg to hide stars on this dense section */}
+      <div className="absolute inset-0 bg-[#06051a]/90 pointer-events-none" />
+      <div className="container-main max-w-5xl relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,68 +86,46 @@ export default function WhyExpeditionSection() {
           </p>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-          {/* Left: tool status cards */}
-          <div className="flex-1 space-y-3">
-            {tools.map((tool, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="group flex items-start gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/15 transition-all duration-300"
-              >
-                <div className="mt-0.5 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
-                  <tool.icon className="w-4 h-4 text-white/50" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <h3 className="font-bold text-white text-sm">{tool.name}</h3>
-                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold text-white ${tool.statusColor}`}>
-                      {tool.status}
-                    </span>
-                  </div>
-                  <p className="text-xs text-white/40 leading-relaxed">{tool.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-
+        {/* Bento grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {bentoItems.map((item, i) => (
             <motion.div
+              key={i}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/15 flex items-start gap-3"
+              transition={{ delay: i * 0.08 }}
+              className={`group p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/15 transition-all duration-300 ${item.span}`}
             >
-              <div className="mt-0.5 w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
-                <MessageCircle className="w-4 h-4 text-purple-400" />
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                <item.icon className="w-5 h-5 text-purple-400" />
               </div>
-              <div>
-                <h3 className="font-bold text-white text-sm mb-0.5">Channel Discord d&eacute;di&eacute;</h3>
-                <p className="text-xs text-white/40 leading-relaxed">
-                  Signalez un bug, proposez une am&eacute;lioration, votez les prochaines features.
-                </p>
+              <h3 className="font-bold text-white text-base mb-2">{item.title}</h3>
+              <p className="text-sm text-white/40 leading-relaxed">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Tool status cards — compact row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {tools.map((tool, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 + i * 0.06 }}
+              className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]"
+            >
+              <tool.icon className="w-4 h-4 text-white/30 shrink-0" />
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-white/70 truncate">{tool.name}</span>
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${tool.statusColor}`} />
+                </div>
               </div>
             </motion.div>
-          </div>
-
-          {/* Right: convictions */}
-          <div className="flex-1 flex flex-col gap-0 divide-y divide-white/[0.06]">
-            {convictions.map(({ label, quote, note }, i) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
-                className="py-8 first:pt-0 last:pb-0"
-              >
-                <span className="text-xs font-mono font-bold text-purple-400/50 tracking-[0.15em] uppercase mb-3 block">{label}</span>
-                <p className="text-xl md:text-2xl font-semibold text-white leading-snug mb-2">&ldquo;{quote}&rdquo;</p>
-                <p className="text-sm text-white/35 font-mono tracking-wide">{note}</p>
-              </motion.div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </section>

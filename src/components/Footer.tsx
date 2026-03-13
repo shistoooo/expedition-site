@@ -33,7 +33,7 @@ export default function Footer() {
                 Mon compte
               </Link>
               <Link href="/ambassador" className="hover:text-purple-400 transition-colors">
-                Ambassadeur
+                Affili&eacute;
               </Link>
             </div>
             <div className="mt-3 flex gap-6 justify-center md:justify-start text-xs text-white/40">

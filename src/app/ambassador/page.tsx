@@ -87,7 +87,7 @@ export default function AmbassadorPage() {
           >
             <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-10 flex items-center justify-center gap-2">
               <span className="w-3 h-px bg-purple-400/50 inline-block" />
-              Programme Ambassadeur
+              Programme d&apos;affiliation
             </p>
 
             {/* The number IS the hook — give it impossible-to-miss scale */}
@@ -111,7 +111,7 @@ export default function AmbassadorPage() {
                 href="#candidature"
                 className="px-8 py-4 rounded-full bg-white text-black font-bold text-lg hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center gap-2"
               >
-                Devenir Ambassadeur <ArrowRight className="w-5 h-5" />
+                Devenir Affili&eacute; <ArrowRight className="w-5 h-5" />
               </a>
               <a
                 href="#comment-ca-marche"
@@ -194,11 +194,39 @@ export default function AmbassadorPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 mb-8">
                 <Repeat className="w-5 h-5 text-purple-400 shrink-0" />
                 <p className="text-sm text-purple-200">
-                  <strong>Commission pendant 6 mois :</strong> vous gagnez chaque mois pendant 6 mois par filleul. 10 filleuls = ~50€/mois pendant 6 mois.
+                  <strong>Commission pendant 6 mois :</strong> vous gagnez chaque mois pendant 6 mois par filleul. 10 filleuls = ~50&euro;/mois pendant 6 mois.
                 </p>
+              </div>
+
+              {/* Earnings progress bar */}
+              <div>
+                <p className="text-xs font-mono text-white/30 uppercase tracking-wider mb-4">Vos gains mensuels selon le nombre de filleuls</p>
+                <div className="space-y-3">
+                  {[
+                    { referrals: 5, amount: "~25\u20ac" },
+                    { referrals: 10, amount: "~50\u20ac" },
+                    { referrals: 25, amount: "~125\u20ac" },
+                    { referrals: 50, amount: "~250\u20ac" },
+                    { referrals: 100, amount: "~500\u20ac" },
+                  ].map((tier, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="text-xs text-white/40 w-20 shrink-0 text-right font-mono">{tier.referrals} filleuls</span>
+                      <div className="flex-1 h-6 rounded-lg overflow-hidden relative" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${Math.min((tier.referrals / 100) * 100, 100)}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.8, delay: 0.2 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                          className="h-full rounded-lg bg-gradient-to-r from-purple-600 to-purple-400"
+                        />
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-bold text-white/70">{tier.amount}/mois</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           </div>

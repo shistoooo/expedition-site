@@ -269,7 +269,7 @@ function ClipForgeMockup() {
 
 export default function ToolsSection() {
   return (
-    <section id="clipforge" className="py-32 md:py-40 relative section-fade-top">
+    <section id="clipforge" className="py-32 md:py-40 relative section-fade-top bg-[#06051a]/80">
       <div className="container-main">
         <motion.div
           variants={containerVariants}
@@ -285,9 +285,10 @@ export default function ToolsSection() {
               Vague 2 &mdash; Beta
             </p>
 
-            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-[-0.03em]">
+            <h2 className="text-5xl md:text-6xl font-black mb-3 tracking-[-0.03em]">
               Clip<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">Forge</span>
             </h2>
+            <p className="text-sm text-white/35 mb-6 font-mono uppercase tracking-wider">L&apos;alternative &agrave; OpusClip</p>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
               Collez un lien YouTube. ClipForge trouve les moments viraux, recadre, sous-titre et exporte vos clips pr&ecirc;ts &agrave; poster.
             </p>
@@ -319,7 +320,7 @@ export default function ToolsSection() {
 
             <a
               href="/pricing"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:shadow-[0_0_50px_rgba(168,85,247,0.45),0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
+              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(168,85,247,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(168,85,247,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
             >
               Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
             </a>
