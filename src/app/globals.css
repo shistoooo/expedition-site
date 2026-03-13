@@ -16,11 +16,33 @@
   --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-syne);
+  --font-display: var(--font-playfair);
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Smooth Cursor — hide native cursor on desktop, keep text cursor for inputs */
+@media (any-hover: hover) and (any-pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    cursor: text !important;
+  }
+}
+
+/* Hide ambient glow when hovering interactive cards */
+body:has(.pricing-card:hover) .cursor-glow {
+  opacity: 0 !important;
+  transition: opacity 0.3s ease;
 }
 
 html {
@@ -29,24 +51,25 @@ html {
 }
 
 body {
+  --font-display: var(--font-playfair);
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Display font for headings — 900 for h1 hero impact, 800 for h2 section titles */
+/* Display font for headings — Playfair Display serif */
 h1 {
   font-family: var(--font-display), var(--font-sans), sans-serif;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
 }
 
 h2 {
   font-family: var(--font-display), var(--font-sans), sans-serif;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 ::selection {
@@ -133,6 +156,85 @@ h2 {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+/* Border beam — animated rotating gradient border */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-rotate {
+  to { --beam-angle: 360deg; }
+}
+
+.border-beam {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  overflow: hidden;
+}
+
+.border-beam-gradient {
+  position: absolute;
+  inset: -100%;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0%,
+    transparent 35%,
+    rgba(139,92,246,0.9) 45%,
+    rgba(167,139,250,0.9) 55%,
+    transparent 65%,
+    transparent 100%
+  );
+  animation: beam-rotate 6s linear infinite;
+}
+
+/* Hero entrance — CSS-based, immune to HMR issues */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-in {
+  animation: hero-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes text-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-text-shimmer {
+  background-size: 200% auto;
+  animation: text-shimmer 6s linear infinite;
+}
+
+/* Marquee — infinite horizontal scroll */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50%)); }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 .container-main {

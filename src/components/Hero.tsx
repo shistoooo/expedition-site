@@ -1,15 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowRight, Bell } from "lucide-react";
 import Link from "next/link";
 import { SALES_OPEN } from "@/lib/salesConfig";
 
 export default function Hero() {
   return (
-    <section className="pt-36 pb-48 md:pt-56 md:pb-64 relative overflow-hidden">
-      {/* Bottom fade — smooth transition to next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#06051a] pointer-events-none z-[1]" />
+    <section className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-hidden">
       {/* Nebula ambient — violet core fading to transparent, anchored behind the h1 */}
       <div
         className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] pointer-events-none"
@@ -19,46 +16,50 @@ export default function Hero() {
         }}
       />
       <div className="container-main flex flex-col items-center text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs md:text-sm font-medium mb-6 backdrop-blur-sm"
+        <div
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs md:text-sm font-medium mb-6 backdrop-blur-sm animate-hero-in"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
           </span>
           <span>{SALES_OPEN ? "Vague Pionnier — Places ouvertes" : "Lancement imminent"}</span>
-        </motion.div>
+        </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.95] tracking-[-0.04em]"
+        <div
+          className="mb-8 animate-hero-in"
+          style={{ animationDelay: "0.1s" }}
         >
-          Les outils des cr&eacute;ateurs YouTube.
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400">Gagnez des heures chaque semaine.</span>
-        </motion.h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-[1.1] tracking-[-0.02em] text-white/90">
+            Les outils pour youtubeurs{" "}
+            <br className="hidden md:block" />
+            et prestataires.
+          </h1>
+          <span
+            className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.05] text-transparent bg-clip-text animate-text-shimmer italic"
+            style={{
+              backgroundImage: "linear-gradient(90deg, #8b5cf6 0%, #a78bfa 25%, #22d3ee 50%, #a78bfa 75%, #8b5cf6 100%)",
+              backgroundSize: "200% auto",
+            }}
+          >
+            Gagnez des heures{" "}
+            <br className="hidden lg:block" />
+            chaque semaine.
+          </span>
+        </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl text-white/55 mb-10 max-w-2xl leading-relaxed mx-auto"
+        <p
+          className="text-lg md:text-xl text-white/55 mb-10 max-w-2xl leading-relaxed mx-auto animate-hero-in"
+          style={{ animationDelay: "0.2s" }}
         >
           T&eacute;l&eacute;chargement, clipping, retours vid&eacute;o &mdash; arr&ecirc;tez de jongler entre 5&nbsp;apps.
           <br className="hidden md:block" />
           <span className="text-white/80">Tout est l&agrave;, dans une seule suite.</span>
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex items-center"
+        <div
+          className="flex items-center animate-hero-in"
+          style={{ animationDelay: "0.3s" }}
         >
           <Link
             href={SALES_OPEN ? "/pricing" : "/checkout"}
@@ -71,7 +72,7 @@ export default function Hero() {
               <Bell className="w-5 h-5" />
             )}
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

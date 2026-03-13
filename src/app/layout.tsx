@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Syne } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import GlobalSpace from "@/components/GlobalSpace";
+import SmoothCursor from "@/components/SmoothCursor";
+import CursorGlow from "@/components/CursorGlow";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +15,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const syne = Syne({
-  variable: "--font-syne",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expedition.so";
@@ -92,9 +95,11 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} antialiased noise-overlay`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased noise-overlay`}
       >
         <GlobalSpace />
+        <CursorGlow />
+        <SmoothCursor />
         {children}
       </body>
     </html>

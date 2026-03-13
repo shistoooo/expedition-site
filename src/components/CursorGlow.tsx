@@ -17,7 +17,7 @@ export default function CursorGlow() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed top-0 left-0 w-screen h-screen z-30 hidden md:block"
+      className="cursor-glow pointer-events-none fixed top-0 left-0 w-screen h-screen z-30 hidden md:block"
       animate={{
         background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.15), transparent 40%)`,
       }}

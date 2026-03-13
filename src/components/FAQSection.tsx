@@ -56,7 +56,7 @@ export const faqStructuredData = {
 
 export default function FAQSection() {
   return (
-    <section id="faq" className="py-24 md:py-32 relative">
+    <section id="faq" className="pt-12 pb-24 md:pt-16 md:pb-32 relative">
       <div className="container-main max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

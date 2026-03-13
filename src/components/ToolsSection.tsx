@@ -83,6 +83,8 @@ function ClipForgeMockup() {
   const clips = [
     { score: 94, title: "J'ai vendu 500 mille albums", duration: "0:42", hook: 91, retention: 88, video: "/mockups/clip-1.mp4" },
     { score: 87, title: "Acceptez-vous ?", duration: "0:31", hook: 85, retention: 82, video: "/mockups/clip-2.mp4" },
+    { score: 91, title: "Le moment o\u00f9 tout a chang\u00e9", duration: "0:38", hook: 89, retention: 85, video: "/mockups/clip-3.mp4" },
+    { score: 82, title: "Personne ne s'y attendait", duration: "0:27", hook: 78, retention: 80, video: "/mockups/review-clip.mp4" },
   ];
 
   return (
@@ -189,7 +191,7 @@ function ClipForgeMockup() {
         </div>
 
         {/* Results strip — compact clip cards */}
-        <div className="flex gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {clips.map((clip, i) => (
             <motion.div
               key={i}

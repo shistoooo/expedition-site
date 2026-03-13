@@ -11,6 +11,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import WalletSection from "@/components/WalletSection";
+import BorderBeam from "@/components/BorderBeam";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -660,8 +661,9 @@ export default function AccountPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 onSubmit={authMode === "login" ? handleLogin : handleRegister}
-                                className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5"
+                                className="relative p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5"
                             >
+                                <BorderBeam />
                                 <div className="flex items-center justify-between mb-6">
                                     <h1 className="text-2xl font-bold">
                                         {authMode === "login" ? "Mon compte" : "Créer un compte"}
