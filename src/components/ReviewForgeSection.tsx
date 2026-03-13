@@ -156,7 +156,7 @@ function ReviewForgeMockup() {
 
       {side === "reviewer" ? (
         /* ── Reviewer view (interactive) ── */
-        <div className="flex" style={{ minHeight: 340 }}>
+        <div className="flex" style={{ minHeight: 280 }}>
           {/* Video area */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Header */}
@@ -237,7 +237,7 @@ function ReviewForgeMockup() {
           </div>
 
           {/* Comment panel */}
-          <div className="w-[100px] sm:w-[140px] md:w-[200px] shrink-0 flex flex-col" style={{ background: 'rgba(11,11,20,0.97)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="w-[100px] sm:w-[120px] shrink-0 flex flex-col" style={{ background: 'rgba(11,11,20,0.97)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
             {/* Header */}
             <div className="flex items-center gap-1.5 px-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
               <MessageSquare className="w-3 h-3 text-indigo-500" />
@@ -297,9 +297,9 @@ function ReviewForgeMockup() {
         </div>
       ) : (
       /* ── Creator view ── */
-      <div className="flex" style={{ minHeight: 340 }}>
+      <div className="flex" style={{ minHeight: 280 }}>
       {/* Sidebar */}
-      <div className="w-[52px] md:w-[140px] shrink-0 flex flex-col border-r border-white/5" style={{ background: '#08080c' }}>
+      <div className="w-[52px] sm:w-[100px] shrink-0 flex flex-col border-r border-white/5" style={{ background: '#08080c' }}>
         {/* Logo */}
         <div className="p-3 md:px-4 md:py-4">
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
@@ -477,74 +477,68 @@ function ReviewForgeMockup() {
 
 export default function ReviewForgeSection() {
   return (
-    <section id="reviewforge" className="pt-12 md:pt-16 pb-16 md:pb-20 relative section-fade-top bg-[#06051a]/80">
-      <div className="container-main">
-        <motion.div
-          variants={containerVariants}
+    <motion.div
+      id="reviewforge"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="relative flex flex-col"
+    >
+      {/* Text */}
+      <div className="text-left mb-8">
+        <p className="text-xs font-mono uppercase tracking-widest text-emerald-400/60 mb-4 flex items-center gap-2">
+          <span className="w-3 h-px bg-emerald-400/50 inline-block" />
+          Vague 3 &mdash; Stable
+        </p>
+
+        <h2 className="text-3xl md:text-4xl font-black mb-2 tracking-[-0.03em]">
+          Review<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Forge</span>
+        </h2>
+        <p className="text-xs text-white/35 mb-4 font-mono uppercase tracking-wider">L&apos;alternative &agrave; Frame.io</p>
+        <p className="text-base text-white/60 mb-6 leading-relaxed">
+          Partagez vos montages en cours avec vos clients ou votre &eacute;quipe. S&eacute;curis&eacute;, temporaire, sans upload.
+        </p>
+
+        <motion.ul
+          variants={listVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20"
+          className="space-y-3 mb-6"
         >
-          {/* Text */}
-          <div className="flex-1 text-left">
-            <p className="text-xs font-mono uppercase tracking-widest text-emerald-400/60 mb-6 flex items-center gap-2">
-              <span className="w-3 h-px bg-emerald-400/50 inline-block" />
-              Vague 3 &mdash; Stable
-            </p>
+          {[
+            { icon: Shield, title: "Vos vid\u00e9os restent sur votre machine", desc: "Tunnel s\u00e9curis\u00e9 direct, pas d\u2019upload cloud." },
+            { icon: Clock, title: "Liens qui s\u2019auto-d\u00e9truisent", desc: "Expiration, max de vues, mot de passe." },
+            { icon: Eye, title: "Suivi en temps r\u00e9el", desc: "Qui a regard\u00e9, quand, combien de vues." },
+            { icon: Link2, title: "Un lien, un clic", desc: "Rien \u00e0 installer c\u00f4t\u00e9 reviewer." },
+          ].map((item, i) => (
+            <motion.li key={i} variants={itemVariants} className="flex gap-3 group/item">
+              <div className="mt-0.5 w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                <item.icon className="w-3.5 h-3.5 text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-sm">{item.title}</h3>
+                <p className="text-white/45 text-xs leading-relaxed">{item.desc}</p>
+              </div>
+            </motion.li>
+          ))}
+        </motion.ul>
 
-            <h2 className="text-5xl md:text-6xl font-black mb-3 tracking-[-0.03em]">
-              Review<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Forge</span>
-            </h2>
-            <p className="text-sm text-white/35 mb-6 font-mono uppercase tracking-wider">L&apos;alternative &agrave; Frame.io</p>
-            <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              Partagez vos montages en cours avec vos clients ou votre &eacute;quipe. S&eacute;curis&eacute;, temporaire, sans upload.
-            </p>
-
-            <motion.ul
-              variants={listVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="space-y-5 mb-10"
-            >
-              {[
-                { icon: Shield, title: "Vos vid\u00e9os ne quittent jamais votre machine", desc: "Pas d\u2019upload sur un cloud. ReviewForge cr\u00e9e un tunnel s\u00e9curis\u00e9 direct entre vous et votre reviewer. Votre montage reste sur votre disque dur." },
-                { icon: Clock, title: "Des liens qui s\u2019auto-d\u00e9truisent", desc: "Configurez une expiration (1h, 24h, 7 jours), un nombre max de vues, un mot de passe. Le lien dispara\u00eet automatiquement apr\u00e8s." },
-                { icon: Eye, title: "Suivez qui regarde, en temps r\u00e9el", desc: "Dashboard en direct : nombre de vues par lien, qui a regard\u00e9, quand le lien expire. R\u00e9voquez un acc\u00e8s en un clic si besoin." },
-                { icon: Link2, title: "Un lien, un clic, c\u2019est partag\u00e9", desc: "S\u00e9lectionnez votre fichier, configurez les restrictions, copiez le lien. Votre client n\u2019a rien \u00e0 installer \u2014 il ouvre le lien dans son navigateur." },
-              ].map((item, i) => (
-                <motion.li key={i} variants={itemVariants} className="flex gap-4 group/item">
-                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover/item:bg-emerald-500/10 group-hover/item:border-emerald-500/25 group-hover/item:shadow-[0_0_20px_rgba(16,185,129,0.12)]">
-                    <item.icon className="w-4 h-4 text-emerald-400 transition-transform duration-300 group-hover/item:scale-110" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">{item.title}</h3>
-                    <p className="text-white/45 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                </motion.li>
-              ))}
-            </motion.ul>
-
-            <div className="flex items-center gap-4">
-              <Link
-                href="/pricing"
-                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(16,185,129,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(16,185,129,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
-              >
-                Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
-              </Link>
-            </div>
-            <p className="text-xs text-white/25 mt-3">D&eacute;j&agrave; inclus pour tous les Pionniers, sans surco&ucirc;t.</p>
-          </div>
-
-          {/* Mockup */}
-          <div className="flex-1 w-full relative">
-            {/* Emerald-cyan nebula — ReviewForge identity glow */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.06) 0%, transparent 60%)', filter: 'blur(80px)' }} />
-            <ReviewForgeMockup />
-          </div>
-        </motion.div>
+        <Link
+          href="/pricing"
+          className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(16,185,129,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(16,185,129,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+        >
+          Rejoindre pour y acc&eacute;der <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1.5" />
+        </Link>
       </div>
-    </section>
+
+      {/* Mockup */}
+      <div className="w-full relative mt-auto">
+        {/* Emerald-cyan nebula — ReviewForge identity glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.06) 0%, transparent 60%)', filter: 'blur(80px)' }} />
+        <ReviewForgeMockup />
+      </div>
+    </motion.div>
   );
 }

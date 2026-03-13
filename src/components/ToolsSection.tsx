@@ -83,7 +83,6 @@ function ClipForgeMockup() {
   const clips = [
     { score: 94, title: "J'ai vendu 500 mille albums", duration: "0:42", hook: 91, retention: 88, video: "/mockups/clip-1.mp4" },
     { score: 87, title: "Acceptez-vous ?", duration: "0:31", hook: 85, retention: 82, video: "/mockups/clip-2.mp4" },
-    { score: 78, title: "Le Barça nous a humilié", duration: "0:55", hook: 72, retention: 80, video: "/mockups/clip-3.mp4" },
   ];
 
   return (
@@ -203,7 +202,7 @@ function ClipForgeMockup() {
         </div>
 
         {/* Results grid — 3 clip cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {clips.map((clip, i) => (
             <motion.div
               key={i}
@@ -269,71 +268,68 @@ function ClipForgeMockup() {
 
 export default function ToolsSection() {
   return (
-    <section id="clipforge" className="pt-12 md:pt-16 pb-12 md:pb-16 relative section-fade-top bg-[#06051a]/80">
-      <div className="container-main">
-        <motion.div
-          variants={containerVariants}
+    <motion.div
+      id="clipforge"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="relative flex flex-col"
+    >
+      {/* Text */}
+      <div className="text-left mb-8">
+        <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-4 flex items-center gap-2">
+          <span className="w-3 h-px bg-purple-400/50 inline-block" />
+          Vague 2 &mdash; Beta
+        </p>
+
+        <h2 className="text-3xl md:text-4xl font-black mb-2 tracking-[-0.03em]">
+          Clip<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">Forge</span>
+        </h2>
+        <p className="text-xs text-white/35 mb-4 font-mono uppercase tracking-wider">L&apos;alternative &agrave; OpusClip</p>
+        <p className="text-base text-white/60 mb-6 leading-relaxed">
+          Collez un lien YouTube. ClipForge trouve les moments viraux, recadre, sous-titre et exporte vos clips pr&ecirc;ts &agrave; poster.
+        </p>
+
+        <motion.ul
+          variants={listVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20"
+          className="space-y-3 mb-6"
         >
-          {/* Text */}
-          <div className="flex-1 text-left">
-            <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-6 flex items-center gap-2">
-              <span className="w-3 h-px bg-purple-400/50 inline-block" />
-              Vague 2 &mdash; Beta
-            </p>
+          {[
+            { icon: Sparkles, title: "L\u2019IA trouve vos meilleurs moments", desc: "Analyse sp\u00e9cialis\u00e9e selon votre contenu : gaming, podcast, tuto, vlog." },
+            { icon: TrendingUp, title: "Score de viralit\u00e9, hook et r\u00e9tention", desc: "Chaque clip est not\u00e9 sur 100. Voyez quels extraits vont performer." },
+            { icon: ScanFace, title: "Recadrage intelligent qui suit le visage", desc: "Le cadrage 9:16 suit votre visage frame par frame, sans saccade." },
+            { icon: Type, title: "Sous-titres anim\u00e9s, \u00e9ditables", desc: "4 styles, couleurs personnalisables, \u00e9diteur int\u00e9gr\u00e9." },
+          ].map((item, i) => (
+            <motion.li key={i} variants={itemVariants} className="flex gap-3 group/item">
+              <div className="mt-0.5 w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                <item.icon className="w-3.5 h-3.5 text-purple-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-sm">{item.title}</h3>
+                <p className="text-white/45 text-xs leading-relaxed">{item.desc}</p>
+              </div>
+            </motion.li>
+          ))}
+        </motion.ul>
 
-            <h2 className="text-5xl md:text-6xl font-black mb-3 tracking-[-0.03em]">
-              Clip<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">Forge</span>
-            </h2>
-            <p className="text-sm text-white/35 mb-6 font-mono uppercase tracking-wider">L&apos;alternative &agrave; OpusClip</p>
-            <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              Collez un lien YouTube. ClipForge trouve les moments viraux, recadre, sous-titre et exporte vos clips pr&ecirc;ts &agrave; poster.
-            </p>
-
-            <motion.ul
-              variants={listVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="space-y-5 mb-10"
-            >
-              {[
-                { icon: Sparkles, title: "L\u2019IA trouve vos meilleurs moments", desc: "Analyse sp\u00e9cialis\u00e9e selon votre contenu : gaming, podcast, tuto, vlog. Elle d\u00e9tecte les punchlines, les r\u00e9actions, les fails \u2014 pas juste les silences." },
-                { icon: TrendingUp, title: "Score de viralit\u00e9, hook et r\u00e9tention", desc: "Chaque clip est not\u00e9 sur 100. Vous voyez en un coup d\u2019\u0153il quels extraits vont performer et lesquels sont \u00e0 jeter." },
-                { icon: ScanFace, title: "Recadrage intelligent qui suit le visage", desc: "Le cadrage 9:16 suit votre visage frame par frame. Smooth, sans saccade, avec un lissage cin\u00e9matographique. Vous restez toujours au centre." },
-                { icon: Type, title: "Sous-titres anim\u00e9s, \u00e9ditables", desc: "4 styles d\u2019animation (Pop, Smooth, Glow, Classique), couleurs personnalisables, \u00e9diteur int\u00e9gr\u00e9. Modifiez un mot, reg\u00e9n\u00e9rez le clip en un clic." },
-              ].map((item, i) => (
-                <motion.li key={i} variants={itemVariants} className="flex gap-4 group/item">
-                  <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover/item:bg-indigo-500/10 group-hover/item:border-indigo-500/25 group-hover/item:shadow-[0_0_20px_rgba(99,102,241,0.12)]">
-                    <item.icon className="w-4 h-4 text-purple-400 transition-transform duration-300 group-hover/item:scale-110" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">{item.title}</h3>
-                    <p className="text-white/45 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                </motion.li>
-              ))}
-            </motion.ul>
-
-            <a
-              href="/pricing"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(168,85,247,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(168,85,247,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
-            >
-              Rejoindre pour y acc&eacute;der <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
-            </a>
-          </div>
-
-          {/* Mockup */}
-          <div className="flex-1 w-full relative">
-            {/* Indigo-purple nebula — ClipForge identity */}
-            <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)', filter: 'blur(80px)' }} />
-            <ClipForgeMockup />
-          </div>
-        </motion.div>
+        <a
+          href="/pricing"
+          className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(168,85,247,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(168,85,247,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+        >
+          Rejoindre pour y acc&eacute;der <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1.5" />
+        </a>
       </div>
-    </section>
+
+      {/* Mockup */}
+      <div className="w-full relative mt-auto">
+        {/* Indigo-purple nebula — ClipForge identity */}
+        <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)', filter: 'blur(80px)' }} />
+        <ClipForgeMockup />
+      </div>
+    </motion.div>
   );
 }

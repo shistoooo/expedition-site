@@ -4,9 +4,8 @@ import Navbar from "@/components/Navbar";
 import CursorGlow from "@/components/CursorGlow";
 import PageBackground from "@/components/PageBackground";
 import Hero from "@/components/Hero";
-import ToolsSection from "@/components/ToolsSection";
 import TubeForgeSection from "@/components/TubeForgeSection";
-import ReviewForgeSection from "@/components/ReviewForgeSection";
+import SecondaryToolsGrid from "@/components/SecondaryToolsGrid";
 import WhyExpeditionSection from "@/components/WhyExpeditionSection";
 import HomePricing from "@/components/HomePricing";
 
@@ -22,8 +21,7 @@ export default function Home() {
       <main className="w-full relative z-10">
         <Hero />
         <TubeForgeSection />
-        <ToolsSection />
-        <ReviewForgeSection />
+        <SecondaryToolsGrid />
         <HomePricing />
         <WhyExpeditionSection />
 
