@@ -136,7 +136,7 @@ function ReviewForgeMockup() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-emerald-500/10 select-none"
+      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-emerald-500/10 select-none h-full"
       style={{ background: '#0c0c12', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Side toggle */}
@@ -156,7 +156,7 @@ function ReviewForgeMockup() {
 
       {side === "reviewer" ? (
         /* ── Reviewer view (interactive) ── */
-        <div className="flex" style={{ minHeight: 280 }}>
+        <div className="flex" style={{ minHeight: 440 }}>
           {/* Video area */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Header */}
@@ -297,7 +297,7 @@ function ReviewForgeMockup() {
         </div>
       ) : (
       /* ── Creator view ── */
-      <div className="flex" style={{ minHeight: 280 }}>
+      <div className="flex" style={{ minHeight: 440 }}>
       {/* Sidebar */}
       <div className="w-[52px] sm:w-[100px] shrink-0 flex flex-col border-r border-white/5" style={{ background: '#08080c' }}>
         {/* Logo */}
@@ -483,7 +483,7 @@ export default function ReviewForgeSection() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="relative flex flex-col"
+      className="relative flex flex-col h-full"
     >
       {/* Text */}
       <div className="text-left mb-8">
@@ -534,10 +534,11 @@ export default function ReviewForgeSection() {
       </div>
 
       {/* Mockup */}
-      <div className="w-full relative mt-auto">
+      <div className="w-full relative rounded-[20px] h-[480px] overflow-hidden">
         {/* Emerald-cyan nebula — ReviewForge identity glow */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.06) 0%, transparent 60%)', filter: 'blur(80px)' }} />
         <ReviewForgeMockup />
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
       </div>
     </motion.div>
   );

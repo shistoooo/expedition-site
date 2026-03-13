@@ -91,7 +91,7 @@ function ClipForgeMockup() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-indigo-500/10 select-none"
+      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-indigo-500/10 select-none h-full"
       style={{ background: '#0a0a0f', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Window chrome */}
@@ -201,8 +201,8 @@ function ClipForgeMockup() {
           </div>
         </div>
 
-        {/* Results grid — 3 clip cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {/* Results strip — compact clip cards */}
+        <div className="flex gap-2">
           {clips.map((clip, i) => (
             <motion.div
               key={i}
@@ -210,11 +210,11 @@ function ClipForgeMockup() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 + i * 0.12, ease: easeOutExpo }}
-              className="rounded-xl overflow-hidden group"
+              className="flex-1 flex items-center gap-2.5 p-2.5 rounded-xl"
               style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
-              {/* 9:16 preview area */}
-              <div className="aspect-[9/16] relative flex items-center justify-center overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)' }}>
+              {/* Mini 9:16 thumbnail */}
+              <div className="shrink-0 w-[56px] h-[100px] rounded-lg overflow-hidden relative" style={{ background: 'rgba(0,0,0,0.3)' }}>
                 <video
                   autoPlay
                   muted
@@ -223,39 +223,20 @@ function ClipForgeMockup() {
                   className="absolute inset-0 w-full h-full object-cover"
                   src={clip.video}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 via-transparent to-black/20" />
-                <div className={`absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full text-[8px] font-semibold flex items-center gap-0.5 ring-1 bg-gradient-to-r ${clip.score >= 90 ? 'from-emerald-500/20 to-emerald-500/5 text-emerald-400 ring-emerald-500/30' : clip.score >= 80 ? 'from-amber-500/20 to-amber-500/5 text-amber-400 ring-amber-500/30' : 'from-orange-500/20 to-orange-500/5 text-orange-400 ring-orange-500/30'}`}>
-                  <TrendingUp className="w-2 h-2" />
-                  {clip.score}
-                </div>
-                <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-[8px] text-white/80 font-medium">
-                  {clip.duration}
-                </div>
               </div>
-
               {/* Info */}
-              <div className="p-2 space-y-1.5">
+              <div className="min-w-0 flex-1 space-y-1">
                 <p className="text-[9px] text-white/80 font-semibold truncate">{clip.title}</p>
-                <div className="grid grid-cols-2 gap-1">
-                  <div className="flex items-center gap-0.5 text-[7px] text-white/50 rounded-md px-1 py-0.5" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                    <Anchor className="w-2 h-2 text-blue-400" />
-                    <span>Hook: <span className="text-blue-300 font-bold">{clip.hook}</span></span>
-                  </div>
-                  <div className="flex items-center gap-0.5 text-[7px] text-white/50 rounded-md px-1 py-0.5" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                    <Eye className="w-2 h-2 text-pink-400" />
-                    <span>Ret: <span className="text-pink-300 font-bold">{clip.retention}</span></span>
-                  </div>
+                <div className="flex items-center gap-2 text-[8px]">
+                  <span className={`px-1.5 py-0.5 rounded-full font-semibold flex items-center gap-0.5 ring-1 bg-gradient-to-r ${clip.score >= 90 ? 'from-emerald-500/20 to-emerald-500/5 text-emerald-400 ring-emerald-500/30' : 'from-amber-500/20 to-amber-500/5 text-amber-400 ring-amber-500/30'}`}>
+                    <TrendingUp className="w-2 h-2" />
+                    {clip.score}
+                  </span>
+                  <span className="text-white/30">{clip.duration}</span>
                 </div>
-                <div className="flex gap-1">
-                  <div className="flex-1 flex items-center justify-center gap-1 py-1 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-[8px] font-medium text-white cursor-pointer hover:brightness-110 transition-all">
-                    <Download className="w-2.5 h-2.5" />
-                  </div>
-                  <div className="p-1 rounded-lg text-white/30 hover:text-white/60 transition-colors cursor-pointer" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                    <Edit className="w-2.5 h-2.5" />
-                  </div>
-                  <div className="p-1 rounded-lg text-white/20 hover:text-red-400/60 transition-colors cursor-pointer" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                    <Trash2 className="w-2.5 h-2.5" />
-                  </div>
+                <div className="flex items-center gap-1.5 text-[7px] text-white/40">
+                  <span className="flex items-center gap-0.5"><Anchor className="w-2 h-2 text-blue-400" /> Hook: <span className="text-blue-300 font-bold">{clip.hook}</span></span>
+                  <span className="flex items-center gap-0.5"><Eye className="w-2 h-2 text-pink-400" /> Ret: <span className="text-pink-300 font-bold">{clip.retention}</span></span>
                 </div>
               </div>
             </motion.div>
@@ -274,7 +255,7 @@ export default function ToolsSection() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="relative flex flex-col"
+      className="relative flex flex-col h-full"
     >
       {/* Text */}
       <div className="text-left mb-8">
@@ -325,10 +306,11 @@ export default function ToolsSection() {
       </div>
 
       {/* Mockup */}
-      <div className="w-full relative mt-auto">
+      <div className="w-full relative rounded-[20px] h-[480px] overflow-hidden">
         {/* Indigo-purple nebula — ClipForge identity */}
         <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)', filter: 'blur(80px)' }} />
         <ClipForgeMockup />
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
       </div>
     </motion.div>
   );
