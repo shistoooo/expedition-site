@@ -40,7 +40,7 @@ export default function Hero() {
         >
           Les outils des cr&eacute;ateurs YouTube.
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400">Un seul abonnement.</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400">Gagnez des heures chaque semaine.</span>
         </motion.h1>
 
         <motion.p

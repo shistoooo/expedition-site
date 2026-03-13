@@ -102,98 +102,85 @@ function ClipForgeMockup() {
         <span className="text-[10px] text-white/25 ml-2 font-medium tracking-wide">ClipForge</span>
       </div>
 
-      <div className="p-5 space-y-4">
+      <div className="p-3 space-y-2.5">
         {/* Tab switcher — YouTube | Fichier Local */}
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           {(["youtube", "local"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setInputTab(tab)}
-              className={`flex-1 py-2.5 px-4 rounded-xl text-center text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+              className={`flex-1 py-1.5 px-3 rounded-lg text-center text-[10px] font-medium flex items-center justify-center gap-1 transition-all duration-200 ${
                 inputTab === tab
                   ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
                   : 'text-white/40 hover:text-white/60'
               }`}
               style={inputTab !== tab ? { background: 'rgba(255,255,255,0.03)' } : {}}
             >
-              {tab === "youtube" ? <><Link2 className="w-3.5 h-3.5" /> YouTube</> : <><Upload className="w-3.5 h-3.5" /> Fichier Local</>}
+              {tab === "youtube" ? <><Link2 className="w-3 h-3" /> YouTube</> : <><Upload className="w-3 h-3" /> Local</>}
             </button>
           ))}
         </div>
 
         {/* URL Input */}
-        <div className="flex items-center gap-0 p-[6px] rounded-[20px]" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <div className="flex-1 flex items-center px-3 gap-2">
+        <div className="flex items-center gap-0 p-[5px] rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex-1 flex items-center px-2.5 gap-1.5">
             {inputTab === "youtube" ? (
               <>
-                <Link2 className="w-4 h-4 text-white/25 shrink-0" />
-                <span className="text-[11px] text-white/25">Collez un lien YouTube...</span>
+                <Link2 className="w-3.5 h-3.5 text-white/25 shrink-0" />
+                <span className="text-[10px] text-white/25">Collez un lien YouTube...</span>
               </>
             ) : (
               <>
-                <Upload className="w-4 h-4 text-white/25 shrink-0" />
-                <span className="text-[11px] text-white/25">Glissez un fichier ou cliquez...</span>
+                <Upload className="w-3.5 h-3.5 text-white/25 shrink-0" />
+                <span className="text-[10px] text-white/25">Glissez un fichier...</span>
               </>
             )}
           </div>
-          <div className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-[11px] font-medium flex items-center gap-1.5 shadow-lg shadow-indigo-500/25 cursor-pointer hover:brightness-110 transition-all">
+          <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-[10px] font-medium flex items-center gap-1 shadow-lg shadow-indigo-500/25 cursor-pointer hover:brightness-110 transition-all">
             G&eacute;n&eacute;rer
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3 h-3" />
           </div>
         </div>
 
-        {/* Options row — Crop mode */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex rounded-xl p-0.5 gap-0.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        {/* Options row — Crop mode + Subtitle in one row */}
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-lg p-0.5 gap-0.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {(["smart", "verify"] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setCropMode(m)}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-medium transition-all duration-200 ${
+                className={`flex items-center gap-1 px-2 py-1 rounded-md text-[9px] font-medium transition-all duration-200 ${
                   cropMode === m
                     ? 'text-indigo-300'
                     : 'text-white/40 hover:text-white/60 border border-transparent'
                 }`}
                 style={cropMode === m ? { background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.35)' } : {}}
               >
-                {m === "smart" ? <><Focus className="w-3 h-3" /> Smart Crop</> : <><Crop className="w-3 h-3" /> V&eacute;rification</>}
+                {m === "smart" ? <><Focus className="w-2.5 h-2.5" /> Smart Crop</> : <><Crop className="w-2.5 h-2.5" /> V&eacute;rif.</>}
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Subtitle customizer */}
-        <div className="flex items-center gap-3 p-3 rounded-[20px]" style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          {/* Mini 9:16 preview */}
-          <div className="shrink-0 w-[36px] h-[64px] rounded-md overflow-hidden relative flex items-end justify-center" style={{ background: 'linear-gradient(to bottom, rgba(30,30,40,0.8), #000)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="mb-2">
-              <SubtitlePreview style={subStyle} />
-            </div>
-          </div>
-          {/* Style + Color */}
-          <div className="flex-1 space-y-1.5">
-            <div className="flex gap-0.5 flex-wrap">
-              {["Pop", "Smooth", "Glow", "Classique"].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSubStyle(s)}
-                  className={`px-1.5 py-0.5 rounded-md text-[8px] font-medium border transition-all duration-200 ${
-                    subStyle === s
-                      ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
-                      : 'text-white/35 border-transparent hover:text-white/55'
-                  }`}
-                  style={subStyle !== s ? { background: 'rgba(255,255,255,0.03)' } : {}}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-0.5 items-center">
-              {colors.map((c) => (
+          <div className="flex gap-0.5 items-center ml-auto">
+            {["Pop", "Smooth", "Glow"].map((s) => (
+              <button
+                key={s}
+                onClick={() => setSubStyle(s)}
+                className={`px-1.5 py-0.5 rounded-md text-[7px] font-medium border transition-all duration-200 ${
+                  subStyle === s
+                    ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+                    : 'text-white/35 border-transparent hover:text-white/55'
+                }`}
+                style={subStyle !== s ? { background: 'rgba(255,255,255,0.03)' } : {}}
+              >
+                {s}
+              </button>
+            ))}
+            <div className="flex gap-px items-center ml-1">
+              {colors.slice(0, 5).map((c) => (
                 <button
                   key={c}
                   onClick={() => setSubColor(c)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${subColor === c ? 'ring-[1.5px] ring-white ring-offset-1 ring-offset-transparent scale-110' : 'opacity-60 hover:opacity-90'}`}
+                  className={`w-2 h-2 rounded-full transition-all duration-150 ${subColor === c ? 'ring-[1px] ring-white ring-offset-1 ring-offset-transparent scale-110' : 'opacity-60 hover:opacity-90'}`}
                   style={{ background: c }}
                 />
               ))}

@@ -95,13 +95,18 @@ export default function PricingPage() {
                       Acc&egrave;s anticip&eacute; &bull; Outils actuels et futurs inclus
                     </p>
                   </div>
-                  <div className="text-left md:text-right">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-5xl md:text-6xl font-black tracking-tight">11,99&euro;</span>
-                      <span className="text-white/30 text-base ml-1">/mois</span>
+                  <div className="text-left md:text-right flex flex-col gap-3">
+                    <div>
+                      <div className="flex items-baseline gap-1 justify-start md:justify-end">
+                        <span className="text-5xl md:text-6xl font-black tracking-tight">99,99&euro;</span>
+                        <span className="text-white/30 text-base ml-1">/an</span>
+                      </div>
+                      <p className="text-sm mt-1 font-semibold text-green-400">
+                        8,33&euro;/mois &mdash; 4 mois offerts
+                      </p>
                     </div>
-                    <p className="text-sm mt-2 font-semibold text-green-400">
-                      7,99&euro;/mois pour les membres Discord
+                    <p className="text-xs text-white/30">
+                      ou 11,99&euro;/mois (7,99&euro; avec Discord)
                     </p>
                   </div>
                 </div>
