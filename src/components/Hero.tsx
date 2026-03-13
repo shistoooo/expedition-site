@@ -38,7 +38,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[0.95] tracking-[-0.04em]"
         >
-          T&eacute;l&eacute;chargement, clipping, retours vid&eacute;o.
+          Les outils des cr&eacute;ateurs YouTube.
           <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400">Un seul abonnement.</span>
         </motion.h1>
@@ -49,9 +49,9 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg md:text-xl text-white/55 mb-10 max-w-2xl leading-relaxed mx-auto"
         >
-          Plus on ajoute d&apos;outils, plus le prix d&apos;entr&eacute;e monte.
+          T&eacute;l&eacute;chargement, clipping, retours vid&eacute;o &mdash; arr&ecirc;tez de jongler entre 5&nbsp;apps.
           <br className="hidden md:block" />
-          <span className="text-white/80">Sauf pour vous.</span>
+          <span className="text-white/80">Tout est l&agrave;, dans une seule suite.</span>
         </motion.p>
 
         <motion.div

@@ -214,7 +214,7 @@ function ClipForgeMockup() {
               style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               {/* Mini 9:16 thumbnail */}
-              <div className="shrink-0 w-[56px] h-[100px] rounded-lg overflow-hidden relative" style={{ background: 'rgba(0,0,0,0.3)' }}>
+              <div className="shrink-0 w-[72px] h-[128px] rounded-lg overflow-hidden relative" style={{ background: 'rgba(0,0,0,0.3)' }}>
                 <video
                   autoPlay
                   muted
@@ -261,7 +261,7 @@ export default function ToolsSection() {
       <div className="text-left mb-8">
         <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-4 flex items-center gap-2">
           <span className="w-3 h-px bg-purple-400/50 inline-block" />
-          Vague 2 &mdash; Beta
+          Vague 2 &mdash; Prochainement
         </p>
 
         <h2 className="text-3xl md:text-4xl font-black mb-2 tracking-[-0.03em]">
@@ -311,6 +311,12 @@ export default function ToolsSection() {
         <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)', filter: 'blur(80px)' }} />
         <ClipForgeMockup />
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
+        {/* Coming soon overlay */}
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/30 backdrop-blur-[1px] rounded-[20px]">
+          <div className="px-5 py-2.5 rounded-full border border-purple-400/30 bg-purple-500/10 backdrop-blur-sm">
+            <span className="text-sm font-bold text-purple-300 tracking-wide uppercase">Disponible prochainement</span>
+          </div>
+        </div>
       </div>
     </motion.div>
   );

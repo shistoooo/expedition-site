@@ -22,9 +22,8 @@ export default function Home() {
         <Hero />
         <TubeForgeSection />
         <SecondaryToolsGrid />
-        <HomePricing />
         <WhyExpeditionSection />
-
+        <HomePricing />
         <FAQSection />
       </main>
       <Footer />

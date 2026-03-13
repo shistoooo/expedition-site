@@ -32,7 +32,6 @@ export default function Navbar() {
   const navItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [
     { name: "Outils", href: "/#tubeforge" },
     { name: "Tarifs", href: "/pricing" },
-    { name: "Économie", href: "/economie" },
     { name: "Affili\u00e9", href: "/ambassador" },
     { name: "Mon compte", href: "/account" },
   ];

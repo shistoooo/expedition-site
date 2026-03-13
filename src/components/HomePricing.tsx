@@ -42,16 +42,19 @@ export default function HomePricing() {
             {/* Plan name */}
             <h3 className="text-center text-lg font-semibold text-white/60 mb-6">Vague Pionnier</h3>
 
-            {/* Both prices visible */}
+            {/* Both prices — annual highlighted */}
             <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="text-center p-4 rounded-xl bg-white/[0.04] border border-white/10">
+              <div className="text-center p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-3xl md:text-4xl font-black text-white">11,99&euro;</span>
-                  <span className="text-white/40 text-sm">/mois</span>
+                  <span className="text-2xl md:text-3xl font-black text-white/50">11,99&euro;</span>
+                  <span className="text-white/30 text-sm">/mois</span>
                 </div>
-                <p className="text-xs text-green-300 mt-1.5">7,99&euro;/mois avec Discord</p>
+                <p className="text-xs text-white/30 mt-1.5">7,99&euro;/mois avec Discord</p>
               </div>
-              <div className="text-center p-4 rounded-xl bg-white/[0.04] border border-white/10">
+              <div className="text-center p-4 rounded-xl relative border border-purple-500/30" style={{ background: 'rgba(139,92,246,0.08)' }}>
+                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-purple-500 text-[10px] font-bold text-white uppercase tracking-wider whitespace-nowrap">
+                  Meilleure offre
+                </div>
                 <div className="flex items-baseline justify-center gap-1">
                   <span className="text-3xl md:text-4xl font-black text-white">99,99&euro;</span>
                   <span className="text-white/40 text-sm">/an</span>
