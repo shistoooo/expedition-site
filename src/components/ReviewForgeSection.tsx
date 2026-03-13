@@ -477,7 +477,7 @@ function ReviewForgeMockup() {
 
 export default function ReviewForgeSection() {
   return (
-    <section id="reviewforge" className="pt-32 md:pt-40 pb-16 md:pb-20 relative section-fade-top bg-[#06051a]/80">
+    <section id="reviewforge" className="pt-12 md:pt-16 pb-16 md:pb-20 relative section-fade-top bg-[#06051a]/80">
       <div className="container-main">
         <motion.div
           variants={containerVariants}

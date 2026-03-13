@@ -269,7 +269,7 @@ function ClipForgeMockup() {
 
 export default function ToolsSection() {
   return (
-    <section id="clipforge" className="py-32 md:py-40 relative section-fade-top bg-[#06051a]/80">
+    <section id="clipforge" className="pt-12 md:pt-16 pb-12 md:pb-16 relative section-fade-top bg-[#06051a]/80">
       <div className="container-main">
         <motion.div
           variants={containerVariants}
