@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Shield, Eye, Clock, Lock, Link2, Copy, Check, Zap, LayoutDashboard, FolderOpen, Share2, Wifi, Play, MessageSquare, Send, Film } from "lucide-react";
+import { ArrowRight, Bell, Shield, Eye, Clock, Lock, Link2, Copy, Check, Zap, LayoutDashboard, FolderOpen, Share2, Wifi, Play, MessageSquare, Send, Film } from "lucide-react";
 import Link from "next/link";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -529,7 +529,7 @@ export default function ReviewForgeSection() {
           href="/pricing"
           className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(16,185,129,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(16,185,129,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
         >
-          Rejoindre pour y acc&eacute;der <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1.5" />
+          &Ecirc;tre pr&eacute;venu au lancement <Bell className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
         </Link>
       </div>
 

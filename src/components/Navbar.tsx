@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFlightStore } from "@/stores/useFlightStore";
@@ -55,7 +55,7 @@ export default function Navbar() {
           </motion.span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8 z-10">
+        <div className="hidden md:flex items-center gap-6 z-10">
           {navItems.map((item) => (
             <Link
               key={item.name}
@@ -66,6 +66,13 @@ export default function Navbar() {
               {item.name}
             </Link>
           ))}
+          <Link
+            href="/pricing"
+            className="group inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-all duration-200"
+          >
+            S&apos;abonner
+            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+          </Link>
         </div>
 
         <button

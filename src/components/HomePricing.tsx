@@ -10,6 +10,7 @@ import { useRef, useState, useCallback } from "react";
 const plans = [
   {
     name: "Annuel",
+    slug: "annual",
     price: "99,99\u20ac",
     priceUnit: "/an",
     note: "8,33\u20ac/mois \u2014 4 mois offerts",
@@ -17,6 +18,7 @@ const plans = [
   },
   {
     name: "Mensuel + Discord",
+    slug: "monthly-discord",
     price: "7,99\u20ac",
     priceUnit: "/mois",
     note: "Avec le r\u00f4le Discord actif",
@@ -25,6 +27,7 @@ const plans = [
   },
   {
     name: "Mensuel",
+    slug: "monthly",
     price: "11,99\u20ac",
     priceUnit: "/mois",
     note: "Sans engagement",
@@ -146,7 +149,7 @@ function PricingCard({ plan }: { plan: typeof plans[number] }) {
 
         {/* CTA */}
         <Link
-          href="/checkout"
+          href={`/checkout?plan=${plan.slug}`}
           className={`group/btn w-full py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 relative overflow-hidden ${
             plan.featured ? "" : "border border-white/10 hover:border-white/20 text-white/60 hover:text-white/80"
           }`}
@@ -188,6 +191,22 @@ export default function HomePricing() {
         }}
       />
       <div className="container-main max-w-5xl">
+
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em] mb-4">
+            Un abonnement, tous les outils
+          </h2>
+          <p className="text-white/45 text-base max-w-lg mx-auto">
+            Tarif Pionnier bloqu&eacute; &agrave; vie. Nouveaux outils inclus sans surco&ucirc;t.
+          </p>
+        </motion.div>
 
         {/* 3 Price cards */}
         <motion.div

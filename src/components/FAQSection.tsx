@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
 const faqs = [
@@ -54,6 +55,59 @@ export const faqStructuredData = {
   })),
 };
 
+function FAQItem({ faq, index }: { faq: typeof faqs[number]; index: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+
+  const measure = useCallback(() => {
+    if (contentRef.current) {
+      setHeight(contentRef.current.scrollHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
+      className="rounded-2xl overflow-hidden"
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.07)",
+      }}
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full cursor-pointer p-6 text-white/90 font-semibold text-sm md:text-base select-none text-left"
+      >
+        {faq.q}
+        <span
+          className="ml-4 text-white/30 text-xl leading-none shrink-0 transition-transform duration-300"
+          style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
+        >
+          +
+        </span>
+      </button>
+      <div
+        className="overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{ height: isOpen ? height : 0 }}
+      >
+        <div ref={contentRef} className="px-6 pb-6 text-white/50 text-sm leading-relaxed -mt-1">
+          {faq.a}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function FAQSection() {
   return (
     <section id="faq" className="pt-12 pb-24 md:pt-16 md:pb-32 relative">
@@ -67,30 +121,13 @@ export default function FAQSection() {
           <h2 className="text-3xl md:text-4xl font-black mb-10 text-center tracking-[-0.03em]">
             Questions fr&eacute;quentes
           </h2>
-
-          <div className="space-y-4">
-            {faqs.map((faq, i) => (
-              <details
-                key={i}
-                className="group rounded-2xl overflow-hidden"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                <summary className="flex items-center justify-between cursor-pointer p-6 text-white/90 font-semibold text-sm md:text-base select-none list-none [&::-webkit-details-marker]:hidden">
-                  {faq.q}
-                  <span className="ml-4 text-white/30 transition-transform duration-300 group-open:rotate-45 text-xl leading-none shrink-0">
-                    +
-                  </span>
-                </summary>
-                <div className="px-6 pb-6 text-white/50 text-sm leading-relaxed -mt-1">
-                  {faq.a}
-                </div>
-              </details>
-            ))}
-          </div>
         </motion.div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, i) => (
+            <FAQItem key={i} faq={faq} index={i} />
+          ))}
+        </div>
 
         <script
           type="application/ld+json"

@@ -42,8 +42,8 @@ export default function WhyExpeditionSection() {
             className="group p-6 rounded-2xl border border-white/[0.08] hover:border-white/15 transition-all duration-300 bg-white/[0.03] flex flex-col justify-between"
           >
             <div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <MousePointerClick className="w-5 h-5 text-emerald-400" />
+              <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                <MousePointerClick className="w-5 h-5 text-purple-400" />
               </div>
               <h3 className="font-bold text-white text-base mb-2">Annulez en 1 clic</h3>
               <p className="text-sm text-white/40 leading-relaxed">
@@ -60,8 +60,8 @@ export default function WhyExpeditionSection() {
             transition={{ delay: 0.16 }}
             className="group p-6 rounded-2xl border border-white/[0.08] hover:border-white/15 transition-all duration-300 bg-white/[0.03]"
           >
-            <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-              <RefreshCw className="w-5 h-5 text-blue-400" />
+            <div className="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+              <RefreshCw className="w-5 h-5 text-violet-400" />
             </div>
             <h3 className="font-bold text-white text-base mb-2">Mise &agrave; jour chaque semaine</h3>
             <p className="text-sm text-white/40 leading-relaxed">
@@ -82,8 +82,8 @@ export default function WhyExpeditionSection() {
               style={{ background: 'radial-gradient(circle at 0% 100%, rgba(99,102,241,0.25), transparent 70%)' }}
             />
             <div className="relative">
-              <div className="w-12 h-12 rounded-xl bg-yellow-500/15 border border-yellow-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                <Lock className="w-6 h-6 text-yellow-400" />
+              <div className="w-12 h-12 rounded-xl bg-violet-500/15 border border-violet-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                <Lock className="w-6 h-6 text-violet-400" />
               </div>
               <h3 className="font-bold text-white text-xl mb-3">Votre prix ne bougera jamais</h3>
               <p className="text-sm text-white/45 leading-relaxed max-w-md">

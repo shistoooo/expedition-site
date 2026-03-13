@@ -61,8 +61,8 @@ export default function TestimonialsMarquee() {
         <div
           className="relative max-w-lg w-full rounded-2xl px-6 py-5 md:px-9 md:py-7"
           style={{
-            background: "rgba(255,255,255,0.025)",
-            border: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(255,255,255,0.045)",
+            border: "1px solid rgba(255,255,255,0.10)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
           }}
