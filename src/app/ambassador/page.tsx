@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import { motion } from "framer-motion";
-import { Gift, Share2, Banknote, ArrowRight, Users, Repeat, ShieldCheck, Send, CheckCircle2, Loader2 } from "lucide-react";
+import { Gift, Share2, Banknote, ArrowRight, Users, ShieldCheck, Send, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -45,6 +45,7 @@ export default function AmbassadorPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [referrals, setReferrals] = useState(10);
 
   const toggleChannel = (id: string) => {
     setSelectedChannels(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
@@ -124,6 +125,63 @@ export default function AmbassadorPage() {
         </div>
       </section>
 
+      {/* Simulateur de gains — interactive slider */}
+      <section className="py-20 relative">
+        <div className="container-main max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl"
+          >
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center">Simulez vos gains</h2>
+            <p className="text-white/40 text-sm text-center mb-8">D&eacute;placez le curseur pour voir combien vous gagnez.</p>
+
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm text-white/50">Nombre de filleuls</span>
+                <span className="text-2xl font-black text-white">{referrals}</span>
+              </div>
+              <input
+                type="range"
+                min={1}
+                max={100}
+                value={referrals}
+                onChange={(e) => setReferrals(Number(e.target.value))}
+                className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, rgb(139,92,246) ${referrals}%, rgba(255,255,255,0.1) ${referrals}%)`,
+                }}
+              />
+              <div className="flex justify-between text-xs text-white/25 mt-1">
+                <span>1</span>
+                <span>25</span>
+                <span>50</span>
+                <span>75</span>
+                <span>100</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 text-center">
+                <p className="text-xs text-white/40 mb-1">Par mois</p>
+                <p className="text-3xl font-black text-purple-400">~{Math.round(referrals * 5)}&euro;</p>
+                <p className="text-xs text-white/30 mt-1">pendant 6 mois</p>
+              </div>
+              <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 text-center">
+                <p className="text-xs text-white/40 mb-1">Total sur 6 mois</p>
+                <p className="text-3xl font-black text-green-400">~{Math.round(referrals * 5 * 6)}&euro;</p>
+                <p className="text-xs text-white/30 mt-1">pour {referrals} filleul{referrals > 1 ? "s" : ""}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-white/25 text-center">
+              Bas&eacute; sur 42% de commission sur 11,99&euro;/mois, pendant 6 mois par filleul.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Comment ça marche */}
       <section id="comment-ca-marche" className="py-24 relative">
         <div className="container-main">
@@ -156,82 +214,6 @@ export default function AmbassadorPage() {
         </div>
       </section>
 
-      {/* Commission */}
-      <section className="py-24 border-t border-white/5 bg-white/[0.02]">
-        <div className="container-main">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Vos gains, en détail</h2>
-            <p className="text-white/60">Une commission g&eacute;n&eacute;reuse, pendant 6 mois par filleul, sans plafond.</p>
-          </div>
-
-          <div className="max-w-2xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="p-8 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl"
-            >
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
-                <div className="text-center sm:text-left">
-                  <div className="text-sm text-white/40 mb-1">L&apos;abonné paie</div>
-                  <div className="text-4xl font-bold">11,99€</div>
-                  <div className="text-white/40 text-sm">/mois</div>
-                </div>
-
-                <div className="hidden sm:block">
-                  <ArrowRight className="w-8 h-8 text-purple-400" />
-                </div>
-                <div className="sm:hidden">
-                  <div className="w-8 h-8 text-purple-400 flex items-center justify-center text-2xl">↓</div>
-                </div>
-
-                <div className="text-center sm:text-right">
-                  <div className="text-sm text-purple-300 mb-1">Vous recevez</div>
-                  <div className="text-4xl font-bold text-white">
-                    ~5€
-                  </div>
-                  <div className="text-purple-300/60 text-sm">/mois par filleul</div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 mb-8">
-                <Repeat className="w-5 h-5 text-purple-400 shrink-0" />
-                <p className="text-sm text-purple-200">
-                  <strong>Commission pendant 6 mois :</strong> vous gagnez chaque mois pendant 6 mois par filleul. 10 filleuls = ~50&euro;/mois pendant 6 mois.
-                </p>
-              </div>
-
-              {/* Earnings progress bar */}
-              <div>
-                <p className="text-xs font-mono text-white/30 uppercase tracking-wider mb-4">Vos gains mensuels selon le nombre de filleuls</p>
-                <div className="space-y-3">
-                  {[
-                    { referrals: 5, amount: "~25\u20ac" },
-                    { referrals: 10, amount: "~50\u20ac" },
-                    { referrals: 25, amount: "~125\u20ac" },
-                    { referrals: 50, amount: "~250\u20ac" },
-                    { referrals: 100, amount: "~500\u20ac" },
-                  ].map((tier, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <span className="text-xs text-white/40 w-20 shrink-0 text-right font-mono">{tier.referrals} filleuls</span>
-                      <div className="flex-1 h-6 rounded-lg overflow-hidden relative" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                        <motion.div
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${Math.min((tier.referrals / 100) * 100, 100)}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.8, delay: 0.2 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                          className="h-full rounded-lg bg-gradient-to-r from-purple-600 to-purple-400"
-                        />
-                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-bold text-white/70">{tier.amount}/mois</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
       {/* Confiance Stripe Connect */}
       <section className="py-24 border-t border-white/5">

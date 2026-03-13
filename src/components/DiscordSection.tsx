@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function DiscordSection() {
   return (
-    <section id="discord" className="py-32 md:py-40 relative">
+    <section id="discord" className="py-20 md:py-24 relative">
       {/* Discord nebula — indigo ambient behind card */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] pointer-events-none"

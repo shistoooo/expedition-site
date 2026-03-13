@@ -34,7 +34,6 @@ export default function Navbar() {
     { name: "Tarifs", href: "/pricing" },
     { name: "Économie", href: "/economie" },
     { name: "Affili\u00e9", href: "/ambassador" },
-    { name: "Discord", href: "/#discord" },
     { name: "Mon compte", href: "/account" },
   ];
 

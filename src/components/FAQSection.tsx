@@ -4,24 +4,40 @@ import { motion } from "framer-motion";
 
 const faqs = [
   {
+    q: "C\u2019est quoi Exp\u00e9dition exactement ?",
+    a: "Exp\u00e9dition est une suite de logiciels desktop pour cr\u00e9ateurs YouTube. Vous installez le Launcher (Mac/Windows), et il g\u00e8re tout : installation des outils, mises \u00e0 jour automatiques, licence. Un seul abonnement, tous les outils.",
+  },
+  {
     q: "Puis-je annuler \u00e0 tout moment ?",
-    a: "Oui, sans engagement. Vous pouvez annuler votre abonnement \u00e0 tout moment depuis votre espace compte. Vous gardez l\u2019acc\u00e8s jusqu\u2019\u00e0 la fin de la p\u00e9riode pay\u00e9e.",
+    a: "Oui, en 1 clic depuis votre espace compte. Pas d\u2019engagement, pas de frais cach\u00e9s. Vous gardez l\u2019acc\u00e8s jusqu\u2019\u00e0 la fin du mois pay\u00e9.",
+  },
+  {
+    q: "Y a-t-il un essai gratuit ?",
+    a: "Non, mais l\u2019abonnement est annulable imm\u00e9diatement sans frais. Si \u00e7a ne vous convient pas, vous annulez en 1 clic et vous ne payez plus rien.",
   },
   {
     q: "Que veut dire \u00ab\u00a0tarif bloqu\u00e9\u00a0\u00bb ?",
     a: "Le prix que vous payez aujourd\u2019hui reste le m\u00eame tant que votre abonnement est actif. M\u00eame quand de nouveaux outils seront ajout\u00e9s et que le prix d\u2019entr\u00e9e augmentera pour les nouveaux abonn\u00e9s, votre tarif ne change pas.",
   },
   {
-    q: "Comment fonctionne la r\u00e9duction Discord ?",
-    a: "Si vous \u00eates membre de notre serveur Discord avant de vous abonner, vous b\u00e9n\u00e9ficiez du tarif r\u00e9duit \u00e0 7,99\u20ac/mois au lieu de 11,99\u20ac. Rejoignez le Discord d\u2019abord, puis abonnez-vous.",
+    q: "C\u2019est l\u00e9gal de t\u00e9l\u00e9charger des vid\u00e9os YouTube ?",
+    a: "TubeForge est con\u00e7u pour t\u00e9l\u00e9charger vos propres vid\u00e9os ou des r\u00e9f\u00e9rences pour votre montage. Aucun DRM n\u2019est contourn\u00e9. Vous restez responsable de l\u2019utilisation que vous faites du contenu t\u00e9l\u00e9charg\u00e9.",
   },
   {
-    q: "Sur quelles plateformes fonctionnent les outils ?",
-    a: "Le Launcher et tous les outils (TubeForge, ClipForge, ReviewForge) fonctionnent sur Mac et Windows. Aucune installation suppl\u00e9mentaire n\u2019est n\u00e9cessaire.",
+    q: "Comment fonctionne la r\u00e9duction Discord ?",
+    a: "Rejoignez le serveur Discord avant de vous abonner, et vous b\u00e9n\u00e9ficiez du tarif r\u00e9duit \u00e0 7,99\u20ac/mois au lieu de 11,99\u20ac.",
   },
   {
     q: "Les futurs outils seront-ils inclus ?",
     a: "Oui. Tous les outils actuels et futurs sont inclus dans votre abonnement Pionnier. Vous n\u2019aurez jamais \u00e0 payer de suppl\u00e9ment.",
+  },
+  {
+    q: "Sur quelles plateformes fonctionnent les outils ?",
+    a: "Mac et Windows. Le Launcher g\u00e8re tout automatiquement : installation, mises \u00e0 jour, licence.",
+  },
+  {
+    q: "Qui d\u00e9veloppe Exp\u00e9dition ?",
+    a: "Un d\u00e9veloppeur ind\u00e9pendant passionn\u00e9, accessible directement sur Discord. Changelog chaque semaine, roadmap publique, retours pris en compte en temps r\u00e9el.",
   },
 ];
 

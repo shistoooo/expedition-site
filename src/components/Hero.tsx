@@ -8,6 +8,8 @@ import { SALES_OPEN } from "@/lib/salesConfig";
 export default function Hero() {
   return (
     <section className="pt-36 pb-48 md:pt-56 md:pb-64 relative overflow-hidden">
+      {/* Bottom fade — smooth transition to next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#06051a] pointer-events-none z-[1]" />
       {/* Nebula ambient — violet core fading to transparent, anchored behind the h1 */}
       <div
         className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] pointer-events-none"
