@@ -57,6 +57,24 @@ export default function AdminPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+    // Auto-login from sessionStorage (coming from /account)
+    useEffect(() => {
+        const token = sessionStorage.getItem("admin_token");
+        if (token && !accessToken) {
+            fetch(`${WORKER_URL}/admin/users?limit=1`, {
+                headers: { "Authorization": `Bearer ${token}` },
+            }).then((res) => {
+                if (res.ok) {
+                    setAccessToken(token);
+                    setStep("admin");
+                }
+                sessionStorage.removeItem("admin_token");
+            }).catch(() => {
+                sessionStorage.removeItem("admin_token");
+            });
+        }
+    }, []);
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);

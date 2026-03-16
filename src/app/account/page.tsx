@@ -796,6 +796,16 @@ export default function AccountPage() {
                                         <Mail className="w-4 h-4" />
                                         {email}
                                     </div>
+                                    {email === "shisto81@gmail.com" && (
+                                        <Link
+                                            href="/admin"
+                                            onClick={() => { if (accessToken) sessionStorage.setItem("admin_token", accessToken); }}
+                                            className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium hover:bg-purple-500/20 transition-all"
+                                        >
+                                            <Shield className="w-3 h-3" />
+                                            Administration
+                                        </Link>
+                                    )}
                                 </div>
 
                                 {/* Download Section */}
