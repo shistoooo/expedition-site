@@ -1102,10 +1102,7 @@ export default function AccountPage() {
                                     </div>
                                 )}
 
-                                {/* Wallet Section */}
-                                {subscription && subscription.status !== "canceled" && (
-                                    <WalletSection />
-                                )}
+
 
                                 {/* Ambassador Section */}
                                 {subscription && subscription.status !== "canceled" && (

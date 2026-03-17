@@ -1063,8 +1063,13 @@ export default function EconomiePage() {
             whileInView="visible"
             viewport={{ once: true }}
             custom={0.15}
+            className="p-10 rounded-2xl bg-[#0F0F12] border border-white/8 text-center"
           >
-            <WalletSection />
+            <p className="text-4xl mb-4">🚀</p>
+            <h3 className="text-xl font-bold text-white mb-2">Bientôt disponible</h3>
+            <p className="text-white/40 text-sm max-w-xs mx-auto leading-relaxed">
+              Le portefeuille interactif sera accessible dès l&apos;ouverture du serveur Discord.
+            </p>
           </motion.div>
         </div>
       </section>

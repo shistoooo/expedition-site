@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     Users, Shield, CheckCircle2, XCircle, Search, ToggleLeft, ToggleRight,
-    UserCheck, UserX, RefreshCw
+    UserCheck, UserX, RefreshCw, FileText, Link2
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -33,8 +33,17 @@ interface AdminAmbassador {
     created_at: string;
 }
 
+interface AmbassadorApplication {
+    id: string;
+    name: string;
+    contact: string;
+    channels: string[];
+    link?: string;
+    created_at: string;
+}
+
 type Step = "login" | "admin";
-type Tab = "users" | "ambassadors";
+type Tab = "users" | "ambassadors" | "applications";
 
 export default function AdminPage() {
     const [step, setStep] = useState<Step>("login");
@@ -53,6 +62,9 @@ export default function AdminPage() {
 
     const [ambassadors, setAmbassadors] = useState<AdminAmbassador[]>([]);
     const [ambassadorsLoading, setAmbassadorsLoading] = useState(false);
+
+    const [applications, setApplications] = useState<AmbassadorApplication[]>([]);
+    const [applicationsLoading, setApplicationsLoading] = useState(false);
 
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -141,6 +153,23 @@ export default function AdminPage() {
         }
     }, [accessToken]);
 
+    const fetchApplications = useCallback(async () => {
+        if (!accessToken) return;
+        setApplicationsLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/ambassador/applications`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setApplications(data.applications || []);
+        } catch {
+            setError("Erreur chargement candidatures");
+        } finally {
+            setApplicationsLoading(false);
+        }
+    }, [accessToken]);
+
     useEffect(() => {
         if (step === "admin" && tab === "users") fetchUsers();
     }, [step, tab, fetchUsers]);
@@ -148,6 +177,10 @@ export default function AdminPage() {
     useEffect(() => {
         if (step === "admin" && tab === "ambassadors") fetchAmbassadors();
     }, [step, tab, fetchAmbassadors]);
+
+    useEffect(() => {
+        if (step === "admin" && tab === "applications") fetchApplications();
+    }, [step, tab, fetchApplications]);
 
     const toggleBeta = async (userId: string, current: boolean) => {
         if (!accessToken) return;
@@ -336,7 +369,7 @@ export default function AdminPage() {
                                 </div>
 
                                 {/* Tabs */}
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 flex-wrap">
                                     <button
                                         onClick={() => setTab("users")}
                                         className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === "users" ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
@@ -350,6 +383,13 @@ export default function AdminPage() {
                                     >
                                         <UserCheck className="w-4 h-4" />
                                         Ambassadeurs ({ambassadors.length})
+                                    </button>
+                                    <button
+                                        onClick={() => setTab("applications")}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === "applications" ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
+                                    >
+                                        <FileText className="w-4 h-4" />
+                                        Candidatures ({applications.length})
                                     </button>
                                 </div>
 
@@ -554,6 +594,71 @@ export default function AdminPage() {
 
                                                 {ambassadors.length === 0 && !ambassadorsLoading && (
                                                     <p className="text-center text-white/30 py-8 text-sm">Aucun ambassadeur</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Applications Tab */}
+                                {tab === "applications" && (
+                                    <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <h2 className="text-sm font-mono text-white/40 uppercase">Candidatures Affiliation</h2>
+                                            <button
+                                                onClick={fetchApplications}
+                                                disabled={applicationsLoading}
+                                                className="h-8 px-3 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                                            >
+                                                <RefreshCw className={`w-3.5 h-3.5 ${applicationsLoading ? "animate-spin" : ""}`} />
+                                            </button>
+                                        </div>
+
+                                        {applicationsLoading && applications.length === 0 ? (
+                                            <div className="flex items-center justify-center py-12">
+                                                <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {applications.map((app) => (
+                                                    <div
+                                                        key={app.id}
+                                                        className="px-4 py-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all space-y-2"
+                                                    >
+                                                        <div className="flex items-start justify-between gap-4">
+                                                            <div className="min-w-0">
+                                                                <p className="text-sm font-semibold text-white/90">{app.name}</p>
+                                                                <p className="text-xs text-white/40 mt-0.5">{app.contact}</p>
+                                                            </div>
+                                                            <span className="text-xs text-white/25 shrink-0">
+                                                                {new Date(app.created_at).toLocaleDateString("fr-FR")}
+                                                            </span>
+                                                        </div>
+                                                        {app.channels && app.channels.length > 0 && (
+                                                            <div className="flex flex-wrap gap-1.5">
+                                                                {app.channels.map((ch) => (
+                                                                    <span key={ch} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 font-mono">
+                                                                        {ch}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                        {app.link && (
+                                                            <a
+                                                                href={app.link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center gap-1.5 text-xs text-purple-400/70 hover:text-purple-300 transition-colors"
+                                                            >
+                                                                <Link2 className="w-3 h-3" />
+                                                                {app.link}
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                ))}
+
+                                                {applications.length === 0 && !applicationsLoading && (
+                                                    <p className="text-center text-white/30 py-8 text-sm">Aucune candidature</p>
                                                 )}
                                             </div>
                                         )}
