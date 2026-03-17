@@ -63,7 +63,7 @@ export default function TestimonialsMarquee() {
           </div>
 
           {/* Rotating quote */}
-          <div className="relative min-h-[65px] md:min-h-[55px] flex items-center justify-center">
+          <div className="relative h-[130px] md:h-[100px] flex items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.blockquote
                 key={current}
