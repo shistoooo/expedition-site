@@ -48,7 +48,7 @@ function formatTime(sec: number): string {
 }
 
 function ReviewForgeMockup() {
-  const [side, setSide] = useState<"creator" | "reviewer">("creator");
+  const [side, setSide] = useState<"creator" | "reviewer">("reviewer");
   const [page, setPage] = useState<"dashboard" | "share">("dashboard");
   const [copied, setCopied] = useState(false);
 
