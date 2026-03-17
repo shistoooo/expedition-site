@@ -35,12 +35,11 @@ const plans = [
 ];
 
 const features = [
-  "Acc\u00e8s complet au Launcher (Mac/Windows)",
-  "TubeForge Pro \u2014 8K, sans pub",
-  "ClipForge \u2014 Clips auto + s\u00e9lection illimit\u00e9e (beta bient\u00f4t)",
-  "ReviewForge \u2014 Review s\u00e9curis\u00e9 (\u00e9t\u00e9 2026)",
-  "Badge Discord Pionnier",
-  "Acc\u00e8s Discord priv\u00e9 : retours directs avec le dev",
+  "Expedition Launcher (Mac/Windows)",
+  "TubeForge Pro \u2014 8K, sans pub (Vague 1)",
+  "ClipForge \u2014 Clips auto 8h + s\u00e9lection illimit\u00e9e (Vague 2)",
+  "ReviewForge \u2014 Review s\u00e9curis\u00e9 (Vague 3)",
+  "Badge Discord Exclusif 'Pionnier'",
   "Tarif bloqu\u00e9 tant que vous restez abonn\u00e9",
   "Acc\u00e8s garanti aux futurs outils",
 ];

@@ -37,11 +37,11 @@ const plans = [
 
 const features = [
   "Expedition Launcher (Mac/Windows)",
-  "TubeForge Pro \u2014 8K, sans pub",
-  "ClipForge \u2014 Clips auto + s\u00e9lection illimit\u00e9e",
-  "ReviewForge \u2014 Review s\u00e9curis\u00e9",
-  "Badge Discord Pionnier",
-  "Acc\u00e8s Discord priv\u00e9 avec le dev",
+  "TubeForge Pro \u2014 8K, sans pub (Vague 1)",
+  "ClipForge \u2014 Clips auto + s\u00e9lection illimit\u00e9e (Vague 2)",
+  "ReviewForge \u2014 Review s\u00e9curis\u00e9 (Vague 3)",
+  "Badge Discord Exclusif 'Pionnier'",
+  "Tarif bloqu\u00e9 tant que vous restez abonn\u00e9",
 ];
 
 function PricingCard({ plan }: { plan: typeof plans[number] }) {
@@ -230,7 +230,7 @@ export default function HomePricing() {
           className="max-w-2xl mx-auto"
         >
           <p className="text-center text-white/30 text-xs font-mono uppercase tracking-widest mb-6">
-            Inclus dans tous les plans
+            Inclus imm&eacute;diatement et &agrave; venir
           </p>
           <div className="grid grid-cols-2 gap-x-6 gap-y-3 mb-6">
             {features.map((feature, i) => (
