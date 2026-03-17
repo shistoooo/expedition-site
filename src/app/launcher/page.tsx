@@ -6,6 +6,7 @@ import { Download, Rocket, Layers, Sparkles, Terminal, Hammer, Palette, Brain, F
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
+import DownloadButtons from "@/components/DownloadButtons";
 
 // Status visual config — each state has its own color language so users
 // immediately parse the roadmap without reading the label.
@@ -182,28 +183,15 @@ export default function LauncherPage() {
                 Centralisez votre flux de production. Accédez à tous les outils Expedition, gérez vos mises à jour et découvrez les nouveautés depuis une interface unique.
               </p>
 
-              {/* CTA — glow that intensifies on hover */}
-              <Link
-                href="/pricing"
-                className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all duration-300"
-                style={{
-                  boxShadow: "0 0 32px rgba(37,99,235,0.35), 0 0 64px rgba(37,99,235,0.12), inset 0 1px 0 rgba(255,255,255,0.12)",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                    "0 0 48px rgba(37,99,235,0.55), 0 0 96px rgba(37,99,235,0.22), inset 0 1px 0 rgba(255,255,255,0.18)";
-                  (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.03)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                    "0 0 32px rgba(37,99,235,0.35), 0 0 64px rgba(37,99,235,0.12), inset 0 1px 0 rgba(255,255,255,0.12)";
-                  (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1)";
-                }}
-              >
-                <Rocket className="w-5 h-5" />
-                Obtenir le Launcher
-                <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
+              <div className="flex flex-wrap gap-4 mt-8">
+                <DownloadButtons 
+                  macUrl="https://api.clipapp.uk/downloads/launcher-install/macos"
+                  windowsUrl="https://api.clipapp.uk/downloads/launcher-install/windows"
+                  macFallbackPath=""
+                  windowsFallbackPath=""
+                  accentColor="blue"
+                />
+              </div>
             </motion.div>
 
             {/* Right Mockup — Command Center */}
