@@ -556,7 +556,7 @@ function CheckoutContent() {
                             </div>
 
                             <div className="space-y-3">
-                                <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider">Inclus immédiatement :</h4>
+                                <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider">Inclus immédiatement et à venir :</h4>
                                 <ul className="space-y-2">
                                     {[
                                         "Expedition Launcher (Mac/Windows)",
