@@ -5,29 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const testimonials = [
   {
-    name: "Lucas M.",
-    role: "Youtubeur Gaming",
-    text: "TubeForge m'a fait gagner un temps fou. Avant je galérais avec 4K Video Downloader, maintenant c'est instantané.",
+    name: "Nahsir",
+    role: "Monteur vidéo",
+    text: "J’utilise souvent Expedition, et notamment ClipForge, pour mes montages. Depuis ma première utilisation, je ne me sers plus que de ce logiciel. Il est pratique, facile d’utilisation et propose de nombreuses options qui permettent aux monteurs de gagner un temps précieux, que ce soit pour des projets clients ou personnels. Je recommande vivement cet outil pour tout prestataire travaillant sur du montage vidéo",
   },
   {
-    name: "Sarah K.",
-    role: "Monteuse freelance",
-    text: "Tous les outils au même endroit, c'est un game changer. Plus besoin de jongler entre 5 apps.",
-  },
-  {
-    name: "Théo D.",
-    role: "Créateur lifestyle",
-    text: "Le prix est imbattable. OpusClip + Frame.io + 4K ça fait 80€/mois. Ici c'est 7,99€ avec tout inclus.",
-  },
-  {
-    name: "Émilie R.",
-    role: "Prestataire vidéo",
-    text: "ReviewForge a changé ma façon de bosser avec mes clients. Fini les WeTransfer et les retours par mail.",
-  },
-  {
-    name: "Maxime B.",
-    role: "Monteur YouTube",
-    text: "Le téléchargement en 8K sans pub, c'est exactement ce qu'il me fallait pour mes projets clients.",
+    name: "Astro",
+    role: "Monteur vidéo",
+    text: "Franchement bluffé par l'utilisation de tubeforge, ça a vraiment simplifié et accélérer le processus de téléchargement de vidéo youtube. Bravo !!",
   },
 ];
 
