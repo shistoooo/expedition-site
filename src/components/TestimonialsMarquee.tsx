@@ -7,7 +7,7 @@ const testimonials = [
   {
     name: "Nahsir",
     role: "Monteur vidéo",
-    text: "J’utilise souvent Expedition, et notamment ClipForge, pour mes montages. Depuis ma première utilisation, je ne me sers plus que de ce logiciel. Il est pratique, facile d’utilisation et propose de nombreuses options qui permettent aux monteurs de gagner un temps précieux, que ce soit pour des projets clients ou personnels. Je recommande vivement cet outil pour tout prestataire travaillant sur du montage vidéo",
+    text: "Depuis ma première utilisation de ClipForge, je ne me sers plus que de ça. C'est pratique, intuitif et ça permet de gagner un temps précieux sur tous mes montages.",
   },
   {
     name: "Astro",
