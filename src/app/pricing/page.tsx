@@ -36,7 +36,7 @@ const plans = [
 
 const features = [
   "Expedition Launcher (Mac/Windows)",
-  "TubeForge Pro \u2014 8K, sans pub (Vague 1)",
+  "TubeForge Pro \u2014 8K, sans pub (Seul outil disponible en Vague 1)",
   "ClipForge \u2014 Clips auto 8h + s\u00e9lection illimit\u00e9e (Vague 2)",
   "ReviewForge \u2014 Review s\u00e9curis\u00e9 (Vague 3)",
   "Badge Discord Exclusif 'Pionnier'",
