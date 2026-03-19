@@ -51,7 +51,10 @@ export async function GET(req: NextRequest) {
         });
 
         if (!tokenRes.ok) {
-            return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=token_failed`, req.url));
+            const errorText = await tokenRes.text();
+            console.error("Discord token error:", errorText);
+            const encodedError = encodeURIComponent(`token_failed_(${tokenRes.status})_${errorText.replace(/[^a-zA-Z0-9_-]/g, '')}`);
+            return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=${encodedError}`, req.url));
         }
 
         const tokenData = await tokenRes.json();
@@ -68,7 +71,9 @@ export async function GET(req: NextRequest) {
         ]);
 
         if (!guildsRes.ok) {
-            return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=guilds_failed`, req.url));
+            const errText = await guildsRes.text();
+            const encodedError = encodeURIComponent(`guilds_failed_(${guildsRes.status})_${errText.replace(/[^a-zA-Z0-9_-]/g, '')}`);
+            return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=${encodedError}`, req.url));
         }
 
         const discordUser = userRes.ok ? await userRes.json() as { id: string } : null;
@@ -112,7 +117,9 @@ export async function GET(req: NextRequest) {
         });
 
         return response;
-    } catch {
-        return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=server_error`, req.url));
+    } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "unknown";
+        const encodedError = encodeURIComponent(`server_error_${msg.replace(/[^a-zA-Z0-9_-]/g, '')}`);
+        return NextResponse.redirect(new URL(`${errorRedirect}?discord_error=${encodedError}`, req.url));
     }
 }

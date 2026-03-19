@@ -361,7 +361,7 @@ function CheckoutContent() {
         if (discordErr === "not_member") {
             setDiscordError("Vous n'êtes pas membre du serveur Discord Expedition. Rejoignez-le d'abord !");
         } else if (discordErr) {
-            setDiscordError("Erreur lors de la vérification Discord. Réessayez.");
+            setDiscordError(`Erreur technique : ${discordErr}`);
         }
     }, [searchParams]);
 
