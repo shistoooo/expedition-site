@@ -682,22 +682,32 @@ function CheckoutContent() {
                                             <motion.div
                                                 initial={{ opacity: 0, y: -5 }}
                                                 animate={{ opacity: 1, y: 0 }}
-                                                className="mt-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm flex items-start gap-2"
+                                                className="mt-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm flex flex-col gap-3"
                                             >
-                                                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                                                <div>
-                                                    {discordError}
-                                                    {discordError.includes("pas membre") && (
+                                                <div className="flex items-start gap-2">
+                                                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                                    <span>{discordError}</span>
+                                                </div>
+                                                {discordError.includes("pas membre") && (
+                                                    <div className="flex flex-col gap-2">
                                                         <a
                                                             href="https://discord.com/invite/QuV3bYDEYT"
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="block mt-1 text-purple-400 hover:text-purple-300 underline transition-colors"
+                                                            className="w-full py-2.5 rounded-lg bg-[#5865F2] text-white text-sm font-medium flex items-center justify-center gap-2 hover:bg-[#4752C4] transition-colors"
                                                         >
+                                                            <DiscordIcon className="w-4 h-4" />
                                                             Rejoindre le serveur Discord
                                                         </a>
-                                                    )}
-                                                </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleDiscordConnect}
+                                                            className="w-full py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-medium flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+                                                        >
+                                                            J&apos;ai rejoint &mdash; R&eacute;essayer
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </motion.div>
                                         )}
                                     </div>
