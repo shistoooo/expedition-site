@@ -20,7 +20,7 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expedition.so";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expeditionlauncher.store";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
