@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import GlobalSpace from "@/components/GlobalSpace";
-import SmoothCursor from "@/components/SmoothCursor";
-import CursorGlow from "@/components/CursorGlow";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,8 +49,7 @@ export const metadata: Metadata = {
     description: "Rejoignez l'aventure Expédition et accédez aux meilleurs outils pour créateurs de contenu.",
     images: ["/og-image.jpg"],
   },
-  // TODO: Remplacer VOTRE_CODE par votre vrai code Google Search Console
-  // verification: { google: "VOTRE_CODE" },
+  verification: { google: "oLXLGG98BZT1xUWic3Tg2exNujxy3tCgjOF1MCvJo5c" },
 };
 
 const jsonLd = {
@@ -98,8 +95,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased noise-overlay`}
       >
         <GlobalSpace />
-        <CursorGlow />
-        <SmoothCursor />
         {children}
       </body>
     </html>

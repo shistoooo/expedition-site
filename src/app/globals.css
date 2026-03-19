@@ -23,27 +23,6 @@
   box-sizing: border-box;
 }
 
-/* Smooth Cursor — hide native cursor on desktop, keep text cursor for inputs */
-@media (any-hover: hover) and (any-pointer: fine) {
-  *,
-  *::before,
-  *::after {
-    cursor: none !important;
-  }
-
-  input,
-  textarea,
-  select,
-  [contenteditable="true"] {
-    cursor: text !important;
-  }
-}
-
-/* Hide ambient glow when hovering interactive cards */
-body:has(.pricing-card:hover) .cursor-glow {
-  opacity: 0 !important;
-  transition: opacity 0.3s ease;
-}
 
 html {
   scroll-behavior: smooth;
