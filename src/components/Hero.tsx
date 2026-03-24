@@ -36,10 +36,11 @@ export default function Hero() {
             et prestataires.
           </h1>
           <span
-            className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.05] text-transparent bg-clip-text animate-text-shimmer italic"
+            className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.15] text-transparent bg-clip-text animate-text-shimmer"
             style={{
               backgroundImage: "linear-gradient(90deg, #8b5cf6 0%, #a78bfa 25%, #22d3ee 50%, #a78bfa 75%, #8b5cf6 100%)",
               backgroundSize: "200% auto",
+              fontStyle: "oblique 10deg",
             }}
           >
             Gagnez des heures{" "}

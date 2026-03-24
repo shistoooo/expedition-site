@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: "Comment fonctionne la r\u00e9duction Discord ?",
-    a: "Rejoignez le serveur Discord avant de vous abonner, et vous b\u00e9n\u00e9ficiez du tarif r\u00e9duit \u00e0 7,99\u20ac/mois au lieu de 11,99\u20ac.",
+    a: "Rejoignez le serveur Discord avant de vous abonner, et vous b\u00e9n\u00e9ficiez du tarif r\u00e9duit \u00e0 8,03\u20ac/mois au lieu de 11,99\u20ac.",
   },
   {
     q: "Les futurs outils seront-ils inclus ?",

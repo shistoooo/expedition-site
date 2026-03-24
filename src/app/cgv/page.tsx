@@ -49,7 +49,7 @@ export default function CGVPage() {
                         article 293 B du Code G&eacute;n&eacute;ral des Imp&ocirc;ts, sous r&eacute;serve de modification du r&eacute;gime fiscal).
                     </p>
                     <p>
-                        Deux formules sont propos&eacute;es : mensuelle (11,99&euro;/mois) et annuelle (99,99&euro;/an). Un tarif r&eacute;duit (7,99&euro;/mois) est disponible pour les membres du serveur Discord Exp&eacute;dition.
+                        Deux formules sont propos&eacute;es : mensuelle (11,99&euro;/mois) et annuelle (99,99&euro;/an). Un tarif r&eacute;duit (8,03&euro;/mois) est disponible pour les membres du serveur Discord Exp&eacute;dition.
                         Le paiement est g&eacute;r&eacute; exclusivement par le prestataire de paiement Stripe.
                         L&apos;abonnement est renouvel&eacute; automatiquement &agrave; chaque &eacute;ch&eacute;ance (mensuelle ou annuelle).
                     </p>

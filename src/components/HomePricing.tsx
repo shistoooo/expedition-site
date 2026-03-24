@@ -19,7 +19,7 @@ const plans = [
   {
     name: "Mensuel + Discord",
     slug: "monthly-discord",
-    price: "7,99\u20ac",
+    price: "8,03\u20ac",
     priceUnit: "/mois",
     note: "Avec le r\u00f4le Discord actif",
     badge: "Meilleure offre",
