@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     Users, Shield, CheckCircle2, XCircle, Search, ToggleLeft, ToggleRight,
-    UserCheck, UserX, RefreshCw, FileText, Link2
+    UserCheck, UserX, RefreshCw, FileText, Link2, Copy, Check, Ticket
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -42,8 +42,18 @@ interface AmbassadorApplication {
     created_at: string;
 }
 
+interface TrialKey {
+    id: string;
+    keyCode: string;
+    durationDays: number;
+    redeemedBy: string | null;
+    redeemedAt: string | null;
+    expiresAt: string | null;
+    createdAt: string;
+}
+
 type Step = "login" | "admin";
-type Tab = "users" | "ambassadors" | "applications";
+type Tab = "users" | "ambassadors" | "applications" | "keys";
 
 export default function AdminPage() {
     const [step, setStep] = useState<Step>("login");
@@ -65,6 +75,14 @@ export default function AdminPage() {
 
     const [applications, setApplications] = useState<AmbassadorApplication[]>([]);
     const [applicationsLoading, setApplicationsLoading] = useState(false);
+
+    const [keys, setKeys] = useState<TrialKey[]>([]);
+    const [keysLoading, setKeysLoading] = useState(false);
+    const [generateCount, setGenerateCount] = useState(4);
+    const [generateDuration, setGenerateDuration] = useState(21);
+    const [generateLoading, setGenerateLoading] = useState(false);
+    const [justGenerated, setJustGenerated] = useState<string[]>([]);
+    const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -170,6 +188,55 @@ export default function AdminPage() {
         }
     }, [accessToken]);
 
+    const fetchKeys = useCallback(async () => {
+        if (!accessToken) return;
+        setKeysLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/keys`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setKeys(data.keys);
+        } catch {
+            setError("Erreur chargement des codes");
+        } finally {
+            setKeysLoading(false);
+        }
+    }, [accessToken]);
+
+    const handleGenerateKeys = async () => {
+        if (!accessToken) return;
+        setGenerateLoading(true);
+        setJustGenerated([]);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/keys/generate`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ count: generateCount, durationDays: generateDuration }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setJustGenerated(data.keys);
+            setSuccessMessage(`${data.keys.length} code(s) de ${generateDuration}j générés`);
+            setTimeout(() => setSuccessMessage(null), 3000);
+            fetchKeys();
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur génération");
+        } finally {
+            setGenerateLoading(false);
+        }
+    };
+
+    const copyLink = (keyCode: string) => {
+        navigator.clipboard.writeText(`https://expeditionlauncher.store/try/${keyCode}`);
+        setCopiedKey(keyCode);
+        setTimeout(() => setCopiedKey(null), 2000);
+    };
+
     useEffect(() => {
         if (step === "admin" && tab === "users") fetchUsers();
     }, [step, tab, fetchUsers]);
@@ -181,6 +248,10 @@ export default function AdminPage() {
     useEffect(() => {
         if (step === "admin" && tab === "applications") fetchApplications();
     }, [step, tab, fetchApplications]);
+
+    useEffect(() => {
+        if (step === "admin" && tab === "keys") fetchKeys();
+    }, [step, tab, fetchKeys]);
 
     const toggleBeta = async (userId: string, current: boolean) => {
         if (!accessToken) return;
@@ -391,6 +462,13 @@ export default function AdminPage() {
                                         <FileText className="w-4 h-4" />
                                         Candidatures ({applications.length})
                                     </button>
+                                    <button
+                                        onClick={() => setTab("keys")}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === "keys" ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
+                                    >
+                                        <Ticket className="w-4 h-4" />
+                                        Codes ({keys.length})
+                                    </button>
                                 </div>
 
                                 {/* Success message */}
@@ -597,6 +675,166 @@ export default function AdminPage() {
                                                 )}
                                             </div>
                                         )}
+                                    </div>
+                                )}
+
+                                {/* Keys Tab */}
+                                {tab === "keys" && (
+                                    <div className="space-y-6">
+                                        {/* Generate Section */}
+                                        <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                            <h2 className="text-sm font-mono text-white/40 uppercase mb-6">Générer des codes</h2>
+
+                                            <div className="flex flex-wrap items-end gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-mono text-white/40 uppercase">Durée</label>
+                                                    <select
+                                                        value={generateDuration}
+                                                        onChange={(e) => setGenerateDuration(Number(e.target.value))}
+                                                        className="h-10 px-3 bg-white/5 rounded-xl border border-white/10 text-white text-sm focus:outline-none focus:border-purple-500/50 transition-all appearance-none cursor-pointer"
+                                                    >
+                                                        <option value={3}>3 jours</option>
+                                                        <option value={7}>7 jours</option>
+                                                        <option value={14}>14 jours</option>
+                                                        <option value={21}>21 jours (3 sem.)</option>
+                                                        <option value={30}>30 jours</option>
+                                                    </select>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-mono text-white/40 uppercase">Nombre</label>
+                                                    <input
+                                                        type="number"
+                                                        min={1}
+                                                        max={50}
+                                                        value={generateCount}
+                                                        onChange={(e) => setGenerateCount(Math.min(50, Math.max(1, Number(e.target.value))))}
+                                                        className="h-10 w-20 px-3 bg-white/5 rounded-xl border border-white/10 text-white text-sm text-center focus:outline-none focus:border-purple-500/50 transition-all"
+                                                    />
+                                                </div>
+                                                <button
+                                                    onClick={handleGenerateKeys}
+                                                    disabled={generateLoading}
+                                                    className="h-10 px-5 rounded-xl bg-purple-600 text-white text-sm font-medium hover:bg-purple-500 transition-all shadow-lg shadow-purple-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    {generateLoading ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <KeyRound className="w-4 h-4" />
+                                                    )}
+                                                    Générer
+                                                </button>
+                                            </div>
+
+                                            {/* Just generated codes */}
+                                            {justGenerated.length > 0 && (
+                                                <div className="mt-6 p-4 rounded-xl bg-green-500/5 border border-green-500/15">
+                                                    <p className="text-xs font-mono text-green-400/60 uppercase mb-3">Codes générés — {generateDuration} jours</p>
+                                                    <div className="space-y-2">
+                                                        {justGenerated.map((code) => (
+                                                            <div
+                                                                key={code}
+                                                                className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5"
+                                                            >
+                                                                <code className="text-sm text-white/80 font-mono">{code}</code>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-xs text-white/25 hidden sm:block truncate max-w-[200px]">
+                                                                        expeditionlauncher.store/try/{code}
+                                                                    </span>
+                                                                    <button
+                                                                        onClick={() => copyLink(code)}
+                                                                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20 text-xs font-medium transition-all"
+                                                                    >
+                                                                        {copiedKey === code ? (
+                                                                            <><Check className="w-3 h-3" /> Copié</>
+                                                                        ) : (
+                                                                            <><Copy className="w-3 h-3" /> Copier le lien</>
+                                                                        )}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* All Keys List */}
+                                        <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                            <div className="flex items-center justify-between mb-6">
+                                                <h2 className="text-sm font-mono text-white/40 uppercase">Tous les codes ({keys.length})</h2>
+                                                <button
+                                                    onClick={fetchKeys}
+                                                    disabled={keysLoading}
+                                                    className="h-8 px-3 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                                                >
+                                                    <RefreshCw className={`w-3.5 h-3.5 ${keysLoading ? "animate-spin" : ""}`} />
+                                                </button>
+                                            </div>
+
+                                            {keysLoading && keys.length === 0 ? (
+                                                <div className="flex items-center justify-center py-12">
+                                                    <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {/* Header */}
+                                                    <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-2 text-xs font-mono text-white/30 uppercase">
+                                                        <span>Code</span>
+                                                        <span className="w-16 text-center">Durée</span>
+                                                        <span className="w-20 text-center">Statut</span>
+                                                        <span className="w-24 text-center">Action</span>
+                                                    </div>
+
+                                                    {keys.map((key) => (
+                                                        <div
+                                                            key={key.id}
+                                                            className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all"
+                                                        >
+                                                            <div className="min-w-0">
+                                                                <code className="text-sm text-white/80 font-mono">{key.keyCode}</code>
+                                                                <p className="text-xs text-white/25">{new Date(key.createdAt).toLocaleDateString("fr-FR")}</p>
+                                                            </div>
+                                                            <div className="w-16 flex justify-center">
+                                                                <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/50 border border-white/10">
+                                                                    {key.durationDays}j
+                                                                </span>
+                                                            </div>
+                                                            <div className="w-20 flex justify-center">
+                                                                {key.redeemedBy ? (
+                                                                    <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/20">
+                                                                        Utilisé
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/20">
+                                                                        Dispo
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <div className="w-24 flex justify-center">
+                                                                {!key.redeemedBy ? (
+                                                                    <button
+                                                                        onClick={() => copyLink(key.keyCode)}
+                                                                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20 text-xs font-medium transition-all"
+                                                                    >
+                                                                        {copiedKey === key.keyCode ? (
+                                                                            <><Check className="w-3 h-3" /> Copié</>
+                                                                        ) : (
+                                                                            <><Copy className="w-3 h-3" /> Lien</>
+                                                                        )}
+                                                                    </button>
+                                                                ) : (
+                                                                    <span className="text-xs text-white/20">—</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+
+                                                    {keys.length === 0 && !keysLoading && (
+                                                        <p className="text-center text-white/30 py-8 text-sm">Aucun code généré</p>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
 
