@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const COBALT_API = process.env.COBALT_API_URL || "http://204.168.158.84";
-const COBALT_INTERNAL_HOST = "http://204.168.158.84:9000";
+// COBALT_API_URL must include the port (e.g. http://204.168.158.84:9000).
+// COBALT_INTERNAL_HOST is derived from COBALT_API so the URL rewrite always matches
+// the host that Cobalt embeds in its own tunnel URLs — which mirrors the Host header
+// of the incoming request. If they diverge, the .replace() silently no-ops and the
+// browser receives the raw internal IP instead of the public stream URL.
+const COBALT_API = process.env.COBALT_API_URL || "http://204.168.158.84:9000";
+const COBALT_INTERNAL_HOST = COBALT_API.replace(/\/$/, ""); // strip trailing slash if any
 const COBALT_PUBLIC_HOST = "https://stream.clipapp.uk";
 
 const DAILY_LIMIT = 15;
