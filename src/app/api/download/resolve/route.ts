@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 
-const COBALT_API = process.env.COBALT_API_URL || "http://204.168.158.84:9000";
-const HMAC_SECRET = process.env.DOWNLOAD_HMAC_SECRET || "expedition-download-secret-change-me";
-const PROXY_WORKER_URL = process.env.NEXT_PUBLIC_DOWNLOAD_PROXY_URL || "https://download-proxy.expedition-studio.workers.dev";
+const COBALT_API = process.env.COBALT_API_URL || "http://204.168.158.84";
+const COBALT_INTERNAL_HOST = "http://204.168.158.84:9000";
+const COBALT_PUBLIC_HOST = "https://stream.clipapp.uk";
 
 const DAILY_LIMIT = 15;
-const TOKEN_EXPIRY_SECONDS = 300; // 5 minutes
 
 // In-memory rate limiting (resets on cold start — good enough for Vercel)
 const rateLimitMap = new Map<string, { count: number; date: string }>();
@@ -32,16 +30,6 @@ function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
 
   entry.count++;
   return { allowed: true, remaining: DAILY_LIMIT - entry.count };
-}
-
-function signToken(data: { url: string; title: string; filename: string }): string {
-  const payload = {
-    ...data,
-    exp: Math.floor(Date.now() / 1000) + TOKEN_EXPIRY_SECONDS,
-  };
-  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  const signature = crypto.createHmac("sha256", HMAC_SECRET).update(encoded).digest("base64url");
-  return `${encoded}.${signature}`;
 }
 
 function isValidYouTubeUrl(url: string): boolean {
@@ -120,13 +108,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Cobalt returns either a redirect URL or a tunnel URL
-    // Rewrite tunnel URLs from port 9000 to port 80 (nginx proxy)
-    // so Cloudflare Workers can fetch them (Workers block non-standard ports)
-    let downloadUrl: string = cobaltData.url;
-    if (downloadUrl) {
-      downloadUrl = downloadUrl.replace("http://204.168.158.84:9000/", "http://204.168.158.84/");
-    }
+    // Cobalt returns a tunnel URL on the internal port — rewrite to public port 80
+    // nginx on port 80 proxies to Cobalt and applies throttling (limit_rate 2m)
+    let downloadUrl: string = cobaltData.url || "";
+    downloadUrl = downloadUrl.replace(COBALT_INTERNAL_HOST, COBALT_PUBLIC_HOST);
     const filename = cobaltData.filename || "video.mp4";
 
     if (!downloadUrl) {
@@ -136,7 +121,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Try to get video metadata from YouTube oEmbed
+    // Get video metadata from YouTube oEmbed
     let title = filename.replace(/\.[^.]+$/, "").replace(/_/g, " ");
     let thumbnail = "";
     let durationSeconds = 0;
@@ -154,17 +139,13 @@ export async function POST(req: NextRequest) {
       // oEmbed failed — use filename as title
     }
 
-    // Sign the download token
-    const token = signToken({ url: downloadUrl, title, filename });
-    const proxyUrl = `${PROXY_WORKER_URL}/stream?token=${token}`;
-
     return NextResponse.json({
       title,
       thumbnail,
       duration: durationSeconds > 0 ? formatDuration(durationSeconds) : null,
       durationSeconds,
       filename,
-      downloadUrl: proxyUrl,
+      downloadUrl,
       remaining,
     });
   } catch (err) {
