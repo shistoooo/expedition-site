@@ -1,31 +1,26 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import TubeForgeWeb from "@/components/TubeForgeWeb";
+import Link from "next/link";
 
 export default function DownloadPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#06051a] pt-24 pb-20">
-        <div className="container-main">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-black tracking-[-0.03em] text-white mb-3">
-              Téléchargez des vidéos{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
-                YouTube
-              </span>
-            </h1>
-            <p className="text-white/55 max-w-lg mx-auto text-sm md:text-base">
-              Collez un lien et téléchargez en MP4. Gratuit, sans compte, 30 par jour.
-            </p>
-          </div>
-
-          {/* Main UI */}
-          <div className="max-w-4xl mx-auto">
-            <TubeForgeWeb />
-          </div>
+      <main className="min-h-screen bg-[#06051a] pt-24 pb-20 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <h1 className="text-3xl font-black tracking-[-0.03em] text-white mb-4">
+            Bientôt disponible
+          </h1>
+          <p className="text-white/50 text-sm mb-6">
+            Le téléchargement de vidéos YouTube arrive prochainement.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm hover:bg-white/10 transition-colors"
+          >
+            Retour à l'accueil
+          </Link>
         </div>
       </main>
     </>
