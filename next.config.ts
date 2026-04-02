@@ -17,11 +17,11 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
+      "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.clarity.ms",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https:",
-      "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com",
+      "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms",
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
       "worker-src 'self' blob:",
     ].join("; "),
