@@ -310,7 +310,7 @@ export default function TubeForgeWeb() {
                     <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center border border-white/[0.06]">
                       <Clock className="w-5 h-5" />
                     </div>
-                    <span className="text-[10px]">15/jour</span>
+                    <span className="text-[10px]">30/jour</span>
                   </div>
                   <div className="w-px h-8 bg-white/[0.06]" />
                   <div className="flex flex-col items-center gap-1.5">

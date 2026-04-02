@@ -36,7 +36,7 @@ export interface DownloadState {
   reset: () => void;
 }
 
-const DAILY_LIMIT = 15;
+const DAILY_LIMIT = 30;
 const STORAGE_KEY = "tf_web_downloads";
 
 function getTodayKey(): string {

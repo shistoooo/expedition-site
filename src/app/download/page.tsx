@@ -18,7 +18,7 @@ export default function DownloadPage() {
               </span>
             </h1>
             <p className="text-white/55 max-w-lg mx-auto text-sm md:text-base">
-              Collez un lien et téléchargez en MP4. Gratuit, sans compte, 15 par jour.
+              Collez un lien et téléchargez en MP4. Gratuit, sans compte, 30 par jour.
             </p>
           </div>
 

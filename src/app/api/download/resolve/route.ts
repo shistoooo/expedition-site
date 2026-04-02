@@ -7,7 +7,7 @@ const COBALT_API = process.env.COBALT_API_URL || "http://204.168.158.84";
 const COBALT_INTERNAL_HOST = "http://204.168.158.84:9000";
 const COBALT_PUBLIC_HOST = "https://stream.clipapp.uk";
 
-const DAILY_LIMIT = 15;
+const DAILY_LIMIT = 30;
 
 // In-memory rate limiting (resets on cold start — good enough for Vercel)
 const rateLimitMap = new Map<string, { count: number; date: string }>();
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     if (!allowed) {
       return NextResponse.json(
-        { error: "Limite quotidienne atteinte (15/jour). Passez à TubeForge Pro pour des téléchargements illimités.", limitReached: true },
+        { error: "Limite quotidienne atteinte (30/jour). Passez à TubeForge Pro pour des téléchargements illimités.", limitReached: true },
         { status: 429 }
       );
     }
