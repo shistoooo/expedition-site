@@ -122,65 +122,24 @@ export default function TubeForgeWeb() {
     }
   }, [inputUrl, dailyCount, dailyLimit, reset, setStatus, setVideoInfo, setError]);
 
-  const handleDownload = useCallback(async () => {
-    if (!videoInfo) return;
+  // Build the download URL for the <a href> tag — no JS download trigger needed.
+  // The browser navigates to /api/download/go which resolves Cobalt server-side
+  // and redirects to the tunnel URL. This is a real user gesture (clicking a link),
+  // which Chrome trusts for downloads.
+  const downloadHref = resolvedUrlRef.current
+    ? `/api/download/go?url=${encodeURIComponent(resolvedUrlRef.current)}`
+    : "#";
+
+  const handleDownloadClick = useCallback(() => {
     if (dailyCount >= dailyLimit) {
       setStatus("limit-reached");
       return;
     }
-
-    // CRITICAL: Open a blank tab SYNCHRONOUSLY within the user gesture.
-    // After an await, Chrome no longer considers it a user-initiated action
-    // and silently blocks downloads (0-byte files). Opening the window first
-    // preserves the user gesture context.
-    const downloadWindow = window.open("about:blank", "_blank");
-
-    setStatus("downloading");
-
-    try {
-      const res = await fetch("/api/download/resolve", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: resolvedUrlRef.current, action: "download" }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        downloadWindow?.close();
-        if (data.limitReached) {
-          setStatus("limit-reached");
-        } else {
-          setError(data.error || "Erreur lors du démarrage du téléchargement.");
-        }
-        return;
-      }
-
-      const tunnelUrl: string = data.downloadUrl;
-
-      if (!tunnelUrl) {
-        downloadWindow?.close();
-        setError("Impossible d'obtenir le lien de téléchargement.");
-        return;
-      }
-
-      // Navigate the already-open window to the tunnel URL.
-      // The server responds with Content-Disposition: attachment so Chrome
-      // starts the download and auto-closes the blank tab.
-      if (downloadWindow) {
-        downloadWindow.location.href = tunnelUrl;
-      } else {
-        // Popup was blocked — fall back to direct navigation
-        window.location.href = tunnelUrl;
-      }
-
-      setStatus("completed");
-      incrementDailyCount();
-    } catch {
-      downloadWindow?.close();
-      setError("Erreur réseau. Vérifiez votre connexion.");
-    }
-  }, [videoInfo, dailyCount, dailyLimit, setStatus, setError, incrementDailyCount]);
+    // The <a> tag handles the actual navigation/download.
+    // We just update the UI state here.
+    setStatus("completed");
+    incrementDailyCount();
+  }, [dailyCount, dailyLimit, setStatus, incrementDailyCount]);
 
   const handleCancel = () => {
     abortRef.current?.abort();
@@ -375,16 +334,19 @@ export default function TubeForgeWeb() {
                   {!isDownloading && !isCompleted && (
                     <>
                       <div className="grid grid-cols-2 gap-3 mt-4">
-                        <button
-                          onClick={handleDownload}
-                          className="group bg-white/5 hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-500/30 p-3 rounded-xl transition-all duration-200 text-left cursor-pointer"
+                        <a
+                          href={downloadHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={handleDownloadClick}
+                          className="group bg-white/5 hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-500/30 p-3 rounded-xl transition-all duration-200 text-left cursor-pointer block"
                         >
                           <div className="flex items-center justify-between mb-0.5">
                             <span className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors">Télécharger MP4</span>
                             <Video className="w-4 h-4 text-white/20 group-hover:text-cyan-400 transition-colors" />
                           </div>
                           <p className="text-[10px] text-white/40 group-hover:text-cyan-400/50 transition-colors">720p &bull; Vitesse bridée</p>
-                        </button>
+                        </a>
                         <div className="bg-white/[0.03] border border-white/[0.06] p-3 rounded-xl cursor-not-allowed">
                           <div className="flex items-center justify-between mb-0.5">
                             <span className="text-xs font-bold text-white/30">MP3</span>
