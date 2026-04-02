@@ -67,11 +67,20 @@ export default {
     const url = new URL(request.url);
 
     // CORS preflight
+    const preflightOrigin = request.headers.get("Origin") || "";
     if (request.method === "OPTIONS") {
+      const preflightAllowed = [
+        env.ALLOWED_ORIGIN,
+        "https://expeditionlauncher.store",
+        "http://localhost:3000",
+      ];
+      const allowOrigin = preflightAllowed.includes(preflightOrigin) || preflightOrigin.endsWith(".vercel.app")
+        ? preflightOrigin
+        : env.ALLOWED_ORIGIN;
       return new Response(null, {
         status: 204,
         headers: {
-          "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN,
+          "Access-Control-Allow-Origin": allowOrigin,
           "Access-Control-Allow-Methods": "GET, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
           "Access-Control-Max-Age": "86400",
@@ -89,9 +98,13 @@ export default {
 
     // Verify origin
     const origin = request.headers.get("Origin") || "";
+    const allowedOrigins = [
+      env.ALLOWED_ORIGIN,
+      "https://expeditionlauncher.store",
+      "http://localhost:3000",
+    ];
     const isAllowedOrigin =
-      origin === env.ALLOWED_ORIGIN ||
-      origin === "http://localhost:3000" ||
+      allowedOrigins.includes(origin) ||
       origin.endsWith(".vercel.app");
 
     // Verify token
