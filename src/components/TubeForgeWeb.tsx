@@ -122,15 +122,17 @@ export default function TubeForgeWeb() {
       return;
     }
 
-    // Direct download via hidden <a> tag
-    // The server sends Content-Disposition: attachment which forces browser download
+    // Direct download via hidden <a> tag with download attribute
+    // Without download attr, browser navigates instead of downloading
     // Throttling is handled server-side by nginx (limit_rate 2m)
     const a = document.createElement("a");
     a.href = videoInfo.url;
+    a.download = (videoInfo.title || "video").replace(/[^a-zA-Z0-9À-ÿ\s\-_.]/g, "") + ".mp4";
     a.style.display = "none";
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    // Delay removal — removing immediately cancels the download
+    setTimeout(() => document.body.removeChild(a), 3000);
 
     setStatus("completed");
     incrementDailyCount();

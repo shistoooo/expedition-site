@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     ?.match(/filename="(.+)"/)?.[1] || "video.mp4";
 
   const headers = new Headers({
-    "Content-Type": "video/mp4",
+    "Content-Type": "application/octet-stream",
     "Content-Disposition": `attachment; filename="${filename}"`,
     "Cache-Control": "no-cache",
   });
