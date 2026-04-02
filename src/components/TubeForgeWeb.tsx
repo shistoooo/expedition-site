@@ -122,17 +122,10 @@ export default function TubeForgeWeb() {
       return;
     }
 
-    // Direct download via hidden <a> tag with download attribute
-    // Without download attr, browser navigates instead of downloading
-    // Throttling is handled server-side by nginx (limit_rate 2m)
-    const a = document.createElement("a");
-    a.href = videoInfo.url;
-    a.download = (videoInfo.title || "video").replace(/[^a-zA-Z0-9À-ÿ\s\-_.]/g, "") + ".mp4";
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    // Delay removal — removing immediately cancels the download
-    setTimeout(() => document.body.removeChild(a), 3000);
+    // Direct browser navigation to stream.clipapp.uk tunnel URL
+    // Server responds with Content-Disposition: attachment → browser downloads
+    // No proxy needed — nginx handles throttling (limit_rate 2m)
+    window.open(videoInfo.url, "_blank");
 
     setStatus("completed");
     incrementDailyCount();
