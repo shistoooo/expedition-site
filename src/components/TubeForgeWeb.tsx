@@ -161,15 +161,17 @@ export default function TubeForgeWeb() {
         return;
       }
 
-      // Open tunnel URL in new tab (same pattern as cobalt.tools frontend).
-      // Cobalt sets Content-Disposition: attachment so browser downloads the file.
-      // Tunnel is fresh (just resolved) so within 90s TTL.
-      const w = window.open(tunnelUrl, "_blank", "noopener,noreferrer");
-
-      // If popup was blocked, fall back to location.href
-      if (!w) {
-        window.location.href = tunnelUrl;
-      }
+      // Trigger download via invisible <a> tag click.
+      // window.open and window.location.href both produce 0-byte files,
+      // but pasting the URL in the address bar works. A synthetic <a> click
+      // is the closest JS equivalent to the user navigating directly.
+      const a = document.createElement("a");
+      a.href = tunnelUrl;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      // Keep the element alive long enough for the download to start
+      setTimeout(() => document.body.removeChild(a), 60000);
 
       setStatus("completed");
       incrementDailyCount();
