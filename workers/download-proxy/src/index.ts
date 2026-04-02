@@ -62,25 +62,44 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const ALLOWED_ORIGINS = [
+  "https://expedition.so",
+  "https://expeditionlauncher.store",
+  "http://localhost:3000",
+];
+
+function getCorsOrigin(request: Request, env: Env): string {
+  const origin = request.headers.get("Origin") || "";
+  const allowed = [...ALLOWED_ORIGINS, env.ALLOWED_ORIGIN];
+  if (allowed.includes(origin) || origin.endsWith(".vercel.app")) {
+    return origin;
+  }
+  return "";
+}
+
+function corsHeaders(origin: string): Record<string, string> {
+  if (!origin) return {};
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Expose-Headers": "Content-Length, Content-Disposition",
+  };
+}
+
+function corsResponse(body: string, status: number, origin: string): Response {
+  return new Response(body, { status, headers: corsHeaders(origin) });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    const origin = getCorsOrigin(request, env);
 
     // CORS preflight
-    const preflightOrigin = request.headers.get("Origin") || "";
     if (request.method === "OPTIONS") {
-      const preflightAllowed = [
-        env.ALLOWED_ORIGIN,
-        "https://expeditionlauncher.store",
-        "http://localhost:3000",
-      ];
-      const allowOrigin = preflightAllowed.includes(preflightOrigin) || preflightOrigin.endsWith(".vercel.app")
-        ? preflightOrigin
-        : env.ALLOWED_ORIGIN;
       return new Response(null, {
         status: 204,
         headers: {
-          "Access-Control-Allow-Origin": allowOrigin,
+          "Access-Control-Allow-Origin": origin || env.ALLOWED_ORIGIN,
           "Access-Control-Allow-Methods": "GET, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
           "Access-Control-Max-Age": "86400",
@@ -89,33 +108,22 @@ export default {
     }
 
     if (url.pathname !== "/stream") {
-      return new Response("Not found", { status: 404 });
+      return corsResponse("Not found", 404, origin);
     }
 
     if (request.method !== "GET") {
-      return new Response("Method not allowed", { status: 405 });
+      return corsResponse("Method not allowed", 405, origin);
     }
-
-    // Verify origin
-    const origin = request.headers.get("Origin") || "";
-    const allowedOrigins = [
-      env.ALLOWED_ORIGIN,
-      "https://expeditionlauncher.store",
-      "http://localhost:3000",
-    ];
-    const isAllowedOrigin =
-      allowedOrigins.includes(origin) ||
-      origin.endsWith(".vercel.app");
 
     // Verify token
     const token = url.searchParams.get("token");
     if (!token) {
-      return new Response("Missing token", { status: 400 });
+      return corsResponse("Missing token", 400, origin);
     }
 
     const payload = await verifyToken(token, env.HMAC_SECRET);
     if (!payload) {
-      return new Response("Invalid or expired token", { status: 403 });
+      return corsResponse("Invalid or expired token", 403, origin);
     }
 
     // Fetch upstream
@@ -126,7 +134,7 @@ export default {
     });
 
     if (!upstreamRes.ok || !upstreamRes.body) {
-      return new Response("Upstream fetch failed", { status: 502 });
+      return corsResponse("Upstream fetch failed", 502, origin);
     }
 
     const contentLength = upstreamRes.headers.get("content-length");
@@ -134,8 +142,6 @@ export default {
     const safeFilename = payload.filename.replace(/[^a-zA-Z0-9À-ÿ\s\-_.]/g, "");
 
     // Throttled stream: divide speed by 2
-    // Strategy: for each chunk received, measure how long it took to receive,
-    // then add the same delay before forwarding — resulting in ÷2 speed
     const reader = upstreamRes.body.getReader();
     const CHUNK_TARGET = 64 * 1024; // 64KB target chunks
 
@@ -144,7 +150,6 @@ export default {
         const startTime = Date.now();
         let buffer = new Uint8Array(0);
 
-        // Read until we have ~64KB or stream ends
         while (buffer.length < CHUNK_TARGET) {
           const { done, value } = await reader.read();
           if (done) {
@@ -155,7 +160,6 @@ export default {
             return;
           }
 
-          // Merge into buffer
           const merged = new Uint8Array(buffer.length + value.length);
           merged.set(buffer);
           merged.set(value, buffer.length);
@@ -163,8 +167,7 @@ export default {
         }
 
         const receiveTime = Date.now() - startTime;
-        // Add equal delay to halve the speed
-        const throttleDelay = Math.max(receiveTime, 30); // minimum 30ms delay
+        const throttleDelay = Math.max(receiveTime, 30);
         await sleep(throttleDelay);
 
         controller.enqueue(buffer);
@@ -176,15 +179,11 @@ export default {
       "Content-Disposition": `attachment; filename="${safeFilename}"`,
       "Cache-Control": "no-cache",
       "X-Throttle": "web-free",
+      ...corsHeaders(origin),
     };
 
     if (contentLength) {
       responseHeaders["Content-Length"] = contentLength;
-    }
-
-    if (isAllowedOrigin) {
-      responseHeaders["Access-Control-Allow-Origin"] = origin || env.ALLOWED_ORIGIN;
-      responseHeaders["Access-Control-Expose-Headers"] = "Content-Length, Content-Disposition";
     }
 
     return new Response(throttledStream, {
