@@ -1,0 +1,7 @@
+name = "download-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+[vars]
+HMAC_SECRET = "expedition-download-secret-change-me"
+ALLOWED_ORIGIN = "https://expedition.so"

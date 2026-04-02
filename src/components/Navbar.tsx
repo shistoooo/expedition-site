@@ -31,6 +31,7 @@ export default function Navbar() {
 
   const navItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [
     { name: "Outils", href: "/#tubeforge" },
+    { name: "Essayer", href: "/download" },
     { name: "Tarifs", href: "/pricing" },
     { name: "Affili\u00e9", href: "/ambassador" },
     { name: "Mon compte", href: "/account" },
@@ -61,7 +62,11 @@ export default function Navbar() {
               key={item.name}
               href={item.href}
               onClick={item.onClick}
-              className="text-sm font-medium text-white/70 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
+              className={`text-sm font-medium transition-colors px-2 py-1 rounded-lg ${
+                item.name === "Essayer"
+                  ? "text-red-400/90 hover:text-red-300 hover:bg-red-500/10"
+                  : "text-white/70 hover:text-white hover:bg-white/5"
+              }`}
             >
               {item.name}
             </Link>
