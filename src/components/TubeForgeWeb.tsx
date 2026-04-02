@@ -123,10 +123,9 @@ export default function TubeForgeWeb() {
       return;
     }
 
-    // Same-origin proxy download via Node.js runtime (not Edge)
-    // This avoids cross-origin issues and Vercel Edge chunked body bugs
-    const proxyUrl = `/api/download/stream?url=${encodeURIComponent(videoInfo.url)}&filename=${encodeURIComponent(videoInfo.filename || "video.mp4")}`;
-    window.location.href = proxyUrl;
+    // Direct navigation to tunnel URL — browser downloads via Content-Disposition
+    // Using location.href (not window.open which gets popup-blocked)
+    window.location.href = videoInfo.url;
 
     setStatus("completed");
     incrementDailyCount();
