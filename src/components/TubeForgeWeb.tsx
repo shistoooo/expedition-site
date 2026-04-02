@@ -161,16 +161,9 @@ export default function TubeForgeWeb() {
         return;
       }
 
-      // Route the download through /api/download/stream (same-origin Vercel proxy).
-      // This avoids cross-origin Content-Disposition issues (Safari iOS ignores it
-      // for cross-origin navigations) and returns a proper Content-Length header.
-      const streamUrl =
-        "/api/download/stream?url=" +
-        encodeURIComponent(tunnelUrl) +
-        "&filename=" +
-        encodeURIComponent(filename);
-
-      window.location.href = streamUrl;
+      // Navigate directly to the fresh tunnel URL (Vercel proxy can't reach the VPS).
+      // The tunnel was just created so it's within the 90s TTL window.
+      window.location.href = tunnelUrl;
 
       setStatus("completed");
       incrementDailyCount();
