@@ -161,9 +161,15 @@ export default function TubeForgeWeb() {
         return;
       }
 
-      // Navigate directly to the fresh tunnel URL (Vercel proxy can't reach the VPS).
-      // The tunnel was just created so it's within the 90s TTL window.
-      window.location.href = tunnelUrl;
+      // Open tunnel URL in new tab (same pattern as cobalt.tools frontend).
+      // Cobalt sets Content-Disposition: attachment so browser downloads the file.
+      // Tunnel is fresh (just resolved) so within 90s TTL.
+      const w = window.open(tunnelUrl, "_blank", "noopener,noreferrer");
+
+      // If popup was blocked, fall back to location.href
+      if (!w) {
+        window.location.href = tunnelUrl;
+      }
 
       setStatus("completed");
       incrementDailyCount();
