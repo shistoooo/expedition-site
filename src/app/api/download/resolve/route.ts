@@ -139,13 +139,17 @@ export async function POST(req: NextRequest) {
       // oEmbed failed — use filename as title
     }
 
+    // Return a same-origin redirect URL so the browser can download
+    // without cross-origin restrictions
+    const streamUrl = `/api/download/stream?url=${encodeURIComponent(downloadUrl)}`;
+
     return NextResponse.json({
       title,
       thumbnail,
       duration: durationSeconds > 0 ? formatDuration(durationSeconds) : null,
       durationSeconds,
       filename,
-      downloadUrl,
+      downloadUrl: streamUrl,
       remaining,
     });
   } catch (err) {
