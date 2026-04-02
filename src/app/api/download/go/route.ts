@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
-// Same constants as resolve route
 const COBALT_API = process.env.COBALT_API_URL || "http://204.168.158.84";
 const COBALT_INTERNAL_HOST = "http://204.168.158.84:9000";
-const COBALT_PUBLIC_HOST = "https://stream.clipapp.uk";
+// Use port 80 (nginx catch-all → cobalt) so Vercel can reach it
+const COBALT_TUNNEL_HOST = "http://204.168.158.84";
+
+export const maxDuration = 60;
 
 function isValidYouTubeUrl(url: string): boolean {
   try {
@@ -16,8 +18,9 @@ function isValidYouTubeUrl(url: string): boolean {
 }
 
 // GET /api/download/go?url=YOUTUBE_URL
-// Called as a direct <a href> click — no JavaScript involved.
-// Resolves Cobalt, gets fresh tunnel URL, redirects browser to it.
+// Same-origin proxy: resolves Cobalt, fetches the tunnel, streams back
+// with Content-Disposition. Chrome blocks cross-origin 302 downloads,
+// so we MUST proxy the bytes through our own origin.
 export async function GET(req: NextRequest) {
   const ytUrl = req.nextUrl.searchParams.get("url");
 
@@ -26,7 +29,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Call Cobalt to get a fresh tunnel URL
+    // 1. Call Cobalt to get a fresh tunnel URL
     const cobaltRes = await fetch(COBALT_API, {
       method: "POST",
       headers: {
@@ -46,18 +49,43 @@ export async function GET(req: NextRequest) {
     }
 
     const cobaltData = await cobaltRes.json();
-    let downloadUrl: string = cobaltData.url || "";
-    downloadUrl = downloadUrl.replace(COBALT_INTERNAL_HOST, COBALT_PUBLIC_HOST);
+    const filename = cobaltData.filename || "video.mp4";
 
-    if (!downloadUrl) {
+    let tunnelUrl: string = cobaltData.url || "";
+    if (!tunnelUrl) {
       return new Response("No download URL", { status: 422 });
     }
 
-    // 302 redirect to the tunnel URL.
-    // The browser follows this redirect as a normal navigation.
-    // The tunnel server responds with Content-Disposition: attachment → download starts.
-    return NextResponse.redirect(downloadUrl, 302);
-  } catch {
+    // 2. Rewrite tunnel URL to port 80 (nginx catch-all → cobalt:9000)
+    // Vercel can reach port 80 but not port 9000 or stream.clipapp.uk
+    tunnelUrl = tunnelUrl.replace(COBALT_INTERNAL_HOST, COBALT_TUNNEL_HOST);
+
+    // 3. Fetch the tunnel content server-side
+    const upstream = await fetch(tunnelUrl);
+
+    if (!upstream.ok) {
+      return new Response(`Tunnel error: ${upstream.status}`, { status: 502 });
+    }
+
+    // 4. Buffer the full response to get Content-Length
+    const buffer = await upstream.arrayBuffer();
+
+    if (buffer.byteLength === 0) {
+      return new Response("Empty tunnel response", { status: 502 });
+    }
+
+    // 5. Send to browser as same-origin download
+    return new Response(buffer, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "Content-Length": String(buffer.byteLength),
+        "Cache-Control": "no-cache",
+      },
+    });
+  } catch (err) {
+    console.error("Download go error:", err);
     return new Response("Internal error", { status: 500 });
   }
 }
