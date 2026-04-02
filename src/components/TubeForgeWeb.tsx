@@ -142,7 +142,12 @@ export default function TubeForgeWeb() {
         return;
       }
 
-      const contentLength = Number(res.headers.get("content-length") || 0);
+      // Use Content-Length or Estimated-Content-Length (Cobalt tunnel)
+      const contentLength = Number(
+        res.headers.get("content-length") ||
+        res.headers.get("estimated-content-length") ||
+        0
+      );
       if (contentLength) setTotalSize(contentLength);
 
       const reader = res.body.getReader();
@@ -173,7 +178,17 @@ export default function TubeForgeWeb() {
         }
       }
 
-      const blob = new Blob(chunks as BlobPart[]);
+      // Fallback: if fetch stream returned 0 bytes, open URL directly
+      if (receivedBytes === 0) {
+        window.open(videoInfo.url, "_blank");
+        setProgress(100);
+        setStatus("completed");
+        incrementDailyCount();
+        if (timerRef.current) clearInterval(timerRef.current);
+        return;
+      }
+
+      const blob = new Blob(chunks as BlobPart[], { type: "video/mp4" });
       const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = blobUrl;
@@ -181,7 +196,8 @@ export default function TubeForgeWeb() {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
+      // Delay revocation to ensure browser has read the blob
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
 
       setProgress(100);
       setStatus("completed");
