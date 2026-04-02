@@ -115,103 +115,26 @@ export default function TubeForgeWeb() {
     }
   }, [inputUrl, dailyCount, dailyLimit, reset, setStatus, setVideoInfo, setError]);
 
-  const handleDownload = useCallback(async () => {
+  const handleDownload = useCallback(() => {
     if (!videoInfo?.url) return;
     if (dailyCount >= dailyLimit) {
       setStatus("limit-reached");
       return;
     }
 
-    setStatus("downloading");
-    setProgress(0);
-    setDownloaded(0);
-    setElapsedSeconds(0);
+    // Direct download via hidden <a> tag
+    // The server sends Content-Disposition: attachment which forces browser download
+    // Throttling is handled server-side by nginx (limit_rate 2m)
+    const a = document.createElement("a");
+    a.href = videoInfo.url;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-    const startTime = Date.now();
-    timerRef.current = setInterval(() => {
-      setElapsedSeconds(Math.floor((Date.now() - startTime) / 1000));
-    }, 1000);
-
-    try {
-      abortRef.current = new AbortController();
-      const res = await fetch(videoInfo.url, { signal: abortRef.current.signal });
-
-      if (!res.ok || !res.body) {
-        setError("Erreur lors du téléchargement");
-        if (timerRef.current) clearInterval(timerRef.current);
-        return;
-      }
-
-      // Use Content-Length or Estimated-Content-Length (Cobalt tunnel)
-      const contentLength = Number(
-        res.headers.get("content-length") ||
-        res.headers.get("estimated-content-length") ||
-        0
-      );
-      if (contentLength) setTotalSize(contentLength);
-
-      const reader = res.body.getReader();
-      const chunks: Uint8Array[] = [];
-      let receivedBytes = 0;
-      let lastSpeedCheck = Date.now();
-      let lastBytes = 0;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        chunks.push(value);
-        receivedBytes += value.length;
-        setDownloaded(receivedBytes);
-
-        if (contentLength) {
-          setProgress(Math.min(99, Math.round((receivedBytes / contentLength) * 100)));
-        }
-
-        const now = Date.now();
-        if (now - lastSpeedCheck >= 500) {
-          const elapsed = (now - lastSpeedCheck) / 1000;
-          const byteDiff = receivedBytes - lastBytes;
-          setSpeed(Math.round(byteDiff / elapsed));
-          lastSpeedCheck = now;
-          lastBytes = receivedBytes;
-        }
-      }
-
-      // Fallback: if fetch stream returned 0 bytes, open URL directly
-      if (receivedBytes === 0) {
-        window.open(videoInfo.url, "_blank");
-        setProgress(100);
-        setStatus("completed");
-        incrementDailyCount();
-        if (timerRef.current) clearInterval(timerRef.current);
-        return;
-      }
-
-      const blob = new Blob(chunks as BlobPart[], { type: "video/mp4" });
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = videoInfo.title.replace(/[^a-zA-Z0-9À-ÿ\s\-_.]/g, "") + ".mp4";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      // Delay revocation to ensure browser has read the blob
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-
-      setProgress(100);
-      setStatus("completed");
-      incrementDailyCount();
-    } catch (err) {
-      if ((err as Error).name === "AbortError") {
-        reset();
-      } else {
-        setError("Erreur lors du téléchargement. Réessayez.");
-      }
-    } finally {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-  }, [videoInfo, dailyCount, dailyLimit, setStatus, setProgress, setDownloaded, setTotalSize, setElapsedSeconds, setSpeed, setError, incrementDailyCount, reset]);
+    setStatus("completed");
+    incrementDailyCount();
+  }, [videoInfo, dailyCount, dailyLimit, setStatus, incrementDailyCount]);
 
   const handleCancel = () => {
     abortRef.current?.abort();
