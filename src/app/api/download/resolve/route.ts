@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 
-const COBALT_API = "https://api.cobalt.tools";
+const COBALT_API = process.env.COBALT_API_URL || "http://204.168.158.84:9000";
 const HMAC_SECRET = process.env.DOWNLOAD_HMAC_SECRET || "expedition-download-secret-change-me";
 const PROXY_WORKER_URL = process.env.NEXT_PUBLIC_DOWNLOAD_PROXY_URL || "https://download-proxy.expedition-studio.workers.dev";
 
