@@ -121,7 +121,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Cobalt returns either a redirect URL or a tunnel URL
-    const downloadUrl = cobaltData.url;
+    // Rewrite tunnel URLs from port 9000 to port 80 (nginx proxy)
+    // so Cloudflare Workers can fetch them (Workers block non-standard ports)
+    let downloadUrl: string = cobaltData.url;
+    if (downloadUrl) {
+      downloadUrl = downloadUrl.replace("http://204.168.158.84:9000/", "http://204.168.158.84/");
+    }
     const filename = cobaltData.filename || "video.mp4";
 
     if (!downloadUrl) {
