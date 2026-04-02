@@ -106,6 +106,7 @@ export default function TubeForgeWeb() {
         duration: data.duration || "",
         durationSeconds: data.durationSeconds || 0,
         url: data.downloadUrl,
+        filename: data.filename || "video.mp4",
       });
       setStatus("idle");
     } catch {
@@ -122,10 +123,10 @@ export default function TubeForgeWeb() {
       return;
     }
 
-    // Direct browser navigation to stream.clipapp.uk tunnel URL
-    // Server responds with Content-Disposition: attachment → browser downloads
-    // No proxy needed — nginx handles throttling (limit_rate 2m)
-    window.open(videoInfo.url, "_blank");
+    // Same-origin proxy download via Node.js runtime (not Edge)
+    // This avoids cross-origin issues and Vercel Edge chunked body bugs
+    const proxyUrl = `/api/download/stream?url=${encodeURIComponent(videoInfo.url)}&filename=${encodeURIComponent(videoInfo.filename || "video.mp4")}`;
+    window.location.href = proxyUrl;
 
     setStatus("completed");
     incrementDailyCount();

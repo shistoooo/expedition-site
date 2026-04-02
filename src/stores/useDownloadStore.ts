@@ -8,6 +8,7 @@ export interface VideoInfo {
   duration: string;
   durationSeconds: number;
   url: string;
+  filename: string;
 }
 
 export interface DownloadState {
