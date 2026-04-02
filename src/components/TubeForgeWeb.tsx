@@ -129,13 +129,15 @@ export default function TubeForgeWeb() {
       return;
     }
 
+    // CRITICAL: Open a blank tab SYNCHRONOUSLY within the user gesture.
+    // After an await, Chrome no longer considers it a user-initiated action
+    // and silently blocks downloads (0-byte files). Opening the window first
+    // preserves the user gesture context.
+    const downloadWindow = window.open("about:blank", "_blank");
+
     setStatus("downloading");
 
     try {
-      // Re-resolve Cobalt at click time so the 90s tunnel TTL starts now, not at search time.
-      // action=download skips oEmbed metadata and returns only the fresh tunnel URL.
-      // Use the snapshot captured at resolve time, not the current input value,
-      // in case the user edited the field between the two actions.
       const res = await fetch("/api/download/resolve", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -145,6 +147,7 @@ export default function TubeForgeWeb() {
       const data = await res.json();
 
       if (!res.ok) {
+        downloadWindow?.close();
         if (data.limitReached) {
           setStatus("limit-reached");
         } else {
@@ -154,28 +157,27 @@ export default function TubeForgeWeb() {
       }
 
       const tunnelUrl: string = data.downloadUrl;
-      const filename: string = data.filename || videoInfo.filename || "video.mp4";
 
       if (!tunnelUrl) {
+        downloadWindow?.close();
         setError("Impossible d'obtenir le lien de téléchargement.");
         return;
       }
 
-      // Trigger download via invisible <a> tag click.
-      // window.open and window.location.href both produce 0-byte files,
-      // but pasting the URL in the address bar works. A synthetic <a> click
-      // is the closest JS equivalent to the user navigating directly.
-      const a = document.createElement("a");
-      a.href = tunnelUrl;
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      // Keep the element alive long enough for the download to start
-      setTimeout(() => document.body.removeChild(a), 60000);
+      // Navigate the already-open window to the tunnel URL.
+      // The server responds with Content-Disposition: attachment so Chrome
+      // starts the download and auto-closes the blank tab.
+      if (downloadWindow) {
+        downloadWindow.location.href = tunnelUrl;
+      } else {
+        // Popup was blocked — fall back to direct navigation
+        window.location.href = tunnelUrl;
+      }
 
       setStatus("completed");
       incrementDailyCount();
     } catch {
+      downloadWindow?.close();
       setError("Erreur réseau. Vérifiez votre connexion.");
     }
   }, [videoInfo, dailyCount, dailyLimit, setStatus, setError, incrementDailyCount]);
