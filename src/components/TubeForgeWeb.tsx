@@ -41,6 +41,9 @@ export default function TubeForgeWeb() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Snapshot of the URL that was successfully resolved — used at download time
+  // so clearing/editing the input between Resolve and Download doesn't break things.
+  const resolvedUrlRef = useRef<string>("");
 
   const {
     status,
@@ -79,6 +82,7 @@ export default function TubeForgeWeb() {
 
     setHasInteracted(true);
     reset();
+    resolvedUrlRef.current = inputUrl.trim();
     setIsResolving(true);
     setStatus("resolving");
 
@@ -105,7 +109,9 @@ export default function TubeForgeWeb() {
         thumbnail: data.thumbnail,
         duration: data.duration || "",
         durationSeconds: data.durationSeconds || 0,
-        url: data.downloadUrl,
+        // url is intentionally empty here — tunnel is resolved fresh at download-click time
+        // to avoid hitting the 90s TTL before the user clicks.
+        url: "",
         filename: data.filename || "video.mp4",
       });
       setStatus("idle");
@@ -116,20 +122,62 @@ export default function TubeForgeWeb() {
     }
   }, [inputUrl, dailyCount, dailyLimit, reset, setStatus, setVideoInfo, setError]);
 
-  const handleDownload = useCallback(() => {
-    if (!videoInfo?.url) return;
+  const handleDownload = useCallback(async () => {
+    if (!videoInfo) return;
     if (dailyCount >= dailyLimit) {
       setStatus("limit-reached");
       return;
     }
 
-    // Direct navigation to tunnel URL — browser downloads via Content-Disposition
-    // Using location.href (not window.open which gets popup-blocked)
-    window.location.href = videoInfo.url;
+    setStatus("downloading");
 
-    setStatus("completed");
-    incrementDailyCount();
-  }, [videoInfo, dailyCount, dailyLimit, setStatus, incrementDailyCount]);
+    try {
+      // Re-resolve Cobalt at click time so the 90s tunnel TTL starts now, not at search time.
+      // action=download skips oEmbed metadata and returns only the fresh tunnel URL.
+      // Use the snapshot captured at resolve time, not the current input value,
+      // in case the user edited the field between the two actions.
+      const res = await fetch("/api/download/resolve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: resolvedUrlRef.current, action: "download" }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.limitReached) {
+          setStatus("limit-reached");
+        } else {
+          setError(data.error || "Erreur lors du démarrage du téléchargement.");
+        }
+        return;
+      }
+
+      const tunnelUrl: string = data.downloadUrl;
+      const filename: string = data.filename || videoInfo.filename || "video.mp4";
+
+      if (!tunnelUrl) {
+        setError("Impossible d'obtenir le lien de téléchargement.");
+        return;
+      }
+
+      // Route the download through /api/download/stream (same-origin Vercel proxy).
+      // This avoids cross-origin Content-Disposition issues (Safari iOS ignores it
+      // for cross-origin navigations) and returns a proper Content-Length header.
+      const streamUrl =
+        "/api/download/stream?url=" +
+        encodeURIComponent(tunnelUrl) +
+        "&filename=" +
+        encodeURIComponent(filename);
+
+      window.location.href = streamUrl;
+
+      setStatus("completed");
+      incrementDailyCount();
+    } catch {
+      setError("Erreur réseau. Vérifiez votre connexion.");
+    }
+  }, [videoInfo, dailyCount, dailyLimit, setStatus, setError, incrementDailyCount]);
 
   const handleCancel = () => {
     abortRef.current?.abort();

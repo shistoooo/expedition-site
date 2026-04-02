@@ -63,9 +63,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "URL YouTube invalide" }, { status: 400 });
     }
 
-    // Rate limit check
+    // Rate limit check.
+    // action=download is the second phase of the same operation (re-resolve at click time
+    // to get a fresh 90s tunnel). We check the limit but do NOT increment — the counter
+    // was already incremented during the initial resolve (action != "download").
+    const action = body.action;
     const rateLimitKey = getRateLimitKey(req);
-    const { allowed, remaining } = checkRateLimit(rateLimitKey);
+    const { allowed, remaining } =
+      action === "download"
+        ? // Peek without incrementing: simulate what checkRateLimit would return
+          (() => {
+            const today = new Date().toISOString().slice(0, 10);
+            const entry = rateLimitMap.get(rateLimitKey);
+            if (!entry || entry.date !== today) return { allowed: true, remaining: DAILY_LIMIT };
+            return { allowed: entry.count < DAILY_LIMIT, remaining: Math.max(0, DAILY_LIMIT - entry.count) };
+          })()
+        : checkRateLimit(rateLimitKey);
+
     if (!allowed) {
       return NextResponse.json(
         { error: "Limite quotidienne atteinte (15/jour). Passez à TubeForge Pro pour des téléchargements illimités.", limitReached: true },
@@ -108,8 +122,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Cobalt returns a tunnel URL on the internal port — rewrite to public port 80
-    // nginx on port 80 proxies to Cobalt and applies throttling (limit_rate 2m)
+    // Cobalt returns a tunnel URL on the internal port — rewrite to public HTTPS host.
+    // The tunnel TTL is 90s. We return the tunnel URL here only for the "stream" action
+    // (immediate proxy download). For "resolve" (metadata preview), we skip Cobalt entirely
+    // and only call it at download time via ?action=download.
     let downloadUrl: string = cobaltData.url || "";
     downloadUrl = downloadUrl.replace(COBALT_INTERNAL_HOST, COBALT_PUBLIC_HOST);
     const filename = cobaltData.filename || "video.mp4";
@@ -121,7 +137,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get video metadata from YouTube oEmbed
+    // action=download: skip oEmbed metadata fetch — we only need the fresh tunnel URL.
+    // This path is called at download-click time so the 90s TTL starts as late as possible.
+    if (action === "download") {
+      return NextResponse.json({ downloadUrl, filename });
+    }
+
+    // Get video metadata from YouTube oEmbed (resolve/preview path only)
     let title = filename.replace(/\.[^.]+$/, "").replace(/_/g, " ");
     let thumbnail = "";
     let durationSeconds = 0;
@@ -145,7 +167,8 @@ export async function POST(req: NextRequest) {
       duration: durationSeconds > 0 ? formatDuration(durationSeconds) : null,
       durationSeconds,
       filename,
-      downloadUrl,
+      // Do NOT return downloadUrl here — tunnel TTL is 90s and the user may not
+      // click download immediately. The frontend will re-resolve at click time.
       remaining,
     });
   } catch (err) {
