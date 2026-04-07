@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 
+// Force this route into the dynamic-rendering bucket: it consumes ?utm_* params
+// at runtime via usePionnierUtm() / useSearchParams(), and is noindex anyway,
+// so static optimization is neither possible nor desirable.
+// MUST live in layout.tsx (server component) — page.tsx is "use client" and
+// route segment config is ignored on client components.
+export const dynamic = "force-dynamic";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expedition.so";
 
 export const metadata: Metadata = {

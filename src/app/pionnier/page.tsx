@@ -11,10 +11,8 @@ import PionnierFAQ from "@/components/pionnier/PionnierFAQ";
 import PionnierFinalCTA from "@/components/pionnier/PionnierFinalCTA";
 import PionnierStickyMobileCTA from "@/components/pionnier/PionnierStickyMobileCTA";
 
-// Force this route into the dynamic-rendering bucket: it consumes ?utm_* params
-// at runtime via usePionnierUtm() / useSearchParams(), and is noindex anyway,
-// so static optimization is not desirable here.
-export const dynamic = "force-dynamic";
+// Note: `export const dynamic = "force-dynamic"` lives in layout.tsx (server
+// component). Route segment config is ignored on "use client" pages.
 
 export default function PionnierPage() {
   return (
