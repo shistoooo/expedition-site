@@ -1,0 +1,28 @@
+# Local Cloudflare Wrangler cache (R2 blobs etc.) — never deploy
+.wrangler/
+
+# Local build artifacts
+.next/
+out/
+
+# Dependencies (Vercel installs fresh)
+node_modules/
+
+# Cloudflare Worker subdir is built/deployed separately
+workers/
+
+# Local env files
+.env
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+.claude/
+
+# Misc local-only
+*.log
+fix_env.sh
+generate-pdf.mjs
+public/affiche-expedition.html
+public/affiche-expedition.png
