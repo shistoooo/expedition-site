@@ -168,13 +168,13 @@ export default function TubeForgeWeb() {
           </h3>
           <p className="text-white/60 mb-8 max-w-md mx-auto text-sm">
             Revenez demain, ou passez à TubeForge Pro pour des téléchargements
-            illimités en 8K avec découpe vidéo.
+            illimités en 4K avec découpe vidéo.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 max-w-lg mx-auto text-left">
             {[
               { icon: Zap, label: "Vitesse maximale", desc: "Fragments parallèles" },
-              { icon: Video, label: "Jusqu'en 8K", desc: "Qualité sans limite" },
+              { icon: Video, label: "Jusqu'en 4K", desc: "Qualité sans limite" },
               { icon: Scissors, label: "Découpe vidéo", desc: "Extrait exact" },
             ].map((f, i) => (
               <div key={i} className="p-3 rounded-xl bg-white/5 border border-white/10">

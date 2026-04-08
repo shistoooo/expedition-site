@@ -63,7 +63,7 @@ export default function PionnierHero() {
           className="text-base md:text-xl text-white/60 mb-10 leading-relaxed animate-hero-in max-w-2xl"
           style={{ animationDelay: "0.2s" }}
         >
-          Téléchargez en 8K, clippez avec l&apos;IA, faites valider vos rendus —{" "}
+          Téléchargez en 4K, clippez avec l&apos;IA, faites valider vos rendus —{" "}
           <span className="text-white/85 font-semibold">un seul abonnement, dès 8,03€/mois</span>. Bloqué à vie tant que vous restez abonné.
         </p>
 

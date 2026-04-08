@@ -25,7 +25,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expeditionlauncher.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Expédition — Outils desktop pour créateurs YouTube | TubeForge, ClipForge, ReviewForge",
-  description: "Suite d'outils desktop pour YouTubeurs et monteurs : téléchargement 8K, clips automatiques, review sécurisé. Un abonnement, tous les outils. Dès 8,03€/mois.",
+  description: "Suite d'outils desktop pour YouTubeurs et monteurs : téléchargement 4K, clips automatiques, review sécurisé. Un abonnement, tous les outils. Dès 8,03€/mois.",
   keywords: ["expedition", "tools", "clipforge", "tubeforge", "youtube", "tiktok", "discord", "création", "vidéo", "ia"],
   openGraph: {
     title: "Expédition | Les outils pour les créateurs",

@@ -12,7 +12,7 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const features = [
   "Expedition Launcher (Mac/Windows)",
-  "TubeForge Pro — 8K, sans pub (Vague 1)",
+  "TubeForge Pro — 4K, sans pub (Vague 1)",
   "ClipForge — Clips auto + sélection illimitée (Vague 2)",
   "ReviewForge — Review sécurisé (Vague 3)",
   "Badge Discord Exclusif « Pionnier »",

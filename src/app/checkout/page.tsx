@@ -560,7 +560,7 @@ function CheckoutContent() {
                                 <ul className="space-y-2">
                                     {[
                                         "Expedition Launcher (Mac/Windows)",
-                                        "TubeForge Pro — 8K, sans pub (Seul outil disponible en Vague 1)",
+                                        "TubeForge Pro — 4K, sans pub (Seul outil disponible en Vague 1)",
                                         "ClipForge — Clips auto 8h + sélection illimitée (Vague 2)",
                                         "ReviewForge — Review sécurisé (Vague 3)",
                                         "Badge Discord Exclusif 'Pionnier'",

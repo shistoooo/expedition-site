@@ -65,7 +65,7 @@ export default function TubeForgeSection() {
               className="space-y-5 mb-10"
             >
               {[
-                { icon: Zap, title: "T\u00e9l\u00e9chargez en quelques secondes, jusqu\u2019en 8K", desc: "Pendant que les sites en ligne vous font attendre, TubeForge t\u00e9l\u00e9charge 3 vid\u00e9os en m\u00eame temps. Une playlist de 20 vid\u00e9os ? Lancez et allez monter." },
+                { icon: Zap, title: "T\u00e9l\u00e9chargez en quelques secondes, jusqu\u2019en 4K", desc: "Pendant que les sites en ligne vous font attendre, TubeForge t\u00e9l\u00e9charge 3 vid\u00e9os en m\u00eame temps. Une playlist de 20 vid\u00e9os ? Lancez et allez monter." },
                 { icon: Scissors, title: "D\u00e9coupez l\u2019extrait exact avant de t\u00e9l\u00e9charger", desc: "Vous avez rep\u00e9r\u00e9 30 secondes utiles dans une vid\u00e9o de 2h ? S\u00e9lectionnez l\u2019extrait sur la timeline et t\u00e9l\u00e9chargez juste ce passage. Pas besoin de couper apr\u00e8s." },
                 { icon: FileText, title: "Importez votre script, toutes les r\u00e9f\u00e9rences se t\u00e9l\u00e9chargent", desc: "Vous pr\u00e9parez une vid\u00e9o avec des liens YouTube dans vos notes ? Importez votre document : TubeForge d\u00e9tecte chaque lien et t\u00e9l\u00e9charge tout en un clic." },
               ].map((item, i) => (

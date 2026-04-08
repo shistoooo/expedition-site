@@ -30,7 +30,7 @@ export default function PionnierMockupSection() {
             .
           </h2>
           <p className="text-base md:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed">
-            Téléchargez en 8K, découpez l&apos;extrait exact, importez votre script.{" "}
+            Téléchargez en 4K, découpez l&apos;extrait exact, importez votre script.{" "}
             <span className="text-white/75">En quelques secondes.</span>
           </p>
         </motion.div>

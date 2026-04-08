@@ -14,7 +14,7 @@ const tools = [
     icon: Download,
     iconColor: "text-red-300",
     iconBg: "bg-red-500/10 border-red-500/20",
-    tagline: "Téléchargement YouTube en 8K, sans bridage. Découpez avant de télécharger, importez vos scripts.",
+    tagline: "Téléchargement YouTube en 4K, sans bridage. Découpez avant de télécharger, importez vos scripts.",
   },
   {
     name: "ClipForge",
