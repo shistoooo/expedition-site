@@ -59,10 +59,10 @@ export default function PionnierFeatures() {
             Ce que TubeForge fait pour vous
           </p>
           <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] max-w-3xl mx-auto leading-[1.05]">
-            Pour les créateurs qui veulent aller vite.{" "}
+            Tout le workflow YouTube.{" "}
             <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
-              Et plus loin.
+              Dans une seule fenêtre.
             </span>
           </h2>
         </motion.div>

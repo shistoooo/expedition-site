@@ -48,13 +48,12 @@ export default function PionnierHero() {
 
         {/* H1 */}
         <h1
-          className="text-5xl md:text-7xl lg:text-[5.5rem] font-black mb-6 leading-[1.02] tracking-[-0.035em] text-white animate-hero-in max-w-5xl"
+          className="text-4xl md:text-5xl lg:text-[3.75rem] font-black mb-6 leading-[1.1] tracking-[-0.025em] text-white animate-hero-in max-w-4xl"
           style={{ animationDelay: "0.1s" }}
         >
-          La suite YouTube.{" "}
-          <br className="hidden sm:block" />
+          Pour les YouTubeurs et prestataires qui veulent aller{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
-            Au tarif Pionnier.
+            plus loin. Plus vite.
           </span>
         </h1>
 
