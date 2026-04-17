@@ -8,6 +8,7 @@ import SecondaryToolsGrid from "@/components/SecondaryToolsGrid";
 import WhyExpeditionSection from "@/components/WhyExpeditionSection";
 import HomePricing from "@/components/HomePricing";
 import TestimonialsMarquee from "@/components/TestimonialsMarquee";
+import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 
@@ -19,6 +20,7 @@ export default function Home() {
       <main className="w-full relative z-10">
         <Hero />
         <TestimonialsMarquee />
+        <HomeYoutuberShowcase />
         <TubeForgeSection />
         <SecondaryToolsGrid />
         <WhyExpeditionSection />
