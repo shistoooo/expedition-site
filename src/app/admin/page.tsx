@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     Users, Shield, CheckCircle2, XCircle, Search, ToggleLeft, ToggleRight,
-    UserCheck, UserX, RefreshCw, FileText, Link2, Copy, Check, Ticket
+    UserCheck, UserX, RefreshCw, FileText, Link2, Copy, Check, Ticket,
+    Users2, Plus, ChevronDown, ChevronUp
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -52,8 +53,28 @@ interface TrialKey {
     createdAt: string;
 }
 
+interface AdminPartner {
+    id: string;
+    slug: string;
+    name: string;
+    active: boolean;
+    created_at: string;
+    totalCodes: number;
+    redeemedCodes: number;
+    availableCodes: number;
+}
+
+interface AdminPartnerCode {
+    keyCode: string;
+    durationDays: number;
+    redeemedByEmail: string | null;
+    redeemedAt: string | null;
+    expiresAt: string | null;
+    createdAt: string;
+}
+
 type Step = "login" | "admin";
-type Tab = "users" | "ambassadors" | "applications" | "keys";
+type Tab = "users" | "ambassadors" | "applications" | "keys" | "partners";
 
 export default function AdminPage() {
     const [step, setStep] = useState<Step>("login");
@@ -83,6 +104,17 @@ export default function AdminPage() {
     const [generateLoading, setGenerateLoading] = useState(false);
     const [justGenerated, setJustGenerated] = useState<string[]>([]);
     const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+    const [partners, setPartners] = useState<AdminPartner[]>([]);
+    const [partnersLoading, setPartnersLoading] = useState(false);
+    const [newPartnerName, setNewPartnerName] = useState("");
+    const [createPartnerLoading, setCreatePartnerLoading] = useState(false);
+    const [expandedPartnerId, setExpandedPartnerId] = useState<string | null>(null);
+    const [expandedCodes, setExpandedCodes] = useState<AdminPartnerCode[]>([]);
+    const [expandedCodesLoading, setExpandedCodesLoading] = useState(false);
+    const [refillCount, setRefillCount] = useState<Record<string, number>>({});
+    const [refillDuration, setRefillDuration] = useState<Record<string, number>>({});
+    const [refillLoading, setRefillLoading] = useState<string | null>(null);
 
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -205,6 +237,128 @@ export default function AdminPage() {
         }
     }, [accessToken]);
 
+    const fetchPartners = useCallback(async () => {
+        if (!accessToken) return;
+        setPartnersLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/partners`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setPartners(data.partners);
+        } catch {
+            setError("Erreur chargement partenaires");
+        } finally {
+            setPartnersLoading(false);
+        }
+    }, [accessToken]);
+
+    const fetchPartnerCodes = async (partnerId: string) => {
+        if (!accessToken) return;
+        setExpandedCodesLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/partners/${partnerId}`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setExpandedCodes(data.codes);
+        } catch {
+            setError("Erreur chargement codes");
+        } finally {
+            setExpandedCodesLoading(false);
+        }
+    };
+
+    const handleCreatePartner = async () => {
+        if (!accessToken || !newPartnerName.trim()) return;
+        setCreatePartnerLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/partners`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name: newPartnerName.trim() }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setSuccessMessage(`Partenaire "${data.name}" créé — slug : ${data.slug}`);
+            setTimeout(() => setSuccessMessage(null), 4000);
+            setNewPartnerName("");
+            fetchPartners();
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur création");
+        } finally {
+            setCreatePartnerLoading(false);
+        }
+    };
+
+    const handleRefill = async (partnerId: string) => {
+        if (!accessToken) return;
+        const count = refillCount[partnerId] ?? 5;
+        const duration = refillDuration[partnerId] ?? 7;
+        if (count > 10) {
+            const ok = window.confirm(`Générer ${count} codes de ${duration} jours ?`);
+            if (!ok) return;
+        }
+        setRefillLoading(partnerId);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/partners/${partnerId}/refill`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ count, durationDays: duration }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setSuccessMessage(`${data.keys.length} code(s) de ${duration}j générés`);
+            setTimeout(() => setSuccessMessage(null), 3000);
+            fetchPartners();
+            if (expandedPartnerId === partnerId) fetchPartnerCodes(partnerId);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur génération");
+        } finally {
+            setRefillLoading(null);
+        }
+    };
+
+    const handleTogglePartner = async (partnerId: string, current: boolean) => {
+        if (!accessToken) return;
+        setActionLoading(partnerId);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/partners/${partnerId}/toggle`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ active: !current }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setPartners((prev) => prev.map((p) =>
+                p.id === partnerId ? { ...p, active: !current } : p
+            ));
+            setSuccessMessage(`Partenaire ${!current ? "activé" : "désactivé"}`);
+            setTimeout(() => setSuccessMessage(null), 2000);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur");
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const copyPartnerUrl = (slug: string) => {
+        navigator.clipboard.writeText(`https://expeditionlauncher.store/partenaire/${slug}`);
+        setCopiedKey(`url-${slug}`);
+        setTimeout(() => setCopiedKey(null), 2000);
+    };
+
     const handleGenerateKeys = async () => {
         if (!accessToken) return;
         setGenerateLoading(true);
@@ -252,6 +406,10 @@ export default function AdminPage() {
     useEffect(() => {
         if (step === "admin" && tab === "keys") fetchKeys();
     }, [step, tab, fetchKeys]);
+
+    useEffect(() => {
+        if (step === "admin" && tab === "partners") fetchPartners();
+    }, [step, tab, fetchPartners]);
 
     const toggleBeta = async (userId: string, current: boolean) => {
         if (!accessToken) return;
@@ -468,6 +626,13 @@ export default function AdminPage() {
                                     >
                                         <Ticket className="w-4 h-4" />
                                         Codes ({keys.length})
+                                    </button>
+                                    <button
+                                        onClick={() => setTab("partners")}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === "partners" ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
+                                    >
+                                        <Users2 className="w-4 h-4" />
+                                        Partenaires ({partners.length})
                                     </button>
                                 </div>
 
@@ -900,6 +1065,205 @@ export default function AdminPage() {
                                                 )}
                                             </div>
                                         )}
+                                    </div>
+                                )}
+
+                                {/* Partners Tab */}
+                                {tab === "partners" && (
+                                    <div className="space-y-6">
+                                        {/* Create partner */}
+                                        <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                            <h2 className="text-sm font-mono text-white/40 uppercase mb-6">Créer un partenaire</h2>
+                                            <div className="flex flex-wrap items-end gap-4">
+                                                <div className="space-y-2 flex-1 min-w-[200px]">
+                                                    <label className="text-xs font-mono text-white/40 uppercase">Nom du partenaire</label>
+                                                    <input
+                                                        type="text"
+                                                        value={newPartnerName}
+                                                        onChange={(e) => setNewPartnerName(e.target.value)}
+                                                        placeholder="ex: Shyro"
+                                                        onKeyDown={(e) => { if (e.key === "Enter") handleCreatePartner(); }}
+                                                        className="w-full h-10 px-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-purple-500/50 transition-all"
+                                                    />
+                                                </div>
+                                                <button
+                                                    onClick={handleCreatePartner}
+                                                    disabled={createPartnerLoading || !newPartnerName.trim()}
+                                                    className="h-10 px-5 rounded-xl bg-purple-600 text-white text-sm font-medium hover:bg-purple-500 transition-all shadow-lg shadow-purple-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    {createPartnerLoading ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <><Plus className="w-4 h-4" /> Créer</>
+                                                    )}
+                                                </button>
+                                            </div>
+                                            <p className="text-xs text-white/30 mt-3">Le slug est généré avec un suffixe aléatoire pour empêcher les URLs devinables (ex : <code className="font-mono text-white/50">shyro-a3f8b2</code>).</p>
+                                        </div>
+
+                                        {/* List partners */}
+                                        <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                            <div className="flex items-center justify-between mb-6">
+                                                <h2 className="text-sm font-mono text-white/40 uppercase">Partenaires ({partners.length})</h2>
+                                                <button
+                                                    onClick={fetchPartners}
+                                                    disabled={partnersLoading}
+                                                    className="h-8 px-3 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                                                >
+                                                    <RefreshCw className={`w-3.5 h-3.5 ${partnersLoading ? "animate-spin" : ""}`} />
+                                                </button>
+                                            </div>
+
+                                            {partnersLoading && partners.length === 0 ? (
+                                                <div className="flex items-center justify-center py-12">
+                                                    <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-3">
+                                                    {partners.map((p) => (
+                                                        <div
+                                                            key={p.id}
+                                                            className="px-4 py-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all space-y-3"
+                                                        >
+                                                            {/* Header */}
+                                                            <div className="flex items-start justify-between gap-4">
+                                                                <div className="min-w-0 flex-1">
+                                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                                        <p className="text-sm font-semibold text-white/90">{p.name}</p>
+                                                                        {p.active ? (
+                                                                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/20">actif</span>
+                                                                        ) : (
+                                                                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 text-white/30 border border-white/10">inactif</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-2 mt-1 min-w-0">
+                                                                        <code className="text-xs text-white/30 truncate font-mono">/partenaire/{p.slug}</code>
+                                                                        <button
+                                                                            onClick={() => copyPartnerUrl(p.slug)}
+                                                                            className="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20 text-[10px] font-medium transition-all"
+                                                                        >
+                                                                            {copiedKey === `url-${p.slug}` ? (
+                                                                                <><Check className="w-2.5 h-2.5" /> Copié</>
+                                                                            ) : (
+                                                                                <><Copy className="w-2.5 h-2.5" /> URL</>
+                                                                            )}
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => handleTogglePartner(p.id, p.active)}
+                                                                    disabled={actionLoading === p.id}
+                                                                    className="text-xs text-white/40 hover:text-white transition-colors disabled:opacity-50 shrink-0"
+                                                                >
+                                                                    {actionLoading === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : p.active ? "Désactiver" : "Activer"}
+                                                                </button>
+                                                            </div>
+
+                                                            {/* Stats */}
+                                                            <div className="flex gap-2 flex-wrap">
+                                                                <span className="text-xs px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">{p.availableCodes} dispo</span>
+                                                                <span className="text-xs px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10">{p.redeemedCodes} utilisés</span>
+                                                                <span className="text-xs px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">{p.totalCodes} total</span>
+                                                            </div>
+
+                                                            {/* Refill form */}
+                                                            <div className="flex flex-wrap items-end gap-2 pt-2 border-t border-white/5">
+                                                                <div className="space-y-1">
+                                                                    <label className="text-[10px] font-mono text-white/40 uppercase">Durée</label>
+                                                                    <select
+                                                                        value={refillDuration[p.id] ?? 7}
+                                                                        onChange={(e) => setRefillDuration({ ...refillDuration, [p.id]: Number(e.target.value) })}
+                                                                        className="h-8 px-2 bg-white/5 rounded-lg border border-white/10 text-white text-xs focus:outline-none focus:border-purple-500/50 transition-all appearance-none cursor-pointer"
+                                                                    >
+                                                                        <option value={3}>3j</option>
+                                                                        <option value={7}>7j</option>
+                                                                        <option value={14}>14j</option>
+                                                                        <option value={21}>21j</option>
+                                                                        <option value={30}>30j</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="space-y-1">
+                                                                    <label className="text-[10px] font-mono text-white/40 uppercase">Nombre</label>
+                                                                    <input
+                                                                        type="number"
+                                                                        min={1}
+                                                                        max={50}
+                                                                        value={refillCount[p.id] ?? 5}
+                                                                        onChange={(e) => setRefillCount({ ...refillCount, [p.id]: Math.min(50, Math.max(1, Number(e.target.value))) })}
+                                                                        className="h-8 w-16 px-2 bg-white/5 rounded-lg border border-white/10 text-white text-xs text-center focus:outline-none focus:border-purple-500/50 transition-all"
+                                                                    />
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => handleRefill(p.id)}
+                                                                    disabled={refillLoading === p.id}
+                                                                    className="h-8 px-3 rounded-lg bg-purple-600 text-white text-xs font-medium hover:bg-purple-500 transition-all shadow-lg shadow-purple-500/20 flex items-center gap-1.5 disabled:opacity-50"
+                                                                >
+                                                                    {refillLoading === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <KeyRound className="w-3 h-3" />}
+                                                                    Générer
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        if (expandedPartnerId === p.id) {
+                                                                            setExpandedPartnerId(null);
+                                                                            setExpandedCodes([]);
+                                                                        } else {
+                                                                            setExpandedPartnerId(p.id);
+                                                                            fetchPartnerCodes(p.id);
+                                                                        }
+                                                                    }}
+                                                                    className="h-8 px-3 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all text-xs flex items-center gap-1.5 ml-auto"
+                                                                >
+                                                                    {expandedPartnerId === p.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                                                                    {expandedPartnerId === p.id ? "Masquer" : "Voir codes"}
+                                                                </button>
+                                                            </div>
+
+                                                            {/* Expanded codes */}
+                                                            {expandedPartnerId === p.id && (
+                                                                <div className="pt-3 border-t border-white/5 space-y-2">
+                                                                    {expandedCodesLoading ? (
+                                                                        <div className="flex justify-center py-4">
+                                                                            <Loader2 className="w-4 h-4 animate-spin text-purple-400" />
+                                                                        </div>
+                                                                    ) : expandedCodes.length === 0 ? (
+                                                                        <p className="text-center text-white/30 py-4 text-xs">Aucun code</p>
+                                                                    ) : (
+                                                                        expandedCodes.map((c) => (
+                                                                            <div
+                                                                                key={c.keyCode}
+                                                                                className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5"
+                                                                            >
+                                                                                <code className="text-xs text-white/80 font-mono flex-1 truncate">{c.keyCode}</code>
+                                                                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 text-white/50 border border-white/10 shrink-0">{c.durationDays}j</span>
+                                                                                {c.redeemedByEmail ? (
+                                                                                    <span className="text-[10px] text-red-400/80 truncate max-w-[140px]" title={c.redeemedByEmail}>Utilisé · {c.redeemedByEmail}</span>
+                                                                                ) : (
+                                                                                    <span className="text-[10px] text-green-400/80 shrink-0">Dispo</span>
+                                                                                )}
+                                                                                <button
+                                                                                    onClick={() => copyLink(c.keyCode)}
+                                                                                    className="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20 text-[10px] font-medium transition-all"
+                                                                                >
+                                                                                    {copiedKey === c.keyCode ? (
+                                                                                        <><Check className="w-2.5 h-2.5" /> Copié</>
+                                                                                    ) : (
+                                                                                        <><Copy className="w-2.5 h-2.5" /> Lien</>
+                                                                                    )}
+                                                                                </button>
+                                                                            </div>
+                                                                        ))
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ))}
+
+                                                    {partners.length === 0 && !partnersLoading && (
+                                                        <p className="text-center text-white/30 py-8 text-sm">Aucun partenaire — créez-en un ci-dessus.</p>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
                             </motion.div>
