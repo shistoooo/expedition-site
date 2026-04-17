@@ -25,6 +25,7 @@ interface PartnerCode {
 interface PartnerData {
   name: string;
   slug: string;
+  avatarUrl: string | null;
   total: number;
   truncated: boolean;
   codes: PartnerCode[];
@@ -163,10 +164,19 @@ export default function PartenairePage() {
 
                 <div className="relative flex items-center gap-4 md:gap-5">
                   {/* Avatar */}
-                  <div className="shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-500/40 border border-purple-300/20">
-                    <span className="text-xl md:text-2xl font-bold text-white">
-                      {getInitial(data.name)}
-                    </span>
+                  <div className="shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-400 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-500/40 border border-purple-300/20">
+                    {data.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={data.avatarUrl}
+                        alt={data.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xl md:text-2xl font-bold text-white">
+                        {getInitial(data.name)}
+                      </span>
+                    )}
                   </div>
 
                   <div className="min-w-0 flex-1">
@@ -180,7 +190,7 @@ export default function PartenairePage() {
                     <p className="text-white/50 text-sm md:text-base mt-1">
                       {available.length > 0 ? (
                         <>
-                          Voici tes <span className="text-white font-semibold">{available.length} invitation{available.length > 1 ? "s" : ""}</span> à offrir à ton équipe.
+                          Voici tes <span className="text-white font-semibold">{available.length} invitation{available.length > 1 ? "s" : ""}</span> à offrir à tes amis, collègues ou contacts.
                         </>
                       ) : (
                         "Toutes tes invitations ont été distribuées."
@@ -332,7 +342,7 @@ export default function PartenairePage() {
                 <div className="text-xs md:text-sm text-white/50 space-y-1">
                   <p className="text-white/70 font-medium">Comment ça marche</p>
                   <p>
-                    Copie un lien et envoie-le à quelqu&apos;un. Il clique, crée un compte, et son accès Expedition est activé automatiquement pour la durée de l&apos;invitation.
+                    Copie un lien et envoie-le à un ami, un collègue ou un contact. Il clique, crée un compte, et son accès Expedition est activé automatiquement pour la durée de l&apos;invitation.
                   </p>
                 </div>
               </div>

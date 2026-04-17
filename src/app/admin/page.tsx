@@ -58,6 +58,7 @@ interface AdminPartner {
     slug: string;
     name: string;
     active: boolean;
+    avatarUrl: string | null;
     created_at: string;
     totalCodes: number;
     redeemedCodes: number;
@@ -115,6 +116,8 @@ export default function AdminPage() {
     const [refillCount, setRefillCount] = useState<Record<string, number>>({});
     const [refillDuration, setRefillDuration] = useState<Record<string, number>>({});
     const [refillLoading, setRefillLoading] = useState<string | null>(null);
+    const [avatarDraft, setAvatarDraft] = useState<Record<string, string>>({});
+    const [avatarLoading, setAvatarLoading] = useState<string | null>(null);
 
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -350,6 +353,38 @@ export default function AdminPage() {
             setError(err instanceof Error ? err.message : "Erreur");
         } finally {
             setActionLoading(null);
+        }
+    };
+
+    const handleSetAvatar = async (partnerId: string) => {
+        if (!accessToken) return;
+        const draft = (avatarDraft[partnerId] ?? "").trim();
+        setAvatarLoading(partnerId);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/partners/${partnerId}/avatar`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ avatarUrl: draft || null }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setPartners((prev) => prev.map((p) =>
+                p.id === partnerId ? { ...p, avatarUrl: data.avatarUrl } : p
+            ));
+            setAvatarDraft((prev) => {
+                const next = { ...prev };
+                delete next[partnerId];
+                return next;
+            });
+            setSuccessMessage(data.avatarUrl ? "Avatar mis à jour" : "Avatar retiré");
+            setTimeout(() => setSuccessMessage(null), 2000);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur");
+        } finally {
+            setAvatarLoading(null);
         }
     };
 
@@ -1164,6 +1199,32 @@ export default function AdminPage() {
                                                                 <span className="text-xs px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">{p.availableCodes} dispo</span>
                                                                 <span className="text-xs px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/10">{p.redeemedCodes} utilisés</span>
                                                                 <span className="text-xs px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">{p.totalCodes} total</span>
+                                                            </div>
+
+                                                            {/* Avatar */}
+                                                            <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                                                                <div className="shrink-0 w-9 h-9 rounded-lg overflow-hidden border border-white/10 bg-gradient-to-br from-purple-400 to-purple-700 flex items-center justify-center">
+                                                                    {p.avatarUrl ? (
+                                                                        // eslint-disable-next-line @next/next/no-img-element
+                                                                        <img src={p.avatarUrl} alt={p.name} className="w-full h-full object-cover" />
+                                                                    ) : (
+                                                                        <span className="text-sm font-bold text-white">{p.name.trim()[0]?.toUpperCase() ?? "?"}</span>
+                                                                    )}
+                                                                </div>
+                                                                <input
+                                                                    type="text"
+                                                                    value={avatarDraft[p.id] ?? p.avatarUrl ?? ""}
+                                                                    onChange={(e) => setAvatarDraft({ ...avatarDraft, [p.id]: e.target.value })}
+                                                                    placeholder="URL image (https://... ou /partenaires/shyro.jpg)"
+                                                                    className="flex-1 h-9 px-3 bg-white/5 rounded-lg border border-white/10 text-white placeholder:text-white/20 text-xs focus:outline-none focus:border-purple-500/50 transition-all"
+                                                                />
+                                                                <button
+                                                                    onClick={() => handleSetAvatar(p.id)}
+                                                                    disabled={avatarLoading === p.id}
+                                                                    className="shrink-0 h-9 px-3 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20 text-xs font-medium transition-all flex items-center gap-1.5 disabled:opacity-50"
+                                                                >
+                                                                    {avatarLoading === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : "Enregistrer"}
+                                                                </button>
                                                             </div>
 
                                                             {/* Refill form */}
