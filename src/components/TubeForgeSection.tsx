@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Layers, Search, FileText, Scissors, ArrowRight } from "lucide-react";
+import { Zap, Scissors, FileText, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import TubeForgeMockup from "@/components/mockups/TubeForgeMockup";
 
@@ -52,11 +52,9 @@ export default function TubeForgeSection() {
             <h2 className="text-5xl md:text-6xl font-black mb-3 tracking-[-0.03em]">
               Tube<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Forge</span>
             </h2>
-            <p className="text-sm text-white/35 mb-6 font-mono uppercase tracking-wider">
-              Le plugin Premiere &amp; DaVinci pour qui mont du YouTube
-            </p>
+            <p className="text-sm text-white/35 mb-6 font-mono uppercase tracking-wider">L&apos;alternative &agrave; 4K Video Downloader</p>
             <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed">
-              Quatre outils en un, pens&eacute;s pour ton workflow r&eacute;el&nbsp;: plugin direct dans Premiere et DaVinci, recherche YouTube int&eacute;gr&eacute;e, import de scripts avec auto-d&eacute;tection des liens, d&eacute;coupe avant t&eacute;l&eacute;chargement. Plus jamais d&apos;aller-retour entre cinq apps.
+              T&eacute;l&eacute;chargez vos r&eacute;f&eacute;rences YouTube en quelques secondes, d&eacute;coupez l&apos;extrait exact, importez votre script. Plus jamais d&apos;onglets YouTube ouverts pendant le montage.
             </p>
 
             <motion.ul
@@ -67,26 +65,9 @@ export default function TubeForgeSection() {
               className="space-y-5 mb-10"
             >
               {[
-                {
-                  icon: Layers,
-                  title: "Plugin Premiere Pro & DaVinci Resolve",
-                  desc: "Colle un lien YouTube depuis l’onglet TubeForge dans ta timeline. La vidéo se télécharge et s’importe automatiquement. Plus de glisser-déposer depuis le Finder.",
-                },
-                {
-                  icon: Search,
-                  title: "Recherche YouTube intégrée à l’app",
-                  desc: "Cherche, pré-visualise et télécharge sans quitter TubeForge. Tes onglets de navigateur ne ressemblent plus à un sapin de Noël pendant le montage.",
-                },
-                {
-                  icon: FileText,
-                  title: "Import de script avec auto-détection des liens",
-                  desc: "Tu prépares une vidéo avec 20 références dans ton script&nbsp;? Importe le document, TubeForge détecte chaque lien YouTube et télécharge tout en un clic.",
-                },
-                {
-                  icon: Scissors,
-                  title: "Découpe avant téléchargement",
-                  desc: "Une vidéo de 2h avec 30 secondes utiles&nbsp;? Sélectionne l’extrait sur la timeline et ne télécharge que ça. Gain de stockage et de temps de coupe.",
-                },
+                { icon: Zap, title: "T\u00e9l\u00e9chargez en quelques secondes, jusqu\u2019en 4K", desc: "Pendant que les sites en ligne vous font attendre, TubeForge t\u00e9l\u00e9charge 3 vid\u00e9os en m\u00eame temps. Une playlist de 20 vid\u00e9os ? Lancez et allez monter." },
+                { icon: Scissors, title: "D\u00e9coupez l\u2019extrait exact avant de t\u00e9l\u00e9charger", desc: "Vous avez rep\u00e9r\u00e9 30 secondes utiles dans une vid\u00e9o de 2h ? S\u00e9lectionnez l\u2019extrait sur la timeline et t\u00e9l\u00e9chargez juste ce passage. Pas besoin de couper apr\u00e8s." },
+                { icon: FileText, title: "Importez votre script, toutes les r\u00e9f\u00e9rences se t\u00e9l\u00e9chargent", desc: "Vous pr\u00e9parez une vid\u00e9o avec des liens YouTube dans vos notes ? Importez votre document : TubeForge d\u00e9tecte chaque lien et t\u00e9l\u00e9charge tout en un clic." },
               ].map((item, i) => (
                 <motion.li key={i} variants={itemVariants} className="flex gap-4 group/item">
                   <div className="mt-1 w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10 transition-all duration-300 group-hover/item:bg-red-500/10 group-hover/item:border-red-500/25 group-hover/item:shadow-[0_0_20px_rgba(239,68,68,0.12)]">
@@ -99,10 +80,6 @@ export default function TubeForgeSection() {
                 </motion.li>
               ))}
             </motion.ul>
-
-            <p className="text-xs text-white/35 mb-10 font-mono leading-relaxed">
-              + multi-t&eacute;l&eacute;chargement parall&egrave;le &middot; qualit&eacute; jusqu&apos;en 4K &middot; mises &agrave; jour hebdomadaires
-            </p>
 
             <Link
               href="/pricing"
