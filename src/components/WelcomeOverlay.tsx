@@ -125,49 +125,50 @@ export default function WelcomeOverlay() {
     <AnimatePresence>
       {show && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6"
+          className="fixed inset-0 z-[100] overflow-y-auto"
           role="dialog"
           aria-modal="true"
           aria-labelledby="welcome-overlay-title"
         >
-          {/* Backdrop — click to skip */}
+          {/* Full-screen backdrop (opaque) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0 bg-[#06051a]/85 backdrop-blur-md cursor-pointer"
-            onClick={handleSkip}
+            className="absolute inset-0 bg-[#06051a]"
             aria-hidden="true"
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 20 }}
-            transition={{ duration: 0.45, ease: easeOutExpo }}
-            className="relative w-full max-w-4xl"
           >
-            {/* Close button */}
-            <button
-              type="button"
-              aria-label="Fermer et continuer sur la home"
-              onClick={handleSkip}
-              className="absolute -top-2 -right-2 md:-top-4 md:-right-4 w-9 h-9 rounded-full bg-white/10 border border-white/15 backdrop-blur-md text-white/70 hover:text-white hover:bg-white/15 transition-colors flex items-center justify-center z-10"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            {/* Ambient nebula — fills the void behind the content */}
+            <div
+              className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[700px] pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.25) 0%, rgba(99,60,200,0.10) 40%, transparent 75%)",
+                filter: "blur(2px)",
+              }}
+            />
+          </motion.div>
 
-            <div className="rounded-3xl border border-white/10 bg-[#06051a]/95 backdrop-blur-2xl p-6 md:p-10 shadow-[0_30px_100px_-20px_rgba(139,92,246,0.4)] relative overflow-hidden">
-              {/* Subtle nebula behind the title */}
-              <div
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] pointer-events-none opacity-60"
-                style={{
-                  background:
-                    "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.18) 0%, transparent 70%)",
-                }}
-              />
+          {/* Close button (top-right) */}
+          <button
+            type="button"
+            aria-label="Fermer et continuer sur la home"
+            onClick={handleSkip}
+            className="absolute top-5 right-5 md:top-7 md:right-7 w-10 h-10 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-white/55 hover:text-white hover:bg-white/10 hover:border-white/25 transition-colors flex items-center justify-center z-20"
+          >
+            <X className="w-4 h-4" />
+          </button>
+
+          {/* Content — centered, scrollable on small screens */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, ease: easeOutExpo }}
+            className="relative min-h-full flex items-center justify-center p-6 md:p-10 z-10"
+          >
+            <div className="w-full max-w-4xl relative">
 
               <AnimatePresence mode="wait">
                 {step === "audience" ? (
