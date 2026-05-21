@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
-import SuiteIncludedBadge from "@/components/shared/SuiteIncludedBadge";
+import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import MonteursHero from "@/components/monteurs/MonteursHero";
 import MonteursROICalculator from "@/components/monteurs/MonteursROICalculator";
 import MonteursPricing from "@/components/monteurs/MonteursPricing";
@@ -32,7 +32,7 @@ export default function MonteursPage() {
         <LandingDemoSection accent="purple" />
         <MonteursROICalculator />
         <MonteursTestimonials />
-        <SuiteIncludedBadge accent="purple" />
+        <SuitePreviewSection accent="purple" />
         <MonteursPricing />
         <MonteursFAQ />
         <MonteursFinalCTA />

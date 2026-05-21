@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
-import SuiteIncludedBadge from "@/components/shared/SuiteIncludedBadge";
+import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import CreateursHero from "@/components/createurs/CreateursHero";
 import CreateursBeforeAfter from "@/components/createurs/CreateursBeforeAfter";
 import CreateursPricing from "@/components/createurs/CreateursPricing";
@@ -32,7 +32,7 @@ export default function CreateursPage() {
         <LandingDemoSection accent="cyan" />
         <CreateursBeforeAfter />
         <CreateursTestimonials />
-        <SuiteIncludedBadge accent="cyan" />
+        <SuitePreviewSection accent="cyan" />
         <CreateursPricing />
         <CreateursFAQ />
         <CreateursFinalCTA />
