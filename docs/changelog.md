@@ -1,4 +1,44 @@
 ---
+### [2026-05-21 17:30] — Phase 3 + ameliorations splash + video 1.5x
+
+**Quoi :**
+1. **Phase 3** — creation de la landing `/monteurs` (ROI temps facturable, plugin Premiere/DaVinci, FAQ + final CTA orientes freelance). Support du query param `?tool=premiere|davinci|both` qui adapte dynamiquement le titre du Hero ("Le plugin Premiere..." / "DaVinci..." / "Premiere & DaVinci...") et la suite du wording.
+2. **WelcomeOverlay v2** — etape 2 ajoutee : si monteur, on demande Premiere vs DaVinci vs Les deux. Le choix se transmet en query param sur /monteurs.
+3. **WelcomeOverlay preview override** — localStorage est ignore tant que `NEXT_PUBLIC_VERCEL_ENV !== "production"`. Sur les previews Vercel et en local dev, l'overlay s'affiche TOUJOURS, ce qui permet de valider le funnel sans reset manuel.
+4. **URL `?reset-overlay=1`** — efface localStorage et re-trigger l'overlay sur n'importe quel environnement, utile pour debug en prod.
+5. **HomeDemoVideo 1.5x** — playback rate impose a 1.5x via l'API YouTube IFrame (script externe charge a la mont du composant, applique en `onReady` + reapplique en `onStateChange:PLAYING`). CSP `script-src` etendu pour autoriser `www.youtube.com` et `s.ytimg.com`.
+
+**Pourquoi :**
+- Phase 3 = la landing dediee monteurs etait le palier strategique le plus urgent (vise par les DMs Nina + le splash overlay).
+- Tool param = pour rendre le pitch granulaire sans dupliquer la page entiere.
+- Preview override = le user veut pouvoir tester le splash a chaque deploy sans flusher son localStorage a la main.
+- Video 1.5x = demande explicite, le rythme par defaut etait trop lent pour le contexte demo.
+
+**Fichiers touches / crees :**
+- `src/components/WelcomeOverlay.tsx` — refonte 2-step (audience + tool), reset URL param, preview override.
+- `src/components/HomeDemoVideo.tsx` — refonte avec YouTube IFrame API + setPlaybackRate(1.5).
+- `next.config.ts` — CSP `script-src` etendu pour l'API YouTube IFrame.
+- `src/app/monteurs/{page.tsx,layout.tsx}` — nouvelle landing complete. Metadata SEO indexable (contrairement a discord-pionnier qui est noindex).
+- `src/components/monteurs/MonteursHero.tsx` — custom, support tool param via useSearchParams.
+- `src/components/monteurs/MonteursFeatures.tsx` — 4 features wording freelance.
+- `src/components/monteurs/MonteursFAQ.tsx` — 6 questions monteur-specifiques (ROI, tarif, local-first, etc.).
+- `src/components/monteurs/MonteursFinalCTA.tsx` — CTA final avec angle "heures facturables".
+- `src/components/monteurs/MonteursMockupSection.tsx`, `MonteursPricing.tsx`, `MonteursSuiteTease.tsx`, `MonteursStickyMobileCTA.tsx`, `MonteursTestimonials.tsx`, `useMonteursUtm.ts` — duplications du pattern discord-pionnier avec sed-rename. Pricing inchange.
+
+**Notes :**
+- Les analytics events conservent leurs noms (`cta_click_monteurs`, etc.) pour distinguer les sources.
+- `useSearchParams` necessite Suspense → MonteursHero est wrappe dans `<Suspense>` dans page.tsx.
+- La route `/createurs` reste 404 jusqu'a Phase 4.
+
+**Comment annuler :**
+- Phase 3 seule : `rm -rf src/app/monteurs src/components/monteurs` (et retirer la mention dans le splash).
+- WelcomeOverlay v2 : revert sur HEAD pour ce fichier, idem HomeDemoVideo.
+
+**Effets de bord possibles :**
+- Le `NEXT_PUBLIC_VERCEL_ENV` n'est defini que sur Vercel ; en `next dev` local il est undefined → traite comme non-prod → overlay s'affiche toujours en local. Comportement OK.
+- L'API YouTube IFrame charge un script externe ~50KB. Premier affichage de la home : leger surcout reseau mais lazy (apres mount du composant).
+
+---
 ### [2026-05-21 16:00] — Phase 2.5 : Splash overlay au 1er visit
 
 **Quoi :** Ajout d'un overlay non-bloquant qui s'affiche au tout premier visit avec 2 cards (monteur freelance / createur YouTube) menant aux landings dediees, un lien skip discret, et memorisation en localStorage pour ne plus reapparaitre.
