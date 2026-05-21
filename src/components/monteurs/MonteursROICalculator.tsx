@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Calculator, Clock, Euro, TrendingUp } from "lucide-react";
+import { Calculator, Clock, Euro, TrendingUp, Link2, Download, FolderInput, Trash2 } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -150,11 +150,37 @@ export default function MonteursROICalculator() {
                   <div className="shrink-0 w-7 h-7 rounded-full bg-purple-500/15 border border-purple-500/25 flex items-center justify-center text-purple-300 text-xs font-bold">
                     1
                   </div>
-                  <p className="text-sm md:text-base text-white/70 leading-relaxed pt-0.5">
-                    Sur chaque projet, TubeForge te fait gagner{" "}
-                    <strong className="text-white">~45 minutes</strong>{" "}
-                    <span className="text-white/45">(entre 15 min pour 3 refs et 1 h pour 20+ refs avec d&eacute;coupes).</span>
-                  </p>
+                  <div className="flex-1 pt-0.5">
+                    <p className="text-sm md:text-base text-white/70 leading-relaxed mb-3">
+                      Sur chaque r&eacute;f&eacute;rence YouTube que tu g&egrave;res aujourd&apos;hui sans TubeForge,
+                      tu perds environ <strong className="text-white">2 minutes</strong> :
+                    </p>
+
+                    {/* Decomposition table — pourquoi 2 min/ref */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+                      {[
+                        { icon: Link2, label: "Ouvrir le lien YouTube", time: "30 s" },
+                        { icon: Download, label: "Télécharger via 4K Video Downloader", time: "1 min" },
+                        { icon: FolderInput, label: "Ranger le fichier dans le projet Premiere", time: "20 s" },
+                        { icon: Trash2, label: "Supprimer les rushs inutiles après livraison", time: "10 s" },
+                      ].map((step, i) => (
+                        <div
+                          key={i}
+                          className="flex flex-col gap-1.5 p-2.5 rounded-lg border border-white/[0.06] bg-white/[0.015]"
+                        >
+                          <step.icon className="w-3.5 h-3.5 text-purple-300/70" />
+                          <p className="text-[11px] text-white/55 leading-tight">{step.label}</p>
+                          <p className="text-xs font-mono font-bold text-purple-200 tabular-nums">{step.time}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p className="text-sm md:text-base text-white/70 leading-relaxed">
+                      Sur un projet YouTube typique (<strong className="text-white">15 &agrave; 20 r&eacute;f&eacute;rences</strong>),
+                      tu r&eacute;cup&egrave;res donc <strong className="text-white">~45 minutes</strong>{" "}
+                      <span className="text-white/45">(de 15 min sur une vid&eacute;o courte &agrave; 1 h+ sur un essai documentaire).</span>
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="shrink-0 w-7 h-7 rounded-full bg-purple-500/15 border border-purple-500/25 flex items-center justify-center text-purple-300 text-xs font-bold">
