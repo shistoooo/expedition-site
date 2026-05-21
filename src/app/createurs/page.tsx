@@ -6,6 +6,9 @@ import PageBackground from "@/components/PageBackground";
 import CreateursHero from "@/components/createurs/CreateursHero";
 import CreateursMockupSection from "@/components/createurs/CreateursMockupSection";
 import CreateursFeatures from "@/components/createurs/CreateursFeatures";
+import CreateursBeforeAfter from "@/components/createurs/CreateursBeforeAfter";
+import CompatibilityBlock from "@/components/shared/CompatibilityBlock";
+import PrivacyBlock from "@/components/shared/PrivacyBlock";
 import CreateursSuiteTease from "@/components/createurs/CreateursSuiteTease";
 import CreateursPricing from "@/components/createurs/CreateursPricing";
 import CreateursTestimonials from "@/components/createurs/CreateursTestimonials";
@@ -29,6 +32,9 @@ export default function CreateursPage() {
         </Suspense>
         <CreateursMockupSection />
         <CreateursFeatures />
+        <CreateursBeforeAfter />
+        <CompatibilityBlock accent="cyan" tool="both" />
+        <PrivacyBlock accent="cyan" />
         <CreateursSuiteTease />
         <CreateursPricing />
         <CreateursTestimonials />
