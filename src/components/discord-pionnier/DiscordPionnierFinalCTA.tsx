@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Bell } from "lucide-react";
 import { SALES_OPEN } from "@/lib/salesConfig";
-import { usePionnierUtm } from "./usePionnierUtm";
+import { useDiscordPionnierUtm } from "./useDiscordPionnierUtm";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-export default function PionnierFinalCTA() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = usePionnierUtm();
+export default function DiscordPionnierFinalCTA() {
+  const { getDiscordOAuthUrl, fireCtaEvent } = useDiscordPionnierUtm();
   const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
   const ctaLabel = SALES_OPEN ? "Devenir Pionnier — 8,03€/mois" : "Être prévenu au lancement";
 

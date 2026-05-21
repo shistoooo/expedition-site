@@ -20,7 +20,7 @@ const UTM_KEYS = [
 
 export type CtaLocation = "hero" | "pricing" | "sticky" | "final";
 
-export function usePionnierUtm() {
+export function useDiscordPionnierUtm() {
   const sp = useSearchParams();
 
   const utmString = useMemo(() => {

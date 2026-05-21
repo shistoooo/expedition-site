@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { SALES_OPEN } from "@/lib/salesConfig";
 import NumberTicker from "@/components/NumberTicker";
-import { usePionnierUtm } from "./usePionnierUtm";
+import { useDiscordPionnierUtm } from "./useDiscordPionnierUtm";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -19,8 +19,8 @@ const features = [
   "Tarif bloqué tant que vous restez abonné",
 ];
 
-export default function PionnierPricing() {
-  const { getDiscordOAuthUrl, getCheckoutUrl, fireCtaEvent, fireViewEvent } = usePionnierUtm();
+export default function DiscordPionnierPricing() {
+  const { getDiscordOAuthUrl, getCheckoutUrl, fireCtaEvent, fireViewEvent } = useDiscordPionnierUtm();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   // Fire view event when pricing card enters viewport
@@ -46,7 +46,7 @@ export default function PionnierPricing() {
 
   return (
     <section
-      id="pionnier-pricing"
+      id="discord-pionnier-pricing"
       ref={sectionRef}
       className="pt-16 pb-16 md:pt-24 md:pb-24 relative"
     >

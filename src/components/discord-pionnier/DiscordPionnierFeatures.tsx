@@ -44,7 +44,7 @@ const features = [
   },
 ];
 
-export default function PionnierFeatures() {
+export default function DiscordPionnierFeatures() {
   return (
     <section className="py-16 md:py-24 relative">
       <div className="container-main max-w-5xl">

@@ -19,7 +19,7 @@ const testimonials = [
   },
 ];
 
-export default function PionnierTestimonials() {
+export default function DiscordPionnierTestimonials() {
   return (
     <section className="py-16 md:py-20 relative">
       <div className="container-main max-w-6xl">

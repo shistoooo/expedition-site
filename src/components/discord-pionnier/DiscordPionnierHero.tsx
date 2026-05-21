@@ -4,15 +4,15 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Bell, ChevronDown } from "lucide-react";
 import { SALES_OPEN } from "@/lib/salesConfig";
-import { usePionnierUtm } from "./usePionnierUtm";
+import { useDiscordPionnierUtm } from "./useDiscordPionnierUtm";
 
-export default function PionnierHero() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = usePionnierUtm();
+export default function DiscordPionnierHero() {
+  const { getDiscordOAuthUrl, fireCtaEvent } = useDiscordPionnierUtm();
 
   // Tag the Clarity session for filtering in dashboard
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.clarity?.("set", "page", "pionnier");
+      window.clarity?.("set", "page", "discord-pionnier");
     }
   }, []);
 
@@ -21,7 +21,7 @@ export default function PionnierHero() {
 
   return (
     <section
-      id="pionnier-hero"
+      id="discord-pionnier-hero"
       className="min-h-[88vh] md:min-h-[92vh] pt-32 md:pt-44 pb-20 md:pb-24 relative overflow-hidden flex flex-col items-center justify-center"
     >
       {/* Nebula ambient — violet core fading to transparent, anchored behind the H1 */}

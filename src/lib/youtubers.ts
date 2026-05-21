@@ -1,6 +1,6 @@
 /**
  * YouTubeurs qui utilisent (et ont autorisé) la suite Expédition.
- * Source unique partagée par /pionnier (PionnierTestimonials) et la homepage
+ * Source unique partagée par /discord-pionnier (DiscordPionnierTestimonials) et la homepage
  * (HomeYoutuberShowcase). Pour retirer ou ajouter quelqu'un, modifie ici une
  * seule fois et les deux pages se mettent à jour.
  *

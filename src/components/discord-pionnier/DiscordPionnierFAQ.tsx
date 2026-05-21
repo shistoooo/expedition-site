@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { usePionnierUtm } from "./usePionnierUtm";
+import { useDiscordPionnierUtm } from "./useDiscordPionnierUtm";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -86,8 +86,8 @@ function FAQItem({ faq, index }: { faq: typeof faqs[number]; index: number }) {
   );
 }
 
-export default function PionnierFAQ() {
-  const { fireViewEvent } = usePionnierUtm();
+export default function DiscordPionnierFAQ() {
+  const { fireViewEvent } = useDiscordPionnierUtm();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

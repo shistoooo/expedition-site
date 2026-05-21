@@ -2,13 +2,15 @@
 
 import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
-import Hero from "@/components/Hero";
+import HomeHero from "@/components/HomeHero";
+import HomeDemoVideo from "@/components/HomeDemoVideo";
 import TubeForgeSection from "@/components/TubeForgeSection";
+import HomePersonas from "@/components/HomePersonas";
+import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import SecondaryToolsGrid from "@/components/SecondaryToolsGrid";
 import WhyExpeditionSection from "@/components/WhyExpeditionSection";
 import HomePricing from "@/components/HomePricing";
 import TestimonialsMarquee from "@/components/TestimonialsMarquee";
-import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 
@@ -18,13 +20,15 @@ export default function Home() {
       <PageBackground />
       <Navbar />
       <main className="w-full relative z-10">
-        <Hero />
-        <TestimonialsMarquee />
-        <HomeYoutuberShowcase />
+        <HomeHero />
+        <HomeDemoVideo />
         <TubeForgeSection />
+        <HomePersonas />
+        <HomeYoutuberShowcase />
         <SecondaryToolsGrid />
         <WhyExpeditionSection />
         <HomePricing />
+        <TestimonialsMarquee />
         <FAQSection />
       </main>
       <Footer />

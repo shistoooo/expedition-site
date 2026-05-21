@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Bell } from "lucide-react";
 import { SALES_OPEN } from "@/lib/salesConfig";
-import { usePionnierUtm } from "./usePionnierUtm";
+import { useDiscordPionnierUtm } from "./useDiscordPionnierUtm";
 
-export default function PionnierStickyMobileCTA() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = usePionnierUtm();
+export default function DiscordPionnierStickyMobileCTA() {
+  const { getDiscordOAuthUrl, fireCtaEvent } = useDiscordPionnierUtm();
   // Always visible on mobile EXCEPT when the in-page pricing card is on screen
   // (avoid double CTAs). IntersectionObserver is more reliable than scroll listeners.
   const [pricingInView, setPricingInView] = useState(false);
 
   useEffect(() => {
-    const pricing = document.getElementById("pionnier-pricing");
+    const pricing = document.getElementById("discord-pionnier-pricing");
     if (!pricing) return;
     const observer = new IntersectionObserver(
       ([entry]) => setPricingInView(entry.isIntersecting),
