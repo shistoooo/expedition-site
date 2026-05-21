@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import DiscordPionnierHero from "@/components/discord-pionnier/DiscordPionnierHero";
 import DiscordPionnierMockupSection from "@/components/discord-pionnier/DiscordPionnierMockupSection";
@@ -18,6 +19,7 @@ export default function DiscordPionnierPage() {
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative text-white">
       <PageBackground />
+      <Navbar />
 
       {/* pb-24 reserves space for the sticky mobile CTA so the footer isn't hidden */}
       <main className="w-full relative z-10 pb-24 md:pb-0">

@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import MonteursHero from "@/components/monteurs/MonteursHero";
 import MonteursMockupSection from "@/components/monteurs/MonteursMockupSection";
@@ -19,6 +20,7 @@ export default function MonteursPage() {
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative text-white">
       <PageBackground />
+      <Navbar />
 
       <main className="w-full relative z-10 pb-24 md:pb-0">
         {/* MonteursHero uses useSearchParams → must be wrapped in Suspense */}

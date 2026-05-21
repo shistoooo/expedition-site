@@ -15,7 +15,7 @@ function scrollToPricing(e: React.MouseEvent<HTMLAnchorElement>) {
 }
 
 export default function CreateursHero() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = useCreateursUtm();
+  const { fireCtaEvent } = useCreateursUtm();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -99,7 +99,7 @@ export default function CreateursHero() {
             {ctaLabel}
           </a>
           <Link
-            href={getDiscordOAuthUrl()}
+            href="/#home-demo"
             onClick={() => fireCtaEvent("hero_secondary_discord")}
             className="group px-7 py-4 rounded-xl bg-white/5 text-white/85 font-semibold text-base transition-all duration-200 flex items-center gap-2 border border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20"
           >

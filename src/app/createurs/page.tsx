@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import CreateursHero from "@/components/createurs/CreateursHero";
 import CreateursMockupSection from "@/components/createurs/CreateursMockupSection";
@@ -19,6 +20,7 @@ export default function CreateursPage() {
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative text-white">
       <PageBackground />
+      <Navbar />
 
       <main className="w-full relative z-10 pb-24 md:pb-0">
         {/* CreateursHero uses useSearchParams indirectly via useCreateursUtm → Suspense */}
