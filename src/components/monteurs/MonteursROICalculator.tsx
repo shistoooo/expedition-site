@@ -152,15 +152,15 @@ export default function MonteursROICalculator() {
                   </div>
                   <div className="flex-1 pt-0.5">
                     <p className="text-sm md:text-base text-white/70 leading-relaxed mb-3">
-                      Sur chaque r&eacute;f&eacute;rence YouTube que tu g&egrave;res aujourd&apos;hui sans TubeForge,
+                      Sur chaque vid&eacute;o en ligne que tu g&egrave;res aujourd&apos;hui sans TubeForge,
                       tu perds environ <strong className="text-white">2 minutes</strong> :
                     </p>
 
                     {/* Decomposition table — pourquoi 2 min/ref */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
                       {[
-                        { icon: Link2, label: "Ouvrir le lien YouTube", time: "30 s" },
-                        { icon: Download, label: "Télécharger via 4K Video Downloader", time: "1 min" },
+                        { icon: Link2, label: "Ouvrir le lien (YouTube, TikTok, Twitch...)", time: "30 s" },
+                        { icon: Download, label: "Télécharger via 4K Video Downloader ou équivalent", time: "1 min" },
                         { icon: FolderInput, label: "Ranger le fichier dans le projet Premiere", time: "20 s" },
                         { icon: Trash2, label: "Supprimer les rushs inutiles après livraison", time: "10 s" },
                       ].map((step, i) => (
@@ -176,7 +176,7 @@ export default function MonteursROICalculator() {
                     </div>
 
                     <p className="text-sm md:text-base text-white/70 leading-relaxed">
-                      Sur un projet YouTube typique (<strong className="text-white">15 &agrave; 20 r&eacute;f&eacute;rences</strong>),
+                      Sur un projet typique (<strong className="text-white">15 &agrave; 20 r&eacute;f&eacute;rences vid&eacute;o</strong>),
                       tu r&eacute;cup&egrave;res donc <strong className="text-white">~45 minutes</strong>{" "}
                       <span className="text-white/45">(de 15 min sur une vid&eacute;o courte &agrave; 1 h+ sur un essai documentaire).</span>
                     </p>

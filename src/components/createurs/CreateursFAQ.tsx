@@ -16,6 +16,10 @@ const faqs = [
     a: "Adobe Premiere Pro CC 2023, 2024, 2025 (plugin natif via le panneau Extensions). DaVinci Resolve 18.x, 19.x, 20.x — Studio et Free, sans interférence avec Color, Fusion ou Fairlight. macOS Apple Silicon natif (M1/M2/M3/M4) + Intel. Windows 10/11 x64. ~80 Mo RAM en idle, GPU optionnel.",
   },
   {
+    q: "TubeForge marche sur quelles plateformes vidéo ?",
+    a: "1 000+ sites. Les principaux pris en charge nativement avec UI dédiée : YouTube, TikTok, Instagram, Twitter/X, Twitch, Vimeo, SoundCloud. Au-delà, TubeForge délègue à yt-dlp qui supporte 1 800+ extracteurs (Reddit, Dailymotion, Facebook, Bilibili, Vimeo OTT, etc.). Si le site a une vidéo, on essaie de la télécharger.",
+  },
+  {
     q: "Je télécharge déjà avec 4K Video Downloader, pourquoi changer ?",
     a: "4K Video Downloader te donne le fichier. Tu dois quand même : sortir de l'app, l'ouvrir dans Premiere, glisser-déposer, ranger le fichier. TubeForge fait tout ça en une étape, depuis ton outil de montage. C'est pas la même chose qu'un download manager — c'est un plugin d'import.",
   },

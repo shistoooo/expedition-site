@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
+import PlatformsBadge from "@/components/shared/PlatformsBadge";
 import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import MonteursHero from "@/components/monteurs/MonteursHero";
 import MonteursROICalculator from "@/components/monteurs/MonteursROICalculator";
@@ -29,6 +30,7 @@ export default function MonteursPage() {
           <MonteursHero />
         </Suspense>
         <HomeYoutuberShowcase />
+        <PlatformsBadge accent="purple" />
         <LandingDemoSection accent="purple" />
         <MonteursROICalculator />
         <MonteursTestimonials />

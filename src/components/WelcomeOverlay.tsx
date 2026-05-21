@@ -200,7 +200,7 @@ export default function WelcomeOverlay() {
                           Je suis monteur freelance
                         </h3>
                         <p className="text-sm text-white/55 leading-relaxed">
-                          Je monte des vid&eacute;os YouTube pour des clients sur Premiere ou DaVinci.
+                          Je monte des vid&eacute;os pour des clients sur Premiere ou DaVinci.
                         </p>
                       </button>
 

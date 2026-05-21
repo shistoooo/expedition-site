@@ -16,6 +16,10 @@ const faqs = [
     a: "Adobe Premiere Pro CC 2023, 2024, 2025 (plugin natif via le panneau Extensions, compatible Adobe Media Encoder). DaVinci Resolve 18.x, 19.x, 20.x — Studio et Free, sans interférence avec Color, Fusion ou Fairlight. macOS Apple Silicon natif (M1/M2/M3/M4) + Intel. Windows 10/11 x64. ~80 Mo RAM en idle, GPU optionnel.",
   },
   {
+    q: "TubeForge marche sur quelles plateformes vidéo ?",
+    a: "1 000+ sites. Les principaux pris en charge nativement avec UI dédiée : YouTube, TikTok, Instagram, Twitter/X, Twitch, Vimeo, SoundCloud. Au-delà, TubeForge délègue à yt-dlp qui supporte 1 800+ extracteurs (Reddit, Dailymotion, Facebook, Bilibili, Vimeo OTT, etc.). Si le site a une vidéo, on essaie de la télécharger.",
+  },
+  {
     q: "Et si mon client m'envoie 30 refs dans un Google Doc ?",
     a: "Import du document dans TubeForge → auto-détection de tous les liens YouTube → téléchargement en parallèle. Le tout pendant que tu ouvres ton projet Premiere. Quand tu reviens, tout est prêt à être glissé dans la timeline.",
   },
