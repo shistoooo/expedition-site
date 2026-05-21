@@ -123,7 +123,7 @@ export default function MonteursHero() {
             {ctaLabel}
           </a>
           <Link
-            href="/#home-demo"
+            href="/demo"
             onClick={() => fireCtaEvent("hero_secondary_discord")}
             className="group px-7 py-4 rounded-xl bg-white/5 text-white/85 font-semibold text-base transition-all duration-200 flex items-center gap-2 border border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20"
           >
