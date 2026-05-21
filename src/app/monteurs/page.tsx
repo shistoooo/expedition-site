@@ -5,12 +5,10 @@ import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
-import PlatformsBadge from "@/components/shared/PlatformsBadge";
 import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import MonteursHero from "@/components/monteurs/MonteursHero";
 import MonteursROICalculator from "@/components/monteurs/MonteursROICalculator";
 import MonteursPricing from "@/components/monteurs/MonteursPricing";
-import MonteursTestimonials from "@/components/monteurs/MonteursTestimonials";
 import MonteursFAQ from "@/components/monteurs/MonteursFAQ";
 import MonteursFinalCTA from "@/components/monteurs/MonteursFinalCTA";
 import MonteursStickyMobileCTA from "@/components/monteurs/MonteursStickyMobileCTA";
@@ -30,10 +28,8 @@ export default function MonteursPage() {
           <MonteursHero />
         </Suspense>
         <HomeYoutuberShowcase />
-        <PlatformsBadge accent="purple" />
         <LandingDemoSection accent="purple" />
         <MonteursROICalculator />
-        <MonteursTestimonials />
         <SuitePreviewSection accent="purple" />
         <MonteursPricing />
         <MonteursFAQ />

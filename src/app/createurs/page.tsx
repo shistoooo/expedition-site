@@ -5,12 +5,10 @@ import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
 import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
-import PlatformsBadge from "@/components/shared/PlatformsBadge";
 import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import CreateursHero from "@/components/createurs/CreateursHero";
 import CreateursBeforeAfter from "@/components/createurs/CreateursBeforeAfter";
 import CreateursPricing from "@/components/createurs/CreateursPricing";
-import CreateursTestimonials from "@/components/createurs/CreateursTestimonials";
 import CreateursFAQ from "@/components/createurs/CreateursFAQ";
 import CreateursFinalCTA from "@/components/createurs/CreateursFinalCTA";
 import CreateursStickyMobileCTA from "@/components/createurs/CreateursStickyMobileCTA";
@@ -30,10 +28,8 @@ export default function CreateursPage() {
           <CreateursHero />
         </Suspense>
         <HomeYoutuberShowcase />
-        <PlatformsBadge accent="cyan" />
         <LandingDemoSection accent="cyan" />
         <CreateursBeforeAfter />
-        <CreateursTestimonials />
         <SuitePreviewSection accent="cyan" />
         <CreateursPricing />
         <CreateursFAQ />
