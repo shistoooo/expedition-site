@@ -3,13 +3,10 @@
 import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
+import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
+import LandingDemoSection from "@/components/shared/LandingDemoSection";
 import CreateursHero from "@/components/createurs/CreateursHero";
-import CreateursMockupSection from "@/components/createurs/CreateursMockupSection";
-import CreateursFeatures from "@/components/createurs/CreateursFeatures";
 import CreateursBeforeAfter from "@/components/createurs/CreateursBeforeAfter";
-import CompatibilityBlock from "@/components/shared/CompatibilityBlock";
-import PrivacyBlock from "@/components/shared/PrivacyBlock";
-import CreateursSuiteTease from "@/components/createurs/CreateursSuiteTease";
 import CreateursPricing from "@/components/createurs/CreateursPricing";
 import CreateursTestimonials from "@/components/createurs/CreateursTestimonials";
 import CreateursFAQ from "@/components/createurs/CreateursFAQ";
@@ -30,14 +27,11 @@ export default function CreateursPage() {
         <Suspense fallback={<div className="pt-28 md:pt-36 h-[480px]" />}>
           <CreateursHero />
         </Suspense>
-        <CreateursMockupSection />
-        <CreateursFeatures />
+        <HomeYoutuberShowcase />
+        <LandingDemoSection accent="cyan" />
         <CreateursBeforeAfter />
-        <CompatibilityBlock accent="cyan" tool="both" />
-        <PrivacyBlock accent="cyan" />
-        <CreateursSuiteTease />
-        <CreateursPricing />
         <CreateursTestimonials />
+        <CreateursPricing />
         <CreateursFAQ />
         <CreateursFinalCTA />
       </main>

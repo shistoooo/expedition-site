@@ -12,24 +12,24 @@ const faqs = [
     a: "Tu arrêtes de jongler entre YouTube, ton navigateur, ton Finder et ton outil de montage. TubeForge intègre tes téléchargements, ta recherche et ton import de refs directement dans Premiere ou DaVinci. Résultat : tu restes dans ton focus créatif au lieu d'éparpiller ton attention.",
   },
   {
-    q: "Le plugin marche avec Premiere ET DaVinci ?",
-    a: "Oui. TubeForge expose un plugin compatible Adobe Premiere Pro et DaVinci Resolve Studio. Tu colles un lien YouTube depuis TubeForge, la vidéo s'importe dans ta timeline. Si tu passes d'un outil à l'autre selon les projets, ça suit.",
+    q: "Compatible avec quelle version de Premiere ou DaVinci ?",
+    a: "Adobe Premiere Pro CC 2023, 2024, 2025 (plugin natif via le panneau Extensions). DaVinci Resolve 18.x, 19.x, 20.x — Studio et Free, sans interférence avec Color, Fusion ou Fairlight. macOS Apple Silicon natif (M1/M2/M3/M4) + Intel. Windows 10/11 x64. ~80 Mo RAM en idle, GPU optionnel.",
   },
   {
     q: "Je télécharge déjà avec 4K Video Downloader, pourquoi changer ?",
     a: "4K Video Downloader te donne le fichier. Tu dois quand même : sortir de l'app, l'ouvrir dans Premiere, glisser-déposer, ranger le fichier. TubeForge fait tout ça en une étape, depuis ton outil de montage. C'est pas la même chose qu'un download manager — c'est un plugin d'import.",
   },
   {
+    q: "Mes vidéos et mes refs sont-elles privées ?",
+    a: "Oui, 100% local. TubeForge tourne sur ta machine — tes téléchargements, ton historique et tes projets ne quittent jamais ton poste. Aucune donnée ne passe par nos serveurs. Zéro tracking de contenu : on ne sait pas ce que tu télécharges, ni ce que tu prépares.",
+  },
+  {
     q: "Quel est le tarif ?",
     a: "8,03€/mois (annuel) ou 11,99€/mois (mensuel). L'abonnement inclut TubeForge et tous les outils à venir de la suite Expédition (ClipForge pour les clips auto, ReviewForge pour les retours, etc.). Le tarif est bloqué à vie tant que tu restes abonné.",
   },
   {
-    q: "Je peux essayer avant de payer ?",
-    a: "Annulation 1 clic, sans frais, dès le premier mois. Si TubeForge ne fluidifie pas concrètement ton workflow sur 2-3 vidéos, tu annules. Pas de questions, pas de friction.",
-  },
-  {
-    q: "Et mes refs / projets ?",
-    a: "TubeForge tourne en local sur ta machine. Tes téléchargements, ton historique et tes projets ne quittent jamais ton poste. Aucune donnée ne passe par nos serveurs.",
+    q: "Je peux essayer avant de payer ? Annulation facile ?",
+    a: "Annulation 1 clic, sans frais, depuis ton espace compte. Si TubeForge ne fluidifie pas concrètement ton workflow sur 2-3 vidéos, tu annules. Pas de questions, pas de friction.",
   },
 ];
 

@@ -3,13 +3,10 @@
 import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
+import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
+import LandingDemoSection from "@/components/shared/LandingDemoSection";
 import MonteursHero from "@/components/monteurs/MonteursHero";
-import MonteursMockupSection from "@/components/monteurs/MonteursMockupSection";
-import MonteursFeatures from "@/components/monteurs/MonteursFeatures";
 import MonteursROICalculator from "@/components/monteurs/MonteursROICalculator";
-import MonteursCompatibility from "@/components/monteurs/MonteursCompatibility";
-import PrivacyBlock from "@/components/shared/PrivacyBlock";
-import MonteursSuiteTease from "@/components/monteurs/MonteursSuiteTease";
 import MonteursPricing from "@/components/monteurs/MonteursPricing";
 import MonteursTestimonials from "@/components/monteurs/MonteursTestimonials";
 import MonteursFAQ from "@/components/monteurs/MonteursFAQ";
@@ -30,17 +27,11 @@ export default function MonteursPage() {
         <Suspense fallback={<div className="pt-28 md:pt-36 h-[480px]" />}>
           <MonteursHero />
         </Suspense>
-        <MonteursMockupSection />
-        <MonteursFeatures />
+        <HomeYoutuberShowcase />
+        <LandingDemoSection accent="purple" />
         <MonteursROICalculator />
-        {/* Compatibility lit le tool param → Suspense */}
-        <Suspense fallback={<div className="h-[400px]" />}>
-          <MonteursCompatibility />
-        </Suspense>
-        <PrivacyBlock accent="purple" />
-        <MonteursSuiteTease />
-        <MonteursPricing />
         <MonteursTestimonials />
+        <MonteursPricing />
         <MonteursFAQ />
         <MonteursFinalCTA />
       </main>

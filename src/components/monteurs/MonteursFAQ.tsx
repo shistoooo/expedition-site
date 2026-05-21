@@ -12,24 +12,24 @@ const faqs = [
     a: "Selon le volume de références, entre 15 minutes (vidéo courte avec 3-5 refs) et 1 heure (essai documentaire avec 20+ refs et découpes précises). À ton tarif horaire moyen, l'abonnement est rentabilisé dès le premier projet du mois.",
   },
   {
-    q: "Le plugin marche avec Premiere ET DaVinci ?",
-    a: "Oui. TubeForge expose un plugin compatible Adobe Premiere Pro et DaVinci Resolve Studio. Tu colles un lien YouTube depuis l'onglet TubeForge dans ta timeline, et la vidéo s'importe automatiquement. Tu peux passer d'un outil à l'autre sans rien changer.",
+    q: "Compatible avec quelle version de Premiere ou DaVinci ?",
+    a: "Adobe Premiere Pro CC 2023, 2024, 2025 (plugin natif via le panneau Extensions, compatible Adobe Media Encoder). DaVinci Resolve 18.x, 19.x, 20.x — Studio et Free, sans interférence avec Color, Fusion ou Fairlight. macOS Apple Silicon natif (M1/M2/M3/M4) + Intel. Windows 10/11 x64. ~80 Mo RAM en idle, GPU optionnel.",
   },
   {
     q: "Et si mon client m'envoie 30 refs dans un Google Doc ?",
     a: "Import du document dans TubeForge → auto-détection de tous les liens YouTube → téléchargement en parallèle. Le tout pendant que tu ouvres ton projet Premiere. Quand tu reviens, tout est prêt à être glissé dans la timeline.",
   },
   {
+    q: "Mes données et projets clients sont-ils protégés ?",
+    a: "Oui, 100% local. TubeForge tourne sur ta machine — tes téléchargements, ton historique et tes projets ne quittent jamais ton poste. Aucune donnée client transite par nos serveurs. Zéro tracking de contenu : on ne sait pas quelles vidéos tu télécharges ni pour qui.",
+  },
+  {
     q: "Quel est le tarif et pourquoi un abonnement ?",
     a: "8,03€/mois (annuel) ou 11,99€/mois (mensuel). L'abonnement inclut TubeForge et tous les outils à venir de la suite Expédition (ClipForge, ReviewForge, etc.). Le tarif est bloqué à vie tant que tu restes abonné — quand le catalogue grossit, ton prix ne bouge pas.",
   },
   {
-    q: "Je peux essayer avant de payer ?",
-    a: "Annulation 1 clic, sans frais. Tu testes pendant ton premier mois sur tes projets réels — si TubeForge ne te fait pas gagner de temps facturable, tu annules.",
-  },
-  {
-    q: "Et mes données / projets clients ?",
-    a: "TubeForge tourne en local sur ta machine. Tes téléchargements, ton historique, tes projets ne quittent jamais ton poste. Aucune donnée client transite par nos serveurs.",
+    q: "Je peux essayer avant de payer ? Annulation facile ?",
+    a: "Annulation 1 clic depuis ton espace compte, sans frais, sans question. Tu testes pendant ton premier mois sur tes projets réels — si TubeForge ne te fait pas gagner de temps facturable, tu annules.",
   },
 ];
 
