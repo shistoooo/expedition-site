@@ -1,4 +1,31 @@
 ---
+### [2026-05-21 16:00] — Phase 2.5 : Splash overlay au 1er visit
+
+**Quoi :** Ajout d'un overlay non-bloquant qui s'affiche au tout premier visit avec 2 cards (monteur freelance / createur YouTube) menant aux landings dediees, un lien skip discret, et memorisation en localStorage pour ne plus reapparaitre.
+
+**Pourquoi :** Compromis entre la home generique (qui dilue le message) et un quiz bloquant (qui flingue le funnel). Permet de personnaliser le parcours pour les visiteurs qui savent qui ils sont, sans bloquer le SEO ni les visiteurs hesitants qui peuvent skip et continuer sur la home.
+
+**Fichiers touches :**
+- `src/components/WelcomeOverlay.tsx` — nouveau composant. localStorage key `expedition_audience_seen_v1` stocke le choix `monteurs` | `createurs` | `skipped`. Mark-as-seen immediat a l'affichage (pas seulement au choix) pour eviter le harcelement sur refresh. Body scroll lock + Esc + click outside fonctionnels. Delai 600ms avant affichage pour laisser le hero se montrer d'abord.
+- `src/app/page.tsx` — import et integration de WelcomeOverlay (apres Navbar, avant main).
+
+**Comportement attendu :**
+- 1er visit : delai 600ms, overlay apparait avec 2 cards et skip link
+- Choix d'une card → navigation vers /monteurs ou /createurs (404 jusqu'aux Phases 3-4)
+- Skip ou Esc ou click outside → ferme l'overlay, choix `skipped` persiste
+- Visits suivants : pas d'affichage (localStorage check)
+- Si localStorage bloque (mode prive, etc.) → traite comme deja vu, pas d'overlay (ne pas harceler)
+
+**Comment annuler :**
+- Retirer `<WelcomeOverlay />` de `src/app/page.tsx`
+- Supprimer `src/components/WelcomeOverlay.tsx`
+- Pour re-declencher l'overlay sur sa propre machine en dev : `localStorage.removeItem("expedition_audience_seen_v1")` dans la console
+
+**Effets de bord possibles :**
+- Les liens `/monteurs` et `/createurs` du splash renvoient 404 jusqu'aux Phases 3-4 — UX a clarifier avec stubs ou en accelerant les Phases suivantes.
+- Cookie banner / RGPD : localStorage est utilise pour preference UX (pas de tracking), pas de consentement requis dans la plupart des cadres EU mais a documenter dans la page Confidentialite si on est strict.
+
+---
 ### [2026-05-21 15:30] — Phase 2 : Refonte de la home /
 
 **Quoi :** Refonte du positioning de la home autour de TubeForge / plugin Premiere & DaVinci. Nouveau hero, embed de la demo YouTube en 2e section, section "Pour qui c'est" avec teasing vers /monteurs et /createurs, header explicite "Suite Expedition" au-dessus des outils secondaires. Pricing inchange.

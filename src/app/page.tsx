@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import PageBackground from "@/components/PageBackground";
+import WelcomeOverlay from "@/components/WelcomeOverlay";
 import HomeHero from "@/components/HomeHero";
 import HomeDemoVideo from "@/components/HomeDemoVideo";
 import TubeForgeSection from "@/components/TubeForgeSection";
@@ -19,6 +20,7 @@ export default function Home() {
     <div className="w-full min-h-screen overflow-x-hidden relative text-white">
       <PageBackground />
       <Navbar />
+      <WelcomeOverlay />
       <main className="w-full relative z-10">
         <HomeHero />
         <HomeDemoVideo />
