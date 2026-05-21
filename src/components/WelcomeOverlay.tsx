@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Briefcase, Sparkles, X, ArrowLeft, Layers, Film } from "lucide-react";
+import { Briefcase, Sparkles, ArrowLeft, Layers, Film } from "lucide-react";
 
 const STORAGE_KEY = "expedition_audience_seen_v1";
 const DISPLAY_DELAY_MS = 600;
@@ -150,16 +150,6 @@ export default function WelcomeOverlay() {
             />
           </motion.div>
 
-          {/* Close button (top-right) */}
-          <button
-            type="button"
-            aria-label="Fermer et continuer sur la home"
-            onClick={handleSkip}
-            className="absolute top-5 right-5 md:top-7 md:right-7 w-10 h-10 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-white/55 hover:text-white hover:bg-white/10 hover:border-white/25 transition-colors flex items-center justify-center z-20"
-          >
-            <X className="w-4 h-4" />
-          </button>
-
           {/* Content — centered, scrollable on small screens */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -235,7 +225,7 @@ export default function WelcomeOverlay() {
                       <button
                         type="button"
                         onClick={handleSkip}
-                        className="text-xs md:text-sm text-white/40 hover:text-white/75 underline underline-offset-4 decoration-white/20 hover:decoration-white/60 transition-colors"
+                        className="text-sm md:text-base text-white/50 hover:text-white/90 underline underline-offset-4 decoration-white/25 hover:decoration-white/70 transition-colors"
                       >
                         Pas s&ucirc;r &mdash; je continue sur la home
                       </button>
@@ -328,7 +318,7 @@ export default function WelcomeOverlay() {
                       <button
                         type="button"
                         onClick={handleSkip}
-                        className="text-xs md:text-sm text-white/40 hover:text-white/75 underline underline-offset-4 decoration-white/20 hover:decoration-white/60 transition-colors"
+                        className="text-sm md:text-base text-white/50 hover:text-white/90 underline underline-offset-4 decoration-white/25 hover:decoration-white/70 transition-colors"
                       >
                         Pas s&ucirc;r &mdash; je continue sur la home
                       </button>
