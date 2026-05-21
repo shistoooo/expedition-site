@@ -2,28 +2,41 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Calculator, Sparkles } from "lucide-react";
+import { Calculator, Clock, Euro, TrendingUp } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-// 45 minutes saved per project on average (between 30min and 1h per project)
-const HOURS_SAVED_PER_PROJECT = 0.75;
+// 45 minutes saved per project on average
+const MINUTES_SAVED_PER_PROJECT = 45;
 const TUBEFORGE_PRICE_MONTHLY = 8.03;
 
 export default function MonteursROICalculator() {
   const [hourlyRate, setHourlyRate] = useState(35);
   const [projectsPerMonth, setProjectsPerMonth] = useState(5);
 
-  const monthlySavings = useMemo(() => {
-    return hourlyRate * HOURS_SAVED_PER_PROJECT * projectsPerMonth;
-  }, [hourlyRate, projectsPerMonth]);
-
-  const roiMultiplier = useMemo(() => {
-    return Math.max(1, Math.round((monthlySavings / TUBEFORGE_PRICE_MONTHLY) * 10) / 10);
-  }, [monthlySavings]);
+  // Calcul step by step
+  const totalMinutesSaved = MINUTES_SAVED_PER_PROJECT * projectsPerMonth;
+  const totalHoursSaved = totalMinutesSaved / 60;
+  const monthlySavings = useMemo(
+    () => hourlyRate * totalHoursSaved,
+    [hourlyRate, totalHoursSaved]
+  );
+  const roiMultiplier = useMemo(
+    () => Math.max(1, Math.round((monthlySavings / TUBEFORGE_PRICE_MONTHLY) * 10) / 10),
+    [monthlySavings]
+  );
 
   const formatEuro = (value: number) =>
     new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
+
+  const formatHoursMinutes = (decimalHours: number): string => {
+    const totalMinutes = Math.round(decimalHours * 60);
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    if (h === 0) return `${m} min`;
+    if (m === 0) return `${h}h`;
+    return `${h}h${m.toString().padStart(2, "0")}`;
+  };
 
   return (
     <section className="py-16 md:py-20 relative">
@@ -37,16 +50,16 @@ export default function MonteursROICalculator() {
         >
           <p className="text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-3 flex items-center justify-center gap-2">
             <Calculator className="w-3 h-3" />
-            Calcul ROI rapide
+            Calcule ce que tu y gagnes
           </p>
           <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] leading-[1.05]">
-            Combien tu &eacute;conomises{" "}
+            Le temps gagn&eacute;,{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
-              chaque mois ?
+              tu le factures.
             </span>
           </h2>
           <p className="text-base md:text-lg text-white/55 mt-4 max-w-2xl mx-auto leading-relaxed">
-            Bouge les curseurs avec ta r&eacute;alit&eacute;. Le calcul se base sur 45&nbsp;minutes gagn&eacute;es par projet en moyenne.
+            Chaque minute &eacute;conomis&eacute;e sur la gestion de tes r&eacute;f&eacute;rences, c&apos;est une minute que tu peux facturer ailleurs. Bouge les curseurs ci-dessous avec ta r&eacute;alit&eacute; pour voir le calcul.
           </p>
         </motion.div>
 
@@ -67,16 +80,21 @@ export default function MonteursROICalculator() {
             }}
           />
 
-          <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+          <div className="relative space-y-8">
             {/* Inputs */}
-            <div className="space-y-7">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div>
-                <div className="flex items-baseline justify-between mb-3">
-                  <label htmlFor="hourlyRate" className="text-sm font-semibold text-white/80">
+                <div className="flex items-baseline justify-between mb-2">
+                  <label htmlFor="hourlyRate" className="text-sm font-semibold text-white/85">
                     Ton tarif horaire
                   </label>
-                  <span className="text-2xl font-black text-purple-300 tabular-nums">{hourlyRate}€/h</span>
+                  <span className="text-2xl font-black text-purple-300 tabular-nums">
+                    {hourlyRate}€
+                  </span>
                 </div>
+                <p className="text-xs text-white/45 mb-3 leading-relaxed">
+                  Combien tu factures de l&apos;heure &agrave; tes clients
+                </p>
                 <input
                   id="hourlyRate"
                   type="range"
@@ -94,12 +112,17 @@ export default function MonteursROICalculator() {
               </div>
 
               <div>
-                <div className="flex items-baseline justify-between mb-3">
-                  <label htmlFor="projects" className="text-sm font-semibold text-white/80">
+                <div className="flex items-baseline justify-between mb-2">
+                  <label htmlFor="projects" className="text-sm font-semibold text-white/85">
                     Projets YouTube par mois
                   </label>
-                  <span className="text-2xl font-black text-purple-300 tabular-nums">{projectsPerMonth}</span>
+                  <span className="text-2xl font-black text-purple-300 tabular-nums">
+                    {projectsPerMonth}
+                  </span>
                 </div>
+                <p className="text-xs text-white/45 mb-3 leading-relaxed">
+                  Le nombre de montages que tu livres chaque mois
+                </p>
                 <input
                   id="projects"
                   type="range"
@@ -117,25 +140,84 @@ export default function MonteursROICalculator() {
               </div>
             </div>
 
-            {/* Output */}
-            <div className="flex flex-col justify-center text-center md:text-left p-6 md:p-8 rounded-2xl border border-purple-400/25 bg-gradient-to-br from-purple-500/[0.08] to-violet-500/[0.04]">
-              <p className="text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2 flex items-center justify-center md:justify-start gap-2">
-                <Sparkles className="w-3 h-3" />
-                Tu &eacute;conomises par mois
+            {/* Step-by-step calculation */}
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.015] p-5 md:p-7">
+              <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-5">
+                Voici le raisonnement
               </p>
-              <p className="text-4xl md:text-6xl font-black tracking-[-0.03em] text-white mb-3 tabular-nums">
-                {formatEuro(monthlySavings)}
-              </p>
-              <p className="text-sm text-white/55 leading-relaxed">
-                Soit{" "}
-                <strong className="text-white">
-                  {roiMultiplier}&times;
-                </strong>{" "}
-                le co&ucirc;t de TubeForge (8,03€/mois).
-              </p>
-              <p className="text-xs text-white/40 mt-3 leading-relaxed">
-                Calcul : {projectsPerMonth}&nbsp;projet{projectsPerMonth > 1 ? "s" : ""} &times; 0,75&nbsp;h gagn&eacute;e &times; {hourlyRate}€/h
-              </p>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-7 h-7 rounded-full bg-purple-500/15 border border-purple-500/25 flex items-center justify-center text-purple-300 text-xs font-bold">
+                    1
+                  </div>
+                  <p className="text-sm md:text-base text-white/70 leading-relaxed pt-0.5">
+                    Sur chaque projet, TubeForge te fait gagner{" "}
+                    <strong className="text-white">~45 minutes</strong>{" "}
+                    <span className="text-white/45">(entre 15 min pour 3 refs et 1 h pour 20+ refs avec d&eacute;coupes).</span>
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-7 h-7 rounded-full bg-purple-500/15 border border-purple-500/25 flex items-center justify-center text-purple-300 text-xs font-bold">
+                    2
+                  </div>
+                  <p className="text-sm md:text-base text-white/70 leading-relaxed pt-0.5">
+                    <strong className="text-white">{projectsPerMonth}</strong> projet{projectsPerMonth > 1 ? "s" : ""} &times; <strong className="text-white">45 min</strong> ={" "}
+                    <strong className="text-white">{formatHoursMinutes(totalHoursSaved)}</strong> r&eacute;cup&eacute;r&eacute;{totalHoursSaved > 1 ? "es" : "e"} chaque mois.
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-7 h-7 rounded-full bg-purple-500/15 border border-purple-500/25 flex items-center justify-center text-purple-300 text-xs font-bold">
+                    3
+                  </div>
+                  <p className="text-sm md:text-base text-white/70 leading-relaxed pt-0.5">
+                    <strong className="text-white">{formatHoursMinutes(totalHoursSaved)}</strong> &times; <strong className="text-white">{hourlyRate}€/h</strong> ={" "}
+                    <strong className="text-white">{formatEuro(monthlySavings)}</strong> que tu peux re-facturer chaque mois.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Result */}
+            <div className="relative rounded-2xl border border-purple-400/30 bg-gradient-to-br from-purple-500/[0.12] to-violet-500/[0.05] p-6 md:p-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 text-center md:text-left">
+                <div className="flex flex-col items-center md:items-start">
+                  <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
+                    <Clock className="w-3 h-3" />
+                    Temps gagn&eacute;
+                  </div>
+                  <p className="text-2xl md:text-3xl font-black text-white tabular-nums">
+                    {formatHoursMinutes(totalHoursSaved)}<span className="text-base text-white/45 font-bold">/mois</span>
+                  </p>
+                </div>
+                <div className="flex flex-col items-center md:items-start">
+                  <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
+                    <Euro className="w-3 h-3" />
+                    &Eacute;conomis&eacute;
+                  </div>
+                  <p className="text-3xl md:text-4xl font-black text-white tabular-nums">
+                    {formatEuro(monthlySavings)}<span className="text-base text-white/45 font-bold">/mois</span>
+                  </p>
+                </div>
+                <div className="flex flex-col items-center md:items-start">
+                  <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
+                    <TrendingUp className="w-3 h-3" />
+                    Retour vs co&ucirc;t
+                  </div>
+                  <p className="text-2xl md:text-3xl font-black text-white tabular-nums">
+                    &times;{roiMultiplier}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-5 border-t border-white/[0.08] text-center md:text-left">
+                <p className="text-sm md:text-base text-white/70 leading-relaxed">
+                  TubeForge co&ucirc;te <strong className="text-white">8,03€/mois</strong>. Tu &eacute;conomises{" "}
+                  <strong className="text-white">{formatEuro(monthlySavings)}/mois</strong>.{" "}
+                  <span className="text-white/55">
+                    Pour chaque euro pay&eacute;, tu r&eacute;cup&egrave;res <strong className="text-purple-200">{roiMultiplier}€</strong> de temps facturable.
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
