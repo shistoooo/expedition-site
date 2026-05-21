@@ -28,6 +28,10 @@ const faqs = [
     a: "8,03€/mois (annuel) ou 11,99€/mois (mensuel). L'abonnement inclut TubeForge et tous les outils à venir de la suite Expédition (ClipForge pour les clips auto, ReviewForge pour les retours, etc.). Le tarif est bloqué à vie tant que tu restes abonné.",
   },
   {
+    q: "C'est quoi les futurs outils inclus dans l'abonnement ?",
+    a: "Au-delà de TubeForge, la suite Expédition couvre : ClipForge (clips auto IA pour Shorts/TikTok depuis tes rushs), ReviewForge (espace de retour pour partager ta vidéo avec un cercle restreint avant publi), et d'autres outils pensés autour du workflow YouTube. Tout est inclus dans ton abonnement, ton prix ne bouge pas quand le catalogue grossit.",
+  },
+  {
     q: "Je peux essayer avant de payer ? Annulation facile ?",
     a: "Annulation 1 clic, sans frais, depuis ton espace compte. Si TubeForge ne fluidifie pas concrètement ton workflow sur 2-3 vidéos, tu annules. Pas de questions, pas de friction.",
   },
