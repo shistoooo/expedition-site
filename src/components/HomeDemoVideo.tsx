@@ -22,11 +22,13 @@ export default function HomeDemoVideo() {
           <div className="text-center mb-8 md:mb-10">
             <p className="text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-3 flex items-center justify-center gap-2">
               <span className="w-3 h-px bg-purple-300/50 inline-block" />
-              D&eacute;mo en 60&nbsp;secondes
+              Pr&eacute;sentation compl&egrave;te
               <span className="w-3 h-px bg-purple-300/50 inline-block" />
             </p>
             <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] text-white/90 leading-tight">
-              Le plugin que tu vas vouloir <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-cyan-300">dans Premiere</span> demain matin.
+              Le plugin Premiere d&apos;abord.{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-cyan-300">Tout le reste</span>{" "}
+              dans la foul&eacute;e.
             </h2>
           </div>
 

@@ -27,7 +27,7 @@ export default function DemoPage() {
             <div className="text-center mb-10 md:mb-14">
               <p className="text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-3 flex items-center justify-center gap-2">
                 <span className="w-3 h-px bg-purple-300/50 inline-block" />
-                D&eacute;mo en 60&nbsp;secondes
+                Pr&eacute;sentation compl&egrave;te
                 <span className="w-3 h-px bg-purple-300/50 inline-block" />
               </p>
               <h1 className="text-3xl md:text-5xl font-black tracking-[-0.02em] text-white/90 leading-tight mb-4">
@@ -35,10 +35,10 @@ export default function DemoPage() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-cyan-300">
                   Premiere &amp; DaVinci
                 </span>
-                , en action.
+                , et tout le reste.
               </h1>
               <p className="text-base md:text-lg text-white/55 max-w-2xl mx-auto leading-relaxed">
-                Coller un lien YouTube. La vid&eacute;o atterrit dans ta timeline. Pas d&apos;onglet, pas de Finder, pas de glisser-d&eacute;poser.
+                Les premi&egrave;res minutes&nbsp;: le plugin qui colle tes liens YouTube directement dans ta timeline. La suite&nbsp;: recherche YouTube int&eacute;gr&eacute;e, d&eacute;coupe avant t&eacute;l&eacute;chargement, import de scripts, multi-DL parall&egrave;le, 4K.
               </p>
             </div>
 

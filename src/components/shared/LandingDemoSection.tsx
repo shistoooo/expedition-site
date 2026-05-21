@@ -33,8 +33,8 @@ export default function LandingDemoSection({ accent = "purple", title }: Landing
 
   const defaultTitle = (
     <>
-      Voir TubeForge faire le job en{" "}
-      <span className={`text-transparent bg-clip-text bg-gradient-to-r ${cls.gradient}`}>60&nbsp;secondes.</span>
+      Le plugin Premiere &amp; DaVinci, et{" "}
+      <span className={`text-transparent bg-clip-text bg-gradient-to-r ${cls.gradient}`}>tout ce qu&apos;il y a derri&egrave;re.</span>
     </>
   );
 
@@ -51,7 +51,7 @@ export default function LandingDemoSection({ accent = "purple", title }: Landing
           <div className="text-center mb-8 md:mb-10">
             <p className={`text-xs font-mono uppercase tracking-widest ${cls.label} mb-3 flex items-center justify-center gap-2`}>
               <span className="w-3 h-px bg-current opacity-50 inline-block" />
-              D&eacute;mo en 60&nbsp;secondes
+              Pr&eacute;sentation compl&egrave;te
               <span className="w-3 h-px bg-current opacity-50 inline-block" />
             </p>
             <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] text-white/90 leading-tight">
