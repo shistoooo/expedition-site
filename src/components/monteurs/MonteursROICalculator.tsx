@@ -53,9 +53,9 @@ export default function MonteursROICalculator() {
             Calcule combien tu gagnes
           </p>
           <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] leading-[1.05]">
-            Le temps gagn&eacute;,{" "}
+            Combien tu y{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
-              c&apos;est de l&apos;argent.
+              gagnes vraiment.
             </span>
           </h2>
           <p className="text-base md:text-lg text-white/55 mt-4 max-w-2xl mx-auto leading-relaxed">

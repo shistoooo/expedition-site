@@ -65,20 +65,20 @@ export default function SuitePreviewSection({ accent = "purple" }: SuitePreviewS
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.2, ease: easeOutExpo }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-center"
+          className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-center"
         >
-          <p className="text-sm text-white/55 flex items-center gap-2 leading-relaxed">
-            <Lock className="w-3.5 h-3.5 shrink-0" />
+          <p className="text-base md:text-lg text-white/65 flex items-center gap-2.5 leading-relaxed">
+            <Lock className="w-5 h-5 shrink-0" />
             <span>
               <strong className="text-white">Tarif Pionnier bloqué à vie.</strong> Le catalogue grossit, ton prix ne bouge pas.
             </span>
           </p>
           <Link
             href="/tools"
-            className={`group inline-flex items-center gap-1.5 text-sm font-semibold ${cls.ctaText} ${cls.ctaHover} transition-colors whitespace-nowrap`}
+            className={`group inline-flex items-center gap-2 text-base md:text-lg font-semibold ${cls.ctaText} ${cls.ctaHover} transition-colors whitespace-nowrap`}
           >
             Voir tous les outils
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
           </Link>
         </motion.div>
       </div>
