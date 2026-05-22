@@ -95,7 +95,7 @@ export default function ToolsShowcasePage() {
                 <span className="w-3 h-px bg-indigo-300/40 inline-block" />
               </p>
             </motion.div>
-            <ToolsSection />
+            <ToolsSection layout="horizontal" />
           </div>
           <ToolDemoVideoSlot
             videoId={CLIPFORGE_DEMO_VIDEO_ID || undefined}
@@ -120,7 +120,7 @@ export default function ToolsShowcasePage() {
                 <span className="w-3 h-px bg-emerald-300/40 inline-block" />
               </p>
             </motion.div>
-            <ReviewForgeSection />
+            <ReviewForgeSection layout="horizontal" />
           </div>
           <ToolDemoVideoSlot
             videoId={REVIEWFORGE_DEMO_VIDEO_ID || undefined}

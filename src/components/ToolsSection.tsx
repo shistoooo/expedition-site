@@ -236,7 +236,13 @@ function ClipForgeMockup() {
   );
 }
 
-export default function ToolsSection() {
+type ToolsSectionProps = {
+  /** "vertical" (default) = texte au-dessus, mockup en dessous. "horizontal" = texte | mockup côte à côte sur lg+ */
+  layout?: "vertical" | "horizontal";
+};
+
+export default function ToolsSection({ layout = "vertical" }: ToolsSectionProps = {}) {
+  const horizontal = layout === "horizontal";
   return (
     <motion.div
       id="clipforge"
@@ -244,10 +250,14 @@ export default function ToolsSection() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="relative flex flex-col h-full"
+      className={
+        horizontal
+          ? "relative flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-16 h-full"
+          : "relative flex flex-col h-full"
+      }
     >
       {/* Text */}
-      <div className="text-left mb-8">
+      <div className={horizontal ? "text-left lg:flex-1" : "text-left mb-8"}>
         <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-4 flex items-center gap-2">
           <span className="w-3 h-px bg-purple-400/50 inline-block" />
           Vague 2 &mdash; Prochainement
@@ -295,7 +305,7 @@ export default function ToolsSection() {
       </div>
 
       {/* Mockup */}
-      <div className="w-full relative rounded-[20px] h-[480px] overflow-hidden">
+      <div className={`relative rounded-[20px] h-[480px] overflow-hidden ${horizontal ? "w-full lg:flex-1" : "w-full"}`}>
         {/* Indigo-purple nebula — ClipForge identity */}
         <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)', filter: 'blur(80px)' }} />
         <ClipForgeMockup />

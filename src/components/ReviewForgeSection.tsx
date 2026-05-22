@@ -478,7 +478,13 @@ function ReviewForgeMockup() {
   );
 }
 
-export default function ReviewForgeSection() {
+type ReviewForgeSectionProps = {
+  /** "vertical" (default) = texte au-dessus, mockup en dessous. "horizontal" = texte | mockup côte à côte sur lg+ */
+  layout?: "vertical" | "horizontal";
+};
+
+export default function ReviewForgeSection({ layout = "vertical" }: ReviewForgeSectionProps = {}) {
+  const horizontal = layout === "horizontal";
   return (
     <motion.div
       id="reviewforge"
@@ -486,10 +492,14 @@ export default function ReviewForgeSection() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="relative flex flex-col h-full"
+      className={
+        horizontal
+          ? "relative flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-16 h-full"
+          : "relative flex flex-col h-full"
+      }
     >
       {/* Text */}
-      <div className="text-left mb-8">
+      <div className={horizontal ? "text-left lg:flex-1" : "text-left mb-8"}>
         <p className="text-xs font-mono uppercase tracking-widest text-emerald-400/60 mb-4 flex items-center gap-2">
           <span className="w-3 h-px bg-emerald-400/50 inline-block" />
           Vague 3 &mdash; Prochainement
@@ -537,7 +547,7 @@ export default function ReviewForgeSection() {
       </div>
 
       {/* Mockup */}
-      <div className="w-full relative rounded-[20px] h-[480px] overflow-hidden">
+      <div className={`relative rounded-[20px] h-[480px] overflow-hidden ${horizontal ? "w-full lg:flex-1" : "w-full"}`}>
         {/* Emerald-cyan nebula — ReviewForge identity glow */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.06) 0%, transparent 60%)', filter: 'blur(80px)' }} />
         <ReviewForgeMockup />
