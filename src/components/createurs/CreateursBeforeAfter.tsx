@@ -79,20 +79,20 @@ export default function CreateursBeforeAfter() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: easeOutExpo }}
-            className="relative"
+            className="relative group"
           >
-            {/* Red glow nebula behind the card */}
+            {/* Red glow nebula behind the card — intensifies on hover */}
             <div
-              className="absolute -inset-4 rounded-3xl pointer-events-none opacity-60"
+              className="absolute -inset-4 rounded-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"
               style={{
                 background:
-                  "radial-gradient(ellipse 70% 60% at 30% 30%, rgba(239,68,68,0.15) 0%, transparent 65%)",
+                  "radial-gradient(ellipse 70% 60% at 30% 30%, rgba(239,68,68,0.22) 0%, transparent 65%)",
                 filter: "blur(30px)",
               }}
               aria-hidden="true"
             />
 
-            <div className="relative rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-500/[0.05] to-red-500/[0.01] p-6 md:p-8 h-full backdrop-blur-sm">
+            <div className="relative rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-500/[0.05] to-red-500/[0.01] p-6 md:p-8 h-full backdrop-blur-sm transition-all duration-500 group-hover:border-red-400/45 group-hover:-translate-y-1 group-hover:shadow-[0_25px_70px_-20px_rgba(239,68,68,0.30)]">
               {/* Header */}
               <div className="flex items-center gap-3 mb-7">
                 <div className="w-11 h-11 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center shrink-0">
@@ -139,21 +139,21 @@ export default function CreateursBeforeAfter() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, delay: 0.15, ease: easeOutExpo }}
-            className="relative"
+            className="relative group"
           >
-            {/* Cyan glow nebula — plus puissant, c'est la card "winning" */}
+            {/* Cyan glow nebula — plus puissant, c'est la card "winning". Intensifies on hover */}
             <div
-              className="absolute -inset-4 rounded-3xl pointer-events-none opacity-80"
+              className="absolute -inset-4 rounded-3xl pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               style={{
                 background:
-                  "radial-gradient(ellipse 70% 60% at 70% 30%, rgba(34,211,238,0.20) 0%, rgba(139,92,246,0.06) 50%, transparent 75%)",
+                  "radial-gradient(ellipse 70% 60% at 70% 30%, rgba(34,211,238,0.28) 0%, rgba(139,92,246,0.10) 50%, transparent 75%)",
                 filter: "blur(30px)",
               }}
               aria-hidden="true"
             />
 
             <div
-              className="relative rounded-2xl border border-cyan-400/30 bg-gradient-to-br from-cyan-500/[0.07] to-cyan-500/[0.02] p-6 md:p-8 h-full backdrop-blur-sm"
+              className="relative rounded-2xl border border-cyan-400/30 bg-gradient-to-br from-cyan-500/[0.07] to-cyan-500/[0.02] p-6 md:p-8 h-full backdrop-blur-sm transition-all duration-500 group-hover:border-cyan-300/55 group-hover:-translate-y-1 group-hover:shadow-[0_30px_80px_-20px_rgba(34,211,238,0.35)]"
               style={{
                 boxShadow: "0 20px 60px -20px rgba(34,211,238,0.15)",
               }}
