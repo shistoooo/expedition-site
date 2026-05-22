@@ -6,15 +6,18 @@ import { SALES_OPEN } from "@/lib/salesConfig";
 
 export default function HomeHero() {
   return (
-    <section className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-x-hidden">
-      {/* Nebula ambient — violet core fading to transparent, anchored behind the h1 */}
-      <div
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.18) 0%, rgba(99,60,200,0.08) 40%, transparent 75%)',
-          filter: 'blur(1px)',
-        }}
-      />
+    <section className="pt-28 pb-16 md:pt-36 md:pb-24 relative">
+      {/* Nebula wrapper — clipped so it doesn't overflow horizontally,
+          but section stays overflow-visible so CTA shadows can breathe */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px]"
+          style={{
+            background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.18) 0%, rgba(99,60,200,0.08) 40%, transparent 75%)',
+            filter: 'blur(1px)',
+          }}
+        />
+      </div>
       <div className="container-main flex flex-col items-center text-center relative z-10">
         <div
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs md:text-sm font-medium mb-6 backdrop-blur-sm animate-hero-in"

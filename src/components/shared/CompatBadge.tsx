@@ -22,14 +22,13 @@ export default function CompatBadge({ delay = 0 }: CompatBadgeProps) {
 
       <span className="h-4 w-px bg-white/15" aria-hidden="true" />
 
-      {/* Premiere Pro */}
+      {/* Premiere Pro — carré arrondi violet sombre, "Pr" rose-violet (style Adobe) */}
       <span className="inline-flex items-center gap-1.5">
         <span
-          className="inline-flex items-center justify-center w-5 h-5 rounded-[4px] text-[10px] font-black tabular-nums"
+          className="inline-flex items-center justify-center w-5 h-5 rounded-[5px] text-[10px] font-black"
           style={{
-            background: "linear-gradient(135deg, #2A0634 0%, #4D1A6E 100%)",
+            background: "#2A0634",
             color: "#EA77FF",
-            border: "1px solid rgba(234,119,255,0.35)",
           }}
           aria-hidden="true"
         >
@@ -40,19 +39,27 @@ export default function CompatBadge({ delay = 0 }: CompatBadgeProps) {
 
       <span className="text-white/25 text-xs">&middot;</span>
 
-      {/* DaVinci Resolve */}
+      {/* DaVinci Resolve — cercle bleu Blackmagic avec dégradé radial (style Resolve) */}
       <span className="inline-flex items-center gap-1.5">
-        <span
-          className="inline-flex items-center justify-center w-5 h-5 rounded-[4px] text-[10px] font-black tabular-nums"
-          style={{
-            background: "linear-gradient(135deg, #0B1929 0%, #1A3550 100%)",
-            color: "#3FB7E8",
-            border: "1px solid rgba(63,183,232,0.4)",
-          }}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
-          DV
-        </span>
+          <defs>
+            <radialGradient id="dv-grad" cx="50%" cy="40%" r="55%">
+              <stop offset="0%" stopColor="#5DD2F5" />
+              <stop offset="60%" stopColor="#1F8DD6" />
+              <stop offset="100%" stopColor="#0F4D85" />
+            </radialGradient>
+          </defs>
+          <circle cx="10" cy="10" r="9" fill="url(#dv-grad)" />
+          <circle cx="10" cy="10" r="4.5" fill="none" stroke="#0A2F52" strokeWidth="1.3" />
+          <circle cx="10" cy="10" r="1.6" fill="#0A2F52" />
+        </svg>
         <span className="text-xs md:text-sm font-semibold text-white/85">DaVinci&nbsp;Resolve</span>
       </span>
     </motion.div>

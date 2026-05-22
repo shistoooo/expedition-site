@@ -22,17 +22,20 @@ export default function DiscordPionnierHero() {
   return (
     <section
       id="discord-pionnier-hero"
-      className="min-h-[88vh] md:min-h-[92vh] pt-32 md:pt-44 pb-20 md:pb-24 relative overflow-x-hidden flex flex-col items-center justify-center"
+      className="min-h-[88vh] md:min-h-[92vh] pt-32 md:pt-44 pb-20 md:pb-24 relative flex flex-col items-center justify-center"
     >
-      {/* Nebula ambient — violet core fading to transparent, anchored behind the H1 */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[700px] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.20) 0%, rgba(99,60,200,0.09) 40%, transparent 75%)",
-          filter: "blur(1px)",
-        }}
-      />
+      {/* Nebula wrapper — clipped so it doesn't overflow horizontally,
+          but section stays overflow-visible so CTA shadows can breathe */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[700px]"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.20) 0%, rgba(99,60,200,0.09) 40%, transparent 75%)",
+            filter: "blur(1px)",
+          }}
+        />
+      </div>
 
       <div className="container-main relative z-10 flex flex-col items-center text-center">
         {/* Eyebrow */}
