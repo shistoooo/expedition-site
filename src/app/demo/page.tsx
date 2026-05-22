@@ -27,18 +27,17 @@ export default function DemoPage() {
             <div className="text-center mb-10 md:mb-14">
               <p className="text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-3 flex items-center justify-center gap-2">
                 <span className="w-3 h-px bg-purple-300/50 inline-block" />
-                Pr&eacute;sentation compl&egrave;te
+                La vid&eacute;o de d&eacute;mo
                 <span className="w-3 h-px bg-purple-300/50 inline-block" />
               </p>
               <h1 className="text-3xl md:text-5xl font-black tracking-[-0.02em] text-white/90 leading-tight mb-4">
-                TubeForge dans{" "}
+                Tu colles un lien.{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-cyan-300">
-                  Premiere &amp; DaVinci
+                  &Ccedil;a atterrit dans ta timeline.
                 </span>
-                , et tout le reste.
               </h1>
               <p className="text-base md:text-lg text-white/55 max-w-2xl mx-auto leading-relaxed">
-                Les premi&egrave;res minutes&nbsp;: le plugin qui colle tes liens YouTube directement dans ta timeline. La suite&nbsp;: recherche YouTube int&eacute;gr&eacute;e, d&eacute;coupe avant t&eacute;l&eacute;chargement, import de scripts, multi-DL parall&egrave;le, 4K.
+                La premi&egrave;re minute, tu vois le plugin tourner dans Premiere et DaVinci. La suite&nbsp;: la recherche YouTube int&eacute;gr&eacute;e, le multi-t&eacute;l&eacute;chargement, la d&eacute;coupe avant t&eacute;l&eacute;chargement, l&apos;extraction de frames, l&apos;import de script. Tout ce que TubeForge sait faire en 7&nbsp;minutes.
               </p>
             </div>
 

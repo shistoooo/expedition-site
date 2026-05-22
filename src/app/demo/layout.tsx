@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expedition.so";
 
 export const metadata: Metadata = {
-  title: "Démo TubeForge — Le plugin Premiere & DaVinci en action | Expédition",
+  title: "TubeForge en démo — Tu colles un lien, ça atterrit dans ta timeline | Expédition",
   description:
-    "La présentation complète de TubeForge : le plugin Premiere & DaVinci, puis toutes les fonctionnalités du logiciel — recherche YouTube, découpe, import de scripts, multi-DL, 4K.",
+    "La vidéo de démo de TubeForge : le plugin Premiere & DaVinci d'abord, puis recherche YouTube intégrée, multi-téléchargement, découpe avant téléchargement, extraction de frames, import de script.",
   alternates: { canonical: `${siteUrl}/demo` },
   openGraph: {
     title: "Démo TubeForge — Le plugin Premiere & DaVinci en action",

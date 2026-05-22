@@ -8,7 +8,6 @@ import PageBackground from "@/components/PageBackground";
 import TubeForgeSection from "@/components/TubeForgeSection";
 import ToolsSection from "@/components/ToolsSection";
 import ReviewForgeSection from "@/components/ReviewForgeSection";
-import UpcomingTools from "@/components/UpcomingTools";
 import HomePricing from "@/components/HomePricing";
 import Footer from "@/components/Footer";
 
@@ -103,9 +102,6 @@ export default function ToolsShowcasePage() {
             </div>
           </div>
         </section>
-
-        {/* Upcoming Tools — Vague 3+ */}
-        <UpcomingTools />
 
         {/* Pricing */}
         <HomePricing />
