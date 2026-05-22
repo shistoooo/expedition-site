@@ -37,7 +37,7 @@ export default function DemoPage() {
                 </span>
               </h1>
               <p className="text-base md:text-lg text-white/55 max-w-2xl mx-auto leading-relaxed">
-                Sept minutes pour voir TubeForge tourner dans Premiere et DaVinci pour de vrai. Du lien YouTube coll&eacute; jusqu&apos;&agrave; la timeline, en passant par la d&eacute;coupe avant t&eacute;l&eacute;chargement. L&apos;outil au boulot, pas un teaser.
+                T&eacute;l&eacute;charge directement toutes les vid&eacute;os d&apos;internet dont t&apos;as besoin pour tes montages, dans Premiere et DaVinci. Et plus encore &mdash; 7 minutes pour voir comment.
               </p>
             </div>
 
