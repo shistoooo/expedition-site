@@ -245,8 +245,11 @@ function ReviewForgeMockup() {
               <span className="px-1 py-0.5 rounded-full text-[8px] font-mono text-indigo-400" style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)' }}>{reviewComments.length}</span>
             </div>
 
-            {/* Comments list */}
-            <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1.5" style={{ maxHeight: 220 }}>
+            {/* Comments list — scrollbar masquée pour ne pas polluer le mockup */}
+            <div
+              className="flex-1 overflow-y-auto px-2 py-2 space-y-1.5 [&::-webkit-scrollbar]:hidden"
+              style={{ maxHeight: 220, scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
               {reviewComments.map((c, i) => {
                 const isActive = Math.abs(currentTime - c.timeSec) < 0.8;
                 return (
