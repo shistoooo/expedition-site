@@ -276,7 +276,7 @@ export default function ToolsSection({ layout = "vertical" }: ToolsSectionProps 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="space-y-3 mb-6"
+          className="space-y-4 mb-7"
         >
           {[
             { icon: Sparkles, title: "L\u2019IA trouve vos meilleurs moments", desc: "Analyse sp\u00e9cialis\u00e9e selon votre contenu : gaming, podcast, tuto, vlog." },
@@ -304,17 +304,31 @@ export default function ToolsSection({ layout = "vertical" }: ToolsSectionProps 
         </a>
       </div>
 
-      {/* Mockup */}
-      <div className={`relative rounded-[20px] h-[480px] overflow-hidden ${horizontal ? "w-full lg:flex-1" : "w-full"}`}>
-        {/* Indigo-purple nebula — ClipForge identity */}
-        <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)', filter: 'blur(80px)' }} />
+      {/* Mockup — clear, no blur. Status indicated by floating badge top-right. */}
+      <div
+        className={`group relative rounded-[20px] h-[520px] md:h-[600px] overflow-hidden transition-all duration-500 hover:-translate-y-1 ${
+          horizontal ? "w-full lg:flex-[1.3]" : "w-full"
+        }`}
+      >
+        {/* Indigo-purple nebula — ClipForge identity. Intensifies on hover. */}
+        <div
+          className="absolute -inset-5 pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.16) 0%, rgba(139,92,246,0.08) 40%, transparent 70%)",
+            filter: "blur(80px)",
+          }}
+        />
         <ClipForgeMockup />
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
-        {/* Coming soon overlay */}
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/30 backdrop-blur-[1px] rounded-[20px]">
-          <div className="px-5 py-2.5 rounded-full border border-purple-400/30 bg-purple-500/10 backdrop-blur-sm">
-            <span className="text-sm font-bold text-purple-300 tracking-wide uppercase">Disponible prochainement</span>
-          </div>
+
+        {/* Floating "En développement" badge — top-right, glass, subtle but clear */}
+        <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-400/30 backdrop-blur-md">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-300" />
+          </span>
+          <span className="text-[11px] font-medium text-indigo-100 tracking-wide">En d&eacute;veloppement</span>
         </div>
       </div>
     </motion.div>

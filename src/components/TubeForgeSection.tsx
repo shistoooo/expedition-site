@@ -90,10 +90,24 @@ export default function TubeForgeSection() {
           </div>
 
           {/* Mockup */}
-          <div className="flex-1 w-full relative">
-            {/* Red-orange nebula — TubeForge identity glow */}
-            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.12) 0%, rgba(249,115,22,0.06) 35%, transparent 70%)', filter: 'blur(80px)' }} />
+          <div className="group flex-1 w-full relative transition-all duration-500 hover:-translate-y-1">
+            {/* Red-orange nebula — TubeForge identity glow. Intensifies on hover. */}
+            <div
+              className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background: "radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.16) 0%, rgba(249,115,22,0.08) 35%, transparent 70%)",
+                filter: "blur(80px)",
+              }}
+            />
             <TubeForgeMockup />
+
+            {/* Floating "Stable" badge — top-right, glass, coherent with ClipForge/ReviewForge */}
+            <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 backdrop-blur-md">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
+              </span>
+              <span className="text-[11px] font-medium text-emerald-100 tracking-wide">Stable</span>
+            </div>
           </div>
         </motion.div>
       </div>

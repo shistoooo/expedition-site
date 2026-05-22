@@ -518,7 +518,7 @@ export default function ReviewForgeSection({ layout = "vertical" }: ReviewForgeS
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="space-y-3 mb-6"
+          className="space-y-4 mb-7"
         >
           {[
             { icon: Shield, title: "Vos vid\u00e9os restent sur votre machine", desc: "Tunnel s\u00e9curis\u00e9 direct, pas d\u2019upload cloud." },
@@ -546,17 +546,31 @@ export default function ReviewForgeSection({ layout = "vertical" }: ReviewForgeS
         </Link>
       </div>
 
-      {/* Mockup */}
-      <div className={`relative rounded-[20px] h-[480px] overflow-hidden ${horizontal ? "w-full lg:flex-1" : "w-full"}`}>
-        {/* Emerald-cyan nebula — ReviewForge identity glow */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.06) 0%, transparent 60%)', filter: 'blur(80px)' }} />
+      {/* Mockup — clear, no blur. Status indicated by floating badge top-right. */}
+      <div
+        className={`group relative rounded-[20px] h-[520px] md:h-[600px] overflow-hidden transition-all duration-500 hover:-translate-y-1 ${
+          horizontal ? "w-full lg:flex-[1.3]" : "w-full"
+        }`}
+      >
+        {/* Emerald-cyan nebula — ReviewForge identity glow. Intensifies on hover. */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.10) 0%, rgba(34,211,238,0.04) 50%, transparent 75%)",
+            filter: "blur(80px)",
+          }}
+        />
         <ReviewForgeMockup />
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
-        {/* Coming soon overlay */}
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/30 backdrop-blur-[1px] rounded-[20px]">
-          <div className="px-5 py-2.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 backdrop-blur-sm">
-            <span className="text-sm font-bold text-emerald-300 tracking-wide uppercase">Disponible prochainement</span>
-          </div>
+
+        {/* Floating "En développement" badge — top-right, glass, subtle but clear */}
+        <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 backdrop-blur-md">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
+          </span>
+          <span className="text-[11px] font-medium text-emerald-100 tracking-wide">En d&eacute;veloppement</span>
         </div>
       </div>
     </motion.div>

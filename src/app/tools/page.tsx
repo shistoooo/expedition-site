@@ -80,14 +80,14 @@ export default function ToolsShowcasePage() {
         <TubeForgeSection />
 
         {/* ClipForge — Vague 2 (pleine largeur) */}
-        <section className="pt-12 md:pt-16 pb-12 md:pb-16 relative bg-[#06051a]/80">
+        <section className="pt-20 md:pt-32 pb-16 md:pb-24 relative bg-[#06051a]/80">
           <div className="container-main">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, ease: easeOutExpo }}
-              className="text-center mb-10 md:mb-14"
+              className="text-center mb-12 md:mb-16"
             >
               <p className="text-xs font-mono uppercase tracking-widest text-indigo-300/70 mb-3 flex items-center justify-center gap-2">
                 <span className="w-3 h-px bg-indigo-300/40 inline-block" />
@@ -97,22 +97,24 @@ export default function ToolsShowcasePage() {
             </motion.div>
             <ToolsSection layout="horizontal" />
           </div>
-          <ToolDemoVideoSlot
-            videoId={CLIPFORGE_DEMO_VIDEO_ID || undefined}
-            toolName="ClipForge"
-            accent="indigo"
-          />
+          <div className="pt-12 md:pt-20">
+            <ToolDemoVideoSlot
+              videoId={CLIPFORGE_DEMO_VIDEO_ID || undefined}
+              toolName="ClipForge"
+              accent="indigo"
+            />
+          </div>
         </section>
 
         {/* ReviewForge — Vague 3 (pleine largeur) */}
-        <section className="pt-12 md:pt-16 pb-16 md:pb-20 relative">
+        <section className="pt-20 md:pt-32 pb-20 md:pb-28 relative">
           <div className="container-main">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, ease: easeOutExpo }}
-              className="text-center mb-10 md:mb-14"
+              className="text-center mb-12 md:mb-16"
             >
               <p className="text-xs font-mono uppercase tracking-widest text-emerald-300/70 mb-3 flex items-center justify-center gap-2">
                 <span className="w-3 h-px bg-emerald-300/40 inline-block" />
@@ -122,11 +124,13 @@ export default function ToolsShowcasePage() {
             </motion.div>
             <ReviewForgeSection layout="horizontal" />
           </div>
-          <ToolDemoVideoSlot
-            videoId={REVIEWFORGE_DEMO_VIDEO_ID || undefined}
-            toolName="ReviewForge"
-            accent="emerald"
-          />
+          <div className="pt-12 md:pt-20">
+            <ToolDemoVideoSlot
+              videoId={REVIEWFORGE_DEMO_VIDEO_ID || undefined}
+              toolName="ReviewForge"
+              accent="emerald"
+            />
+          </div>
         </section>
 
         {/* Pricing */}
