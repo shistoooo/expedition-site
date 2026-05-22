@@ -276,7 +276,7 @@ export default function WelcomeOverlay() {
                     onClick={handleSkip}
                     className="text-sm md:text-base text-white/50 hover:text-white/90 underline underline-offset-4 decoration-white/25 hover:decoration-white/70 transition-colors"
                   >
-                    Pas s&ucirc;r &mdash; je continue sur la home
+                    Pas s&ucirc;r &mdash; je pr&eacute;f&egrave;re explorer
                   </button>
                 </motion.div>
               </div>
