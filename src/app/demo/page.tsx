@@ -37,7 +37,7 @@ export default function DemoPage() {
                 </span>
               </h1>
               <p className="text-base md:text-lg text-white/55 max-w-2xl mx-auto leading-relaxed">
-                La premi&egrave;re minute, tu vois le plugin tourner dans Premiere et DaVinci. La suite&nbsp;: la recherche YouTube int&eacute;gr&eacute;e, le multi-t&eacute;l&eacute;chargement, la d&eacute;coupe avant t&eacute;l&eacute;chargement, l&apos;extraction de frames, l&apos;import de script. Tout ce que TubeForge sait faire en 7&nbsp;minutes.
+                Sept minutes pour voir TubeForge tourner dans Premiere et DaVinci pour de vrai. Du lien YouTube coll&eacute; jusqu&apos;&agrave; la timeline, en passant par la d&eacute;coupe avant t&eacute;l&eacute;chargement. L&apos;outil au boulot, pas un teaser.
               </p>
             </div>
 
