@@ -81,25 +81,36 @@ export default function TubeForgeSection() {
               ))}
             </motion.ul>
 
-            <Link
-              href="/pricing"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(239,68,68,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(239,68,68,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
-            >
-              Commencer maintenant <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
-            </Link>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <Link
+                href="/pricing"
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(239,68,68,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(239,68,68,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+              >
+                Commencer maintenant <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
+              </Link>
+              <Link
+                href="/demo"
+                className="group inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-white/5 text-white/85 font-semibold text-base transition-all duration-200 border border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20"
+              >
+                Voir la d&eacute;mo
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
           </div>
 
-          {/* Mockup */}
-          <div className="group flex-1 w-full relative transition-all duration-500 hover:-translate-y-1">
+          {/* Mockup — alignée sur ClipForge/ReviewForge : ratio lg:flex-[1.3], hauteur 520/600 */}
+          <div className="group relative w-full lg:flex-[1.3] h-[520px] md:h-[600px] flex items-center justify-center overflow-hidden transition-all duration-500 hover:-translate-y-1">
             {/* Red-orange nebula — TubeForge identity glow. Intensifies on hover. */}
             <div
-              className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+              className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
               style={{
                 background: "radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.16) 0%, rgba(249,115,22,0.08) 35%, transparent 70%)",
                 filter: "blur(80px)",
               }}
             />
-            <TubeForgeMockup />
+            <div className="relative w-full">
+              <TubeForgeMockup />
+            </div>
 
             {/* Floating "Stable" badge — top-right, glass, coherent with ClipForge/ReviewForge */}
             <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 backdrop-blur-md">
