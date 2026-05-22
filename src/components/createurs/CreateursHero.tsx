@@ -45,7 +45,7 @@ export default function CreateursHero() {
 
         <div className="mb-8 animate-hero-in" style={{ animationDelay: "0.1s" }}>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-[1.1] tracking-[-0.02em] text-white/90">
-            Ton workflow YouTube,
+            Tes montages YouTube,
           </h1>
           <span
             className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.15] text-transparent bg-clip-text animate-text-shimmer"
@@ -56,7 +56,7 @@ export default function CreateursHero() {
               fontStyle: "oblique 10deg",
             }}
           >
-            enfin fluide dans Premiere
+            sans prise de t&ecirc;te. Dans Premiere
             <br className="hidden lg:block" />
             {" "}&amp; DaVinci Resolve.
           </span>
@@ -66,9 +66,9 @@ export default function CreateursHero() {
           className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto animate-hero-in"
           style={{ animationDelay: "0.2s" }}
         >
-          Tu montes toi-m&ecirc;me tes vid&eacute;os. Tu te perds entre les r&eacute;f&eacute;rences &agrave; t&eacute;l&eacute;charger, les fichiers &agrave; ranger, les onglets YouTube qui s&apos;accumulent.{" "}
+          Tu montes toi-m&ecirc;me tes vid&eacute;os. Tu te perds entre les liens &agrave; t&eacute;l&eacute;charger, les fichiers &agrave; ranger, les onglets YouTube qui s&apos;accumulent.{" "}
           <span className="text-white/80">
-            TubeForge unifie tout dans ton outil de montage.
+            TubeForge fait tout &ccedil;a pour toi, directement dans ton logiciel de montage.
           </span>
         </p>
 
@@ -76,7 +76,7 @@ export default function CreateursHero() {
           className="text-sm md:text-base text-white/40 italic mb-10 max-w-2xl mx-auto animate-hero-in"
           style={{ animationDelay: "0.25s" }}
         >
-          Plus de stress logistique. Plus de temps pour ce qui compte vraiment&nbsp;: ton contenu.
+          Moins de prise de t&ecirc;te. Plus de temps pour ce qui compte&nbsp;: ton contenu.
         </p>
 
         <div
