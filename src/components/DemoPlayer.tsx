@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const VIDEO_ID = "yqOTp7pSUlQ";
+const DEFAULT_VIDEO_ID = "yqOTp7pSUlQ";
 const PLAYBACK_RATE = 1.5;
 
 type YTPlayer = {
@@ -54,12 +54,14 @@ function loadYouTubeAPI(): Promise<void> {
 }
 
 type DemoPlayerProps = {
+  /** YouTube video ID to embed. Defaults to the main TubeForge demo. */
+  videoId?: string;
   /** Force the player to autoplay as soon as the YouTube API is ready (muted) */
   autoplay?: boolean;
   className?: string;
 };
 
-export default function DemoPlayer({ autoplay = false, className = "" }: DemoPlayerProps) {
+export default function DemoPlayer({ videoId = DEFAULT_VIDEO_ID, autoplay = false, className = "" }: DemoPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
 
@@ -109,7 +111,7 @@ export default function DemoPlayer({ autoplay = false, className = "" }: DemoPla
   return (
     <iframe
       ref={iframeRef}
-      src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?rel=0&modestbranding=1&enablejsapi=1${autoplayParam}`}
+      src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&enablejsapi=1${autoplayParam}`}
       title="TubeForge — Démo du plugin Premiere Pro & DaVinci Resolve"
       loading="lazy"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -8,8 +8,14 @@ import PageBackground from "@/components/PageBackground";
 import TubeForgeSection from "@/components/TubeForgeSection";
 import ToolsSection from "@/components/ToolsSection";
 import ReviewForgeSection from "@/components/ReviewForgeSection";
+import ToolDemoVideoSlot from "@/components/shared/ToolDemoVideoSlot";
 import HomePricing from "@/components/HomePricing";
 import Footer from "@/components/Footer";
+
+// Video IDs YouTube — remplace les chaines vides quand les videos sont tournees.
+// const TUBEFORGE_DEMO_VIDEO_ID = "yqOTp7pSUlQ"; // deja sur /demo, pas redonde ici
+const CLIPFORGE_DEMO_VIDEO_ID = ""; // ← Mettre l'ID YouTube de la demo ClipForge ici
+const REVIEWFORGE_DEMO_VIDEO_ID = ""; // ← Mettre l'ID YouTube de la demo ReviewForge ici
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -91,6 +97,11 @@ export default function ToolsShowcasePage() {
             </motion.div>
             <ToolsSection />
           </div>
+          <ToolDemoVideoSlot
+            videoId={CLIPFORGE_DEMO_VIDEO_ID || undefined}
+            toolName="ClipForge"
+            accent="indigo"
+          />
         </section>
 
         {/* ReviewForge — Vague 3 (pleine largeur) */}
@@ -111,6 +122,11 @@ export default function ToolsShowcasePage() {
             </motion.div>
             <ReviewForgeSection />
           </div>
+          <ToolDemoVideoSlot
+            videoId={REVIEWFORGE_DEMO_VIDEO_ID || undefined}
+            toolName="ReviewForge"
+            accent="emerald"
+          />
         </section>
 
         {/* Pricing */}
