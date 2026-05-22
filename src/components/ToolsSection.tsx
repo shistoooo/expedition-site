@@ -93,7 +93,7 @@ function ClipForgeMockup() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-indigo-500/10 select-none h-full"
+      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-indigo-500/10 select-none"
       style={{ background: '#0a0a0f', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Window chrome */}
@@ -304,32 +304,22 @@ export default function ToolsSection({ layout = "vertical" }: ToolsSectionProps 
         </a>
       </div>
 
-      {/* Mockup — clear, no blur. Status indicated by floating badge top-right. */}
+      {/* Mockup — taille naturelle, pas de container fixe ni badge floating (statut dans l'eyebrow "Vague 2 — Prochainement") */}
       <div
-        className={`group relative rounded-[20px] h-[520px] md:h-[600px] overflow-hidden transition-all duration-500 hover:-translate-y-1 ${
+        className={`group relative transition-all duration-500 hover:-translate-y-1 ${
           horizontal ? "w-full lg:flex-[1.3]" : "w-full"
         }`}
       >
         {/* Indigo-purple nebula — ClipForge identity. Intensifies on hover. */}
         <div
-          className="absolute -inset-5 pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+          className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.16) 0%, rgba(139,92,246,0.08) 40%, transparent 70%)",
+              "radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.16) 0%, rgba(139,92,246,0.08) 35%, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
         <ClipForgeMockup />
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
-
-        {/* Floating "En développement" badge — top-right, glass, subtle but clear */}
-        <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-400/30 backdrop-blur-md">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-300" />
-          </span>
-          <span className="text-[11px] font-medium text-indigo-100 tracking-wide">En d&eacute;veloppement</span>
-        </div>
       </div>
     </motion.div>
   );

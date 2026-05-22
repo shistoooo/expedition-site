@@ -14,7 +14,7 @@ export default function TubeForgeMockup() {
   const [trimStart, setTrimStart] = useState(12);
   const [trimEnd, setTrimEnd] = useState(47);
   const [dragging, setDragging] = useState<"start" | "end" | null>(null);
-  const [trayOpen, setTrayOpen] = useState(false);
+  const [trayOpen, setTrayOpen] = useState(true);
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!dragging) return;
@@ -66,7 +66,7 @@ export default function TubeForgeMockup() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-purple-500/10 flex flex-col select-none h-full"
+      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-purple-500/10 flex flex-col select-none"
       style={{ background: '#0f0e17', border: '1px solid rgba(255,255,255,0.05)' }}
     >
       {/* Window chrome */}

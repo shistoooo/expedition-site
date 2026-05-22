@@ -98,26 +98,17 @@ export default function TubeForgeSection() {
             </div>
           </div>
 
-          {/* Mockup — pattern identique à ClipForge/ReviewForge : container fixe rounded-[20px], mockup h-full, nebula -inset-5, gradient fade en bas */}
-          <div className="group relative w-full lg:flex-[1.3] rounded-[20px] h-[520px] md:h-[600px] overflow-hidden transition-all duration-500 hover:-translate-y-1">
+          {/* Mockup — taille naturelle, pas de container fixe ni badge floating (le statut est déjà dans l'eyebrow "Vague 1 — Stable") */}
+          <div className="group relative w-full lg:flex-[1.3] transition-all duration-500 hover:-translate-y-1">
             {/* Red-orange nebula — TubeForge identity glow. Intensifies on hover. */}
             <div
-              className="absolute -inset-5 pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+              className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
               style={{
-                background: "radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.16) 0%, rgba(249,115,22,0.08) 40%, transparent 70%)",
+                background: "radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.16) 0%, rgba(249,115,22,0.08) 35%, transparent 70%)",
                 filter: "blur(80px)",
               }}
             />
             <TubeForgeMockup />
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
-
-            {/* Floating "Stable" badge — top-right, glass, coherent with ClipForge/ReviewForge */}
-            <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 backdrop-blur-md">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
-              </span>
-              <span className="text-[11px] font-medium text-emerald-100 tracking-wide">Stable</span>
-            </div>
           </div>
         </motion.div>
       </div>

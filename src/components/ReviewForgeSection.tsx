@@ -136,7 +136,7 @@ function ReviewForgeMockup() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-emerald-500/10 select-none h-full"
+      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-emerald-500/10 select-none"
       style={{ background: '#0c0c12', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Side toggle */}
@@ -546,32 +546,22 @@ export default function ReviewForgeSection({ layout = "vertical" }: ReviewForgeS
         </Link>
       </div>
 
-      {/* Mockup — clear, no blur. Status indicated by floating badge top-right. */}
+      {/* Mockup — taille naturelle, pas de container fixe ni badge floating (statut dans l'eyebrow "Vague 3 — En développement") */}
       <div
-        className={`group relative rounded-[20px] h-[520px] md:h-[600px] overflow-hidden transition-all duration-500 hover:-translate-y-1 ${
+        className={`group relative transition-all duration-500 hover:-translate-y-1 ${
           horizontal ? "w-full lg:flex-[1.3]" : "w-full"
         }`}
       >
         {/* Emerald-cyan nebula — ReviewForge identity glow. Intensifies on hover. */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+          className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.10) 0%, rgba(34,211,238,0.04) 50%, transparent 75%)",
+              "radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.12) 0%, rgba(34,211,238,0.05) 40%, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
         <ReviewForgeMockup />
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
-
-        {/* Floating "En développement" badge — top-right, glass, subtle but clear */}
-        <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 backdrop-blur-md">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
-          </span>
-          <span className="text-[11px] font-medium text-emerald-100 tracking-wide">En d&eacute;veloppement</span>
-        </div>
       </div>
     </motion.div>
   );
