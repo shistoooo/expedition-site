@@ -34,9 +34,9 @@ export default function MonteursFinalCTA() {
             className="text-center"
           >
             <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] mb-4">
-              Pr&ecirc;t &agrave; rendre tes heures{" "}
+              Pr&ecirc;t &agrave; monter plus,{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-cyan-300">
-                facturables&nbsp;?
+                sans bosser plus&nbsp;?
               </span>
             </h2>
             <p className="text-base md:text-lg text-white/55 mb-10 leading-relaxed">
