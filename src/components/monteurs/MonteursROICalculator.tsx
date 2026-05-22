@@ -50,16 +50,16 @@ export default function MonteursROICalculator() {
         >
           <p className="text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-3 flex items-center justify-center gap-2">
             <Calculator className="w-3 h-3" />
-            Calcule ce que tu y gagnes
+            Calcule combien tu gagnes
           </p>
           <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] leading-[1.05]">
             Le temps gagn&eacute;,{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
-              tu le factures.
+              c&apos;est de l&apos;argent.
             </span>
           </h2>
           <p className="text-base md:text-lg text-white/55 mt-4 max-w-2xl mx-auto leading-relaxed">
-            Bouge les curseurs avec ta r&eacute;alit&eacute;. On part du principe que TubeForge te fait gagner environ <strong className="text-white/85">45 minutes par projet</strong>.
+            Bouge les curseurs en fonction de ta r&eacute;alit&eacute;. On estime que TubeForge te fait gagner environ <strong className="text-white/85">45 minutes par montage</strong>.
           </p>
         </motion.div>
 
@@ -86,14 +86,14 @@ export default function MonteursROICalculator() {
               <div>
                 <div className="flex items-baseline justify-between mb-2">
                   <label htmlFor="hourlyRate" className="text-sm font-semibold text-white/85">
-                    Ton tarif horaire
+                    Ce que tu factures de l&apos;heure
                   </label>
                   <span className="text-2xl font-black text-purple-300 tabular-nums">
                     {hourlyRate}€
                   </span>
                 </div>
                 <p className="text-xs text-white/45 mb-3 leading-relaxed">
-                  Combien tu factures de l&apos;heure &agrave; tes clients
+                  Le prix que tu demandes &agrave; ton client pour une heure de montage
                 </p>
                 <input
                   id="hourlyRate"
@@ -114,14 +114,14 @@ export default function MonteursROICalculator() {
               <div>
                 <div className="flex items-baseline justify-between mb-2">
                   <label htmlFor="projects" className="text-sm font-semibold text-white/85">
-                    Projets vid&eacute;o par mois
+                    Montages que tu livres par mois
                   </label>
                   <span className="text-2xl font-black text-purple-300 tabular-nums">
                     {projectsPerMonth}
                   </span>
                 </div>
                 <p className="text-xs text-white/45 mb-3 leading-relaxed">
-                  Le nombre de montages que tu livres chaque mois
+                  Le nombre de vid&eacute;os que tu rends &agrave; tes clients chaque mois
                 </p>
                 <input
                   id="projects"
@@ -146,7 +146,7 @@ export default function MonteursROICalculator() {
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
                     <Clock className="w-3 h-3" />
-                    Temps gagn&eacute;
+                    Temps lib&eacute;r&eacute;
                   </div>
                   <p className="text-2xl md:text-3xl font-black text-white tabular-nums">
                     {formatHoursMinutes(totalHoursSaved)}
@@ -156,7 +156,7 @@ export default function MonteursROICalculator() {
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
                     <Euro className="w-3 h-3" />
-                    &Eacute;conomis&eacute;
+                    Tu peux gagner
                   </div>
                   <p className="text-3xl md:text-4xl font-black text-white tabular-nums">
                     {formatEuro(monthlySavings)}
@@ -166,18 +166,17 @@ export default function MonteursROICalculator() {
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
                     <TrendingUp className="w-3 h-3" />
-                    Retour vs co&ucirc;t
+                    Soit
                   </div>
                   <p className="text-2xl md:text-3xl font-black text-white tabular-nums">
-                    &times;{roiMultiplier}
+                    {roiMultiplier}&times; le prix
                   </p>
                 </div>
               </div>
 
               <div className="mt-6 pt-5 border-t border-white/[0.08] text-center md:text-left">
                 <p className="text-sm md:text-base text-white/70 leading-relaxed">
-                  TubeForge co&ucirc;te <strong className="text-white">8,03€/mois</strong>. Pour chaque euro investi, tu r&eacute;cup&egrave;res{" "}
-                  <strong className="text-purple-200">{roiMultiplier}€</strong> de temps facturable.
+                  TubeForge te co&ucirc;te <strong className="text-white">8,03€/mois</strong>. Avec le temps que tu gagnes, tu peux faire <strong className="text-purple-200">{formatEuro(monthlySavings)}/mois</strong> en plus en prenant un montage suppl&eacute;mentaire.
                 </p>
               </div>
             </div>
@@ -216,14 +215,14 @@ export default function MonteursROICalculator() {
                     <div className="space-y-5">
                       <div>
                         <p className="text-sm md:text-base text-white/75 leading-relaxed mb-3">
-                          <strong className="text-white">1.</strong> Sur chaque vid&eacute;o en ligne que tu g&egrave;res aujourd&apos;hui sans TubeForge, tu perds environ <strong className="text-white">2 minutes</strong> :
+                          <strong className="text-white">1.</strong> Chaque vid&eacute;o que tu vas chercher en ligne te prend <strong className="text-white">environ 2 minutes</strong>. C&apos;est cette galère que TubeForge t&apos;enl&egrave;ve&nbsp;:
                         </p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 ml-5">
                           {[
-                            { icon: Link2, label: "Ouvrir le lien (YouTube, TikTok, Twitch...)", time: "30 s" },
-                            { icon: Download, label: "Télécharger via 4K Video Downloader ou équivalent", time: "1 min" },
-                            { icon: FolderInput, label: "Ranger le fichier dans le projet de montage", time: "20 s" },
-                            { icon: Trash2, label: "Supprimer les rushs inutiles après livraison", time: "10 s" },
+                            { icon: Link2, label: "Ouvrir le lien YouTube, TikTok ou autre", time: "30 s" },
+                            { icon: Download, label: "Le télécharger avec une autre app", time: "1 min" },
+                            { icon: FolderInput, label: "Ranger le fichier dans le bon dossier", time: "20 s" },
+                            { icon: Trash2, label: "Supprimer les fichiers inutiles après la livraison", time: "10 s" },
                           ].map((step, i) => (
                             <div
                               key={i}
@@ -240,11 +239,11 @@ export default function MonteursROICalculator() {
                       </div>
 
                       <p className="text-sm md:text-base text-white/75 leading-relaxed">
-                        <strong className="text-white">2.</strong> Sur un projet typique avec <strong className="text-white">15 &agrave; 20 r&eacute;f&eacute;rences vid&eacute;o</strong>, &ccedil;a fait <strong className="text-white">~45 min</strong> de gestion qui disparait avec TubeForge.
+                        <strong className="text-white">2.</strong> Sur un montage normal, tu vas chercher <strong className="text-white">15 &agrave; 20 vid&eacute;os</strong>. &Ccedil;a fait <strong className="text-white">environ 45 minutes</strong> de perdues juste pour t&eacute;l&eacute;charger.
                       </p>
 
                       <p className="text-sm md:text-base text-white/75 leading-relaxed">
-                        <strong className="text-white">3.</strong> Sur ton volume (<strong className="text-white">{projectsPerMonth}</strong> projet{projectsPerMonth > 1 ? "s" : ""}/mois &times; 45 min) = <strong className="text-white">{formatHoursMinutes(totalHoursSaved)}</strong> r&eacute;cup&eacute;r&eacute;{totalHoursSaved > 1 ? "es" : "e"}. &Agrave; <strong className="text-white">{hourlyRate}€/h</strong>, &ccedil;a fait <strong className="text-white">{formatEuro(monthlySavings)}</strong> que tu peux re-facturer.
+                        <strong className="text-white">3.</strong> Avec <strong className="text-white">{projectsPerMonth}</strong> montage{projectsPerMonth > 1 ? "s" : ""} par mois, &ccedil;a fait <strong className="text-white">{formatHoursMinutes(totalHoursSaved)}</strong> de libre. Tu peux les utiliser pour prendre un montage en plus &agrave; <strong className="text-white">{hourlyRate}€/h</strong> &mdash; soit <strong className="text-white">{formatEuro(monthlySavings)}</strong> de plus dans ta poche chaque mois.
                       </p>
                     </div>
                   </div>
