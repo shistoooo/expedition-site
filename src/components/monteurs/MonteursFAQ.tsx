@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: "C'est quoi les futurs outils inclus dans l'abonnement ?",
-    a: "Au-delà de TubeForge, la suite Expédition couvre : ClipForge (clips auto IA pour Shorts/TikTok depuis tes rushs), ReviewForge (espace de retour client sécurisé pour les allers-retours de validation), et d'autres outils en cours de conception sur la base des retours communauté. Tout est inclus dès maintenant dans ton abonnement Pionnier, sans surcoût au lancement.",
+    a: "Au-delà de TubeForge, la suite Expédition couvre : ClipForge (clips auto IA pour Shorts/TikTok depuis tes rushs) et ReviewForge (espace de retour client sécurisé pour les allers-retours de validation) — les deux en cours de développement. D'autres outils suivront sur la base des retours communauté. Tout est inclus dès maintenant dans ton abonnement Pionnier, sans surcoût au lancement.",
   },
   {
     q: "Je peux essayer avant de payer ? Annulation facile ?",

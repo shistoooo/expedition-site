@@ -74,10 +74,10 @@ const tools: Array<{
     name: "ReviewForge",
     description: "Espace de retour client sécurisé",
     icon: MessageSquare,
-    iconColor: "text-violet-300",
-    iconBg: "bg-violet-500/10",
-    iconBorder: "border-violet-500/25",
-    status: "soon",
+    iconColor: "text-emerald-300",
+    iconBg: "bg-emerald-500/10",
+    iconBorder: "border-emerald-500/25",
+    status: "dev",
   },
 ];
 

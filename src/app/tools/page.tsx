@@ -116,7 +116,7 @@ export default function ToolsShowcasePage() {
             >
               <p className="text-xs font-mono uppercase tracking-widest text-emerald-300/70 mb-3 flex items-center justify-center gap-2">
                 <span className="w-3 h-px bg-emerald-300/40 inline-block" />
-                Vague 3 &mdash; En conception
+                Vague 3 &mdash; En d&eacute;veloppement
                 <span className="w-3 h-px bg-emerald-300/40 inline-block" />
               </p>
             </motion.div>
