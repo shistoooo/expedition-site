@@ -72,9 +72,9 @@ export default function MonteursHero() {
           className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto animate-hero-in"
           style={{ animationDelay: "0.2s" }}
         >
-          Tu montes des vid&eacute;os YouTube pour tes clients&nbsp;? Arr&ecirc;te de jongler entre 20&nbsp;onglets, 4K&nbsp;Video Downloader, et des dossiers de rush.{" "}
+          Tu montes des vid&eacute;os YouTube pour tes clients&nbsp;? Arr&ecirc;te de jongler entre 20&nbsp;onglets, 4K&nbsp;Video Downloader et des dossiers de rush.{" "}
           <span className="text-white/80">
-            TubeForge int&egrave;gre tout ton workflow r&eacute;f&eacute;rences directement dans ta timeline.
+            TubeForge t&eacute;l&eacute;charge et range tes vid&eacute;os de r&eacute;f&eacute;rence directement dans ta timeline.
           </span>
         </p>
 

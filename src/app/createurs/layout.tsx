@@ -8,12 +8,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://expedition.so";
 export const metadata: Metadata = {
   title: "Le plugin Premiere & DaVinci pour créateurs YouTube | TubeForge",
   description:
-    "Ton workflow YouTube enfin fluide dans Premiere Pro et DaVinci Resolve. Plus de stress logistique, plus de temps pour ton contenu.",
+    "Tes montages YouTube enfin sans prise de tête, dans Premiere Pro et DaVinci Resolve. Moins de galère, plus de temps pour ton contenu.",
   alternates: { canonical: `${siteUrl}/createurs` },
   openGraph: {
     title: "Le plugin Premiere & DaVinci pour créateurs YouTube",
     description:
-      "Ton workflow YouTube enfin fluide. TubeForge unifie téléchargements, recherche, import dans ton outil de montage.",
+      "Tes montages YouTube enfin sans prise de tête. TubeForge gère téléchargements, recherche et import directement dans ton logiciel de montage.",
     url: `${siteUrl}/createurs`,
     siteName: "Expédition",
     locale: "fr_FR",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Le plugin Premiere & DaVinci pour créateurs YouTube",
-    description: "Ton workflow YouTube enfin fluide. Plus de stress logistique.",
+    description: "Tes montages YouTube enfin sans prise de tête. Moins de galère.",
     images: ["/og-image.jpg"],
   },
 };

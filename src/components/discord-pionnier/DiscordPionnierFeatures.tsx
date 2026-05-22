@@ -59,7 +59,7 @@ export default function DiscordPionnierFeatures() {
             Ce que TubeForge fait pour vous
           </p>
           <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] max-w-3xl mx-auto leading-[1.05]">
-            Tout le workflow YouTube.{" "}
+            Tout ce qu&apos;il te faut pour tes vid&eacute;os YouTube.{" "}
             <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
               Dans une seule fenêtre.

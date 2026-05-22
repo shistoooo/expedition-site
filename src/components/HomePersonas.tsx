@@ -41,7 +41,7 @@ const personas: Persona[] = [
     tag: "Tu montes ton propre contenu",
     title: "Pour les créateurs YouTube",
     description:
-      "Tu montes toi-même tes vidéos sur Premiere ou DaVinci. TubeForge fluidifie ton workflow et te permet de te concentrer sur ce qui compte vraiment : ton contenu.",
+      "Tu montes toi-même tes vidéos sur Premiere ou DaVinci. TubeForge te simplifie la vie et te permet de te concentrer sur ce qui compte vraiment : ton contenu.",
     href: "/createurs",
     cta: "Voir la version créateur",
     accent: "cyan",

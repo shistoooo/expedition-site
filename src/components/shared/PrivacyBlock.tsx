@@ -78,9 +78,9 @@ export default function PrivacyBlock({ accent = "purple" }: PrivacyBlockProps) {
                   Confidentialit&eacute; &amp; libert&eacute;
                 </p>
                 <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] leading-tight mb-3">
-                  Ton workflow reste{" "}
+                  Tes vid&eacute;os restent{" "}
                   <span className={`text-transparent bg-clip-text bg-gradient-to-r ${cls.gradient}`}>
-                    le tien.
+                    chez toi.
                   </span>
                 </h2>
                 <p className="text-base md:text-lg text-white/55 leading-relaxed">

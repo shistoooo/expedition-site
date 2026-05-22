@@ -56,7 +56,7 @@ export default function MonteursFeatures() {
           className="text-center mb-12 md:mb-16"
         >
           <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-4">
-            Ce que TubeForge fait pour ton workflow
+            Ce que TubeForge fait pour toi quand tu montes
           </p>
           <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] max-w-3xl mx-auto leading-[1.05]">
             Chaque heure gagn&eacute;e est{" "}

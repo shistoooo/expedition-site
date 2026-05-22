@@ -8,8 +8,8 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const faqs = [
   {
-    q: "Concrètement, qu'est-ce que ça change pour mon workflow ?",
-    a: "Tu arrêtes de jongler entre YouTube, ton navigateur, ton Finder et ton outil de montage. TubeForge intègre tes téléchargements, ta recherche et ton import de refs directement dans Premiere ou DaVinci. Résultat : tu restes dans ton focus créatif au lieu d'éparpiller ton attention.",
+    q: "Concrètement, qu'est-ce que ça change quand je monte ?",
+    a: "Tu arrêtes de jongler entre YouTube, ton navigateur, ton Finder et ton logiciel de montage. TubeForge gère tes téléchargements, ta recherche et l'import de tes vidéos directement dans Premiere ou DaVinci. Résultat : tu restes concentré sur ta vidéo au lieu d'éparpiller ton attention.",
   },
   {
     q: "Compatible avec quelle version de Premiere ou DaVinci ?",
@@ -33,11 +33,11 @@ const faqs = [
   },
   {
     q: "C'est quoi les futurs outils inclus dans l'abonnement ?",
-    a: "Au-delà de TubeForge, la suite Expédition couvre : ClipForge (clips auto IA pour Shorts/TikTok depuis tes rushs), ReviewForge (espace de retour pour partager ta vidéo avec un cercle restreint avant publi), et d'autres outils pensés autour du workflow YouTube. Tout est inclus dans ton abonnement, ton prix ne bouge pas quand le catalogue grossit.",
+    a: "Au-delà de TubeForge, la suite Expédition couvre : ClipForge (clips auto IA pour Shorts/TikTok depuis tes rushs), ReviewForge (espace de retour pour partager ta vidéo avec un cercle restreint avant publi), et d'autres outils pensés pour les créateurs YouTube. Tout est inclus dans ton abonnement, ton prix ne bouge pas quand le catalogue grossit.",
   },
   {
     q: "Je peux essayer avant de payer ? Annulation facile ?",
-    a: "Annulation 1 clic, sans frais, depuis ton espace compte. Si TubeForge ne fluidifie pas concrètement ton workflow sur 2-3 vidéos, tu annules. Pas de questions, pas de friction.",
+    a: "Annulation 1 clic, sans frais, depuis ton espace compte. Si TubeForge ne te simplifie pas concrètement la vie sur 2-3 vidéos, tu annules. Pas de questions, pas de complications.",
   },
 ];
 
