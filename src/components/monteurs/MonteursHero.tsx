@@ -3,40 +3,17 @@
 import { useEffect } from "react";
 import { ArrowRight, Bell } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { SALES_OPEN } from "@/lib/salesConfig";
 import { useMonteursUtm } from "./useMonteursUtm";
-
-type Tool = "premiere" | "davinci" | "both";
-
-function parseTool(raw: string | null): Tool {
-  if (raw === "premiere") return "premiere";
-  if (raw === "davinci") return "davinci";
-  return "both";
-}
-
-function toolLabel(tool: Tool): string {
-  switch (tool) {
-    case "premiere":
-      return "Premiere Pro";
-    case "davinci":
-      return "DaVinci Resolve";
-    case "both":
-      return "Premiere & DaVinci";
-  }
-}
+import CompatBadge from "@/components/shared/CompatBadge";
 
 export default function MonteursHero() {
   const { getDiscordOAuthUrl, fireCtaEvent } = useMonteursUtm();
-  const searchParams = useSearchParams();
-  const tool = parseTool(searchParams.get("tool"));
-  const label = toolLabel(tool);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.clarity?.("set", "page", "monteurs");
-    window.clarity?.("set", "tool", tool);
-  }, [tool]);
+  }, []);
 
   const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
   const ctaLabel = SALES_OPEN ? "Devenir Pionnier — 8,03€/mois" : "Être prévenu au lancement";
@@ -44,7 +21,7 @@ export default function MonteursHero() {
   return (
     <section
       id="monteurs-hero"
-      className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-hidden"
+      className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-x-hidden"
     >
       {/* Purple nebula ambient — monteur identity glow */}
       <div
@@ -64,9 +41,9 @@ export default function MonteursHero() {
           <span>Pour les monteurs freelance YouTube</span>
         </div>
 
-        <div className="mb-8 animate-hero-in" style={{ animationDelay: "0.1s" }}>
+        <div className="mb-6 animate-hero-in" style={{ animationDelay: "0.1s" }}>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-[1.1] tracking-[-0.02em] text-white/90">
-            Le plugin {label}
+            Le plugin Premiere &amp; DaVinci
           </h1>
           <span
             className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.15] text-transparent bg-clip-text animate-text-shimmer"
@@ -83,13 +60,18 @@ export default function MonteursHero() {
           </span>
         </div>
 
+        {/* Bandeau compatibilité — Premiere & DaVinci visibles d'emblée */}
+        <div className="mb-6 animate-hero-in" style={{ animationDelay: "0.15s" }}>
+          <CompatBadge />
+        </div>
+
         <p
           className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto animate-hero-in"
           style={{ animationDelay: "0.2s" }}
         >
           Tu montes des vid&eacute;os YouTube pour tes clients&nbsp;? Arr&ecirc;te de jongler entre 20&nbsp;onglets, 4K&nbsp;Video Downloader, et des dossiers de rush.{" "}
           <span className="text-white/80">
-            TubeForge int&egrave;gre tout ton workflow r&eacute;f&eacute;rences directement dans {label}.
+            TubeForge int&egrave;gre tout ton workflow r&eacute;f&eacute;rences directement dans ta timeline.
           </span>
         </p>
 

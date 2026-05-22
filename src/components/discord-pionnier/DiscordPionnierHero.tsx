@@ -22,7 +22,7 @@ export default function DiscordPionnierHero() {
   return (
     <section
       id="discord-pionnier-hero"
-      className="min-h-[88vh] md:min-h-[92vh] pt-32 md:pt-44 pb-20 md:pb-24 relative overflow-hidden flex flex-col items-center justify-center"
+      className="min-h-[88vh] md:min-h-[92vh] pt-32 md:pt-44 pb-20 md:pb-24 relative overflow-x-hidden flex flex-col items-center justify-center"
     >
       {/* Nebula ambient — violet core fading to transparent, anchored behind the H1 */}
       <div

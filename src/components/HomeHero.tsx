@@ -6,7 +6,7 @@ import { SALES_OPEN } from "@/lib/salesConfig";
 
 export default function HomeHero() {
   return (
-    <section className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-hidden">
+    <section className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-x-hidden">
       {/* Nebula ambient — violet core fading to transparent, anchored behind the h1 */}
       <div
         className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] pointer-events-none"

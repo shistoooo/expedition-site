@@ -20,7 +20,7 @@ export default function CreateursHero() {
   return (
     <section
       id="createurs-hero"
-      className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-hidden"
+      className="pt-28 pb-4 md:pt-36 md:pb-6 relative overflow-x-hidden"
     >
       {/* Cyan nebula ambient — createur identity glow */}
       <div

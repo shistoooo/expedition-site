@@ -222,7 +222,7 @@ export default function MonteursROICalculator() {
                           {[
                             { icon: Link2, label: "Ouvrir le lien (YouTube, TikTok, Twitch...)", time: "30 s" },
                             { icon: Download, label: "Télécharger via 4K Video Downloader ou équivalent", time: "1 min" },
-                            { icon: FolderInput, label: "Ranger le fichier dans le projet Premiere", time: "20 s" },
+                            { icon: FolderInput, label: "Ranger le fichier dans le projet de montage", time: "20 s" },
                             { icon: Trash2, label: "Supprimer les rushs inutiles après livraison", time: "10 s" },
                           ].map((step, i) => (
                             <div
