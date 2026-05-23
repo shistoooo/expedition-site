@@ -1,8 +1,7 @@
 /**
  * YouTubeurs qui utilisent (et ont autorisé) la suite Expédition.
- * Source unique partagée par /discord-pionnier (DiscordPionnierTestimonials) et la homepage
- * (HomeYoutuberShowcase). Pour retirer ou ajouter quelqu'un, modifie ici une
- * seule fois et les deux pages se mettent à jour.
+ * Source unique partagée par la homepage (HomeYoutuberShowcase) et les landings
+ * personas. Pour retirer ou ajouter quelqu'un, modifie ici une seule fois.
  *
  * ⚠️ Avant d'ajouter une entrée : vérifier que la personne a explicitement
  * donné son accord pour l'usage de son avatar comme social proof.

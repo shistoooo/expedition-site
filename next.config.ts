@@ -50,9 +50,16 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // /pionnier et /discord-pionnier (page supprimée — fusionnée avec /pricing
+      // après audit copy-sales-expert : 95% du contenu était dupliqué)
       {
         source: "/pionnier",
-        destination: "/discord-pionnier",
+        destination: "/pricing",
+        permanent: true,
+      },
+      {
+        source: "/discord-pionnier",
+        destination: "/pricing",
         permanent: true,
       },
     ];

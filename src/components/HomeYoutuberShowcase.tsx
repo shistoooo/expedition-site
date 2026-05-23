@@ -11,8 +11,8 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
  * TestimonialsMarquee carousel — adds a tangible "you've heard of these
  * channels" social proof layer without disrupting the existing rotating quote.
  *
- * Same data source as DiscordPionnierTestimonials (src/lib/youtubers.ts), so removing
- * a YouTuber from the list propagates to both pages automatically.
+ * Source unique (src/lib/youtubers.ts), partagée avec les landings personas — retirer
+ * un YouTubeur du fichier source se propage automatiquement à toutes les pages.
  */
 export default function HomeYoutuberShowcase() {
   return (
