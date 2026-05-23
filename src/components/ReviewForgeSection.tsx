@@ -563,8 +563,8 @@ export default function ReviewForgeSection({ layout = "vertical", blurred = fals
             filter: "blur(80px)",
           }}
         />
-        {/* Mockup — flouté sur la home (blurred=true), net sur /tools (blurred=false) */}
-        <div className={blurred ? "blur-md pointer-events-none select-none transition-all duration-500" : ""}>
+        {/* Mockup — léger flou sur la home (blurred=true) pour signaler "à venir", net sur /tools */}
+        <div className={blurred ? "blur-sm pointer-events-none select-none transition-all duration-500" : ""}>
           <ReviewForgeMockup />
         </div>
         {/* Badge "Arrive prochainement" — affiché uniquement quand blurred=true */}
