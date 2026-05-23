@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowRight, Link2, Upload, Focus, Crop, TrendingUp, Anchor, Eye, Download, Edit, Trash2, Play, ScanFace, Type, Sparkles } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -239,9 +240,11 @@ function ClipForgeMockup() {
 type ToolsSectionProps = {
   /** "vertical" (default) = texte au-dessus, mockup en dessous. "horizontal" = texte | mockup côte à côte sur lg+ */
   layout?: "vertical" | "horizontal";
+  /** Si true : mockup flouté + overlay "Arrive prochainement" + CTA "Voir plus" vers /tools. Pour la home. */
+  blurred?: boolean;
 };
 
-export default function ToolsSection({ layout = "vertical" }: ToolsSectionProps = {}) {
+export default function ToolsSection({ layout = "vertical", blurred = false }: ToolsSectionProps = {}) {
   const horizontal = layout === "horizontal";
   return (
     <motion.div
@@ -296,12 +299,22 @@ export default function ToolsSection({ layout = "vertical" }: ToolsSectionProps 
           ))}
         </motion.ul>
 
-        <a
-          href="/pricing"
-          className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(168,85,247,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(168,85,247,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
-        >
-          R&eacute;server ma place &mdash; tarif bloqu&eacute; &agrave; vie <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-        </a>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <a
+            href="/pricing"
+            className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(168,85,247,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(168,85,247,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+          >
+            R&eacute;server ma place &mdash; tarif bloqu&eacute; &agrave; vie <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+          </a>
+          {blurred && (
+            <Link
+              href="/tools#clipforge"
+              className="group inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white/55 hover:text-white transition-colors"
+            >
+              Voir plus de d&eacute;tails <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Mockup — taille naturelle, pas de container fixe ni badge floating (statut dans l'eyebrow "Vague 2 — Prochainement") */}
@@ -319,7 +332,25 @@ export default function ToolsSection({ layout = "vertical" }: ToolsSectionProps 
             filter: "blur(80px)",
           }}
         />
-        <ClipForgeMockup />
+        {/* Mockup — flouté sur la home (blurred=true), net sur /tools (blurred=false) */}
+        <div className={blurred ? "blur-md pointer-events-none select-none transition-all duration-500" : ""}>
+          <ClipForgeMockup />
+        </div>
+        {/* Badge "Arrive prochainement" — affiché uniquement quand blurred=true */}
+        {blurred && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+            <div
+              className="px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-2xl backdrop-blur-xl"
+              style={{
+                background: "rgba(99,102,241,0.20)",
+                border: "1px solid rgba(139,92,246,0.45)",
+                boxShadow: "0 0 40px rgba(139,92,246,0.35), 0 8px 32px rgba(0,0,0,0.4)",
+              }}
+            >
+              Arrive prochainement
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );
