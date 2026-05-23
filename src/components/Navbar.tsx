@@ -33,7 +33,6 @@ export default function Navbar() {
     { name: "Monteurs", href: "/monteurs" },
     { name: "Cr\u00e9ateurs", href: "/createurs" },
     { name: "Tarifs", href: "/pricing" },
-    { name: "Affili\u00e9", href: "/ambassador" },
     { name: "Mon compte", href: "/account" },
   ];
 

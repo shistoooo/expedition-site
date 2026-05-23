@@ -38,9 +38,6 @@ export default function Footer() {
               <Link href="/account" className="hover:text-purple-400 transition-colors">
                 Mon compte
               </Link>
-              <Link href="/ambassador" className="hover:text-purple-400 transition-colors">
-                Affili&eacute;
-              </Link>
             </div>
             <div className="mt-3 flex gap-6 justify-center md:justify-start text-xs text-white/40">
               <Link href="/cgv" className="hover:text-white/60 transition-colors">
