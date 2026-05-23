@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { Briefcase, Sparkles } from "lucide-react";
 
 const STORAGE_KEY = "expedition_audience_seen_v1";
-const DISPLAY_DELAY_MS = 600;
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 // Deterministic particle positions (avoid SSR/hydration mismatch).
@@ -74,13 +73,10 @@ export default function WelcomeOverlay() {
 
     if (hasBeenSeen()) return;
 
-    const timer = setTimeout(() => {
-      setShow(true);
-      // Mark as shown the moment the overlay appears so refreshes don't re-trigger (prod only)
-      persistChoice("shown");
-    }, DISPLAY_DELAY_MS);
-
-    return () => clearTimeout(timer);
+    // Affichage IMMÉDIAT dès l'hydratation (pas de délai 600ms qui créait
+    // un flash de home avant l'overlay — effet "bug visuel" rapporté par l'user)
+    setShow(true);
+    persistChoice("shown");
   }, []);
 
   const handleSkip = useCallback(() => {
@@ -128,9 +124,10 @@ export default function WelcomeOverlay() {
           aria-modal="true"
           aria-labelledby="welcome-overlay-title"
         >
-          {/* Full-screen backdrop (opaque) */}
+          {/* Full-screen backdrop (opaque) — affiché instantanément (pas de fade)
+              pour ne JAMAIS laisser voir la home en-dessous tant que l'user n'a pas choisi */}
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
