@@ -540,22 +540,12 @@ export default function ReviewForgeSection({ layout = "vertical", blurred = fals
           ))}
         </motion.ul>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          <Link
-            href="/pricing"
-            className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(16,185,129,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(16,185,129,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
-          >
-            R&eacute;server ma place &mdash; tarif bloqu&eacute; &agrave; vie <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </Link>
-          {blurred && (
-            <Link
-              href="/tools#reviewforge"
-              className="group inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white/55 hover:text-white transition-colors"
-            >
-              Voir plus de d&eacute;tails <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-            </Link>
-          )}
-        </div>
+        <Link
+          href="/pricing"
+          className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(16,185,129,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(16,185,129,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+        >
+          R&eacute;server ma place &mdash; tarif bloqu&eacute; &agrave; vie <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+        </Link>
       </div>
 
       {/* Mockup — taille naturelle, pas de container fixe ni badge floating (statut dans l'eyebrow "Vague 3 — En développement") */}

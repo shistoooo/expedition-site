@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { Lock, ArrowRight, Download, Scissors, MessageSquare } from "lucide-react";
+import { Lock, Download, Scissors, MessageSquare } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -143,20 +142,13 @@ export default function SuiteIncludedBadge({ accent = "purple" }: SuiteIncludedB
             })}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 border-t border-white/[0.05]">
+          <div className="pt-5 border-t border-white/[0.05]">
             <p className="text-xs md:text-sm text-white/55 flex items-center gap-2 leading-relaxed">
               <Lock className="w-3.5 h-3.5 shrink-0" />
               <span>
                 <strong className="text-white">Tarif Pionnier bloqué à vie.</strong> Quand le catalogue grossit, ton prix ne bouge pas.
               </span>
             </p>
-            <Link
-              href="/tools"
-              className={`group inline-flex items-center gap-1.5 text-sm font-semibold ${cls.ctaText} ${cls.ctaHover} transition-colors whitespace-nowrap`}
-            >
-              Voir tous les outils de la suite
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-            </Link>
           </div>
         </motion.div>
       </div>

@@ -62,6 +62,13 @@ const nextConfig: NextConfig = {
         destination: "/pricing",
         permanent: true,
       },
+      // /tools (page supprimée — pas de vidéos demo dispo pour l'instant,
+      // on évite que les visiteurs y atterrissent par accident)
+      {
+        source: "/tools",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 };
