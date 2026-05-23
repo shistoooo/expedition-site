@@ -5,7 +5,7 @@ import TubeForgeMockup from "@/components/mockups/TubeForgeMockup";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-export default function PionnierMockupSection() {
+export default function MonteursMockupSection() {
   return (
     <section className="pt-8 pb-16 md:pt-12 md:pb-24 relative section-fade-top">
       <div className="container-main max-w-4xl">

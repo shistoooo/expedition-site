@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, Scissors, FileText, Layers } from "lucide-react";
+import { Layers, Search, FileText, Scissors } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -23,28 +23,28 @@ const itemVariants = {
 
 const features = [
   {
-    icon: Zap,
-    title: "Téléchargez en 4K, en quelques secondes",
-    desc: "Pendant que les sites en ligne vous font attendre, TubeForge avale vos liens en quelques secondes. Qualité maximale, sans pub, sans bridage.",
-  },
-  {
     icon: Layers,
-    title: "Téléchargez plusieurs vidéos en même temps",
-    desc: "Une playlist de 20 vidéos ? Lancez tout d'un coup. TubeForge gère plusieurs téléchargements en parallèle pendant que vous montez.",
+    title: "Plugin Premiere Pro & DaVinci Resolve",
+    desc: "Colle un lien YouTube depuis l’onglet TubeForge directement dans ta timeline. Plus de Finder, plus de copier-coller. 5 à 10 minutes gagnées par référence.",
   },
   {
-    icon: Scissors,
-    title: "Découpez l'extrait exact avant de télécharger",
-    desc: "Vous avez repéré 30 secondes utiles dans une vidéo de 2h ? Sélectionnez l'extrait sur la timeline et téléchargez juste ce passage. Pas de retouche après.",
+    icon: Search,
+    title: "Recherche YouTube sans quitter l’app",
+    desc: "Tu cherches une ref en plein montage&nbsp;? Tape ta query dans TubeForge, prévisualise les résultats, télécharge. Plus jamais d’aller-retour au navigateur.",
   },
   {
     icon: FileText,
-    title: "Importez votre script, tout se télécharge",
-    desc: "Vous préparez une vidéo avec des liens YouTube dans vos notes ? Importez votre document : TubeForge détecte chaque lien et télécharge tout en un clic.",
+    title: "Import du script du client",
+    desc: "Ton client t’envoie un Google Doc avec 20 liens YouTube&nbsp;? Importe-le dans TubeForge, tous les liens sont détectés et téléchargés en un clic. Gain typique&nbsp;: 30 minutes par projet.",
+  },
+  {
+    icon: Scissors,
+    title: "Découpe avant téléchargement",
+    desc: "Une vidéo de 2h dont tu n’as besoin que de 30 secondes&nbsp;? Sélectionne le passage sur la timeline et télécharge juste ça. Économie de stockage et de temps de coupe.",
   },
 ];
 
-export default function PionnierFeatures() {
+export default function MonteursFeatures() {
   return (
     <section className="py-16 md:py-24 relative">
       <div className="container-main max-w-5xl">
@@ -56,13 +56,13 @@ export default function PionnierFeatures() {
           className="text-center mb-12 md:mb-16"
         >
           <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-4">
-            Ce que TubeForge fait pour vous
+            Ce que TubeForge fait pour toi quand tu montes
           </p>
           <h2 className="text-3xl md:text-5xl font-black tracking-[-0.03em] max-w-3xl mx-auto leading-[1.05]">
-            Tout le workflow YouTube.{" "}
+            Chaque heure gagn&eacute;e est{" "}
             <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
-              Dans une seule fenêtre.
+              une heure facturable.
             </span>
           </h2>
         </motion.div>
@@ -92,6 +92,10 @@ export default function PionnierFeatures() {
             </motion.li>
           ))}
         </motion.ul>
+
+        <p className="text-xs text-white/35 mt-10 text-center font-mono">
+          + multi-DL parall&egrave;le &middot; qualit&eacute; 4K &middot; mises &agrave; jour hebdomadaires
+        </p>
       </div>
     </section>
   );

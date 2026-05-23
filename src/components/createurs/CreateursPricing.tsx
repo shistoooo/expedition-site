@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { SALES_OPEN } from "@/lib/salesConfig";
 import NumberTicker from "@/components/NumberTicker";
-import { usePionnierUtm } from "./usePionnierUtm";
+import { useCreateursUtm } from "./useCreateursUtm";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -19,8 +19,8 @@ const features = [
   "Tarif bloqué tant que vous restez abonné",
 ];
 
-export default function PionnierPricing() {
-  const { getDiscordOAuthUrl, getCheckoutUrl, fireCtaEvent, fireViewEvent } = usePionnierUtm();
+export default function CreateursPricing() {
+  const { getDiscordOAuthUrl, getCheckoutUrl, fireCtaEvent, fireViewEvent } = useCreateursUtm();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   // Fire view event when pricing card enters viewport
@@ -46,7 +46,7 @@ export default function PionnierPricing() {
 
   return (
     <section
-      id="pionnier-pricing"
+      id="createurs-pricing"
       ref={sectionRef}
       className="pt-16 pb-16 md:pt-24 md:pb-24 relative"
     >
@@ -69,13 +69,13 @@ export default function PionnierPricing() {
           transition={{ duration: 0.6, ease: easeOutExpo }}
           className="text-center mb-12"
         >
-          <p className="text-xs font-mono uppercase tracking-widest text-purple-400/70 mb-4">
+          <p className="text-xs font-mono uppercase tracking-widest text-cyan-400/70 mb-4">
             Tarif Pionnier — Bloqué à vie
           </p>
           <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em] mb-4">
             Un seul prix. Trois outils.{" "}
             <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-cyan-300">
               Pour toujours.
             </span>
           </h2>
@@ -156,7 +156,7 @@ export default function PionnierPricing() {
               <ul className="w-full space-y-3 mb-8 text-left">
                 {features.map((f, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-white/70">
-                    <Check className="w-4 h-4 text-purple-300 shrink-0 mt-0.5" />
+                    <Check className="w-4 h-4 text-cyan-300 shrink-0 mt-0.5" />
                     <span>{f}</span>
                   </li>
                 ))}

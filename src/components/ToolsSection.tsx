@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Bell, Link2, Upload, Focus, Crop, TrendingUp, Anchor, Eye, Download, Edit, Trash2, Play, ScanFace, Type, Sparkles } from "lucide-react";
+import { ArrowRight, Link2, Upload, Focus, Crop, TrendingUp, Anchor, Eye, Download, Edit, Trash2, Play, ScanFace, Type, Sparkles } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -93,7 +93,7 @@ function ClipForgeMockup() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-indigo-500/10 select-none h-full"
+      className="relative rounded-[20px] overflow-hidden shadow-2xl shadow-indigo-500/10 select-none"
       style={{ background: '#0a0a0f', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Window chrome */}
@@ -236,7 +236,15 @@ function ClipForgeMockup() {
   );
 }
 
-export default function ToolsSection() {
+type ToolsSectionProps = {
+  /** "vertical" (default) = texte au-dessus, mockup en dessous. "horizontal" = texte | mockup côte à côte sur lg+ */
+  layout?: "vertical" | "horizontal";
+  /** Si true : mockup flouté + overlay "Arrive prochainement" + CTA "Voir plus" vers /tools. Pour la home. */
+  blurred?: boolean;
+};
+
+export default function ToolsSection({ layout = "vertical", blurred = false }: ToolsSectionProps = {}) {
+  const horizontal = layout === "horizontal";
   return (
     <motion.div
       id="clipforge"
@@ -244,10 +252,14 @@ export default function ToolsSection() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="relative flex flex-col h-full"
+      className={
+        horizontal
+          ? "relative flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-16 h-full"
+          : "relative flex flex-col h-full"
+      }
     >
       {/* Text */}
-      <div className="text-left mb-8">
+      <div className={horizontal ? "text-left lg:flex-1" : "text-left mb-8"}>
         <p className="text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-4 flex items-center gap-2">
           <span className="w-3 h-px bg-purple-400/50 inline-block" />
           Vague 2 &mdash; Prochainement
@@ -266,7 +278,7 @@ export default function ToolsSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="space-y-3 mb-6"
+          className="space-y-4 mb-7"
         >
           {[
             { icon: Sparkles, title: "L\u2019IA trouve vos meilleurs moments", desc: "Analyse sp\u00e9cialis\u00e9e selon votre contenu : gaming, podcast, tuto, vlog." },
@@ -290,22 +302,44 @@ export default function ToolsSection() {
           href="/pricing"
           className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(168,85,247,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(168,85,247,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
         >
-          &Ecirc;tre pr&eacute;venu au lancement <Bell className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+          R&eacute;server ma place &mdash; tarif bloqu&eacute; &agrave; vie <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
         </a>
       </div>
 
-      {/* Mockup */}
-      <div className="w-full relative rounded-[20px] h-[480px] overflow-hidden">
-        {/* Indigo-purple nebula — ClipForge identity */}
-        <div className="absolute -inset-5 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)', filter: 'blur(80px)' }} />
-        <ClipForgeMockup />
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
-        {/* Coming soon overlay */}
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/30 backdrop-blur-[1px] rounded-[20px]">
-          <div className="px-5 py-2.5 rounded-full border border-purple-400/30 bg-purple-500/10 backdrop-blur-sm">
-            <span className="text-sm font-bold text-purple-300 tracking-wide uppercase">Disponible prochainement</span>
-          </div>
+      {/* Mockup — taille naturelle, pas de container fixe ni badge floating (statut dans l'eyebrow "Vague 2 — Prochainement") */}
+      <div
+        className={`group relative transition-all duration-500 hover:-translate-y-1 ${
+          horizontal ? "w-full lg:flex-[1.3]" : "w-full"
+        }`}
+      >
+        {/* Indigo-purple nebula — ClipForge identity. Intensifies on hover. */}
+        <div
+          className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.16) 0%, rgba(139,92,246,0.08) 35%, transparent 70%)",
+            filter: "blur(80px)",
+          }}
+        />
+        {/* Mockup — flou très subtil (2px) sur la home pour signaler "à venir" sans cacher le mockup */}
+        <div className={blurred ? "blur-[2px] pointer-events-none select-none transition-all duration-500" : ""}>
+          <ClipForgeMockup />
         </div>
+        {/* Badge "Arrive prochainement" — affiché uniquement quand blurred=true */}
+        {blurred && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+            <div
+              className="px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-2xl backdrop-blur-xl"
+              style={{
+                background: "rgba(99,102,241,0.20)",
+                border: "1px solid rgba(139,92,246,0.45)",
+                boxShadow: "0 0 40px rgba(139,92,246,0.35), 0 8px 32px rgba(0,0,0,0.4)",
+              }}
+            >
+              Arrive prochainement
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

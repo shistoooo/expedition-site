@@ -17,12 +17,12 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms",
+      "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://www.youtube.com https://s.ytimg.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https:",
       "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms",
-      "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+      "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube-nocookie.com https://www.youtube.com",
       "worker-src 'self' blob:",
     ].join("; "),
   },
@@ -45,6 +45,29 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      // /pionnier et /discord-pionnier (page supprimée — fusionnée avec /pricing
+      // après audit copy-sales-expert : 95% du contenu était dupliqué)
+      {
+        source: "/pionnier",
+        destination: "/pricing",
+        permanent: true,
+      },
+      {
+        source: "/discord-pionnier",
+        destination: "/pricing",
+        permanent: true,
+      },
+      // /tools (page supprimée — pas de vidéos demo dispo pour l'instant,
+      // on évite que les visiteurs y atterrissent par accident)
+      {
+        source: "/tools",
+        destination: "/",
+        permanent: true,
       },
     ];
   },

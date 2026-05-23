@@ -205,52 +205,12 @@ export default function PricingPage() {
           </p>
         </motion.div>
 
-        {/* ── 3 PRICE CARDS ──────────────────────────────────────────── */}
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch mb-16">
-          {plans.map((plan, index) => (
-            <PricingCard key={index} plan={plan} index={index} />
-          ))}
-        </div>
-
-        {/* ── SHARED FEATURES ────────────────────────────────────────── */}
+        {/* ── TRUST / INFO BOX (déplacée au-dessus des cartes pour qu'elle soit lue AVANT la décision de prix) ─────────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl mx-auto mb-16"
-        >
-          <h3 className="text-center text-white/40 text-sm font-mono uppercase tracking-widest mb-8">
-            Inclus dans tous les plans
-          </h3>
-          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
-            {features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm">
-                <div
-                  className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center"
-                  style={{
-                    background: "rgba(139,92,246,0.2)",
-                    border: "1px solid rgba(139,92,246,0.4)",
-                  }}
-                >
-                  <Check className="w-2.5 h-2.5" style={{ color: "#a78bfa" }} />
-                </div>
-                <span className="text-white/70">{feature}</span>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-xs mt-8 font-mono" style={{ color: "rgba(255,255,255,0.28)" }}>
-            Annulable &agrave; tout moment. Sans engagement.
-          </p>
-        </motion.div>
-
-        {/* ── TRUST / INFO BOX ─────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl mx-auto relative"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-3xl mx-auto relative mb-12"
         >
           <div
             className="relative rounded-2xl overflow-hidden"
@@ -308,6 +268,46 @@ export default function PricingPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* ── 3 PRICE CARDS ──────────────────────────────────────────── */}
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch mb-16">
+          {plans.map((plan, index) => (
+            <PricingCard key={index} plan={plan} index={index} />
+          ))}
+        </div>
+
+        {/* ── SHARED FEATURES ────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-3xl mx-auto"
+        >
+          <h3 className="text-center text-white/40 text-sm font-mono uppercase tracking-widest mb-8">
+            Inclus dans tous les plans
+          </h3>
+          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+            {features.map((feature, i) => (
+              <div key={i} className="flex items-center gap-3 text-sm">
+                <div
+                  className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center"
+                  style={{
+                    background: "rgba(139,92,246,0.2)",
+                    border: "1px solid rgba(139,92,246,0.4)",
+                  }}
+                >
+                  <Check className="w-2.5 h-2.5" style={{ color: "#a78bfa" }} />
+                </div>
+                <span className="text-white/70">{feature}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xs mt-8 font-mono" style={{ color: "rgba(255,255,255,0.28)" }}>
+            Annulable &agrave; tout moment. Sans engagement.
+          </p>
+        </motion.div>
+
       </main>
       <Footer />
     </div>

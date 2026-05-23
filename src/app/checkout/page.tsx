@@ -550,7 +550,10 @@ function CheckoutContent() {
                                     <div className="text-2xl font-bold">{PLANS[plan].price.toFixed(2).replace(".", ",")}€</div>
                                     <div className="text-white/40 text-xs text-right">{PLANS[plan].label}</div>
                                     {plan === "yearly" && (
-                                        <div className="text-green-400 text-xs mt-1">soit 8,33€/mois</div>
+                                        <>
+                                            <div className="text-green-400 text-xs mt-1">soit 8,33&euro;/mois</div>
+                                            <div className="text-green-400 text-xs font-semibold mt-0.5">&Eacute;conomise 43,89&euro;/an</div>
+                                        </>
                                     )}
                                 </div>
                             </div>
@@ -581,6 +584,19 @@ function CheckoutContent() {
                                         <p>
                                             <strong>Garantie &quot;Early Adopter&quot; :</strong><br />
                                             Votre tarif de {PLANS[plan].price.toFixed(2).replace(".", ",")}€{PLANS[plan].label} reste bloqu&eacute; tant que votre abonnement reste actif et continu. En cas de r&eacute;siliation, le tarif en vigueur au moment de la r&eacute;inscription s&apos;appliquera.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Garantie tranquillité — risk reversal visible avant achat */}
+                            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-sm flex flex-col gap-3">
+                                <div className="flex gap-3">
+                                    <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5 text-emerald-400" />
+                                    <div>
+                                        <p className="text-emerald-100 font-bold mb-1">Garantie tranquillit&eacute;</p>
+                                        <p className="text-emerald-200/80 leading-relaxed">
+                                            Annulable en 1 clic depuis ton compte. Pas convaincu ? Contacte-nous sur Discord ou par email, on trouve une solution ensemble.
                                         </p>
                                     </div>
                                 </div>
@@ -860,6 +876,15 @@ function CheckoutContent() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
+
+                        {/* Founder signature — visible en permanence, pas planquée dans le modal disclaimer */}
+                        <div className="mt-6 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                            <p className="text-xs text-white/50 leading-relaxed">
+                                <span className="text-white/80 font-semibold">Sign&eacute; Mohamed, fondateur d&apos;Exp&eacute;dition.</span>
+                                {" "}Une question, un doute ? &Eacute;cris-moi directement &mdash; je r&eacute;ponds &agrave; chaque email&nbsp;:{" "}
+                                <a href="mailto:contact@expeditionlauncher.store" className="text-purple-400 hover:text-purple-300 transition-colors">contact@expeditionlauncher.store</a>
+                            </p>
+                        </div>
                     </motion.div>
 
                 </div>

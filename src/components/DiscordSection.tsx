@@ -42,7 +42,7 @@ export default function DiscordSection() {
 
           {/* Specific, honest description — not "boost your productivity" */}
           <p className="text-lg md:text-xl text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed text-center">
-            Signalement de bugs, votes de features, discussions entre créateurs.
+            Signalement de bugs, votes pour les prochaines fonctionnalités, discussions entre créateurs.
             C&apos;est là que les prochaines mises à jour se décident.
           </p>
 

@@ -19,21 +19,24 @@ export default function Footer() {
             <p className="text-white/50 text-sm mt-1">
               Suite d&apos;outils pour cr&eacute;ateurs YouTube.
             </p>
-            <div className="mt-4 flex gap-6 justify-center md:justify-start text-sm font-medium text-white/60">
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 justify-center md:justify-start text-sm font-medium text-white/60">
+              <Link href="/monteurs" className="hover:text-purple-400 transition-colors">
+                Pour monteurs
+              </Link>
+              <Link href="/createurs" className="hover:text-cyan-400 transition-colors">
+                Pour cr&eacute;ateurs
+              </Link>
               <Link href="/pricing" className="hover:text-purple-400 transition-colors">
                 Tarifs
               </Link>
               <Link href="/economie" className="hover:text-purple-400 transition-colors">
-                Économie
+                &Eacute;conomie
               </Link>
               <Link href="/launcher" className="hover:text-purple-400 transition-colors">
                 Launcher
               </Link>
               <Link href="/account" className="hover:text-purple-400 transition-colors">
                 Mon compte
-              </Link>
-              <Link href="/ambassador" className="hover:text-purple-400 transition-colors">
-                Affili&eacute;
               </Link>
             </div>
             <div className="mt-3 flex gap-6 justify-center md:justify-start text-xs text-white/40">

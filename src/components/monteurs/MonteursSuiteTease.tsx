@@ -38,7 +38,7 @@ const tools = [
   },
 ];
 
-export default function PionnierSuiteTease() {
+export default function MonteursSuiteTease() {
   return (
     <section className="py-16 md:py-24 relative">
       <div className="absolute inset-0 bg-[#06051a]/60 pointer-events-none" />
@@ -139,7 +139,7 @@ export default function PionnierSuiteTease() {
           className="text-center"
         >
           <a
-            href="#pionnier-pricing"
+            href="#monteurs-pricing"
             className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white/80 transition-colors group"
           >
             <Lock className="w-4 h-4 text-purple-300" />

@@ -81,18 +81,33 @@ export default function TubeForgeSection() {
               ))}
             </motion.ul>
 
-            <Link
-              href="/pricing"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(239,68,68,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(239,68,68,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
-            >
-              Commencer maintenant <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
-            </Link>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <Link
+                href="/pricing"
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(239,68,68,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(239,68,68,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+              >
+                R&eacute;cup&eacute;rer mon tarif Pionnier <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
+              </Link>
+              <Link
+                href="/demo"
+                className="group inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-white/5 text-white/85 font-semibold text-base transition-all duration-200 border border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20"
+              >
+                Voir la d&eacute;mo
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
           </div>
 
-          {/* Mockup */}
-          <div className="flex-1 w-full relative">
-            {/* Red-orange nebula — TubeForge identity glow */}
-            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.12) 0%, rgba(249,115,22,0.06) 35%, transparent 70%)', filter: 'blur(80px)' }} />
+          {/* Mockup — taille naturelle, pas de container fixe ni badge floating (le statut est déjà dans l'eyebrow "Vague 1 — Stable") */}
+          <div className="group relative w-full lg:flex-[1.3] transition-all duration-500 hover:-translate-y-1">
+            {/* Red-orange nebula — TubeForge identity glow. Intensifies on hover. */}
+            <div
+              className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background: "radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.16) 0%, rgba(249,115,22,0.08) 35%, transparent 70%)",
+                filter: "blur(80px)",
+              }}
+            />
             <TubeForgeMockup />
           </div>
         </motion.div>

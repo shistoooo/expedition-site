@@ -18,9 +18,17 @@ const UTM_KEYS = [
   "utm_content",
 ] as const;
 
-export type CtaLocation = "hero" | "pricing" | "sticky" | "final";
+export type CtaLocation =
+  | "hero"
+  | "hero_primary"
+  | "hero_secondary_discord"
+  | "pricing"
+  | "sticky"
+  | "final";
 
-export function usePionnierUtm() {
+export type ViewSection = "pricing" | "faq" | "faq_open";
+
+export function useCreateursUtm() {
   const sp = useSearchParams();
 
   const utmString = useMemo(() => {
@@ -34,18 +42,11 @@ export function usePionnierUtm() {
       .join("&");
   }, [sp]);
 
-  /**
-   * CTA dominant: skip direct vers Discord OAuth → user voit immédiatement 8,03€
-   * (au lieu de /checkout?plan=monthly-discord qui montre 11,99€ jusqu'à OAuth)
-   */
   function getDiscordOAuthUrl(): string {
     const base = "/api/discord/auth?plan=monthly";
     return utmString ? `${base}&${utmString}` : base;
   }
 
-  /**
-   * CTAs alternatifs : direct vers /checkout (annuel ou mensuel sans Discord)
-   */
   function getCheckoutUrl(plan: "monthly" | "yearly"): string {
     const base = `/checkout?plan=${plan}`;
     return utmString ? `${base}&${utmString}` : base;
@@ -53,13 +54,13 @@ export function usePionnierUtm() {
 
   function fireCtaEvent(location: CtaLocation) {
     if (typeof window !== "undefined") {
-      window.gtag?.("event", "cta_click_pionnier", { cta_location: location });
+      window.gtag?.("event", "cta_click_createurs", { cta_location: location });
     }
   }
 
-  function fireViewEvent(section: "pricing" | "faq") {
+  function fireViewEvent(section: ViewSection) {
     if (typeof window !== "undefined") {
-      window.gtag?.("event", `view_${section}_pionnier`);
+      window.gtag?.("event", `view_${section}_createurs`);
     }
   }
 

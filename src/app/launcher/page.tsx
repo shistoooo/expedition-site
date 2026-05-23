@@ -584,7 +584,7 @@ export default function LauncherPage() {
                     el.style.borderColor = "rgba(139,92,246,0.3)";
                   }}
                 >
-                  En savoir plus
+                  Voir les tarifs
                   <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                 </Link>
               </motion.div>
@@ -673,7 +673,7 @@ export default function LauncherPage() {
                     el.style.borderColor = "rgba(239,68,68,0.28)";
                   }}
                 >
-                  En savoir plus
+                  Voir les tarifs
                   <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                 </Link>
               </motion.div>
