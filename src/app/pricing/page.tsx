@@ -308,58 +308,6 @@ export default function PricingPage() {
           </p>
         </motion.div>
 
-        {/* ── TESTIMONIALS (récupérés de l'ancienne page /discord-pionnier supprimée) ─────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-4xl mx-auto mt-20"
-        >
-          <p className="text-center text-xs font-mono uppercase tracking-widest text-purple-400/60 mb-4">
-            Ce qu&apos;ils en disent
-          </p>
-          <h2 className="text-center text-3xl md:text-4xl font-black tracking-[-0.03em] mb-12">
-            Les premiers Pionniers, en vrai.
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {[
-              {
-                name: "Nahsir",
-                role: "Monteur vidéo",
-                text: "Depuis ma première utilisation de TubeForge, je ne me sers plus que de ça. C'est pratique, intuitif et ça permet de gagner un temps précieux sur tous mes montages.",
-              },
-              {
-                name: "Astro",
-                role: "Monteur vidéo",
-                text: "Franchement bluffé par l'utilisation de TubeForge, ça a vraiment simplifié et accéléré le processus de téléchargement de vidéo YouTube. Bravo !",
-              },
-            ].map((t) => (
-              <blockquote
-                key={t.name}
-                className="relative rounded-2xl px-6 py-7 flex flex-col"
-                style={{
-                  background: "rgba(255,255,255,0.045)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  backdropFilter: "blur(20px)",
-                }}
-              >
-                <span className="text-3xl leading-none select-none mb-3" style={{ color: "rgba(139,92,246,0.30)" }}>
-                  &ldquo;
-                </span>
-                <p className="text-[15px] leading-relaxed text-white/70 font-light flex-1 mb-5">
-                  {t.text}
-                </p>
-                <footer className="flex items-center gap-2 pt-3 border-t border-white/[0.06]">
-                  <span className="text-sm font-semibold text-white/80">{t.name}</span>
-                  <span className="text-white/15">&middot;</span>
-                  <span className="text-xs text-white/35">{t.role}</span>
-                </footer>
-              </blockquote>
-            ))}
-          </div>
-        </motion.div>
       </main>
       <Footer />
     </div>

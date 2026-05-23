@@ -602,21 +602,6 @@ function CheckoutContent() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Témoignage rassurant — placé après le récap, avant le payment form */}
-                        <div className="mt-6 p-5 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <div className="flex items-start gap-3">
-                                <div className="w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300 text-sm font-bold shrink-0">
-                                    N
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-white/80 text-sm leading-relaxed italic mb-2">
-                                        &laquo;&nbsp;Depuis ma premi&egrave;re utilisation, je ne me sers plus que de &ccedil;a. Pratique, intuitif, et &ccedil;a permet de gagner un temps pr&eacute;cieux sur tous mes montages.&nbsp;&raquo;
-                                    </p>
-                                    <p className="text-xs text-white/40">&mdash; Nahsir, monteur vid&eacute;o</p>
-                                </div>
-                            </div>
-                        </div>
                     </motion.div>
 
                     {/* Right Column: Auth or Payment */}
