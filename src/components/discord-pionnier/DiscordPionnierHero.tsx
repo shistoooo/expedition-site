@@ -49,24 +49,26 @@ export default function DiscordPionnierHero() {
           <span>Vague Pionnier · Places limitées</span>
         </div>
 
-        {/* H1 */}
+        {/* H1 — centré sur le lock-in pricing (audit copy-sales-expert) */}
         <h1
           className="text-4xl md:text-5xl lg:text-[3.75rem] font-black mb-6 leading-[1.1] tracking-[-0.025em] text-white animate-hero-in max-w-4xl"
           style={{ animationDelay: "0.1s" }}
         >
-          Pour les YouTubeurs et prestataires qui veulent aller{" "}
+          8,03&euro;/mois.{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-purple-300">
-            plus loin. Plus vite.
+            Bloqu&eacute; &agrave; vie.
           </span>
+          <br />
+          Tant que tu restes abonn&eacute;.
         </h1>
 
-        {/* Sub */}
+        {/* Sub — explique le lock-in et le futur prix d'entrée */}
         <p
           className="text-base md:text-xl text-white/60 mb-10 leading-relaxed animate-hero-in max-w-2xl"
           style={{ animationDelay: "0.2s" }}
         >
-          Téléchargez en 4K, clippez avec l&apos;IA, faites valider vos rendus —{" "}
-          <span className="text-white/85 font-semibold">un seul abonnement, dès 8,03€/mois</span>. Bloqué à vie tant que vous restez abonné.
+          TubeForge dispo, ClipForge et ReviewForge arrivent. Quand on lancera les prochains outils,{" "}
+          <span className="text-white/85 font-semibold">le tarif d&apos;entr&eacute;e montera &mdash; le tien reste fig&eacute;</span>.
         </p>
 
         {/* CTA */}
