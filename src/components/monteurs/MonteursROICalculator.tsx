@@ -140,7 +140,7 @@ export default function MonteursROICalculator() {
               </div>
             </div>
 
-            {/* Result — toujours visible avec équation explicite sous chaque chiffre */}
+            {/* Result — toujours visible */}
             <div className="relative rounded-2xl border border-purple-400/30 bg-gradient-to-br from-purple-500/[0.12] to-violet-500/[0.05] p-6 md:p-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 text-center md:text-left">
                 <div className="flex flex-col items-center md:items-start">
@@ -152,9 +152,6 @@ export default function MonteursROICalculator() {
                     {formatHoursMinutes(totalHoursSaved)}
                     <span className="text-base text-white/45 font-bold">/mois</span>
                   </p>
-                  <p className="text-[11px] text-white/40 mt-1.5 tabular-nums font-mono">
-                    = 45&nbsp;min &times; {projectsPerMonth}&nbsp;montage{projectsPerMonth > 1 ? "s" : ""}
-                  </p>
                 </div>
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
@@ -165,9 +162,6 @@ export default function MonteursROICalculator() {
                     {formatEuro(monthlySavings)}
                     <span className="text-base text-white/45 font-bold">/mois</span>
                   </p>
-                  <p className="text-[11px] text-white/40 mt-1.5 tabular-nums font-mono">
-                    = {formatHoursMinutes(totalHoursSaved)} &times; {hourlyRate}€/h
-                  </p>
                 </div>
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
@@ -176,9 +170,6 @@ export default function MonteursROICalculator() {
                   </div>
                   <p className="text-2xl md:text-3xl font-black text-white tabular-nums">
                     {roiMultiplier}&times; le prix
-                  </p>
-                  <p className="text-[11px] text-white/40 mt-1.5 tabular-nums font-mono">
-                    = {formatEuro(monthlySavings)} &divide; 8,03€
                   </p>
                 </div>
               </div>
@@ -190,15 +181,17 @@ export default function MonteursROICalculator() {
               </div>
             </div>
 
-            {/* Toggle "Voir comment on calcule" */}
+            {/* Toggle "Voir comment on calcule" — pill button bien visible */}
             <div className="text-center">
               <button
                 type="button"
                 onClick={() => setShowDetails(!showDetails)}
                 aria-expanded={showDetails}
-                className="inline-flex items-center gap-1.5 text-sm text-white/55 hover:text-white/90 transition-colors group"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-400/50 text-purple-100 text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+                style={{ boxShadow: "0 0 24px rgba(139,92,246,0.18)" }}
               >
-                {showDetails ? "Masquer le détail du calcul" : "Voir comment on calcule"}
+                <Calculator className="w-4 h-4 text-purple-300" />
+                {showDetails ? "Masquer le détail du calcul" : "Voir comment on arrive à ce chiffre"}
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-300 ${showDetails ? "rotate-180" : ""}`}
                 />
