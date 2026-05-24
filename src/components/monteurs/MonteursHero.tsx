@@ -45,12 +45,12 @@ export default function MonteursHero() {
         </div>
 
         <h1
-          className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.1] tracking-[-0.02em] text-white animate-hero-in max-w-4xl"
+          className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.1] tracking-[-0.02em] text-white animate-hero-in max-w-4xl text-balance"
           style={{ animationDelay: "0.1s" }}
         >
           Le plugin qui te fait{" "}
           <span
-            className="text-transparent bg-clip-text animate-text-shimmer"
+            className="text-transparent bg-clip-text animate-text-shimmer inline-block whitespace-nowrap"
             style={{
               backgroundImage:
                 "linear-gradient(90deg, #8b5cf6 0%, #a78bfa 25%, #22d3ee 50%, #a78bfa 75%, #8b5cf6 100%)",
