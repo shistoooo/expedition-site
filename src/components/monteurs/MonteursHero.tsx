@@ -21,7 +21,7 @@ export default function MonteursHero() {
   return (
     <section
       id="monteurs-hero"
-      className="pt-28 pb-16 md:pt-36 md:pb-24 relative"
+      className="pt-28 pb-4 md:pt-36 md:pb-6 relative"
     >
       {/* Nebula wrapper — clipped to section bounds so it never overflows horizontally,
           but the section itself stays overflow-visible so CTA shadows can breathe */}

@@ -16,7 +16,7 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
  */
 export default function HomeYoutuberShowcase() {
   return (
-    <section className="pt-2 pb-16 md:pt-4 md:pb-20 relative">
+    <section className="pt-0 pb-16 md:pt-2 md:pb-20 relative">
       <div className="container-main">
         <motion.div
           initial={{ opacity: 0, y: 16 }}

@@ -21,7 +21,7 @@ export default function CreateursHero() {
   return (
     <section
       id="createurs-hero"
-      className="pt-28 pb-16 md:pt-36 md:pb-24 relative"
+      className="pt-28 pb-4 md:pt-36 md:pb-6 relative"
     >
       {/* Nebula wrapper — clipped so it doesn't overflow horizontally,
           but section stays overflow-visible so CTA shadows can breathe */}
