@@ -16,7 +16,7 @@ export default function MonteursHero() {
   }, []);
 
   const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
-  const ctaLabel = SALES_OPEN ? "Devenir Pionnier — 8,03€/mois" : "Être prévenu au lancement";
+  const ctaLabel = SALES_OPEN ? "Devenir Pionnier" : "Être prévenu au lancement";
 
   return (
     <section
