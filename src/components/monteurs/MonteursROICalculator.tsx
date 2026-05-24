@@ -140,7 +140,7 @@ export default function MonteursROICalculator() {
               </div>
             </div>
 
-            {/* Result — toujours visible */}
+            {/* Result — toujours visible avec équation explicite sous chaque chiffre */}
             <div className="relative rounded-2xl border border-purple-400/30 bg-gradient-to-br from-purple-500/[0.12] to-violet-500/[0.05] p-6 md:p-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 text-center md:text-left">
                 <div className="flex flex-col items-center md:items-start">
@@ -152,6 +152,9 @@ export default function MonteursROICalculator() {
                     {formatHoursMinutes(totalHoursSaved)}
                     <span className="text-base text-white/45 font-bold">/mois</span>
                   </p>
+                  <p className="text-[11px] text-white/40 mt-1.5 tabular-nums font-mono">
+                    = 45&nbsp;min &times; {projectsPerMonth}&nbsp;montage{projectsPerMonth > 1 ? "s" : ""}
+                  </p>
                 </div>
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
@@ -162,6 +165,9 @@ export default function MonteursROICalculator() {
                     {formatEuro(monthlySavings)}
                     <span className="text-base text-white/45 font-bold">/mois</span>
                   </p>
+                  <p className="text-[11px] text-white/40 mt-1.5 tabular-nums font-mono">
+                    = {formatHoursMinutes(totalHoursSaved)} &times; {hourlyRate}€/h
+                  </p>
                 </div>
                 <div className="flex flex-col items-center md:items-start">
                   <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-purple-300/70 mb-2">
@@ -171,12 +177,15 @@ export default function MonteursROICalculator() {
                   <p className="text-2xl md:text-3xl font-black text-white tabular-nums">
                     {roiMultiplier}&times; le prix
                   </p>
+                  <p className="text-[11px] text-white/40 mt-1.5 tabular-nums font-mono">
+                    = {formatEuro(monthlySavings)} &divide; 8,03€
+                  </p>
                 </div>
               </div>
 
               <div className="mt-6 pt-5 border-t border-white/[0.08] text-center md:text-left">
                 <p className="text-sm md:text-base text-white/70 leading-relaxed">
-                  TubeForge te co&ucirc;te <strong className="text-white">8,03€/mois</strong>. Avec le temps que tu gagnes, tu peux faire <strong className="text-purple-200">{formatEuro(monthlySavings)}/mois</strong> en plus en prenant un montage suppl&eacute;mentaire.
+                  Concr&egrave;tement&nbsp;: en lib&eacute;rant <strong className="text-white">{formatHoursMinutes(totalHoursSaved)}</strong> par mois, tu peux prendre <strong className="text-white">un montage en plus</strong> &agrave; ton tarif horaire &mdash; soit <strong className="text-purple-200">{formatEuro(monthlySavings)}/mois</strong> de plus en poche, pour <strong className="text-white">8,03€</strong> d&apos;abonnement.
                 </p>
               </div>
             </div>
