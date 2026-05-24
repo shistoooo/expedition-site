@@ -30,7 +30,7 @@ export default function MonteursPage() {
         </Suspense>
         <HomeYoutuberShowcase />
         <MonteursPainSection />
-        <LandingDemoSection accent="purple" videoId="OIPNiTCccNA" showCtas />
+        <LandingDemoSection accent="purple" videoId="SXES1dO68G8" showCtas />
         <MonteursROICalculator />
         <SuitePreviewSection accent="purple" />
         <MonteursPricing />
