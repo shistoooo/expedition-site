@@ -7,6 +7,7 @@ import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
 import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import MonteursHero from "@/components/monteurs/MonteursHero";
+import MonteursPainSection from "@/components/monteurs/MonteursPainSection";
 import MonteursROICalculator from "@/components/monteurs/MonteursROICalculator";
 import MonteursPricing from "@/components/monteurs/MonteursPricing";
 import MonteursFAQ from "@/components/monteurs/MonteursFAQ";
@@ -27,6 +28,7 @@ export default function MonteursPage() {
         <Suspense fallback={<div className="pt-28 md:pt-36 h-[480px]" />}>
           <MonteursHero />
         </Suspense>
+        <MonteursPainSection />
         <HomeYoutuberShowcase />
         <LandingDemoSection accent="purple" />
         <MonteursROICalculator />
