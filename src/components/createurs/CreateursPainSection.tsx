@@ -211,7 +211,7 @@ const MockupComponents = {
 
 export default function CreateursPainSection() {
   return (
-    <section className="py-16 md:py-24 relative">
+    <section className="pt-4 md:pt-6 pb-16 md:pb-24 relative">
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[500px] pointer-events-none opacity-25"
         style={{
