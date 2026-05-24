@@ -28,8 +28,8 @@ export default function MonteursPage() {
         <Suspense fallback={<div className="pt-28 md:pt-36 h-[480px]" />}>
           <MonteursHero />
         </Suspense>
-        <MonteursPainSection />
         <HomeYoutuberShowcase />
+        <MonteursPainSection />
         <LandingDemoSection accent="purple" />
         <MonteursROICalculator />
         <SuitePreviewSection accent="purple" />

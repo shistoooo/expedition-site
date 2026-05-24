@@ -28,8 +28,8 @@ export default function CreateursPage() {
         <Suspense fallback={<div className="pt-28 md:pt-36 h-[480px]" />}>
           <CreateursHero />
         </Suspense>
-        <CreateursPainSection />
         <HomeYoutuberShowcase />
+        <CreateursPainSection />
         <LandingDemoSection accent="cyan" />
         <CreateursBeforeAfter />
         <SuitePreviewSection accent="cyan" />
