@@ -7,6 +7,7 @@ import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
 import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import CreateursHero from "@/components/createurs/CreateursHero";
+import CreateursPainSection from "@/components/createurs/CreateursPainSection";
 import CreateursBeforeAfter from "@/components/createurs/CreateursBeforeAfter";
 import CreateursPricing from "@/components/createurs/CreateursPricing";
 import CreateursFAQ from "@/components/createurs/CreateursFAQ";
@@ -27,6 +28,7 @@ export default function CreateursPage() {
         <Suspense fallback={<div className="pt-28 md:pt-36 h-[480px]" />}>
           <CreateursHero />
         </Suspense>
+        <CreateursPainSection />
         <HomeYoutuberShowcase />
         <LandingDemoSection accent="cyan" />
         <CreateursBeforeAfter />
