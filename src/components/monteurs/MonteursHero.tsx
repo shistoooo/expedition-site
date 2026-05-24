@@ -45,7 +45,7 @@ export default function MonteursHero() {
         </div>
 
         <h1
-          className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.1] tracking-[-0.02em] text-white animate-hero-in max-w-4xl text-balance"
+          className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.1] tracking-[-0.02em] text-white animate-hero-in max-w-5xl text-balance"
           style={{ animationDelay: "0.1s" }}
         >
           Le plugin qui te fait{" "}
@@ -57,7 +57,7 @@ export default function MonteursHero() {
               backgroundSize: "200% auto",
             }}
           >
-            gagner du temps
+            gagner du temps et de l&apos;argent
           </span>{" "}
           sur chaque montage.
         </h1>
