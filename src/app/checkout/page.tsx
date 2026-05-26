@@ -547,12 +547,32 @@ function CheckoutContent() {
                                     <p className="text-purple-400 text-sm font-medium mt-1">Acc&egrave;s Anticip&eacute; &bull; Tarif bloqu&eacute; tant que vous restez abonn&eacute;</p>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-2xl font-bold">{PLANS[plan].price.toFixed(2).replace(".", ",")}€</div>
-                                    <div className="text-white/40 text-xs text-right">{PLANS[plan].label}</div>
-                                    {plan === "yearly" && (
+                                    {plan === "monthly" && discordVerified ? (
                                         <>
-                                            <div className="text-green-400 text-xs mt-1">soit 8,33&euro;/mois</div>
-                                            <div className="text-green-400 text-xs font-semibold mt-0.5">&Eacute;conomise 43,89&euro;/an</div>
+                                            <div className="flex items-baseline gap-2 justify-end">
+                                                <span className="text-base text-white/35 line-through tabular-nums">11,99&euro;</span>
+                                                <span className="text-2xl font-bold text-emerald-400 tabular-nums">8,03&euro;</span>
+                                            </div>
+                                            <div className="text-white/40 text-xs text-right">/mois</div>
+                                            <div className="text-emerald-400 text-xs font-semibold mt-1">Tarif Pionnier Discord appliqu&eacute;</div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="text-2xl font-bold tabular-nums">{PLANS[plan].price.toFixed(2).replace(".", ",")}&euro;</div>
+                                            <div className="text-white/40 text-xs text-right">{PLANS[plan].label}</div>
+                                            {plan === "yearly" && (
+                                                <>
+                                                    <div className="text-green-400 text-xs mt-1">soit 8,33&euro;/mois</div>
+                                                    <div className="text-green-400 text-xs font-semibold mt-0.5">&Eacute;conomise 43,89&euro;/an</div>
+                                                </>
+                                            )}
+                                            {plan === "monthly" && (
+                                                <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/25">
+                                                    <span className="text-emerald-300 text-[11px] font-semibold whitespace-nowrap">
+                                                        &rarr; 8,03&euro;/mois avec Discord
+                                                    </span>
+                                                </div>
+                                            )}
                                         </>
                                     )}
                                 </div>
@@ -679,19 +699,21 @@ function CheckoutContent() {
                                             <motion.div
                                                 initial={{ opacity: 0, y: -5 }}
                                                 animate={{ opacity: 1, y: 0 }}
-                                                className="p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm flex items-center gap-2"
+                                                className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-2"
                                             >
                                                 <CheckCircle2 className="w-4 h-4 shrink-0" />
-                                                Membre Discord v&eacute;rifi&eacute; &mdash; r&eacute;duction appliqu&eacute;e automatiquement
+                                                <span>
+                                                    <strong className="text-emerald-200">Membre Discord v&eacute;rifi&eacute;</strong> &mdash; tarif Pionnier <strong>8,03&euro;/mois</strong> appliqu&eacute;
+                                                </span>
                                             </motion.div>
                                         ) : (
                                             <button
                                                 type="button"
                                                 onClick={handleDiscordConnect}
-                                                className="w-full py-3 rounded-xl bg-[#5865F2]/10 border border-[#5865F2]/20 text-[#5865F2] hover:bg-[#5865F2]/20 hover:border-[#5865F2]/30 transition-all text-sm font-medium flex items-center justify-center gap-2"
+                                                className="w-full py-3.5 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/40 text-white hover:bg-[#5865F2]/25 hover:border-[#5865F2]/60 transition-all text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#5865F2]/15"
                                             >
-                                                <DiscordIcon className="w-5 h-5" />
-                                                D&eacute;bloquer mon prix membre Discord
+                                                <DiscordIcon className="w-5 h-5 text-[#a5b4fc]" />
+                                                Passer &agrave; 8,03&euro;/mois avec Discord
                                             </button>
                                         )}
                                         {discordError && (
