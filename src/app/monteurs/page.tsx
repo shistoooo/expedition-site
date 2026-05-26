@@ -7,6 +7,7 @@ import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import LandingDemoSection from "@/components/shared/LandingDemoSection";
 import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import MonteursHero from "@/components/monteurs/MonteursHero";
+import MonteursPainSection from "@/components/monteurs/MonteursPainSection";
 import MonteursROICalculator from "@/components/monteurs/MonteursROICalculator";
 import MonteursPricing from "@/components/monteurs/MonteursPricing";
 import MonteursFAQ from "@/components/monteurs/MonteursFAQ";
@@ -28,7 +29,8 @@ export default function MonteursPage() {
           <MonteursHero />
         </Suspense>
         <HomeYoutuberShowcase />
-        <LandingDemoSection accent="purple" />
+        <MonteursPainSection />
+        <LandingDemoSection accent="purple" videoId="SXES1dO68G8" showCtas />
         <MonteursROICalculator />
         <SuitePreviewSection accent="purple" />
         <MonteursPricing />

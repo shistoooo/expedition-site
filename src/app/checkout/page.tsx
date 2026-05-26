@@ -876,15 +876,6 @@ function CheckoutContent() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
-
-                        {/* Founder signature — visible en permanence, pas planquée dans le modal disclaimer */}
-                        <div className="mt-6 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <p className="text-xs text-white/50 leading-relaxed">
-                                <span className="text-white/80 font-semibold">Sign&eacute; Mohamed, fondateur d&apos;Exp&eacute;dition.</span>
-                                {" "}Une question, un doute ? &Eacute;cris-moi directement &mdash; je r&eacute;ponds &agrave; chaque email&nbsp;:{" "}
-                                <a href="mailto:contact@expeditionlauncher.store" className="text-purple-400 hover:text-purple-300 transition-colors">contact@expeditionlauncher.store</a>
-                            </p>
-                        </div>
                     </motion.div>
 
                 </div>

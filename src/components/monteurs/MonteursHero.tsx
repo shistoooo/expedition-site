@@ -16,12 +16,12 @@ export default function MonteursHero() {
   }, []);
 
   const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
-  const ctaLabel = SALES_OPEN ? "Devenir Pionnier — 8,03€/mois" : "Être prévenu au lancement";
+  const ctaLabel = SALES_OPEN ? "Devenir Pionnier" : "Être prévenu au lancement";
 
   return (
     <section
       id="monteurs-hero"
-      className="pt-28 pb-16 md:pt-36 md:pb-24 relative"
+      className="pt-28 pb-4 md:pt-36 md:pb-6 relative"
     >
       {/* Nebula wrapper — clipped to section bounds so it never overflows horizontally,
           but the section itself stays overflow-visible so CTA shadows can breathe */}
@@ -41,27 +41,26 @@ export default function MonteursHero() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
           </span>
-          <span>Pour les monteurs freelance YouTube</span>
+          <span>Pour les monteurs freelance</span>
         </div>
 
-        <div className="mb-6 animate-hero-in" style={{ animationDelay: "0.1s" }}>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-[1.1] tracking-[-0.02em] text-white/90">
-            Le plugin Premiere &amp; DaVinci
-          </h1>
+        <h1
+          className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.1] tracking-[-0.02em] text-white animate-hero-in max-w-5xl text-balance"
+          style={{ animationDelay: "0.1s" }}
+        >
+          Le plugin qui te fait{" "}
           <span
-            className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.15] text-transparent bg-clip-text animate-text-shimmer"
+            className="text-transparent bg-clip-text animate-text-shimmer inline-block whitespace-nowrap"
             style={{
               backgroundImage:
                 "linear-gradient(90deg, #8b5cf6 0%, #a78bfa 25%, #22d3ee 50%, #a78bfa 75%, #8b5cf6 100%)",
               backgroundSize: "200% auto",
-              fontStyle: "oblique 10deg",
             }}
           >
-            qui te fait gagner 5h par mois
-            <br className="hidden lg:block" />
-            {" "}sur tes projets YouTube.
-          </span>
-        </div>
+            gagner du temps et de l&apos;argent
+          </span>{" "}
+          sur chaque montage.
+        </h1>
 
         {/* Bandeau compatibilité — Premiere & DaVinci visibles d'emblée */}
         <div className="mb-6 animate-hero-in" style={{ animationDelay: "0.15s" }}>
@@ -69,18 +68,8 @@ export default function MonteursHero() {
         </div>
 
         <p
-          className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto animate-hero-in"
+          className="text-sm md:text-base text-white/45 italic mb-10 max-w-2xl mx-auto animate-hero-in"
           style={{ animationDelay: "0.2s" }}
-        >
-          Tu montes des vid&eacute;os YouTube pour tes clients&nbsp;? Arr&ecirc;te de jongler entre 20&nbsp;onglets, 4K&nbsp;Video Downloader et des dossiers de rush.{" "}
-          <span className="text-white/80">
-            TubeForge t&eacute;l&eacute;charge et range tes vid&eacute;os de r&eacute;f&eacute;rence directement dans ta timeline.
-          </span>
-        </p>
-
-        <p
-          className="text-sm md:text-base text-white/40 italic mb-10 max-w-2xl mx-auto animate-hero-in"
-          style={{ animationDelay: "0.25s" }}
         >
           &Agrave; ton tarif horaire, l&apos;abonnement est rentabilis&eacute; d&egrave;s le premier projet du mois.
         </p>

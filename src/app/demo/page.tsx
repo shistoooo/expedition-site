@@ -55,7 +55,7 @@ export default function DemoPage() {
 
               <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_30px_80px_-20px_rgba(139,92,246,0.45)] bg-black/40">
                 <div className="aspect-video w-full">
-                  <DemoPlayer autoplay />
+                  <DemoPlayer videoId="XEPdAhDYkB8" autoplay />
                 </div>
               </div>
             </div>

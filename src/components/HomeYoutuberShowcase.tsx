@@ -16,7 +16,7 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
  */
 export default function HomeYoutuberShowcase() {
   return (
-    <section className="pt-2 pb-16 md:pt-4 md:pb-20 relative">
+    <section className="pt-0 pb-16 md:pt-2 md:pb-20 relative">
       <div className="container-main">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -25,7 +25,7 @@ export default function HomeYoutuberShowcase() {
           transition={{ duration: 0.6, ease: easeOutExpo }}
           className="text-center"
         >
-          <p className="text-xs font-mono uppercase tracking-widest text-white/35 mb-7">
+          <p className="text-xs font-mono uppercase tracking-widest text-white/35 mb-10">
             Déjà adopté par
           </p>
 
@@ -44,7 +44,7 @@ export default function HomeYoutuberShowcase() {
                   delay: 0.15 + i * 0.06,
                   ease: easeOutExpo,
                 }}
-                className="group flex flex-col items-center gap-3"
+                className="group flex flex-col items-center gap-4"
                 aria-label={`Chaîne YouTube de @${y.handle}`}
               >
                 <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden ring-2 ring-white/10 group-hover:ring-purple-400/60 transition-all duration-300 group-hover:-translate-y-1.5 shadow-xl shadow-black/30">

@@ -5,6 +5,7 @@ import { ArrowRight, Bell } from "lucide-react";
 import Link from "next/link";
 import { SALES_OPEN } from "@/lib/salesConfig";
 import { useCreateursUtm } from "./useCreateursUtm";
+import CompatBadge from "@/components/shared/CompatBadge";
 
 export default function CreateursHero() {
   const { getDiscordOAuthUrl, fireCtaEvent } = useCreateursUtm();
@@ -15,12 +16,12 @@ export default function CreateursHero() {
   }, []);
 
   const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
-  const ctaLabel = SALES_OPEN ? "Devenir Pionnier — 8,03€/mois" : "Être prévenu au lancement";
+  const ctaLabel = SALES_OPEN ? "Devenir Pionnier" : "Être prévenu au lancement";
 
   return (
     <section
       id="createurs-hero"
-      className="pt-28 pb-16 md:pt-36 md:pb-24 relative"
+      className="pt-28 pb-4 md:pt-36 md:pb-6 relative"
     >
       {/* Nebula wrapper — clipped so it doesn't overflow horizontally,
           but section stays overflow-visible so CTA shadows can breathe */}
@@ -40,43 +41,36 @@ export default function CreateursHero() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
           </span>
-          <span>Pour les cr&eacute;ateurs YouTube qui montent leur contenu</span>
+          <span>Pour les cr&eacute;ateurs qui montent leur contenu</span>
         </div>
 
-        <div className="mb-8 animate-hero-in" style={{ animationDelay: "0.1s" }}>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-[1.1] tracking-[-0.02em] text-white/90">
-            Tes montages YouTube,
-          </h1>
+        <h1
+          className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.1] tracking-[-0.02em] text-white animate-hero-in max-w-4xl text-balance"
+          style={{ animationDelay: "0.1s" }}
+        >
+          Le plugin qui te fait gagner du temps.{" "}
           <span
-            className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.15] text-transparent bg-clip-text animate-text-shimmer"
+            className="text-transparent bg-clip-text animate-text-shimmer inline-block whitespace-nowrap"
             style={{
               backgroundImage:
                 "linear-gradient(90deg, #22d3ee 0%, #67e8f9 25%, #a78bfa 50%, #67e8f9 75%, #22d3ee 100%)",
               backgroundSize: "200% auto",
-              fontStyle: "oblique 10deg",
             }}
           >
-            sans prise de t&ecirc;te. Dans Premiere
-            <br className="hidden lg:block" />
-            {" "}&amp; DaVinci Resolve.
+            Pour sortir plus de vid&eacute;os.
           </span>
+        </h1>
+
+        {/* Bandeau compatibilité — Premiere & DaVinci visibles d'emblée */}
+        <div className="mb-6 animate-hero-in" style={{ animationDelay: "0.15s" }}>
+          <CompatBadge />
         </div>
 
         <p
-          className="text-lg md:text-xl text-white/55 mb-4 max-w-2xl leading-relaxed mx-auto animate-hero-in"
+          className="text-sm md:text-base text-white/45 italic mb-10 max-w-2xl mx-auto animate-hero-in"
           style={{ animationDelay: "0.2s" }}
         >
-          Tu montes toi-m&ecirc;me tes vid&eacute;os. Tu te perds entre les liens &agrave; t&eacute;l&eacute;charger, les fichiers &agrave; ranger, les onglets YouTube qui s&apos;accumulent.{" "}
-          <span className="text-white/80">
-            TubeForge fait tout &ccedil;a pour toi, directement dans ton logiciel de montage.
-          </span>
-        </p>
-
-        <p
-          className="text-sm md:text-base text-white/40 italic mb-10 max-w-2xl mx-auto animate-hero-in"
-          style={{ animationDelay: "0.25s" }}
-        >
-          Moins de prise de t&ecirc;te. Plus de temps pour ce qui compte&nbsp;: ton contenu.
+          Moins de logistique. Plus de tournage, plus de montage, plus de publications.
         </p>
 
         <div

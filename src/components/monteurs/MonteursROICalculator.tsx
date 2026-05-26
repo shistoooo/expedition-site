@@ -176,20 +176,22 @@ export default function MonteursROICalculator() {
 
               <div className="mt-6 pt-5 border-t border-white/[0.08] text-center md:text-left">
                 <p className="text-sm md:text-base text-white/70 leading-relaxed">
-                  TubeForge te co&ucirc;te <strong className="text-white">8,03€/mois</strong>. Avec le temps que tu gagnes, tu peux faire <strong className="text-purple-200">{formatEuro(monthlySavings)}/mois</strong> en plus en prenant un montage suppl&eacute;mentaire.
+                  Concr&egrave;tement&nbsp;: en lib&eacute;rant <strong className="text-white">{formatHoursMinutes(totalHoursSaved)}</strong> par mois, tu peux prendre <strong className="text-white">un montage en plus</strong> &agrave; ton tarif horaire &mdash; soit <strong className="text-purple-200">{formatEuro(monthlySavings)}/mois</strong> de plus en poche, pour <strong className="text-white">8,03€</strong> d&apos;abonnement.
                 </p>
               </div>
             </div>
 
-            {/* Toggle "Voir comment on calcule" */}
+            {/* Toggle "Voir comment on calcule" — pill button bien visible */}
             <div className="text-center">
               <button
                 type="button"
                 onClick={() => setShowDetails(!showDetails)}
                 aria-expanded={showDetails}
-                className="inline-flex items-center gap-1.5 text-sm text-white/55 hover:text-white/90 transition-colors group"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-400/50 text-purple-100 text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+                style={{ boxShadow: "0 0 24px rgba(139,92,246,0.18)" }}
               >
-                {showDetails ? "Masquer le détail du calcul" : "Voir comment on calcule"}
+                <Calculator className="w-4 h-4 text-purple-300" />
+                {showDetails ? "Masquer le détail du calcul" : "Voir comment on arrive à ce chiffre"}
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-300 ${showDetails ? "rotate-180" : ""}`}
                 />
