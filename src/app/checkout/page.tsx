@@ -319,7 +319,11 @@ function CheckoutContent() {
     const initialPlan = searchParams.get("plan") === "yearly" ? "yearly" : "monthly";
     const [plan, setPlan] = useState<PlanType>(initialPlan as PlanType);
     const [step, setStep] = useState<CheckoutStep>("auth");
-    const [email, setEmail] = useState("");
+    // v2026-05-26 — Pré-remplit le champ email depuis ?email=... (passé par
+    // l'Expedition Launcher quand le user clique "S'abonner" depuis l'app).
+    // Le user n'a plus qu'à entrer son mot de passe pour login direct → checkout.
+    const initialEmail = searchParams.get("email") || "";
+    const [email, setEmail] = useState(initialEmail);
     const [password, setPassword] = useState("");
     const initialRef = searchParams.get("ref") || "";
     const [promoCode, setPromoCode] = useState(initialRef);
