@@ -30,7 +30,7 @@ export default function CreateursPage() {
         </Suspense>
         <HomeYoutuberShowcase />
         <CreateursPainSection />
-        <LandingDemoSection accent="cyan" />
+        <LandingDemoSection accent="cyan" showCtas />
         <CreateursBeforeAfter />
         <SuitePreviewSection accent="cyan" />
         <CreateursPricing />
