@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny-ps" viewBox="0 0 512 512">
+  <title>Expedition</title>
+  <!--
+    BIMI logo for Expedition (https://expeditionlauncher.store)
+    Profile : SVG 1.2 Tiny Portable/Secure (per BIMI spec)
+    No scripts, no external refs, opaque background, square viewBox.
+  -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b3aff"/>
+      <stop offset="100%" stop-color="#1a0fc7"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dfe1ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background with diagonal blue/purple gradient -->
+  <rect x="0" y="0" width="512" height="512" rx="112" ry="112" fill="url(#bg)"/>
+
+  <!-- Concentric subtle radio waves (pure shapes, no filter required) -->
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.10">
+    <circle cx="256" cy="256" r="80" stroke-width="2"/>
+    <circle cx="256" cy="256" r="120" stroke-width="2"/>
+    <circle cx="256" cy="256" r="160" stroke-width="2"/>
+    <circle cx="256" cy="256" r="200" stroke-width="2"/>
+  </g>
+
+  <!-- Central upright mark : stylized pen / arrow with a dot center.
+       Constructed from a polygon (body) + a vertical bar (handle) + a circle (pivot). -->
+  <g fill="url(#mark)">
+    <!-- Pen body : tall pentagon pointing up -->
+    <polygon points="256,100 332,200 332,310 180,310 180,200"/>
+    <!-- Handle : vertical bar extending downward from the body -->
+    <rect x="244" y="310" width="24" height="110"/>
+  </g>
+
+  <!-- Pivot dot at the center -->
+  <circle cx="256" cy="256" r="22" fill="#1a0fc7"/>
+  <circle cx="256" cy="256" r="14" fill="url(#mark)"/>
+</svg>
