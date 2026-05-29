@@ -11,7 +11,6 @@ import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import CompatBadge from "@/components/shared/CompatBadge";
 import DemoPlayer from "@/components/DemoPlayer";
-import TubeForgeMockup from "@/components/mockups/TubeForgeMockup";
 import SuiteCarousel from "@/components/shared/SuiteCarousel";
 import { getPartner } from "@/lib/partners";
 import { setPartnerAttribution, trackPartnerAttribution } from "@/lib/partnerAttribution";
@@ -319,7 +318,7 @@ export default function PartnerLandingPage() {
           </div>
         </section>
 
-        {/* ── CE QUI EST PRÉSENT — TubeForge (mockup) + explication + vidéo dédiée ── */}
+        {/* ── C'EST QUOI EXPÉDITION — explication + vidéo dédiée (les mockups sont dans le carousel ci-dessous) ── */}
         <section className="py-12 md:py-16 relative">
           <div className="container-main max-w-4xl">
             <motion.div
@@ -339,26 +338,6 @@ export default function PartnerLandingPage() {
                 Un logiciel sur ton ordi qui regroupe tes outils de production vid&eacute;o. Le premier,{" "}
                 <span className="text-white font-semibold">TubeForge</span>, t&eacute;l&eacute;charge n&apos;importe quelle vid&eacute;o d&apos;internet et la range directement dans Premiere ou DaVinci. Tu colles un lien, &ccedil;a atterrit dans ta timeline.
               </p>
-            </motion.div>
-
-            {/* Mockup TubeForge — panel esthétique de l'outil dispo */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, ease: easeOutExpo }}
-              className="relative"
-            >
-              <div
-                className="absolute -inset-6 pointer-events-none opacity-60"
-                style={{
-                  background: `radial-gradient(ellipse 60% 60% at 50% 40%, ${partner.accentColor}26 0%, ${partner.accentColor2}14 40%, transparent 75%)`,
-                  filter: "blur(50px)",
-                }}
-              />
-              <div className="relative">
-                <TubeForgeMockup />
-              </div>
             </motion.div>
 
             {/* Vidéo dédiée (si fournie) OU slot compact "À remplir" */}

@@ -18,6 +18,9 @@ type Tool = {
   status: "live" | "soon";
   statusLabel: string;
   Mockup: ComponentType;
+  /** Couleur d'identité de l'outil (cohérente avec le site) — pour tagline, puces, glow, tab actif. */
+  color: string;
+  color2: string;
 };
 
 const TOOLS: Tool[] = [
@@ -29,6 +32,8 @@ const TOOLS: Tool[] = [
     status: "live",
     statusLabel: "Dispo maintenant",
     Mockup: TubeForgeMockup,
+    color: "#ef4444", // red — identité TubeForge
+    color2: "#f97316", // orange
   },
   {
     name: "ClipForge",
@@ -38,6 +43,8 @@ const TOOLS: Tool[] = [
     status: "soon",
     statusLabel: "Bientôt",
     Mockup: ClipForgeMockup,
+    color: "#6366f1", // indigo — identité ClipForge
+    color2: "#8b5cf6", // violet
   },
   {
     name: "ReviewForge",
@@ -47,6 +54,8 @@ const TOOLS: Tool[] = [
     status: "soon",
     statusLabel: "Bientôt",
     Mockup: ReviewForgeMockup,
+    color: "#10b981", // emerald — identité ReviewForge
+    color2: "#22d3ee", // cyan
   },
   {
     name: "ScriptForge",
@@ -56,6 +65,8 @@ const TOOLS: Tool[] = [
     status: "soon",
     statusLabel: "À venir",
     Mockup: ScriptForgeMockup,
+    color: "#3b82f6", // blue — identité ScriptForge (proche Fire Writing)
+    color2: "#22d3ee", // cyan
   },
 ];
 
@@ -139,8 +150,8 @@ export default function SuiteCarousel({
                 style={
                   isActive
                     ? {
-                        background: `${accentColor}1f`,
-                        border: `1px solid ${accentColor}55`,
+                        background: `${tool.color}1f`,
+                        border: `1px solid ${tool.color}66`,
                         color: "#fff",
                       }
                     : {
@@ -189,7 +200,7 @@ export default function SuiteCarousel({
                 </h3>
                 <p
                   className="text-sm font-mono uppercase tracking-wider mb-4"
-                  style={{ color: accentColor2 }}
+                  style={{ color: active.color2 }}
                 >
                   {active.tagline}
                 </p>
@@ -201,9 +212,9 @@ export default function SuiteCarousel({
                     <li key={f} className="flex items-start gap-2.5 text-left">
                       <span
                         className="mt-1 w-4 h-4 rounded-full flex items-center justify-center shrink-0"
-                        style={{ background: `${accentColor}26`, border: `1px solid ${accentColor}4d` }}
+                        style={{ background: `${active.color}26`, border: `1px solid ${active.color}4d` }}
                       >
-                        <Check className="w-2.5 h-2.5" style={{ color: accentColor2 }} />
+                        <Check className="w-2.5 h-2.5" style={{ color: active.color2 }} />
                       </span>
                       <span className="text-white/75 text-sm leading-relaxed">{f}</span>
                     </li>
@@ -214,11 +225,11 @@ export default function SuiteCarousel({
               {/* Mockup (droite desktop) — hauteur uniforme entre tous les outils,
                   alignée en haut + fade-out en bas pour les mockups qui débordent (TubeForge). */}
               <div className="relative order-1 lg:order-2">
-                {/* glow derrière le mockup */}
+                {/* glow derrière le mockup — couleur de l'outil actif */}
                 <div
-                  className="absolute -inset-6 pointer-events-none opacity-60"
+                  className="absolute -inset-6 pointer-events-none opacity-60 transition-opacity duration-500"
                   style={{
-                    background: `radial-gradient(ellipse 60% 60% at 50% 40%, ${accentColor}26 0%, ${accentColor2}12 45%, transparent 75%)`,
+                    background: `radial-gradient(ellipse 60% 60% at 50% 40%, ${active.color}26 0%, ${active.color2}12 45%, transparent 75%)`,
                     filter: "blur(45px)",
                   }}
                 />
@@ -236,9 +247,9 @@ export default function SuiteCarousel({
                     <div
                       className="px-4 py-2 rounded-full text-white font-semibold text-xs shadow-2xl backdrop-blur-xl"
                       style={{
-                        background: `${accentColor}33`,
-                        border: `1px solid ${accentColor}66`,
-                        boxShadow: `0 0 30px ${accentColor}40`,
+                        background: `${active.color}33`,
+                        border: `1px solid ${active.color}66`,
+                        boxShadow: `0 0 30px ${active.color}40`,
                       }}
                     >
                       Arrive prochainement
@@ -276,7 +287,7 @@ export default function SuiteCarousel({
               className="h-2 rounded-full transition-all duration-300"
               style={{
                 width: i === index ? 24 : 8,
-                background: i === index ? accentColor : "rgba(255,255,255,0.15)",
+                background: i === index ? tool.color : "rgba(255,255,255,0.15)",
               }}
             />
           ))}
