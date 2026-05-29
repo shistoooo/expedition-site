@@ -35,7 +35,7 @@ export const PARTNERS: Record<string, Partner> = {
     slug: "firewriting",
     name: "Fire Writing",
     community: "Fire Writers",
-    logo: "/partners/firewriting.png",
+    logo: "/partners/firewriting.webp",
     accentColor: "#3b82f6", // blue-500
     accentColor2: "#22d3ee", // cyan-400
     tagline: "L'écriture qui prend feu, le montage qui suit.",
