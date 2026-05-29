@@ -63,12 +63,14 @@ export const PARTNERS: Record<string, Partner> = {
     // Social proof — fourni : 500 membres sur le serveur.
     membersLabel: "500 membres",
 
-    // ── À REMPLIR par Fire Writing : citation des 3 fondateurs (texte + noms) ──
-    founderQuote: undefined,
-    founderName: undefined, // ex: "Tom, Marie & Lucas"
+    // Citation des fondateurs — noms fournis. Le texte ci-dessous est une
+    // PROPOSITION à faire valider par Yasser, Tommate & Lucasvr avant la prod.
+    founderQuote:
+      "Nos membres produisent du contenu vidéo non-stop. La prépa, le téléchargement des références, c'est du temps qu'on préfère passer à créer. Expédition règle ça proprement — c'est pour ça qu'on le partage avec les Fire Writers.",
+    founderName: "Yasser, Tommate & Lucasvr",
     founderRole: "Fondateurs de Fire Writing",
     communityUrl: undefined,
-    draft: true,
+    draft: false,
   },
 };
 
