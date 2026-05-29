@@ -238,7 +238,7 @@ export default function PartnerLandingPage() {
             >
               Tarif Pionnier &mdash;{" "}
               <span className="font-bold text-white">8,03&euro;/mois, bloqu&eacute; &agrave; vie</span>.
-              Le m&ecirc;me que pour la communaut&eacute;, ouvert aux {partner.community}.
+              Le m&ecirc;me tarif que pour la communaut&eacute; Discord.
             </motion.p>
 
             {/* Trust micro-row */}
@@ -372,7 +372,7 @@ export default function PartnerLandingPage() {
               transition={{ duration: 0.6, ease: easeOutExpo }}
             >
               <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] mb-4 leading-tight">
-                Pr&ecirc;t &agrave; rejoindre l&apos;exp&eacute;dition, {partner.community}&nbsp;?
+                Pr&ecirc;t &agrave; rejoindre l&apos;exp&eacute;dition&nbsp;?
               </h2>
               <p className="text-white/55 mb-8 leading-relaxed">
                 <strong className="text-white">8,03&euro;/mois, bloqu&eacute; &agrave; vie.</strong> Quand le catalogue grossit, ton prix ne bouge pas.

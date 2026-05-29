@@ -66,7 +66,7 @@ export const PARTNERS: Record<string, Partner> = {
     // Citation des fondateurs — noms fournis. Le texte ci-dessous est une
     // PROPOSITION à faire valider par Yasser, Tommate & Lucasvr avant la prod.
     founderQuote:
-      "Nos membres produisent du contenu vidéo non-stop. La prépa, le téléchargement des références, c'est du temps qu'on préfère passer à créer. Expédition règle ça proprement — c'est pour ça qu'on le partage avec les Fire Writers.",
+      "Nos membres produisent du contenu vidéo non-stop. La prépa, le téléchargement des références, c'est du temps qu'on préfère passer à créer. Expédition règle ça proprement — c'est pour ça qu'on le partage avec la commu.",
     founderName: "Yasser, Tommate & Lucasvr",
     founderRole: "Fondateurs de Fire Writing",
     communityUrl: undefined,

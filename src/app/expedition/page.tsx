@@ -174,7 +174,7 @@ export default function ExpeditionPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none" />
 
         <div className="container-main text-center max-w-2xl mx-auto relative z-10">
-          <h2 className="text-4xl font-bold mb-6">Prêt à décoller ?</h2>
+          <h2 className="text-4xl font-bold mb-6">Prêt à rejoindre l&apos;expédition ?</h2>
           <p className="text-xl text-white/60 mb-10">
             Les places sont limitées pour garantir la qualité de l&apos;accompagnement.
             Remplissez le formulaire pour postuler à la prochaine vague.
@@ -182,10 +182,10 @@ export default function ExpeditionPage() {
 
           <a
             href="/pricing"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/25"
+            className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/25"
           >
             Rejoindre l&apos;Expédition
-            <Rocket className="w-5 h-5" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
           </a>
           <p className="mt-4 text-sm text-white/30">
             Accès immédiat au Launcher et à TubeForge (Vague 1). ClipForge (Vague 2) et ReviewForge (Vague 3) arrivent bientôt.

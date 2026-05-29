@@ -94,7 +94,7 @@ export default function UpgradeCTA({
         <ul className="space-y-2.5 mb-5">
           {[
             { icon: Zap, label: "Vitesse maximale", desc: "Fragments parallèles, pas de bridage" },
-            { icon: Video, label: "Jusqu'en 4K", desc: "Qualité sans limite" },
+            { icon: Video, label: "Jusqu'en 4K", desc: "Sans recompression" },
             { icon: Scissors, label: "Découpe vidéo", desc: "Sélectionnez l'extrait exact" },
             { icon: FileText, label: "Import de script", desc: "Tous les liens en un clic" },
             { icon: Download, label: "Illimité", desc: "Pas de limite quotidienne" },
