@@ -136,16 +136,22 @@ export default function PartnerLandingPage() {
               {/* Connecteur × */}
               <span className="text-2xl md:text-3xl font-light text-white/30 select-none">&times;</span>
 
-              {/* Wordmark Expédition */}
+              {/* Logo Expédition */}
               <div
-                className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl shrink-0 flex items-center justify-center"
+                className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shrink-0"
                 style={{
-                  background: "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(34,211,238,0.12))",
                   border: "1px solid rgba(139,92,246,0.4)",
                   boxShadow: "0 0 40px rgba(139,92,246,0.35), 0 8px 24px rgba(0,0,0,0.4)",
                 }}
               >
-                <span className="text-3xl md:text-4xl">🧭</span>
+                <Image
+                  src="/partners/expedition.png"
+                  alt="Logo Expédition"
+                  fill
+                  sizes="96px"
+                  className="object-cover"
+                  priority
+                />
               </div>
             </motion.div>
 
