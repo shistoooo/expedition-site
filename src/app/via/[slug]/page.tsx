@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, MessageCircle, Sparkles, X } from "lucide-react";
+import { ArrowRight, Play, MessageCircle, Sparkles, X, Quote, Users, Pencil } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
@@ -21,6 +21,27 @@ const features = [
   "Découpe l'extrait exact avant de télécharger — pas après",
   "Importe ton script, toutes les références se téléchargent en un clic",
 ] as const;
+
+/**
+ * Encart "À REMPLIR" — affiché à la place d'un élément de preuve vide quand le
+ * partenaire est en mode brouillon (draft). Permet d'envoyer la démo au
+ * partenaire pour qu'il voie où placer sa citation / ses chiffres.
+ */
+function DraftSlot({ label, hint }: { label: string; hint: string }) {
+  return (
+    <div
+      className="rounded-xl border-2 border-dashed border-amber-400/40 bg-amber-400/[0.04] p-5 text-center"
+      role="note"
+    >
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-200 text-[11px] font-bold uppercase tracking-wider mb-2">
+        <Pencil className="w-3 h-3" />
+        À remplir
+      </div>
+      <p className="text-white/70 text-sm font-semibold">{label}</p>
+      <p className="text-white/40 text-xs mt-1">{hint}</p>
+    </div>
+  );
+}
 
 export default function PartnerLandingPage() {
   const params = useParams();
@@ -208,15 +229,85 @@ export default function PartnerLandingPage() {
               </Link>
             </motion.div>
 
+            {/* Prix — tarif communauté, angle privilège */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.45 }}
+              className="text-sm text-white/70 mt-5"
+            >
+              Tarif Pionnier &mdash;{" "}
+              <span className="font-bold text-white">8,03&euro;/mois, bloqu&eacute; &agrave; vie</span>.
+              Le m&ecirc;me que pour la communaut&eacute;, ouvert aux {partner.community}.
+            </motion.p>
+
             {/* Trust micro-row */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="text-xs text-white/40 mt-5"
+              transition={{ duration: 0.5, delay: 0.55 }}
+              className="text-xs text-white/40 mt-2"
             >
-              Annulable 1 clic &middot; Sans engagement &middot; Tarif bloqu&eacute; &agrave; vie
+              Annulable 1 clic &middot; Sans engagement &middot; Sans code promo &agrave; saisir
             </motion.p>
+          </div>
+        </section>
+
+        {/* ── PREUVE — mot du partenaire + social proof (placeholders si draft) ── */}
+        <section className="py-12 md:py-16 relative">
+          <div className="container-main max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: easeOutExpo }}
+              className="space-y-5"
+            >
+              {/* Compteur membres */}
+              {partner.membersLabel ? (
+                <div className="flex items-center justify-center gap-2 text-white/55 text-sm">
+                  <Users className="w-4 h-4" style={{ color: partner.accentColor2 }} />
+                  <span>
+                    <strong className="text-white">{partner.membersLabel}</strong> font d&eacute;j&agrave; partie de {partner.name}
+                  </span>
+                </div>
+              ) : partner.draft ? (
+                <DraftSlot
+                  label={`Nombre de membres ${partner.name}`}
+                  hint='ex : "+2 400 copywriters, monteurs et youtubeurs" — affiché comme preuve sociale'
+                />
+              ) : null}
+
+              {/* Citation du fondateur */}
+              {partner.founderQuote ? (
+                <figure
+                  className="relative rounded-2xl p-6 md:p-7"
+                  style={{
+                    background: `linear-gradient(135deg, ${partner.accentColor}14, rgba(255,255,255,0.02))`,
+                    border: `1px solid ${partner.accentColor}33`,
+                  }}
+                >
+                  <Quote className="w-7 h-7 mb-3" style={{ color: `${partner.accentColor2}88` }} />
+                  <blockquote className="text-white/85 text-base md:text-lg leading-relaxed italic mb-4">
+                    {partner.founderQuote}
+                  </blockquote>
+                  <figcaption className="flex items-center gap-2 text-sm">
+                    <span className="font-semibold text-white">{partner.founderName}</span>
+                    {partner.founderRole && (
+                      <>
+                        <span className="text-white/20">&middot;</span>
+                        <span className="text-white/45">{partner.founderRole}</span>
+                      </>
+                    )}
+                  </figcaption>
+                </figure>
+              ) : partner.draft ? (
+                <DraftSlot
+                  label={`Mot du fondateur de ${partner.name}`}
+                  hint="2 phrases : pourquoi tu recommandes Expédition à ta communauté. + ton nom + ton rôle."
+                />
+              ) : null}
+            </motion.div>
           </div>
         </section>
 
@@ -284,7 +375,7 @@ export default function PartnerLandingPage() {
                 Pr&ecirc;t &agrave; rejoindre l&apos;exp&eacute;dition, {partner.community}&nbsp;?
               </h2>
               <p className="text-white/55 mb-8 leading-relaxed">
-                Tarif Pionnier bloqu&eacute; &agrave; vie. Quand le catalogue grossit, ton prix ne bouge pas.
+                <strong className="text-white">8,03&euro;/mois, bloqu&eacute; &agrave; vie.</strong> Quand le catalogue grossit, ton prix ne bouge pas.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link

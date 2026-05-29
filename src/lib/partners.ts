@@ -6,7 +6,12 @@
  * voir src/lib/partnerAttribution.ts.
  *
  * Pour ajouter un partenaire : ajoute une entrée ici + dépose son logo dans
- * public/partners/<slug>.png (ou .svg). C'est tout.
+ * public/partners/<slug>.png|webp. C'est tout.
+ *
+ * MODE BROUILLON (`draft: true`) : les champs de preuve laissés vides
+ * (founderQuote, membersLabel, etc.) affichent un encart "À REMPLIR" visible
+ * sur la landing. Pratique pour envoyer la démo au partenaire afin qu'il voie
+ * où placer sa citation / ses chiffres. Une fois rempli, passe `draft` à false.
  */
 
 export type Partner = {
@@ -28,6 +33,19 @@ export type Partner = {
   intro: string;
   /** URL du Discord / communauté du partenaire (optionnel). */
   communityUrl?: string;
+
+  // ── Éléments de preuve (optionnels — placeholder "À REMPLIR" si draft + vide) ──
+  /** Citation du fondateur / représentant du partenaire. */
+  founderQuote?: string;
+  /** Nom de l'auteur de la citation. */
+  founderName?: string;
+  /** Rôle de l'auteur (ex: "Fondateur de Fire Writing"). */
+  founderRole?: string;
+  /** Label social proof (ex: "+2 400 membres", "Communauté de 5 000 créateurs"). */
+  membersLabel?: string;
+
+  /** Si true : les champs de preuve vides affichent un encart "À REMPLIR". */
+  draft?: boolean;
 };
 
 export const PARTNERS: Record<string, Partner> = {
@@ -40,8 +58,15 @@ export const PARTNERS: Record<string, Partner> = {
     accentColor2: "#22d3ee", // cyan-400
     tagline: "L'écriture qui prend feu, le montage qui suit.",
     intro:
-      "Tu viens de la communauté Fire Writing. Ici, on partage la même obsession : créer mieux, plus vite, sans se noyer dans la logistique. Fire Writing t'aide à écrire — Expédition s'occupe du reste de ta production vidéo.",
+      "Tu viens de Fire Writing. Que tu écrives, que tu tournes ou que tu montes, on partage la même obsession : créer mieux, plus vite, sans se noyer dans la logistique. Fire Writing t'aide à poser les mots — Expédition s'occupe de toute la partie vidéo derrière.",
+
+    // ── À REMPLIR par Fire Writing (mode brouillon actif) ──
+    founderQuote: undefined,
+    founderName: undefined,
+    founderRole: undefined,
+    membersLabel: undefined,
     communityUrl: undefined,
+    draft: true,
   },
 };
 
