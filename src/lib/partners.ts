@@ -43,6 +43,9 @@ export type Partner = {
   founderRole?: string;
   /** Label social proof (ex: "+2 400 membres", "Communauté de 5 000 créateurs"). */
   membersLabel?: string;
+  /** ID YouTube de la vidéo "C'est quoi Expédition" dédiée au partenaire.
+   *  Vide + draft → slot vidéo "À REMPLIR". */
+  videoDemoId?: string;
 
   /** Si true : les champs de preuve vides affichent un encart "À REMPLIR". */
   draft?: boolean;
@@ -70,7 +73,11 @@ export const PARTNERS: Record<string, Partner> = {
     founderName: "Yasser, Tommate & Lucasvr",
     founderRole: "Fondateurs de Fire Writing",
     communityUrl: undefined,
-    draft: false,
+
+    // ── À REMPLIR : vidéo "C'est quoi Expédition" dédiée Fire Writing ──
+    // (centrée sur leur problématique). Slot "À remplir" affiché tant que vide.
+    videoDemoId: undefined,
+    draft: true,
   },
 };
 

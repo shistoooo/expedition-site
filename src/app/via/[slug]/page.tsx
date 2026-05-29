@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import CompatBadge from "@/components/shared/CompatBadge";
+import DemoPlayer from "@/components/DemoPlayer";
 import { getPartner } from "@/lib/partners";
 import { setPartnerAttribution, trackPartnerAttribution } from "@/lib/partnerAttribution";
 
@@ -306,6 +307,63 @@ export default function PartnerLandingPage() {
                   label={`Mot des fondateurs de ${partner.name}`}
                   hint="2-3 phrases : pourquoi vous recommandez Expédition à la communauté. + les noms des 3 fondateurs."
                 />
+              ) : null}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ── C'EST QUOI EXPÉDITION — explication claire + vidéo (ou slot draft) ── */}
+        <section className="py-12 md:py-16 relative">
+          <div className="container-main max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: easeOutExpo }}
+              className="text-center mb-8"
+            >
+              <h2 className="text-2xl md:text-3xl font-black tracking-[-0.02em] mb-4 leading-tight">
+                C&apos;est quoi Exp&eacute;dition, concr&egrave;tement&nbsp;?
+              </h2>
+              <p className="text-base md:text-lg text-white/60 leading-relaxed">
+                Un logiciel sur ton ordi qui regroupe tes outils de production vid&eacute;o. Le premier,{" "}
+                <span className="text-white font-semibold">TubeForge</span>, t&eacute;l&eacute;charge n&apos;importe quelle vid&eacute;o d&apos;internet et la range directement dans Premiere ou DaVinci &mdash; sans onglets, sans dossiers qui tra&icirc;nent. Tu colles un lien, &ccedil;a atterrit dans ta timeline.
+              </p>
+            </motion.div>
+
+            {/* Vidéo dédiée OU slot "À remplir" */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, delay: 0.1, ease: easeOutExpo }}
+            >
+              {partner.videoDemoId ? (
+                <div
+                  className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40"
+                  style={{ boxShadow: `0 20px 60px -15px ${partner.accentColor}40` }}
+                >
+                  <div className="aspect-video w-full">
+                    <DemoPlayer videoId={partner.videoDemoId} />
+                  </div>
+                </div>
+              ) : partner.draft ? (
+                <div
+                  className="aspect-video w-full rounded-2xl border-2 border-dashed border-amber-400/40 bg-amber-400/[0.04] flex flex-col items-center justify-center text-center px-6"
+                  role="note"
+                >
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-200 text-[11px] font-bold uppercase tracking-wider mb-3">
+                    <Play className="w-3 h-3" />
+                    Vid&eacute;o &agrave; remplir
+                  </div>
+                  <p className="text-white/70 text-sm font-semibold max-w-md">
+                    Vid&eacute;o &laquo;&nbsp;C&apos;est quoi Exp&eacute;dition&nbsp;&raquo; centr&eacute;e sur {partner.name}
+                  </p>
+                  <p className="text-white/40 text-xs mt-1.5 max-w-md">
+                    1-2 min qui partent de VOTRE probl&eacute;matique (la galère de prépa vidéo de vos membres)
+                    et montrent comment Exp&eacute;dition la r&eacute;sout. À tourner, puis on met l&apos;ID YouTube ici.
+                  </p>
+                </div>
               ) : null}
             </motion.div>
           </div>
