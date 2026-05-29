@@ -59,9 +59,9 @@ export const PARTNERS: Record<string, Partner> = {
     logo: "/partners/firewriting.webp",
     accentColor: "#3b82f6", // blue-500
     accentColor2: "#22d3ee", // cyan-400
-    tagline: "L'écriture qui prend feu, le montage qui suit.",
+    tagline: "Plus d'outils à chaque vague. Le même prix, à vie.",
     intro:
-      "Tu viens de Fire Writing. Que tu écrives, que tu tournes ou que tu montes, on partage la même obsession : créer mieux, plus vite, sans se noyer dans la logistique. Fire Writing t'aide à poser les mots — Expédition s'occupe de toute la partie vidéo derrière.",
+      "Tu viens de Fire Writing. Expédition, c'est une suite d'outils pour créateurs de contenu. Regarde TubeForge : développé sans relâche jusqu'à te faire gagner des heures sur la prépa de tes vidéos. Les prochains suivent le même chemin — inclus dans ton abonnement, sans surcoût. Tu rejoins maintenant : ton prix est bloqué, sur tout ce qui arrive.",
 
     // Social proof — fourni : 500 membres sur le serveur.
     membersLabel: "500 membres",

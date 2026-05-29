@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, MessageCircle, Sparkles, X, Quote, Users, Pencil } from "lucide-react";
+import { ArrowRight, Play, MessageCircle, Sparkles, X, Quote, Users, Pencil, Download, Scissors, MessageSquare, Check, Clock } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
@@ -17,10 +17,36 @@ import { setPartnerAttribution, trackPartnerAttribution } from "@/lib/partnerAtt
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT";
 
-const features = [
-  "Télécharge tes vidéos de référence directement dans Premiere & DaVinci",
-  "Découpe l'extrait exact avant de télécharger — pas après",
-  "Importe ton script, toutes les références se téléchargent en un clic",
+// Roadmap des vagues — matérialise l'axe "la suite grandit, ton prix reste bloqué".
+const waves = [
+  {
+    icon: Download,
+    name: "TubeForge",
+    desc: "Télécharge n'importe quelle vidéo d'internet directement dans ton montage.",
+    status: "live" as const,
+    statusLabel: "Dispo — amélioré en continu",
+  },
+  {
+    icon: Scissors,
+    name: "ClipForge",
+    desc: "Transforme tes vidéos longues en clips courts, automatiquement.",
+    status: "soon" as const,
+    statusLabel: "Bientôt",
+  },
+  {
+    icon: MessageSquare,
+    name: "ReviewForge",
+    desc: "Fais valider tes montages par tes clients, sans aller-retours.",
+    status: "soon" as const,
+    statusLabel: "Bientôt",
+  },
+  {
+    icon: Sparkles,
+    name: "Et la suite",
+    desc: "De nouveaux outils, décidés avec la communauté. Tous inclus.",
+    status: "soon" as const,
+    statusLabel: "À venir",
+  },
 ] as const;
 
 /**
@@ -369,7 +395,7 @@ export default function PartnerLandingPage() {
           </div>
         </section>
 
-        {/* ── PITCH — ce que fait Expédition ───────────────────────────── */}
+        {/* ── ROADMAP — la suite grandit, ton prix reste bloqué ──────────── */}
         <section className="py-16 md:py-20 relative bg-[#06051a]/60">
           <div className="container-main max-w-4xl">
             <motion.div
@@ -380,43 +406,79 @@ export default function PartnerLandingPage() {
               className="text-center mb-12"
             >
               <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-3">
-                Ce que tu d&eacute;bloques
+                Ce qui arrive
               </p>
               <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] leading-tight">
-                Le plugin qui te fait{" "}
+                Un abonnement. Une suite qui{" "}
                 <span
                   className="text-transparent bg-clip-text"
                   style={{ backgroundImage: `linear-gradient(90deg, ${partner.accentColor}, ${partner.accentColor2})` }}
                 >
-                  gagner du temps et de l&apos;argent
+                  s&apos;agrandit.
                 </span>
               </h2>
             </motion.div>
 
-            <div className="space-y-4 max-w-2xl mx-auto">
-              {features.map((feature, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: i * 0.08, ease: easeOutExpo }}
-                  className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.07]"
-                >
-                  <div
-                    className="mt-0.5 w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-sm font-bold"
+            {/* Vagues d'outils */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {waves.map((wave, i) => {
+                const live = wave.status === "live";
+                return (
+                  <motion.div
+                    key={wave.name}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: i * 0.07, ease: easeOutExpo }}
+                    className="relative rounded-2xl p-5 flex flex-col gap-3"
                     style={{
-                      background: `${partner.accentColor}22`,
-                      border: `1px solid ${partner.accentColor}44`,
-                      color: partner.accentColor2,
+                      background: live ? `${partner.accentColor}0f` : "rgba(255,255,255,0.02)",
+                      border: live ? `1px solid ${partner.accentColor}40` : "1px solid rgba(255,255,255,0.07)",
                     }}
                   >
-                    {i + 1}
-                  </div>
-                  <p className="text-white/75 leading-relaxed pt-0.5">{feature}</p>
-                </motion.div>
-              ))}
+                    <div className="flex items-center justify-between">
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center"
+                        style={{
+                          background: `${partner.accentColor}1a`,
+                          border: `1px solid ${partner.accentColor}33`,
+                        }}
+                      >
+                        <wave.icon className="w-4 h-4" style={{ color: partner.accentColor2 }} />
+                      </div>
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                          live ? "text-emerald-200" : "text-white/45"
+                        }`}
+                        style={
+                          live
+                            ? { background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)" }
+                            : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
+                        }
+                      >
+                        {live ? <Check className="w-2.5 h-2.5" /> : <Clock className="w-2.5 h-2.5" />}
+                        {wave.statusLabel}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-base mb-1">{wave.name}</h3>
+                      <p className="text-white/55 text-sm leading-relaxed">{wave.desc}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
+
+            {/* Clôture — le deal */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-center text-white/60 text-sm md:text-base mt-8 max-w-xl mx-auto leading-relaxed"
+            >
+              <strong className="text-white">Tous inclus dans ton abonnement.</strong> Plus le catalogue grossit, plus tu y gagnes &mdash; et ton tarif Pionnier ne bouge pas.
+            </motion.p>
           </div>
         </section>
 
