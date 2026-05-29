@@ -6,6 +6,7 @@ import { Check, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import TubeForgeMockup from "@/components/mockups/TubeForgeMockup";
 import ClipForgeMockup from "@/components/mockups/ClipForgeMockup";
 import ReviewForgeMockup from "@/components/mockups/ReviewForgeMockup";
+import ScriptForgeMockup from "@/components/mockups/ScriptForgeMockup";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -46,6 +47,15 @@ const TOOLS: Tool[] = [
     status: "soon",
     statusLabel: "Bientôt",
     Mockup: ReviewForgeMockup,
+  },
+  {
+    name: "ScriptForge",
+    tagline: "Recherche, puis écris",
+    desc: "Trouve ton angle, tes sources, tes accroches — puis écris ton script au même endroit, avec l'IA qui t'assiste. Pensé pour ceux qui partent du texte.",
+    features: ["Recherche ton sujet et tes meilleures sources", "Écris ton script avec l'assistant IA", "Des accroches qui retiennent dès la 1re seconde"],
+    status: "soon",
+    statusLabel: "À venir",
+    Mockup: ScriptForgeMockup,
   },
 ];
 
@@ -201,7 +211,8 @@ export default function SuiteCarousel({
                 </ul>
               </div>
 
-              {/* Mockup (droite desktop) — flouté léger si "soon" */}
+              {/* Mockup (droite desktop) — hauteur uniforme entre tous les outils,
+                  alignée en haut + fade-out en bas pour les mockups qui débordent (TubeForge). */}
               <div className="relative order-1 lg:order-2">
                 {/* glow derrière le mockup */}
                 <div
@@ -211,8 +222,13 @@ export default function SuiteCarousel({
                     filter: "blur(45px)",
                   }}
                 />
-                <div className={`relative ${active.status === "soon" ? "blur-[2px] select-none pointer-events-none" : ""}`}>
-                  <active.Mockup />
+                {/* Conteneur de hauteur fixe commune → uniformité, zéro saut entre outils */}
+                <div className="relative h-[440px] md:h-[520px] overflow-hidden rounded-[20px]">
+                  <div className={`${active.status === "soon" ? "blur-[2px] select-none pointer-events-none" : ""}`}>
+                    <active.Mockup />
+                  </div>
+                  {/* fade-out bas — masque élégamment la coupe des mockups hauts */}
+                  <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-[#06051a] to-transparent pointer-events-none z-10" />
                 </div>
                 {/* Badge "Arrive prochainement" sur les outils soon */}
                 {active.status === "soon" && (
