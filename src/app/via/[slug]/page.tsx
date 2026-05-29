@@ -303,8 +303,8 @@ export default function PartnerLandingPage() {
                 </figure>
               ) : partner.draft ? (
                 <DraftSlot
-                  label={`Mot du fondateur de ${partner.name}`}
-                  hint="2 phrases : pourquoi tu recommandes Expédition à ta communauté. + ton nom + ton rôle."
+                  label={`Mot des fondateurs de ${partner.name}`}
+                  hint="2-3 phrases : pourquoi vous recommandez Expédition à la communauté. + les noms des 3 fondateurs."
                 />
               ) : null}
             </motion.div>

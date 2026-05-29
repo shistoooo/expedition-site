@@ -60,11 +60,13 @@ export const PARTNERS: Record<string, Partner> = {
     intro:
       "Tu viens de Fire Writing. Que tu écrives, que tu tournes ou que tu montes, on partage la même obsession : créer mieux, plus vite, sans se noyer dans la logistique. Fire Writing t'aide à poser les mots — Expédition s'occupe de toute la partie vidéo derrière.",
 
-    // ── À REMPLIR par Fire Writing (mode brouillon actif) ──
+    // Social proof — fourni : 500 membres sur le serveur.
+    membersLabel: "500 membres",
+
+    // ── À REMPLIR par Fire Writing : citation des 3 fondateurs (texte + noms) ──
     founderQuote: undefined,
-    founderName: undefined,
-    founderRole: undefined,
-    membersLabel: undefined,
+    founderName: undefined, // ex: "Tom, Marie & Lucas"
+    founderRole: "Fondateurs de Fire Writing",
     communityUrl: undefined,
     draft: true,
   },
