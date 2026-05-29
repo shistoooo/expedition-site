@@ -1,4 +1,32 @@
 ---
+### [2026-05-29 03:30] — Attribution partenaires (Fire Writing) + landing /via/<slug>
+
+**Quoi :** Système de tracking des ventes par partenaire SANS code promo. Un partenaire (ex: Fire Writing) partage un lien `/via/firewriting` → cookie d'attribution first-touch 30j → envoyé au worker au checkout → stocké en BDD (`users.partner_slug`) + metadata Stripe. Landing personnalisée mélangeant l'univers du partenaire et celui d'Expédition.
+
+**Pourquoi :** Mesurer le ROI exact (100% des achats confirmés) de chaque partenariat, sans diluer la marge avec une remise et sans dépendre d'un code à copier-coller.
+
+**Fichiers touchés (expedition-site) :**
+- `src/lib/partners.ts` — registry des partenaires (Fire Writing configuré : accent #3b82f6→#22d3ee)
+- `src/lib/partnerAttribution.ts` — cookie first-touch + tracking Clarity/GA4
+- `src/app/via/[slug]/page.tsx` — landing perso (hero handshake, pitch, CTA final)
+- `src/app/via/[slug]/layout.tsx` — force-dynamic + robots noindex
+- `src/app/checkout/page.tsx` — envoie `partnerSlug` à /auth/register et /portal/subscribe
+- `src/app/robots.ts` — /via en disallow
+
+**Fichiers touchés (expedition-launcher/licensing — worker, NON commité, chantier en cours) :**
+- `migrations/0013_users_partner_attribution.sql` — colonne users.partner_slug + index
+- `src/db/queries.ts` — setUserPartnerSlug (first-touch, n'overwrite pas) + getPartnerConversions
+- `src/routes/auth.ts` + `src/routes/portal.ts` — acceptent partnerSlug, stockent en BDD + metadata Stripe
+- `src/services/stripe.ts` — createIncompleteSubscription accepte un param metadata optionnel
+- `src/routes/admin.ts` — GET /admin/partners/conversions (stats par partenaire)
+
+**Comment annuler :** Frontend : `git revert 69119fb`. Worker : non commité, `git checkout` les 6 fichiers + supprimer migration 0013.
+
+**Effets de bord possibles :** Le frontend envoie `partnerSlug` au worker. Tant que le worker n'est pas déployé avec la migration appliquée, ce champ est ignoré silencieusement (try/catch). Aucun impact sur les inscriptions existantes. Déployer dans l'ordre : migration D1 → worker → frontend.
+
+**TODO :** Déposer `public/partners/firewriting.png` (fallback "F" en dégradé en attendant).
+
+---
 ### [2026-05-21 18:30] — Phase 4 + ajustements splash full-screen
 
 **Quoi :**
