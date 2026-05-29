@@ -12,6 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { SALES_OPEN } from "@/lib/salesConfig";
+import { getPartnerAttribution } from "@/lib/partnerAttribution";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL;
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -394,12 +395,14 @@ function CheckoutContent() {
 
         try {
             const promoTrimmed = promoCode.trim() || undefined;
+            // Partner attribution — lit le cookie posé sur /via/<slug> (sans code promo).
+            const partnerSlug = getPartnerAttribution() || undefined;
 
             // 1. Try to register (new account)
             const registerRes = await fetch(`${WORKER_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, promoCode: promoTrimmed, plan, discordUserId: discordUserId || undefined }),
+                body: JSON.stringify({ email, password, promoCode: promoTrimmed, plan, discordUserId: discordUserId || undefined, partnerSlug }),
             });
 
             const registerData = await registerRes.json();
@@ -447,7 +450,7 @@ function CheckoutContent() {
                         "Authorization": `Bearer ${loginData.accessToken}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ plan, promoCode: promoTrimmed, discordUserId: discordUserId || undefined }),
+                    body: JSON.stringify({ plan, promoCode: promoTrimmed, discordUserId: discordUserId || undefined, partnerSlug }),
                 });
 
                 const subData = await subRes.json();
