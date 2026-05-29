@@ -12,7 +12,7 @@ import PageBackground from "@/components/PageBackground";
 import CompatBadge from "@/components/shared/CompatBadge";
 import DemoPlayer from "@/components/DemoPlayer";
 import TubeForgeMockup from "@/components/mockups/TubeForgeMockup";
-import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
+import SuiteCarousel from "@/components/shared/SuiteCarousel";
 import { getPartner } from "@/lib/partners";
 import { setPartnerAttribution, trackPartnerAttribution } from "@/lib/partnerAttribution";
 
@@ -396,8 +396,8 @@ export default function PartnerLandingPage() {
           </div>
         </section>
 
-        {/* ── CE QUI ARRIVE — mockups ClipForge + ReviewForge (réutilise SuitePreviewSection) ── */}
-        <SuitePreviewSection accent="cyan" />
+        {/* ── LA SUITE — carousel des outils (TubeForge dispo + ClipForge/ReviewForge à venir) ── */}
+        <SuiteCarousel accentColor={partner.accentColor} accentColor2={partner.accentColor2} />
 
         {/* ── CTA FINAL ────────────────────────────────────────────────── */}
         <section className="py-20 md:py-28 relative">
