@@ -5,49 +5,19 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, MessageCircle, Sparkles, X, Quote, Users, Pencil, Download, Scissors, MessageSquare, Check, Clock } from "lucide-react";
+import { ArrowRight, Play, MessageCircle, Sparkles, X, Quote, Users, Pencil } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import CompatBadge from "@/components/shared/CompatBadge";
 import DemoPlayer from "@/components/DemoPlayer";
+import TubeForgeMockup from "@/components/mockups/TubeForgeMockup";
+import SuitePreviewSection from "@/components/shared/SuitePreviewSection";
 import { getPartner } from "@/lib/partners";
 import { setPartnerAttribution, trackPartnerAttribution } from "@/lib/partnerAttribution";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT";
-
-// Roadmap des vagues — matérialise l'axe "la suite grandit, ton prix reste bloqué".
-const waves = [
-  {
-    icon: Download,
-    name: "TubeForge",
-    desc: "Télécharge n'importe quelle vidéo d'internet directement dans ton montage.",
-    status: "live" as const,
-    statusLabel: "Dispo — amélioré en continu",
-  },
-  {
-    icon: Scissors,
-    name: "ClipForge",
-    desc: "Transforme tes vidéos longues en clips courts, automatiquement.",
-    status: "soon" as const,
-    statusLabel: "Bientôt",
-  },
-  {
-    icon: MessageSquare,
-    name: "ReviewForge",
-    desc: "Fais valider tes montages par tes clients, sans aller-retours.",
-    status: "soon" as const,
-    statusLabel: "Bientôt",
-  },
-  {
-    icon: Sparkles,
-    name: "Et la suite",
-    desc: "De nouveaux outils, décidés avec la communauté. Tous inclus.",
-    status: "soon" as const,
-    statusLabel: "À venir",
-  },
-] as const;
 
 /**
  * Encart "À REMPLIR" — affiché à la place d'un élément de preuve vide quand le
@@ -211,6 +181,17 @@ export default function PartnerLandingPage() {
               className="text-3xl md:text-5xl lg:text-6xl font-black mb-5 leading-[1.1] tracking-[-0.02em] text-white max-w-4xl text-balance"
             >
               {partner.tagline}
+              {partner.taglineAccent && (
+                <>
+                  {" "}
+                  <span
+                    className="text-transparent bg-clip-text"
+                    style={{ backgroundImage: `linear-gradient(90deg, ${partner.accentColor}, ${partner.accentColor2})` }}
+                  >
+                    {partner.taglineAccent}
+                  </span>
+                </>
+              )}
             </motion.h1>
 
             {/* Intro — explique le partenariat (univers mélangé) */}
@@ -338,31 +319,55 @@ export default function PartnerLandingPage() {
           </div>
         </section>
 
-        {/* ── C'EST QUOI EXPÉDITION — explication claire + vidéo (ou slot draft) ── */}
+        {/* ── CE QUI EST PRÉSENT — TubeForge (mockup) + explication + vidéo dédiée ── */}
         <section className="py-12 md:py-16 relative">
-          <div className="container-main max-w-3xl">
+          <div className="container-main max-w-4xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, ease: easeOutExpo }}
-              className="text-center mb-8"
+              className="text-center mb-10"
             >
+              <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-3">
+                Dispo maintenant
+              </p>
               <h2 className="text-2xl md:text-3xl font-black tracking-[-0.02em] mb-4 leading-tight">
                 C&apos;est quoi Exp&eacute;dition, concr&egrave;tement&nbsp;?
               </h2>
-              <p className="text-base md:text-lg text-white/60 leading-relaxed">
+              <p className="text-base md:text-lg text-white/60 leading-relaxed max-w-2xl mx-auto">
                 Un logiciel sur ton ordi qui regroupe tes outils de production vid&eacute;o. Le premier,{" "}
-                <span className="text-white font-semibold">TubeForge</span>, t&eacute;l&eacute;charge n&apos;importe quelle vid&eacute;o d&apos;internet et la range directement dans Premiere ou DaVinci &mdash; sans onglets, sans dossiers qui tra&icirc;nent. Tu colles un lien, &ccedil;a atterrit dans ta timeline.
+                <span className="text-white font-semibold">TubeForge</span>, t&eacute;l&eacute;charge n&apos;importe quelle vid&eacute;o d&apos;internet et la range directement dans Premiere ou DaVinci. Tu colles un lien, &ccedil;a atterrit dans ta timeline.
               </p>
             </motion.div>
 
-            {/* Vidéo dédiée OU slot "À remplir" */}
+            {/* Mockup TubeForge — panel esthétique de l'outil dispo */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, ease: easeOutExpo }}
+              className="relative"
+            >
+              <div
+                className="absolute -inset-6 pointer-events-none opacity-60"
+                style={{
+                  background: `radial-gradient(ellipse 60% 60% at 50% 40%, ${partner.accentColor}26 0%, ${partner.accentColor2}14 40%, transparent 75%)`,
+                  filter: "blur(50px)",
+                }}
+              />
+              <div className="relative">
+                <TubeForgeMockup />
+              </div>
+            </motion.div>
+
+            {/* Vidéo dédiée (si fournie) OU slot compact "À remplir" */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.5, delay: 0.1, ease: easeOutExpo }}
+              className="mt-8"
             >
               {partner.videoDemoId ? (
                 <div
@@ -375,19 +380,15 @@ export default function PartnerLandingPage() {
                 </div>
               ) : partner.draft ? (
                 <div
-                  className="aspect-video w-full rounded-2xl border-2 border-dashed border-amber-400/40 bg-amber-400/[0.04] flex flex-col items-center justify-center text-center px-6"
+                  className="rounded-xl border-2 border-dashed border-amber-400/40 bg-amber-400/[0.04] px-5 py-4 flex items-center gap-4"
                   role="note"
                 >
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-200 text-[11px] font-bold uppercase tracking-wider mb-3">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-200 text-[11px] font-bold uppercase tracking-wider shrink-0">
                     <Play className="w-3 h-3" />
                     Vid&eacute;o &agrave; remplir
                   </div>
-                  <p className="text-white/70 text-sm font-semibold max-w-md">
-                    Vid&eacute;o &laquo;&nbsp;C&apos;est quoi Exp&eacute;dition&nbsp;&raquo; centr&eacute;e sur {partner.name}
-                  </p>
-                  <p className="text-white/40 text-xs mt-1.5 max-w-md">
-                    1-2 min qui partent de VOTRE probl&eacute;matique (la galère de prépa vidéo de vos membres)
-                    et montrent comment Exp&eacute;dition la r&eacute;sout. À tourner, puis on met l&apos;ID YouTube ici.
+                  <p className="text-white/55 text-xs leading-relaxed">
+                    Une démo vid&eacute;o (1-2 min) centr&eacute;e sur la probl&eacute;matique de {partner.name} viendra ici &mdash; &agrave; tourner, puis on met l&apos;ID YouTube.
                   </p>
                 </div>
               ) : null}
@@ -395,92 +396,8 @@ export default function PartnerLandingPage() {
           </div>
         </section>
 
-        {/* ── ROADMAP — la suite grandit, ton prix reste bloqué ──────────── */}
-        <section className="py-16 md:py-20 relative bg-[#06051a]/60">
-          <div className="container-main max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, ease: easeOutExpo }}
-              className="text-center mb-12"
-            >
-              <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-3">
-                Ce qui arrive
-              </p>
-              <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] leading-tight">
-                Un abonnement. Une suite qui{" "}
-                <span
-                  className="text-transparent bg-clip-text"
-                  style={{ backgroundImage: `linear-gradient(90deg, ${partner.accentColor}, ${partner.accentColor2})` }}
-                >
-                  s&apos;agrandit.
-                </span>
-              </h2>
-            </motion.div>
-
-            {/* Vagues d'outils */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {waves.map((wave, i) => {
-                const live = wave.status === "live";
-                return (
-                  <motion.div
-                    key={wave.name}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: i * 0.07, ease: easeOutExpo }}
-                    className="relative rounded-2xl p-5 flex flex-col gap-3"
-                    style={{
-                      background: live ? `${partner.accentColor}0f` : "rgba(255,255,255,0.02)",
-                      border: live ? `1px solid ${partner.accentColor}40` : "1px solid rgba(255,255,255,0.07)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div
-                        className="w-9 h-9 rounded-lg flex items-center justify-center"
-                        style={{
-                          background: `${partner.accentColor}1a`,
-                          border: `1px solid ${partner.accentColor}33`,
-                        }}
-                      >
-                        <wave.icon className="w-4 h-4" style={{ color: partner.accentColor2 }} />
-                      </div>
-                      <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                          live ? "text-emerald-200" : "text-white/45"
-                        }`}
-                        style={
-                          live
-                            ? { background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)" }
-                            : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
-                        }
-                      >
-                        {live ? <Check className="w-2.5 h-2.5" /> : <Clock className="w-2.5 h-2.5" />}
-                        {wave.statusLabel}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-white text-base mb-1">{wave.name}</h3>
-                      <p className="text-white/55 text-sm leading-relaxed">{wave.desc}</p>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            {/* Clôture — le deal */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-center text-white/60 text-sm md:text-base mt-8 max-w-xl mx-auto leading-relaxed"
-            >
-              <strong className="text-white">Tous inclus dans ton abonnement.</strong> Plus le catalogue grossit, plus tu y gagnes &mdash; et ton tarif Pionnier ne bouge pas.
-            </motion.p>
-          </div>
-        </section>
+        {/* ── CE QUI ARRIVE — mockups ClipForge + ReviewForge (réutilise SuitePreviewSection) ── */}
+        <SuitePreviewSection accent="cyan" />
 
         {/* ── CTA FINAL ────────────────────────────────────────────────── */}
         <section className="py-20 md:py-28 relative">

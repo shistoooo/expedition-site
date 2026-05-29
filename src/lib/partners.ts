@@ -27,8 +27,10 @@ export type Partner = {
   accentColor: string;
   /** Couleur secondaire pour le dégradé. */
   accentColor2: string;
-  /** Phrase d'accroche personnalisée affichée sur la landing. */
+  /** Début du H1 (blanc). */
   tagline: string;
+  /** Fin du H1, rendue en dégradé aux couleurs du partenaire (accent visuel). */
+  taglineAccent?: string;
   /** Court paragraphe qui explique le partenariat (univers mélangé). */
   intro: string;
   /** URL du Discord / communauté du partenaire (optionnel). */
@@ -59,7 +61,8 @@ export const PARTNERS: Record<string, Partner> = {
     logo: "/partners/firewriting.webp",
     accentColor: "#3b82f6", // blue-500
     accentColor2: "#22d3ee", // cyan-400
-    tagline: "Plus d'outils à chaque vague. Le même prix, à vie.",
+    tagline: "Plus d'outils à chaque vague.",
+    taglineAccent: "Le même prix, à vie.",
     intro:
       "Tu viens de Fire Writing. Expédition, c'est une suite d'outils pour créateurs de contenu. Regarde TubeForge : développé sans relâche jusqu'à te faire gagner des heures sur la prépa de tes vidéos. Les prochains suivent le même chemin — inclus dans ton abonnement, sans surcoût. Tu rejoins maintenant : ton prix est bloqué, sur tout ce qui arrive.",
 
