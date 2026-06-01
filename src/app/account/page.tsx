@@ -88,11 +88,10 @@ function AccountPaymentForm({ onSuccess }: { onSuccess: () => void }) {
         });
 
         if (confirmError) {
-            if (confirmError.type === "card_error" || confirmError.type === "validation_error") {
-                setError(confirmError.message || "Le paiement a échoué.");
-            } else {
-                setError("Une erreur inattendue est survenue.");
-            }
+            // Affiche toujours le message Stripe en priorité (couvre card_error,
+            // validation_error, invalid_request_error, etc.). Fallback explicite
+            // qui suggère la carte si l'utilisateur a tenté un wallet (Link/PayPal).
+            setError(confirmError.message || "Le paiement a échoué. Essayez avec une autre carte ou vérifiez votre moyen de paiement.");
             setLoading(false);
         } else {
             onSuccess();
