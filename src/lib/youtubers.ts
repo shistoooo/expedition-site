@@ -13,7 +13,7 @@ export type Youtuber = {
 };
 
 export const youtubers: Youtuber[] = [
-  { handle: "jalbrax", url: "https://www.youtube.com/@jalbrax", avatar: "/youtubers/jalbrax.jpg" },
+  { handle: "jal", url: "https://www.youtube.com/@jalbrax", avatar: "/youtubers/jalbrax.jpg" },
   { handle: "PetitShiny", url: "https://www.youtube.com/@PetitShiny", avatar: "/youtubers/petitshiny.jpg" },
   { handle: "Rezma91", url: "https://www.youtube.com/@Rezma91", avatar: "/youtubers/rezma91.jpg" },
   { handle: "Maxim-well", url: "https://www.youtube.com/@Maxim-well", avatar: "/youtubers/maxim-well.jpg" },
