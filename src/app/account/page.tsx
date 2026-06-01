@@ -63,7 +63,7 @@ const stripeAppearance = {
 
 type PlanType = "monthly" | "yearly";
 const PLANS = {
-    monthly: { price: 9.99, label: "/mois" },
+    monthly: { price: 11.99, label: "/mois" },
     yearly: { price: 99.99, label: "/an" },
 };
 
@@ -840,7 +840,7 @@ export default function AccountPage() {
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className="text-xl font-bold">9,99&euro;</div>
+                                                    <div className="text-xl font-bold">11,99&euro;</div>
                                                     <div className="text-xs text-white/40">/ mois</div>
                                                 </div>
                                             </div>
@@ -1339,7 +1339,7 @@ export default function AccountPage() {
                                                         </div>
                                                     );
                                                 })}
-                                                <p className="text-[10px] text-white/25 text-center">Bas&eacute; sur l&apos;abonnement mensuel &agrave; 9,99€ — 42% de commission pendant 6 mois par filleul.</p>
+                                                <p className="text-[10px] text-white/25 text-center">Bas&eacute; sur l&apos;abonnement mensuel &agrave; 11,99€ — 42% de commission pendant 6 mois par filleul.</p>
                                             </div>
 
                                             <button

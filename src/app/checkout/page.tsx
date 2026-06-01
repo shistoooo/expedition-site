@@ -63,7 +63,7 @@ const stripeAppearance = {
 type PlanType = "monthly" | "yearly";
 
 const PLANS = {
-    monthly: { price: 9.99, label: "/mois", period: "mois" },
+    monthly: { price: 11.99, label: "/mois", period: "mois" },
     yearly: { price: 99.99, label: "/an", period: "an" },
 };
 
@@ -556,8 +556,8 @@ function CheckoutContent() {
                                     {plan === "monthly" && discordVerified ? (
                                         <>
                                             <div className="flex items-baseline gap-2 justify-end">
-                                                <span className="text-base text-white/35 line-through tabular-nums">9,99&euro;</span>
-                                                <span className="text-2xl font-bold text-emerald-400 tabular-nums">6,69&euro;</span>
+                                                <span className="text-base text-white/35 line-through tabular-nums">11,99&euro;</span>
+                                                <span className="text-2xl font-bold text-emerald-400 tabular-nums">8,03&euro;</span>
                                             </div>
                                             <div className="text-white/40 text-xs text-right">/mois</div>
                                             <div className="text-emerald-400 text-xs font-semibold mt-1">Tarif Pionnier Discord appliqu&eacute;</div>
@@ -575,7 +575,7 @@ function CheckoutContent() {
                                             {plan === "monthly" && (
                                                 <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/25">
                                                     <span className="text-emerald-300 text-[11px] font-semibold whitespace-nowrap">
-                                                        &rarr; 6,69&euro;/mois avec Discord
+                                                        &rarr; 8,03&euro;/mois avec Discord
                                                     </span>
                                                 </div>
                                             )}
@@ -719,7 +719,7 @@ function CheckoutContent() {
                                                 className="w-full py-3.5 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/40 text-white hover:bg-[#5865F2]/25 hover:border-[#5865F2]/60 transition-all text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#5865F2]/15"
                                             >
                                                 <DiscordIcon className="w-5 h-5 text-[#a5b4fc]" />
-                                                Passer &agrave; 6,69&euro;/mois avec Discord
+                                                Passer &agrave; 8,03&euro;/mois avec Discord
                                             </button>
                                         )}
                                         {discordError && (
