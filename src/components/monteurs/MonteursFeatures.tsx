@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Layers, Search, FileText, Scissors } from "lucide-react";
+import { Layers, Search, FileText, Scissors, Puzzle } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -42,6 +42,12 @@ const features = [
     title: "Découpe avant téléchargement",
     desc: "Une vidéo de 2h dont tu n’as besoin que de 30 secondes&nbsp;? Sélectionne le passage sur la timeline et télécharge juste ça. Économie de stockage et de temps de coupe.",
   },
+  {
+    icon: Puzzle,
+    title: "Extension navigateur : YouTube → Premiere en 1 clic",
+    desc: "Tu tombes sur une vidéo YouTube en sourcing&nbsp;? L’extension Chrome/Firefox TubeForge envoie la vidéo <strong class=\"text-white/65\">directement</strong> vers Premiere Pro ou DaVinci Resolve. Plus de download manuel, plus de Finder, plus de fichiers qui traînent. Pour les monteurs qui ouvrent 30 onglets par projet.",
+    highlight: true,
+  },
 ];
 
 export default function MonteursFeatures() {
@@ -78,17 +84,32 @@ export default function MonteursFeatures() {
             <motion.li
               key={i}
               variants={itemVariants}
-              className="group relative p-6 md:p-7 rounded-2xl border border-white/[0.08] hover:border-white/[0.18] transition-all duration-300"
+              className={`group relative p-6 md:p-7 rounded-2xl border transition-all duration-300 ${
+                f.highlight
+                  ? "md:col-span-2 border-purple-500/25 hover:border-purple-500/45"
+                  : "border-white/[0.08] hover:border-white/[0.18]"
+              }`}
               style={{
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.005) 100%)",
+                background: f.highlight
+                  ? "linear-gradient(135deg, rgba(168,85,247,0.06) 0%, rgba(255,255,255,0.01) 100%)"
+                  : "linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.005) 100%)",
               }}
             >
+              {/* Petit badge "Nouveau" sur l'item highlighted — uniquement la
+                  feature extension, comme un "ne loupe pas ça" subtil. */}
+              {f.highlight && (
+                <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-[10px] font-mono uppercase tracking-wider text-purple-300">
+                  Nouveau
+                </span>
+              )}
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-purple-500/15 transition-all duration-300">
                 <f.icon className="w-5 h-5 text-purple-300" />
               </div>
               <h3 className="font-bold text-white text-lg md:text-xl mb-2 leading-snug">{f.title}</h3>
-              <p className="text-sm md:text-[15px] text-white/45 leading-relaxed">{f.desc}</p>
+              <p
+                className="text-sm md:text-[15px] text-white/45 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: f.desc }}
+              />
             </motion.li>
           ))}
         </motion.ul>
