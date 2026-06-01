@@ -48,27 +48,21 @@ export default function HomeYoutuberShowcase() {
             Déjà adopté par
           </p>
 
+          {/* Mask-image natif au lieu de 2 fade-mask en background-color :
+              l'ancienne version superposait un rectangle de couleur #06051a
+              qui rendait le bord visiblement "carré". Le mask masque l'opacité
+              elle-même → fondu vraiment continu sur le fond étoilé. */}
           <div
             className="relative max-w-3xl mx-auto"
-            style={{ overflowX: "hidden", overflowY: "visible" }}
+            style={{
+              overflowX: "hidden",
+              overflowY: "visible",
+              maskImage:
+                "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%)",
+            }}
           >
-            {/* Fade-mask gauche — gradient vers le fond pour absorber l'entrée */}
-            <div
-              className="pointer-events-none absolute left-0 top-0 bottom-0 w-20 md:w-28 z-10"
-              style={{
-                background:
-                  "linear-gradient(to right, #06051a 20%, transparent)",
-              }}
-            />
-            {/* Fade-mask droite */}
-            <div
-              className="pointer-events-none absolute right-0 top-0 bottom-0 w-20 md:w-28 z-10"
-              style={{
-                background:
-                  "linear-gradient(to left, #06051a 20%, transparent)",
-              }}
-            />
-
             {/* Le marquee — utilise `.animate-marquee` du globals.css
                 (keyframes translateX(0) → translateX(-50%), pause au :hover
                 déjà gérée par la classe). Plus fiable que framer-motion pour
