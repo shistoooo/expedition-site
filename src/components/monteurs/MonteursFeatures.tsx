@@ -45,7 +45,7 @@ const features = [
   {
     icon: Puzzle,
     title: "Extension navigateur : YouTube → Premiere en 1 clic",
-    desc: "Tu tombes sur une vidéo YouTube en sourcing&nbsp;? L’extension Chrome/Firefox TubeForge envoie la vidéo <strong class=\"text-white/65\">directement</strong> vers Premiere Pro ou DaVinci Resolve. Plus de download manuel, plus de Finder, plus de fichiers qui traînent. Pour les monteurs qui ouvrent 30 onglets par projet.",
+    desc: "Tu tombes sur une vidéo YouTube en sourcing&nbsp;? L’extension Chrome/Firefox TubeForge envoie la vidéo <strong class=\"text-white/65\">directement</strong> vers Premiere Pro ou DaVinci Resolve. Plus de download manuel, plus de Finder, plus de fichiers qui traînent. <span class=\"text-white/35\">Installable depuis l’app TubeForge en 1 clic.</span>",
     highlight: true,
   },
 ];
