@@ -27,8 +27,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Valide le token auprès du worker avant de poser le cookie.
+    // ⚠️ /auth/web-me lit le token depuis le header COOKIE (expedition_session),
+    // PAS depuis Authorization. On envoie les deux par sécurité.
     const meRes = await fetch(`${WORKER_URL}/auth/web-me`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Cookie: `expedition_session=${token}`,
+      },
     });
     if (!meRes.ok) {
       return NextResponse.json({ error: "token invalide" }, { status: 401 });
