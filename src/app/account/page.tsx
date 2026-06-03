@@ -17,6 +17,11 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
+// v2026-06-03 — Le login Discord DOIT démarrer et finir sur le MÊME domaine
+// worker que le redirect_uri enregistré côté Discord (= PUBLIC_ORIGIN). Sinon
+// le cookie `state` posé au /start (api.clipapp.uk) n'est pas renvoyé au
+// /callback (workers.dev) → invalid_state. On force donc le domaine workers.dev.
+const DISCORD_AUTH_ORIGIN = "https://expedition-licensing.expedition-studio.workers.dev";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_live_51JicqfFeRMzmhuFlENwkuNgIT1Eu4dXjdrzgjXTAvSbMDrLeEeOVwe5sKXwPOKQE3JilpVVi84pRGvl0isY1ZVlV00aKp2MkBc");
 
 const stripeAppearance = {
@@ -852,7 +857,7 @@ export default function AccountPage() {
                                     type="button"
                                     onClick={() => {
                                         const next = `${window.location.origin}/account`;
-                                        window.location.href = `${WORKER_URL}/auth/discord/start?next=${encodeURIComponent(next)}`;
+                                        window.location.href = `${DISCORD_AUTH_ORIGIN}/auth/discord/start?next=${encodeURIComponent(next)}`;
                                     }}
                                     className="w-full py-3.5 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white font-semibold transition-all flex items-center justify-center gap-2.5"
                                 >
