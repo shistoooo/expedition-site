@@ -237,16 +237,15 @@ export default function PartnerLandingPage() {
               </Link>
             </motion.div>
 
-            {/* Prix — tarif communauté, angle privilège */}
+            {/* Prix — même tarif que la communauté Discord, pas de majoration (le prix exact est déjà dans le H1) */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.45 }}
               className="text-sm text-white/70 mt-5"
             >
-              Tarif Pionnier &mdash;{" "}
-              <span className="font-bold text-white">8,03&euro;/mois, bloqu&eacute; &agrave; vie</span>.
-              Le m&ecirc;me tarif que pour la communaut&eacute; Discord.
+              C&apos;est le tarif Pionnier de la communaut&eacute; Discord &mdash; tu rejoins maintenant,{" "}
+              <span className="font-bold text-white">il ne bouge plus</span>.
             </motion.p>
 
             {/* Trust micro-row */}
