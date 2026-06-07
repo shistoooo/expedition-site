@@ -36,9 +36,11 @@ type ReviewForgeSectionProps = {
   layout?: "vertical" | "horizontal";
   /** Si true : mockup flouté + overlay "Arrive prochainement" + CTA "Voir plus" vers /tools. Pour la home. */
   blurred?: boolean;
+  /** Si fourni : ajoute un bouton secondaire "Découvrir ReviewForge" sous le mockup, vers la page dédiée. */
+  detailHref?: string;
 };
 
-export default function ReviewForgeSection({ layout = "vertical", blurred = false }: ReviewForgeSectionProps = {}) {
+export default function ReviewForgeSection({ layout = "vertical", blurred = false, detailHref }: ReviewForgeSectionProps = {}) {
   const horizontal = layout === "horizontal";
   return (
     <motion.div
@@ -136,6 +138,17 @@ export default function ReviewForgeSection({ layout = "vertical", blurred = fals
           </div>
         )}
       </div>
+
+      {/* Bouton secondaire vers la page dédiée — apparaît seulement si detailHref fourni (grilles d'aperçu) */}
+      {detailHref && (
+        <Link
+          href={detailHref}
+          className="group/detail mt-6 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.06] text-emerald-200 font-semibold text-sm hover:bg-emerald-500/15 hover:border-emerald-400/50 hover:text-white transition-all duration-200"
+        >
+          Découvrir ReviewForge
+          <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover/detail:translate-x-1" />
+        </Link>
+      )}
     </motion.div>
   );
 }

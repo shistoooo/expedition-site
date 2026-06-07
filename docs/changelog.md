@@ -1,4 +1,25 @@
 ---
+### [2026-06-07 15:25] — Pages dédiées /clipforge & /reviewforge + boutons "Découvrir" sous la grille
+
+**Quoi :** Deux pages de présentation autonomes (`/clipforge`, `/reviewforge`) : hero d'identité (indigo / emerald), emplacement vidéo (`DemoPlayer`, prêt à recevoir l'ID YouTube — encart "démo bientôt" tant qu'il est vide), section features + mockup réel, et une feuille de route "Où on en est" (tracker des Vagues : TubeForge livré → ClipForge en dev → ReviewForge prévu). En entrée : deux boutons secondaires "Découvrir ClipForge/ReviewForge" ajoutés sous chaque panneau des grilles d'aperçu (home + monteurs/créateurs).
+
+**Pourquoi :** Les panneaux ClipForge/ReviewForge "Arrive prochainement" ne menaient nulle part. Une page par outil permet de présenter le logiciel + son avancement (avec la vidéo déjà dispo) sans alourdir la home. Le CTA principal "Réserver ma place" reste intact ; le nouveau bouton est secondaire (ghost, couleur de l'outil).
+
+**Fichiers touchés :**
+- `src/app/clipforge/page.tsx` + `layout.tsx` — page dédiée ClipForge (indigo) + métadonnées SEO
+- `src/app/reviewforge/page.tsx` + `layout.tsx` — page dédiée ReviewForge (emerald) + métadonnées SEO
+- `src/components/shared/SuiteRoadmap.tsx` — NOUVEAU : tracker des Vagues réutilisable (prop `highlight`)
+- `src/components/ToolsSection.tsx` — prop opt-in `detailHref?` → bouton secondaire indigo sous le mockup + import `Link`
+- `src/components/ReviewForgeSection.tsx` — prop opt-in `detailHref?` → bouton secondaire emerald sous le mockup
+- `src/components/SecondaryToolsGrid.tsx` + `src/components/shared/SuitePreviewSection.tsx` — passent `detailHref` aux deux sections
+
+**Comment annuler :** `git revert <hash>` ; ou supprimer `src/app/clipforge/`, `src/app/reviewforge/`, `src/components/shared/SuiteRoadmap.tsx`, et retirer la prop `detailHref` (+ son usage) des 4 composants.
+
+**Effets de bord possibles :** `detailHref` est opt-in (défaut `undefined`) → zéro impact là où les sections sont rendues sans (ex: layout horizontal). Les 2 vidéos ne sont pas branchées : constantes `CLIPFORGE_VIDEO_ID` / `REVIEWFORGE_VIDEO_ID` vides → encart placeholder affiché.
+
+**TODO :** Coller les 2 IDs YouTube dans les constantes en haut de chaque page ; valider/ajuster les statuts dans `SuiteRoadmap` quand une vague change d'état.
+
+---
 ### [2026-05-29 03:30] — Attribution partenaires (Fire Writing) + landing /via/<slug>
 
 **Quoi :** Système de tracking des ventes par partenaire SANS code promo. Un partenaire (ex: Fire Writing) partage un lien `/via/firewriting` → cookie d'attribution first-touch 30j → envoyé au worker au checkout → stocké en BDD (`users.partner_slug`) + metadata Stripe. Landing personnalisée mélangeant l'univers du partenaire et celui d'Expédition.
