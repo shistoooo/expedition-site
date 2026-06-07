@@ -58,10 +58,17 @@ type DemoPlayerProps = {
   videoId?: string;
   /** Force the player to autoplay as soon as the YouTube API is ready (muted) */
   autoplay?: boolean;
+  /** Titre accessible de l'iframe (lecteurs d'écran). Défaut = démo TubeForge. */
+  title?: string;
   className?: string;
 };
 
-export default function DemoPlayer({ videoId = DEFAULT_VIDEO_ID, autoplay = false, className = "" }: DemoPlayerProps) {
+export default function DemoPlayer({
+  videoId = DEFAULT_VIDEO_ID,
+  autoplay = false,
+  title = "TubeForge — Démo du plugin Premiere Pro & DaVinci Resolve",
+  className = "",
+}: DemoPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
 
@@ -112,7 +119,7 @@ export default function DemoPlayer({ videoId = DEFAULT_VIDEO_ID, autoplay = fals
     <iframe
       ref={iframeRef}
       src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&enablejsapi=1${autoplayParam}`}
-      title="TubeForge — Démo du plugin Premiere Pro & DaVinci Resolve"
+      title={title}
       loading="lazy"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowFullScreen

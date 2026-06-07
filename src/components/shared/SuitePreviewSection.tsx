@@ -51,8 +51,8 @@ export default function SuitePreviewSection({ accent = "purple" }: SuitePreviewS
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-          <ToolsSection blurred />
-          <ReviewForgeSection blurred />
+          <ToolsSection blurred detailHref="/clipforge" />
+          <ReviewForgeSection blurred detailHref="/reviewforge" />
         </div>
 
         <motion.div

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowRight, Link2, Upload, Focus, Crop, TrendingUp, Anchor, Eye, Download, Edit, Trash2, Play, ScanFace, Type, Sparkles } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -241,9 +242,11 @@ type ToolsSectionProps = {
   layout?: "vertical" | "horizontal";
   /** Si true : mockup flouté + overlay "Arrive prochainement" + CTA "Voir plus" vers /tools. Pour la home. */
   blurred?: boolean;
+  /** Si fourni : ajoute un bouton secondaire "Découvrir ClipForge" sous le mockup, vers la page dédiée. */
+  detailHref?: string;
 };
 
-export default function ToolsSection({ layout = "vertical", blurred = false }: ToolsSectionProps = {}) {
+export default function ToolsSection({ layout = "vertical", blurred = false, detailHref }: ToolsSectionProps = {}) {
   const horizontal = layout === "horizontal";
   return (
     <motion.div
@@ -341,6 +344,17 @@ export default function ToolsSection({ layout = "vertical", blurred = false }: T
           </div>
         )}
       </div>
+
+      {/* Bouton secondaire vers la page dédiée — apparaît seulement si detailHref fourni (grilles d'aperçu) */}
+      {detailHref && (
+        <Link
+          href={detailHref}
+          className="group/detail mt-6 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-xl border border-indigo-400/25 bg-indigo-500/[0.06] text-indigo-200 font-semibold text-sm hover:bg-indigo-500/15 hover:border-indigo-400/50 hover:text-white transition-all duration-200"
+        >
+          Découvrir ClipForge
+          <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover/detail:translate-x-1" />
+        </Link>
+      )}
     </motion.div>
   );
 }
