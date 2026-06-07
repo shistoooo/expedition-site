@@ -5,13 +5,14 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, MessageCircle, Sparkles, X, Quote, Users, Pencil } from "lucide-react";
+import { ArrowRight, Play, MessageCircle, Sparkles, X, Quote, Pencil } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import CompatBadge from "@/components/shared/CompatBadge";
 import DemoPlayer from "@/components/DemoPlayer";
 import SuiteCarousel from "@/components/shared/SuiteCarousel";
+import HomeYoutuberShowcase from "@/components/HomeYoutuberShowcase";
 import { getPartner } from "@/lib/partners";
 import { setPartnerAttribution, trackPartnerAttribution } from "@/lib/partnerAttribution";
 
@@ -260,7 +261,10 @@ export default function PartnerLandingPage() {
           </div>
         </section>
 
-        {/* ── PREUVE — mot du partenaire + social proof (placeholders si draft) ── */}
+        {/* ── PREUVE 1 — créateurs qui utilisent déjà TubeForge (vrais YouTubeurs) ── */}
+        <HomeYoutuberShowcase />
+
+        {/* ── PREUVE 2 — mot des fondateurs du partenaire (placeholder si draft) ── */}
         <section className="py-12 md:py-16 relative">
           <div className="container-main max-w-3xl">
             <motion.div
@@ -270,21 +274,6 @@ export default function PartnerLandingPage() {
               transition={{ duration: 0.6, ease: easeOutExpo }}
               className="space-y-5"
             >
-              {/* Compteur membres */}
-              {partner.membersLabel ? (
-                <div className="flex items-center justify-center gap-2 text-white/55 text-sm">
-                  <Users className="w-4 h-4" style={{ color: partner.accentColor2 }} />
-                  <span>
-                    <strong className="text-white">{partner.membersLabel}</strong> font d&eacute;j&agrave; partie de {partner.name}
-                  </span>
-                </div>
-              ) : partner.draft ? (
-                <DraftSlot
-                  label={`Nombre de membres ${partner.name}`}
-                  hint='ex : "+2 400 copywriters, monteurs et youtubeurs" — affiché comme preuve sociale'
-                />
-              ) : null}
-
               {/* Citation du fondateur */}
               {partner.founderQuote ? (
                 <figure

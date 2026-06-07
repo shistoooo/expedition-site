@@ -1,4 +1,19 @@
 ---
+### [2026-06-07 20:17] — Audit copywriting /via/firewriting : preuve sociale réelle + H1/intro
+
+**Quoi :** Itération copywriting sur la landing partenaire Fire Writing. (1) Preuve sociale : le compteur « 500 membres Fire Writing » (preuve faible — c'est leur chiffre, ça ne prouve rien sur Expédition) est remplacé par le bandeau des **vrais YouTubeurs** qui utilisent déjà TubeForge (`HomeYoutuberShowcase`). (2) H1 : « Plus d'outils à chaque vague » (jargon interne « vague ») → « Aujourd'hui un outil. Demain toute une suite. » (3) Intro resserrée (retiré « développé sans relâche » centré-boîte + « créateurs de contenu » générique).
+
+**Pourquoi :** Audit copywriting demandé. Le nombre d'utilisateurs est une preuve faible ; *qui* utilise le produit (vrais YouTubeurs nommés) convainc plus. Décision honnêteté : **pas** d'« offre réservée » (il n'y en a aucune pour Fire Writing), **aucun** chiffre inventé.
+
+**Fichiers touchés :**
+- `src/lib/partners.ts` — H1 (`tagline`) + `intro` Fire Writing réécrits
+- `src/app/via/[slug]/page.tsx` — `HomeYoutuberShowcase` en preuve #1, retrait du bloc compteur membres, import `Users` supprimé
+
+**Comment annuler :** `git revert <hash>`.
+
+**Effets de bord possibles :** `membersLabel` dans `partners.ts` n'est plus affiché (champ orphelin, inoffensif). `HomeYoutuberShowcase` réutilisé tel quel (déjà présent sur home/monteurs/créateurs).
+
+---
 ### [2026-06-07 15:25] — Pages dédiées /clipforge & /reviewforge + boutons "Découvrir" sous la grille
 
 **Quoi :** Deux pages de présentation autonomes (`/clipforge`, `/reviewforge`) : hero d'identité (indigo / emerald), emplacement vidéo (`DemoPlayer`, prêt à recevoir l'ID YouTube — encart "démo bientôt" tant qu'il est vide), section features + mockup réel, et une feuille de route "Où on en est" (tracker des Vagues : TubeForge livré → ClipForge en dev → ReviewForge prévu). En entrée : deux boutons secondaires "Découvrir ClipForge/ReviewForge" ajoutés sous chaque panneau des grilles d'aperçu (home + monteurs/créateurs).
