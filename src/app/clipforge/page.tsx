@@ -14,9 +14,9 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT";
 
-// ⚠️ Coller ici l'ID YouTube de la démo ClipForge (la partie après "watch?v=" ou "youtu.be/").
-// Exemple : "XEPdAhDYkB8". Tant que c'est vide, un encart "démo bientôt" s'affiche à la place.
-const CLIPFORGE_VIDEO_ID = "";
+// ID YouTube de la démo ClipForge (https://youtu.be/fFndGIIxUhw).
+// Si vide, un encart "démo bientôt" s'affiche à la place.
+const CLIPFORGE_VIDEO_ID = "fFndGIIxUhw";
 
 const FEATURES = [
   { icon: Sparkles, title: "L'IA trouve tes meilleurs moments", desc: "Analyse spécialisée selon ton contenu : gaming, podcast, tuto, vlog." },
@@ -98,7 +98,7 @@ export default function ClipForgePage() {
               >
                 <div className="aspect-video w-full">
                   {CLIPFORGE_VIDEO_ID ? (
-                    <DemoPlayer videoId={CLIPFORGE_VIDEO_ID} />
+                    <DemoPlayer videoId={CLIPFORGE_VIDEO_ID} title="ClipForge — démo du générateur de clips" />
                   ) : (
                     /* Slot temporaire en attendant l'ID de la vidéo */
                     <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-center px-6">

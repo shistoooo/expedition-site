@@ -15,9 +15,9 @@
 
 **Comment annuler :** `git revert <hash>` ; ou supprimer `src/app/clipforge/`, `src/app/reviewforge/`, `src/components/shared/SuiteRoadmap.tsx`, et retirer la prop `detailHref` (+ son usage) des 4 composants.
 
-**Effets de bord possibles :** `detailHref` est opt-in (défaut `undefined`) → zéro impact là où les sections sont rendues sans (ex: layout horizontal). Les 2 vidéos ne sont pas branchées : constantes `CLIPFORGE_VIDEO_ID` / `REVIEWFORGE_VIDEO_ID` vides → encart placeholder affiché.
+**Effets de bord possibles :** `detailHref` est opt-in (défaut `undefined`) → zéro impact là où les sections sont rendues sans (ex: layout horizontal). Vidéos branchées : ClipForge `fFndGIIxUhw`, ReviewForge `QyUYGiEaQTk` (via `DemoPlayer`, qui gagne une prop `title` optionnelle pour l'accessibilité — défaut inchangé). Le slot placeholder ne s'affiche plus que si une constante est vidée.
 
-**TODO :** Coller les 2 IDs YouTube dans les constantes en haut de chaque page ; valider/ajuster les statuts dans `SuiteRoadmap` quand une vague change d'état.
+**TODO :** Valider/ajuster les statuts dans `SuiteRoadmap` quand une vague change d'état.
 
 ---
 ### [2026-05-29 03:30] — Attribution partenaires (Fire Writing) + landing /via/<slug>
