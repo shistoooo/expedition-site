@@ -6,7 +6,7 @@ import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     Users, Shield, CheckCircle2, XCircle, Search, ToggleLeft, ToggleRight,
     UserCheck, UserX, RefreshCw, FileText, Link2, Copy, Check, Ticket,
-    Users2, Plus, ChevronDown, ChevronUp
+    Users2, Plus, ChevronDown, ChevronUp, TrendingUp
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -74,8 +74,14 @@ interface AdminPartnerCode {
     createdAt: string;
 }
 
+type PartnerConversion = {
+    partner_slug: string;
+    total_users: number;
+    active_subscriptions: number;
+};
+
 type Step = "login" | "admin";
-type Tab = "users" | "ambassadors" | "applications" | "keys" | "partners";
+type Tab = "users" | "ambassadors" | "applications" | "keys" | "partners" | "attribution";
 
 export default function AdminPage() {
     const [step, setStep] = useState<Step>("login");
@@ -118,6 +124,9 @@ export default function AdminPage() {
     const [refillLoading, setRefillLoading] = useState<string | null>(null);
     const [avatarDraft, setAvatarDraft] = useState<Record<string, string>>({});
     const [avatarLoading, setAvatarLoading] = useState<string | null>(null);
+
+    const [conversions, setConversions] = useState<PartnerConversion[]>([]);
+    const [conversionsLoading, setConversionsLoading] = useState(false);
 
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -254,6 +263,23 @@ export default function AdminPage() {
             setError("Erreur chargement partenaires");
         } finally {
             setPartnersLoading(false);
+        }
+    }, [accessToken]);
+
+    const fetchConversions = useCallback(async () => {
+        if (!accessToken) return;
+        setConversionsLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/partners/conversions`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setConversions(data.partners ?? []);
+        } catch {
+            setError("Erreur chargement attribution");
+        } finally {
+            setConversionsLoading(false);
         }
     }, [accessToken]);
 
@@ -445,6 +471,10 @@ export default function AdminPage() {
     useEffect(() => {
         if (step === "admin" && tab === "partners") fetchPartners();
     }, [step, tab, fetchPartners]);
+
+    useEffect(() => {
+        if (step === "admin" && tab === "attribution") fetchConversions();
+    }, [step, tab, fetchConversions]);
 
     const toggleBeta = async (userId: string, current: boolean) => {
         if (!accessToken) return;
@@ -668,6 +698,13 @@ export default function AdminPage() {
                                     >
                                         <Users2 className="w-4 h-4" />
                                         Partenaires ({partners.length})
+                                    </button>
+                                    <button
+                                        onClick={() => setTab("attribution")}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === "attribution" ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
+                                    >
+                                        <TrendingUp className="w-4 h-4" />
+                                        Attribution ({conversions.length})
                                     </button>
                                 </div>
 
@@ -1325,6 +1362,74 @@ export default function AdminPage() {
                                                 </div>
                                             )}
                                         </div>
+                                    </div>
+                                )}
+
+                                {/* Attribution Tab */}
+                                {tab === "attribution" && (
+                                    <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <h2 className="text-sm font-mono text-white/40 uppercase">Attribution partenaires</h2>
+                                            <button
+                                                onClick={fetchConversions}
+                                                disabled={conversionsLoading}
+                                                className="h-8 px-3 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                                            >
+                                                <RefreshCw className={`w-3.5 h-3.5 ${conversionsLoading ? "animate-spin" : ""}`} />
+                                            </button>
+                                        </div>
+
+                                        {conversionsLoading && conversions.length === 0 ? (
+                                            <div className="flex items-center justify-center py-12">
+                                                <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                {/* Header */}
+                                                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-2 text-xs font-mono text-white/30 uppercase">
+                                                    <span>Partenaire</span>
+                                                    <span className="w-28 text-center">Inscrits via le lien</span>
+                                                    <span className="w-24 text-center">Abonnés actifs</span>
+                                                    <span className="w-32 text-right">Revenu estimé</span>
+                                                </div>
+
+                                                {conversions.map((c) => (
+                                                    <div
+                                                        key={c.partner_slug}
+                                                        className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all"
+                                                    >
+                                                        <div className="min-w-0">
+                                                            <code className="text-sm text-white/80 font-mono truncate">{c.partner_slug}</code>
+                                                        </div>
+                                                        <div className="w-28 flex justify-center">
+                                                            <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/50 border border-white/10">
+                                                                {c.total_users}
+                                                            </span>
+                                                        </div>
+                                                        <div className="w-24 flex justify-center">
+                                                            <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/20">
+                                                                {c.active_subscriptions}
+                                                            </span>
+                                                        </div>
+                                                        <div className="w-32 text-right">
+                                                            <span className="text-sm text-purple-400 font-medium">
+                                                                ~{(c.active_subscriptions * 8.03).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €/mois
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                {conversions.length === 0 && !conversionsLoading && (
+                                                    <p className="text-center text-white/30 py-8 text-sm">Aucune conversion partenaire pour l&apos;instant — les ventes via les liens partenaires apparaîtront ici.</p>
+                                                )}
+
+                                                {conversions.length > 0 && (
+                                                    <p className="text-xs text-white/25 pt-4 mt-2 border-t border-white/5">
+                                                        Revenu estimé sur la base de 8,03 €/mois par abonné actif. Le montant exact (remises, taxes, abonnements annuels) est sur Stripe.
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </motion.div>

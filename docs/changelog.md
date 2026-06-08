@@ -1,4 +1,21 @@
 ---
+### [2026-06-08 18:14] — PROD : onglet "Attribution" dans le panel admin + déploiement worker attribution
+
+**Quoi :**
+1. **Worker `expedition-licensing` déployé** (version `3e45c376`, via `wrangler versions upload` → test préview → `versions deploy` 100%) : active l'attribution partenaire (le checkout envoie `partnerSlug` → écrit `users.partner_slug` en D1 + `metadata.partner_slug` sur l'abonnement Stripe, sur `/auth/register` ET `/portal/subscribe`). Migration `0013` (colonne `partner_slug`) appliquée à la prod D1. Embarque aussi les fixes freemium du WIP (grâce 7j sur impayés, cap minutes ClipForge, clés ambassadeur). **Carte-only / blocage PayPal-Link MIS DE CÔTÉ** (commenté dans `services/stripe.ts`, réactivable) sur décision user.
+2. **Panel admin** : nouvel onglet **"Attribution"** qui appelle `GET /admin/partners/conversions` et affiche, par partenaire, les inscrits / abonnés actifs / revenu estimé (active_subs × 8,03€).
+
+**Pourquoi :** L'utilisateur veut suivre les ventes Fire Writing directement dans son panel admin (shisto81). Le backend existait déjà (mid-chantier) ; déployé proprement + affichage ajouté.
+
+**Fichiers touchés :**
+- `src/app/admin/page.tsx` — onglet "Attribution" (type Tab, state conversions, fetchConversions, useEffect, bouton, tableau)
+- (worker, repo expedition-launcher, NON commité — déployé tel quel via wrangler) `services/stripe.ts` carte-only commentée + tout le WIP attribution/freemium
+
+**Comment annuler :** Front : `git revert <hash>` (retire l'onglet). Worker : `npx wrangler rollback` (revient à la version d'avant) ; colonne `partner_slug` inoffensive (sinon `ALTER TABLE users DROP COLUMN partner_slug`).
+
+**Effets de bord possibles :** L'attribution ne compte que les ventes **à partir du déploiement** (pas rétroactif). Le fix grâce-7j coupe désormais l'accès des impayés après 7j (intentionnel, ferme une fuite). Le revenu admin est une **estimation** (× 8,03€) ; le montant exact est sur Stripe (`metadata['partner_slug']:'firewriting'`).
+
+---
 ### [2026-06-07 23:27] — PROD : landing partenaire /via/firewriting (Fire Writing)
 
 **Quoi :** Port chirurgical de la landing partenaire Fire Writing depuis `refonte` vers `main`/prod (page publique, noindex). Inclut : la page `/via/[slug]`, le carousel d'outils `SuiteCarousel` (+ `ScriptForgeMockup`), la lib d'attribution `partnerAttribution`, le registre `partners.ts`, les logos `public/partners/`. La citation des fondateurs est **masquée** (non encore validée par Yasser/Tommate/Lucasvr — on ne publie pas de mots en leur nom sans accord) ; `draft: false` → aucun encart « À remplir ». H1 « Gagne des heures sur tes vidéos. 8,03€/mois, bloqué à vie », preuve = bandeau YouTubeurs réels.
