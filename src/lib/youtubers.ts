@@ -21,4 +21,5 @@ export const youtubers: Youtuber[] = [
   { handle: "Malcoclicot", url: "https://www.youtube.com/@Malcoclicot", avatar: "/youtubers/malcoclicot.jpg" },
   { handle: "Skyflooze", url: "https://www.youtube.com/@Skyflooze", avatar: "/youtubers/skyflooze.jpg" },
   { handle: "manji", url: "https://www.youtube.com/@manjirosayno", avatar: "/youtubers/manji.jpg" },
+  { handle: "Donay", url: "https://www.youtube.com/@Donay", avatar: "/youtubers/donay.jpg" },
 ];
