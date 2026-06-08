@@ -80,7 +80,7 @@ export const PARTNERS: Record<string, Partner> = {
 
     // ── À REMPLIR : vidéo "C'est quoi Expédition" dédiée Fire Writing ──
     // (centrée sur leur problématique). Slot "À remplir" affiché tant que vide.
-    videoDemoId: undefined,
+    videoDemoId: "B_0n_qrsWBs",
     draft: false,
   },
 };
