@@ -102,7 +102,7 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 02 — sobre : les logos (réels) suffisent */}
-      <Cell className="md:col-span-3" delay={0.07} look={1}>
+      <Cell className="md:col-span-3 md:self-start" delay={0.07} look={1}>
         <h3 className="font-bold text-white text-lg mb-1.5">1500+ sites, zéro prise de tête</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           Vimeo, TikTok, X, YouTube… même geste à chaque fois, peu importe d&apos;où ça vient.
@@ -118,7 +118,7 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 03 — sobre : un chiffre, c'est tout */}
-      <Cell className="md:col-span-2 md:row-span-2" delay={0.11} look={2}>
+      <Cell className="md:col-span-2" delay={0.11} look={2}>
         <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Juste le passage qui t&apos;intéresse</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.
@@ -138,7 +138,7 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 04 — texte seul : tout n'a pas besoin d'une illustration */}
-      <Cell className="md:col-span-3" delay={0.15} look={3}>
+      <Cell className="md:col-span-5" delay={0.15} look={3}>
         <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">4K, et autant que tu veux à la chaîne</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-5">
           Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s&apos;enchaînent tout seuls pendant que tu montes.

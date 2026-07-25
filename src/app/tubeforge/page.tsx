@@ -97,8 +97,8 @@ export default function TubeForgePage() {
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)",
           backgroundSize: "44px 44px",
-          maskImage: "linear-gradient(to bottom, #000 12%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.2) 62%, rgba(0,0,0,0.05) 78%, transparent 90%)",
-          WebkitMaskImage: "linear-gradient(to bottom, #000 12%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.2) 62%, rgba(0,0,0,0.05) 78%, transparent 90%)",
+          maskImage: "linear-gradient(to bottom, #000 8%, rgba(0,0,0,0.5) 28%, rgba(0,0,0,0.18) 46%, rgba(0,0,0,0.05) 58%, transparent 72%)",
+          WebkitMaskImage: "linear-gradient(to bottom, #000 8%, rgba(0,0,0,0.5) 28%, rgba(0,0,0,0.18) 46%, rgba(0,0,0,0.05) 58%, transparent 72%)",
         }}
       />
 
