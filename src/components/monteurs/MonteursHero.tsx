@@ -31,7 +31,7 @@ export default function MonteursHero() {
           style={{
             background:
               "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.20) 0%, rgba(99,60,200,0.10) 40%, transparent 72%)",
-            display: "none",
+            filter: "blur(40px)",
           }}
         />
       </div>
@@ -50,9 +50,11 @@ export default function MonteursHero() {
         >
           Le plugin qui te fait{" "}
           <span
-            className=" inline-block whitespace-nowrap"
+            className="text-transparent bg-clip-text animate-text-shimmer inline-block whitespace-nowrap"
             style={{
-              color: "#a78bfa",
+              backgroundImage:
+                "linear-gradient(90deg, #8b5cf6 0%, #a78bfa 25%, #22d3ee 50%, #a78bfa 75%, #8b5cf6 100%)",
+              backgroundSize: "200% auto",
             }}
           >
             gagner du temps et de l&apos;argent

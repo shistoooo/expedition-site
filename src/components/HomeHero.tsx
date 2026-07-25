@@ -22,7 +22,10 @@ export default function HomeHero() {
         <div
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs md:text-sm font-medium mb-6 backdrop-blur-sm animate-hero-in"
         >
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500" />
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+          </span>
           <span>{SALES_OPEN ? "3 jours gratuits · sans carte" : "Lancement imminent"}</span>
         </div>
 
@@ -36,8 +39,12 @@ export default function HomeHero() {
             et prestataires.
           </h1>
           <span
-            className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.15]"
-            style={{ color: "#a78bfa" }}
+            className="block text-4xl md:text-6xl lg:text-7xl font-black tracking-[-0.02em] leading-[1.15] text-transparent bg-clip-text animate-text-shimmer"
+            style={{
+              backgroundImage: "linear-gradient(90deg, #8b5cf6 0%, #a78bfa 25%, #22d3ee 50%, #a78bfa 75%, #8b5cf6 100%)",
+              backgroundSize: "200% auto",
+              fontStyle: "oblique 10deg",
+            }}
           >
             Gagnez des heures{" "}
             <br className="hidden lg:block" />

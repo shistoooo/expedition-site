@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import VideoDownloadComparison from "@/components/tubeforge/VideoDownloadComparison";
 import TubeForgePricingSection from "@/components/tubeforge/TubeForgePricingSection";
 import FeaturesList from "@/components/tubeforge/FeaturesList";
+import CompatBadge from "@/components/shared/CompatBadge";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -131,6 +132,11 @@ export default function TubeForgePage() {
                   Voir la démo
                   <ArrowRight className="w-4 h-4 rotate-90 group-hover:translate-y-1 transition-transform duration-200" />
                 </a>
+              </div>
+              {/* Logos Premiere/DaVinci sous les CTA : la compatibilité est LA
+                  question que se pose un monteur avant même le prix. */}
+              <div className="mt-8">
+                <CompatBadge delay={0.35} />
               </div>
             </motion.div>
           </div>

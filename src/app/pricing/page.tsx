@@ -70,6 +70,7 @@ function PricingCard({ plan, index }: { plan: typeof plans[number]; index: numbe
       style={plan.featured ? {
         background: "linear-gradient(160deg, rgba(139,92,246,0.12) 0%, rgba(15,15,22,0.98) 40%)",
         border: "1px solid rgba(139,92,246,0.35)",
+        boxShadow: "0 0 60px rgba(139,92,246,0.2), 0 20px 40px rgba(0,0,0,0.4)",
       } : {
         background: isHovered
           ? "linear-gradient(160deg, rgba(139,92,246,0.08) 0%, rgba(13,13,22,0.95) 50%)"
@@ -85,7 +86,7 @@ function PricingCard({ plan, index }: { plan: typeof plans[number]; index: numbe
         className="absolute inset-0 pointer-events-none transition-opacity duration-300 rounded-[inherit] z-[1]"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: "transparent",
+          background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, ${plan.featured ? "rgba(139,92,246,0.2)" : "rgba(139,92,246,0.25)"} 0%, transparent 50%)`,
         }}
       />
 
@@ -107,6 +108,7 @@ function PricingCard({ plan, index }: { plan: typeof plans[number]; index: numbe
             className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold"
             style={{
               background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+              boxShadow: "0 0 16px rgba(139,92,246,0.5)",
               color: "#fff",
             }}
           >
@@ -165,6 +167,7 @@ function PricingCard({ plan, index }: { plan: typeof plans[number]; index: numbe
           style={plan.featured ? {
             background: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%)",
             color: "#fff",
+            boxShadow: "0 0 24px rgba(139,92,246,0.45), 0 0 60px rgba(139,92,246,0.15), inset 0 1px 0 rgba(255,255,255,0.15)",
           } : {
             background: "rgba(255,255,255,0.03)",
           }}
@@ -225,6 +228,7 @@ export default function PricingPage() {
               background: "linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(6,5,26,0.95) 60%)",
               border: "1px solid rgba(139,92,246,0.25)",
               backdropFilter: "blur(24px)",
+              boxShadow: "0 0 40px rgba(139,92,246,0.12), inset 0 1px 0 rgba(255,255,255,0.06)",
             }}
           >
             <div
@@ -239,6 +243,7 @@ export default function PricingPage() {
                 style={{
                   background: "rgba(139,92,246,0.15)",
                   border: "1px solid rgba(139,92,246,0.3)",
+                  boxShadow: "0 0 20px rgba(139,92,246,0.25)",
                 }}
               >
                 <Star className="w-5 h-5" style={{ color: "#a78bfa" }} />

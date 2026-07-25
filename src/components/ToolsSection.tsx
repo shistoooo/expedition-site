@@ -269,7 +269,7 @@ export default function ToolsSection({ layout = "vertical", blurred = false, det
         </p>
 
         <h2 className="text-3xl md:text-4xl font-black mb-2 tracking-[-0.03em]">
-          Clip<span className="text-indigo-400">Forge</span>
+          Clip<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">Forge</span>
         </h2>
         <p className="text-xs text-white/35 mb-4 font-mono uppercase tracking-wider">L&apos;alternative &agrave; OpusClip</p>
         <p className="text-base text-white/60 mb-6 leading-relaxed">
@@ -321,7 +321,7 @@ export default function ToolsSection({ layout = "vertical", blurred = false, det
           style={{
             background:
               "radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.16) 0%, rgba(139,92,246,0.08) 35%, transparent 70%)",
-            display: "none",
+            filter: "blur(80px)",
           }}
         />
         {/* Mockup — flou très subtil (2px) sur la home pour signaler "à venir" sans cacher le mockup */}

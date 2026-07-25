@@ -149,7 +149,7 @@ export default function GlobalSpace() {
 
         <Suspense fallback={null}>
           <Stars radius={300} depth={50} count={starsCount} factor={3} saturation={0} fade speed={0.8} />
-          <Sparkles count={sparklesCount} scale={20} size={3} speed={0.3} opacity={0.4} color="#c8ccd8" />
+          <Sparkles count={sparklesCount} scale={20} size={3} speed={0.3} opacity={0.4} color="#8b5cf6" />
           <WarpStars />
         </Suspense>
 

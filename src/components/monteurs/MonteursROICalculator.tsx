@@ -76,7 +76,7 @@ export default function MonteursROICalculator() {
             style={{
               background:
                 "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(139,92,246,0.20) 0%, transparent 70%)",
-              display: "none",
+              filter: "blur(40px)",
             }}
           />
 

@@ -107,7 +107,7 @@ export default function TubeForgeSection() {
               className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] rounded-full pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity duration-500"
               style={{
                 background: "radial-gradient(ellipse at 50% 40%, rgba(239,68,68,0.16) 0%, rgba(249,115,22,0.08) 35%, transparent 70%)",
-                display: "none",
+                filter: "blur(80px)",
               }}
             />
             <TubeForgeAppMockup />

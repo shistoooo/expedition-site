@@ -87,7 +87,7 @@ export default function CreateursBeforeAfter() {
               style={{
                 background:
                   "radial-gradient(ellipse 70% 60% at 30% 30%, rgba(239,68,68,0.22) 0%, transparent 65%)",
-                display: "none",
+                filter: "blur(30px)",
               }}
               aria-hidden="true"
             />
@@ -147,7 +147,7 @@ export default function CreateursBeforeAfter() {
               style={{
                 background:
                   "radial-gradient(ellipse 70% 60% at 70% 30%, rgba(34,211,238,0.28) 0%, rgba(139,92,246,0.10) 50%, transparent 75%)",
-                display: "none",
+                filter: "blur(30px)",
               }}
               aria-hidden="true"
             />

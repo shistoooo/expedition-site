@@ -55,7 +55,7 @@ export default function CreateursPricing() {
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(34,211,238,0.16) 0%, rgba(99,60,200,0.08) 45%, transparent 72%)",
+            "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,92,246,0.16) 0%, rgba(99,60,200,0.08) 45%, transparent 72%)",
           filter: "blur(2px)",
         }}
       />
@@ -97,10 +97,10 @@ export default function CreateursPricing() {
             className="relative rounded-2xl overflow-hidden flex flex-col"
             style={{
               background:
-                "linear-gradient(160deg, rgba(34,211,238,0.14) 0%, rgba(13,13,22,0.98) 45%)",
-              border: "1px solid rgba(34,211,238,0.38)",
+                "linear-gradient(160deg, rgba(139,92,246,0.14) 0%, rgba(13,13,22,0.98) 45%)",
+              border: "1px solid rgba(139,92,246,0.38)",
               boxShadow:
-                "0 0 70px rgba(34,211,238,0.22), 0 20px 50px rgba(0,0,0,0.45)",
+                "0 0 70px rgba(139,92,246,0.22), 0 20px 50px rgba(0,0,0,0.45)",
             }}
           >
             {/* Top gradient */}
@@ -109,7 +109,7 @@ export default function CreateursPricing() {
               className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(34,211,238,0.2) 0%, transparent 100%)",
+                  "linear-gradient(180deg, rgba(139,92,246,0.2) 0%, transparent 100%)",
               }}
             />
 
@@ -118,8 +118,8 @@ export default function CreateursPricing() {
               <div
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg, #06b6d4, #0891b2)",
-                  boxShadow: "0 0 16px rgba(34,211,238,0.5)",
+                  background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                  boxShadow: "0 0 16px rgba(139,92,246,0.5)",
                   color: "#fff",
                 }}
               >
@@ -169,10 +169,10 @@ export default function CreateursPricing() {
                 className="group/btn w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 relative overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%)",
+                    "linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%)",
                   color: "#fff",
                   boxShadow:
-                    "0 0 28px rgba(34,211,238,0.5), 0 0 70px rgba(34,211,238,0.18), inset 0 1px 0 rgba(255,255,255,0.18)",
+                    "0 0 28px rgba(139,92,246,0.5), 0 0 70px rgba(139,92,246,0.18), inset 0 1px 0 rgba(255,255,255,0.18)",
                 }}
               >
                 <div

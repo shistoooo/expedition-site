@@ -31,7 +31,7 @@ export default function CreateursHero() {
           style={{
             background:
               "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(34,211,238,0.20) 0%, rgba(56,189,248,0.10) 40%, transparent 72%)",
-            display: "none",
+            filter: "blur(40px)",
           }}
         />
       </div>
@@ -50,9 +50,11 @@ export default function CreateursHero() {
         >
           Le plugin qui te fait gagner du temps.{" "}
           <span
-            className=" inline-block whitespace-nowrap"
+            className="text-transparent bg-clip-text animate-text-shimmer inline-block whitespace-nowrap"
             style={{
-              color: "#67e8f9",
+              backgroundImage:
+                "linear-gradient(90deg, #22d3ee 0%, #67e8f9 25%, #a78bfa 50%, #67e8f9 75%, #22d3ee 100%)",
+              backgroundSize: "200% auto",
             }}
           >
             Pour sortir plus de vid&eacute;os.

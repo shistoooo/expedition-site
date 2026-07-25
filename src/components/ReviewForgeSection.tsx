@@ -510,7 +510,7 @@ export default function ReviewForgeSection({ layout = "vertical", blurred = fals
         </p>
 
         <h2 className="text-3xl md:text-4xl font-black mb-2 tracking-[-0.03em]">
-          Review<span className="text-emerald-400">Forge</span>
+          Review<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Forge</span>
         </h2>
         <p className="text-xs text-white/35 mb-4 font-mono uppercase tracking-wider">L&apos;alternative &agrave; Frame.io</p>
         <p className="text-base text-white/60 mb-6 leading-relaxed">
@@ -562,7 +562,7 @@ export default function ReviewForgeSection({ layout = "vertical", blurred = fals
           style={{
             background:
               "radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.12) 0%, rgba(34,211,238,0.05) 40%, transparent 70%)",
-            display: "none",
+            filter: "blur(80px)",
           }}
         />
         {/* Mockup — flou très subtil (2px) sur la home pour signaler "à venir" sans cacher le mockup */}
