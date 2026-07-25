@@ -92,7 +92,7 @@ export default function FeaturesList() {
           <img
             src="/tubeforge/real-timeline.jpg"
             alt="Timeline Premiere Pro : le clip téléchargé par TubeForge posé sur les pistes V1/A1"
-            className="w-full h-auto border border-white/10"
+            className="w-full h-auto border border-white/10 rounded-md"
             loading="lazy"
             width={830}
             height={290}
@@ -109,8 +109,8 @@ export default function FeaturesList() {
         </p>
         <div className="mt-auto flex flex-wrap gap-1.5 items-center">
           {PLATFORM_LOGOS.map((p) => (
-            <span key={p.n} title={p.n} className="w-7 h-7 rounded-[7px] overflow-hidden">
-              <svg viewBox="0 0 28 28" className="w-7 h-7" aria-label={p.n}>{p.svg}</svg>
+            <span key={p.n} title={p.n} className="w-8 h-8 rounded-[8px] overflow-hidden">
+              <svg viewBox="0 0 28 28" className="w-8 h-8" aria-label={p.n}>{p.svg}</svg>
             </span>
           ))}
           <span className="font-mono text-xs text-white/40 pl-1 tabular-nums">+1493 autres</span>
@@ -118,7 +118,7 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 03 — sobre : un chiffre, c'est tout */}
-      <Cell className="md:col-span-2" delay={0.11} look={2}>
+      <Cell className="md:col-span-2 md:row-span-2" delay={0.11} look={2}>
         <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Juste le passage qui t&apos;intéresse</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.
@@ -138,9 +138,9 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 04 — texte seul : tout n'a pas besoin d'une illustration */}
-      <Cell className="md:col-span-5" delay={0.15} look={3}>
-        <div className="md:flex md:items-baseline md:gap-10">
-          <h3 className="font-bold text-white text-lg md:text-xl mb-1.5 md:mb-0 shrink-0">4K, et autant que tu veux à la chaîne</h3>
+      <Cell className="md:col-span-3" delay={0.15} look={3}>
+        <div className="my-auto">
+          <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">4K, et autant que tu veux à la chaîne</h3>
           <p className="text-white/45 text-sm leading-relaxed">
             Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s&apos;enchaînent tout seuls pendant que tu montes.
           </p>

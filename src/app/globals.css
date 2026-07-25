@@ -361,10 +361,10 @@ input:-webkit-autofill:focus {
    cartes posees a la main. Au survol, la carte SE REDRESSE et se souleve d un
    souffle -- le geste de la prendre en main. Chaleureux, pas technologique. */
 .tf-cell {
+  position: relative;
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--r, 22px 10px 24px 12px);
   background: #0b0a14;
-  overflow: hidden;
   transform: rotate(var(--tilt, 0deg));
   transition:
     transform 380ms cubic-bezier(0.34, 1.4, 0.64, 1),
@@ -372,6 +372,7 @@ input:-webkit-autofill:focus {
     border-color 300ms ease;
 }
 .group:hover > .tf-cell {
+  z-index: 5;
   transform: rotate(0deg) translateY(-3px);
   background: #12111c;
   border-color: rgba(255, 106, 31, 0.28);
