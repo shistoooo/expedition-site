@@ -82,7 +82,7 @@ export default function MonthSelector({ months, setMonths, onContinue, loading, 
   const onUp = () => setDragging(false);
 
   return (
-    <div className="p-6 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+    <div className="p-6 rounded-2xl bg-[#0F0F12] border border-white/10">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-lg font-bold text-white">Combien de mois d&apos;un coup ?</h3>
         <AnimatePresence mode="wait">
@@ -114,7 +114,7 @@ export default function MonthSelector({ months, setMonths, onContinue, loading, 
               key={p}
               type="button"
               onClick={() => setMonths(p)}
-              className="relative py-2.5 rounded-lg text-sm font-bold border transition-all"
+              className="relative py-2.5 rounded-lg text-sm font-bold border transition-all hover:brightness-125"
               style={on
                 ? { background: "rgba(255,106,31,0.15)", borderColor: "rgba(255,106,31,0.5)", color: "#fff" }
                 : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)" }}
@@ -219,7 +219,7 @@ export default function MonthSelector({ months, setMonths, onContinue, loading, 
       <button
         onClick={onContinue}
         disabled={loading}
-        className="w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+        className="w-full py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
         style={{ background: "linear-gradient(135deg,#ff6a1f 0%,#ef3a24 100%)", color: "#fff" }}
       >
         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : isSub ? <>Commencer · 14 jours gratuits <ArrowRight className="w-4 h-4" /></> : <>Continuer · payer {eur(total)} <ArrowRight className="w-4 h-4" /></>}

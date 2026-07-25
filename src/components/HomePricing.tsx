@@ -65,15 +65,11 @@ function PricingCard({ plan }: { plan: typeof plans[number] }) {
       style={plan.featured ? {
         background: "linear-gradient(160deg, rgba(139,92,246,0.12) 0%, rgba(13,13,22,0.98) 40%)",
         border: "1px solid rgba(139,92,246,0.35)",
-        boxShadow: "0 0 60px rgba(139,92,246,0.2), 0 20px 40px rgba(0,0,0,0.4)",
       } : {
         background: isHovered
           ? "linear-gradient(160deg, rgba(139,92,246,0.08) 0%, rgba(13,13,22,0.95) 50%)"
           : "rgba(255,255,255,0.02)",
         border: `1px solid ${isHovered ? "rgba(139,92,246,0.4)" : "rgba(255,255,255,0.06)"}`,
-        boxShadow: isHovered
-          ? "0 0 40px rgba(139,92,246,0.15), 0 8px 32px rgba(0,0,0,0.3)"
-          : "none",
       }}
     >
       {/* Mouse spotlight */}
@@ -81,7 +77,7 @@ function PricingCard({ plan }: { plan: typeof plans[number] }) {
         className="absolute inset-0 pointer-events-none transition-opacity duration-300 rounded-[inherit] z-[1]"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, ${plan.featured ? "rgba(139,92,246,0.2)" : "rgba(139,92,246,0.25)"} 0%, transparent 50%)`,
+          background: "transparent",
         }}
       />
 
@@ -103,7 +99,6 @@ function PricingCard({ plan }: { plan: typeof plans[number] }) {
             className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold"
             style={{
               background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
-              boxShadow: "0 0 16px rgba(139,92,246,0.5)",
               color: "#fff",
             }}
           >
@@ -156,7 +151,6 @@ function PricingCard({ plan }: { plan: typeof plans[number] }) {
           style={plan.featured ? {
             background: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%)",
             color: "#fff",
-            boxShadow: "0 0 24px rgba(139,92,246,0.45), 0 0 60px rgba(139,92,246,0.15), inset 0 1px 0 rgba(255,255,255,0.15)",
           } : {
             background: "rgba(255,255,255,0.03)",
           }}
@@ -194,7 +188,7 @@ export default function HomePricing() {
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,92,246,0.14) 0%, rgba(99,60,200,0.07) 45%, transparent 72%)',
+          background: 'transparent',
           filter: 'blur(2px)',
         }}
       />

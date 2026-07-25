@@ -20,7 +20,7 @@ export default function WhyExpeditionSection() {
             style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.08) 0%, rgba(255,255,255,0.02) 100%)' }}
           >
             <div className="absolute top-0 right-0 w-64 h-64 pointer-events-none opacity-30"
-              style={{ background: 'radial-gradient(circle at 100% 0%, rgba(139,92,246,0.25), transparent 70%)' }}
+              style={{ background: 'transparent' }}
             />
             <div className="relative">
               <div className="w-12 h-12 rounded-xl bg-purple-500/15 border border-purple-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
@@ -79,7 +79,7 @@ export default function WhyExpeditionSection() {
             style={{ background: 'linear-gradient(225deg, rgba(99,102,241,0.08) 0%, rgba(255,255,255,0.02) 100%)' }}
           >
             <div className="absolute bottom-0 left-0 w-64 h-64 pointer-events-none opacity-30"
-              style={{ background: 'radial-gradient(circle at 0% 100%, rgba(99,102,241,0.25), transparent 70%)' }}
+              style={{ background: 'transparent' }}
             />
             <div className="relative">
               <div className="w-12 h-12 rounded-xl bg-violet-500/15 border border-violet-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">

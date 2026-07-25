@@ -10,8 +10,6 @@ export default function PageBackground() {
           backgroundSize: "60px 60px",
         }}
       />
-      {/* Top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-purple-600/8 rounded-full blur-[150px]" />
     </div>
   );
 }

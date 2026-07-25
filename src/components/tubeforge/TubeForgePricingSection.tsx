@@ -59,7 +59,7 @@ function ClassicCard() {
           </ul>
           <Link
             href={SALES_OPEN ? "/checkout?plan=monthly" : "/account?mode=register"}
-            className="w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2"
             style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
           >
             Commencer <Rocket className="w-4 h-4" />
@@ -100,7 +100,7 @@ function ThreePlansGrid() {
         </div>
         <p className="text-xs text-white/35 mb-5">Sans engagement, annulable à tout moment.</p>
         <ul className="space-y-2.5 mb-6 flex-1">
-          {["14 jours gratuits", "Accès complet, 4K, 1500+ sites", "Direct dans Premiere & DaVinci"].map((f) => (
+          {["14 jours gratuits", "Sans engagement : tu pars quand tu veux", "Parfait pour un projet ponctuel"].map((f) => (
             <li key={f} className="flex items-start gap-2 text-sm text-white/60">
               <Check className="w-4 h-4 shrink-0 mt-0.5 text-white/30" />
               {f}
@@ -136,7 +136,7 @@ function ThreePlansGrid() {
         </div>
         <p className="text-xs text-white/40 mb-5">Facturé {eurStatic(PLAN_YEARLY_CENTS)} par an, après l&apos;essai.</p>
         <ul className="space-y-2.5 mb-6 flex-1">
-          {["14 jours gratuits, 0€ aujourd'hui", "Accès complet, 4K, 1500+ sites", "Direct dans Premiere & DaVinci", "4 clés cadeau à offrir chaque année"].map((f) => (
+          {["14 jours gratuits, 0€ aujourd'hui", "Accès complet : 4K, 1500+ sites, plugins Premiere & DaVinci", "Le mois le moins cher (−30%)", "4 clés cadeau à offrir chaque année"].map((f) => (
             <li key={f} className="flex items-start gap-2 text-sm text-white/75">
               <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: AMBER }} />
               {f}
@@ -145,7 +145,7 @@ function ThreePlansGrid() {
         </ul>
         <Link
           href="/tubeforge/checkout?plan=sub&months=12"
-          className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110"
+          className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
           style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
         >
           Commencer 14 jours gratuits <ArrowRight className="w-4 h-4" />
@@ -166,7 +166,7 @@ function ThreePlansGrid() {
         </div>
         <p className="text-xs text-white/35 mb-5">Une seule fois. Plus jamais de facture.</p>
         <ul className="space-y-2.5 mb-6 flex-1">
-          {["Aussi longtemps que TubeForge existe", "Accès complet, 4K, 1500+ sites", "10 clés boost d'1 mois à offrir"].map((f) => (
+          {["Aussi longtemps que TubeForge existe", "Plus jamais de facture, même si le prix monte", "10 clés boost d'1 mois à offrir"].map((f) => (
             <li key={f} className="flex items-start gap-2 text-sm text-white/60">
               <Check className="w-4 h-4 shrink-0 mt-0.5 text-white/30" />
               {f}
@@ -222,7 +222,7 @@ function RechargeLifetimeCards() {
         </div>
         <Link
           href="/tubeforge/checkout?plan=recharge"
-          className="w-full py-3 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:bg-white/5"
+          className="w-full py-3 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98] hover:bg-white/5"
           style={{ borderColor: "rgba(255,106,31,0.35)", color: AMBER }}
         >
           Recharger maintenant <ArrowRight className="w-4 h-4" />
@@ -267,7 +267,7 @@ function RechargeLifetimeCards() {
         </div>
         <Link
           href="/tubeforge/checkout?plan=lifetime"
-          className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
+          className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
           style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
         >
           Obtenir l&apos;accès à vie <ArrowRight className="w-4 h-4" />

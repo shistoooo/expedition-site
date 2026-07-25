@@ -56,13 +56,6 @@ h2 {
   color: white;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 .glass {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(40px);
@@ -78,16 +71,6 @@ h2 {
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.glow {
-  box-shadow: 0 0 60px rgba(139, 92, 246, 0.2),
-              0 0 120px rgba(139, 92, 246, 0.08);
-}
-
-.glow-text {
-  text-shadow: 0 0 30px rgba(139, 92, 246, 0.4),
-               0 0 60px rgba(139, 92, 246, 0.15);
-}
-
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
@@ -99,28 +82,6 @@ h2 {
 }
 
 /* CTA button with animated glow border */
-.cta-glow {
-  position: relative;
-  overflow: hidden;
-}
-.cta-glow::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  background: conic-gradient(from var(--cta-angle, 0deg), transparent 60%, rgba(139,92,246,0.6) 80%, rgba(139,92,246,0.8) 90%, transparent 100%);
-  z-index: -1;
-  animation: cta-spin 3s linear infinite;
-}
-.cta-glow::after {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  border-radius: inherit;
-  background: inherit;
-  z-index: -1;
-}
-
 @keyframes cta-spin {
   to { --cta-angle: 360deg; }
 }
@@ -146,34 +107,6 @@ h2 {
 
 @keyframes beam-rotate {
   to { --beam-angle: 360deg; }
-}
-
-.border-beam {
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
-  padding: 1.5px;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  overflow: hidden;
-}
-
-.border-beam-gradient {
-  position: absolute;
-  inset: -100%;
-  background: conic-gradient(
-    from var(--beam-angle),
-    transparent 0%,
-    transparent 35%,
-    rgba(139,92,246,0.9) 45%,
-    rgba(167,139,250,0.9) 55%,
-    transparent 65%,
-    transparent 100%
-  );
-  animation: beam-rotate 6s linear infinite;
 }
 
 /* Hero entrance — CSS-based, immune to HMR issues */
@@ -277,12 +210,6 @@ section {
 }
 
 /* Upgrade glow class — more diffuse, more atmospheric */
-.glow {
-  box-shadow: 0 0 80px rgba(139, 92, 246, 0.22),
-              0 0 160px rgba(139, 92, 246, 0.08),
-              0 20px 60px rgba(0, 0, 0, 0.4) !important;
-}
-
 /* Override browser autofill white background */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -343,3 +270,40 @@ input:-webkit-autofill:focus {
 .tf-grid-anim { animation: tf-grid-drift 24s linear infinite; }
 @keyframes tf-grid-drift { to { background-position: 44px 44px; } }
 @media (prefers-reduced-motion: reduce) { .tf-grid-anim { animation: none; } }
+
+/* BorderBeam (utilisé par account/page.tsx) */
+.border-beam {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  overflow: hidden;
+}
+
+.border-beam-gradient {
+  position: absolute;
+  inset: -100%;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0%,
+    transparent 35%,
+    rgba(139,92,246,0.9) 45%,
+    rgba(167,139,250,0.9) 55%,
+    transparent 65%,
+    transparent 100%
+  );
+  animation: beam-rotate 6s linear infinite;
+}
+
+/* ── Typo scopée TubeForge : display grotesque, pas le Playfair éditorial du
+      reste du site. Posée par tubeforge/layout.tsx (.tf-scope + variable). ── */
+.tf-scope h1,
+.tf-scope h2,
+.tf-scope h3 {
+  font-family: var(--font-tf-display), var(--font-geist-sans), sans-serif;
+}

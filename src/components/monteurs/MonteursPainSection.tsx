@@ -214,7 +214,7 @@ export default function MonteursPainSection() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[500px] pointer-events-none opacity-25"
         style={{
           background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(239,68,68,0.08) 0%, transparent 70%)",
-          filter: "blur(60px)",
+          display: "none",
         }}
       />
 
@@ -257,7 +257,7 @@ export default function MonteursPainSection() {
                   style={{
                     background:
                       "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.18) 0%, transparent 70%)",
-                    filter: "blur(24px)",
+                    display: "none",
                   }}
                 />
                 <div

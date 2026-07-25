@@ -133,7 +133,7 @@ function MerciContent() {
       <p className="text-xs text-white/50 mb-2">Chaque clé = 1 mois de TubeForge gratuit pour un pote. Il crée un compte et entre le code.</p>
       {giftKeys[0]?.redeemBy ? (
         <p className="text-[11px] mb-3 flex items-center gap-1.5" style={{ color: AMBER }}>
-          ⏳ À offrir avant le <span className="font-bold">{new Date(giftKeys[0].redeemBy).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span> (fin de ta période).
+          À offrir avant le <span className="font-bold">{new Date(giftKeys[0].redeemBy).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span> (fin de ta période).
         </p>
       ) : null}
       <div className="space-y-2">
@@ -163,7 +163,6 @@ function MerciContent() {
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative text-white">
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2]" aria-hidden="true">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full blur-[150px]" style={{ background: "rgba(239,68,68,0.07)" }} />
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
@@ -235,7 +234,7 @@ function MerciContent() {
                 </p>
                 <Link
                   href="/account"
-                  className="w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all"
+                  className="w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
                   style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
                 >
                   Me connecter <ArrowRight className="w-5 h-5" />
@@ -246,7 +245,7 @@ function MerciContent() {
 
             {phase === "done" && (
               <motion.div key="done" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                <h1 className="text-2xl font-black tracking-[-0.02em] mb-3">Tout est prêt 🎉</h1>
+                <h1 className="text-2xl font-black tracking-[-0.02em] mb-3">Tout est prêt.</h1>
                 <p className="text-white/55 mb-8 leading-relaxed">
                   Ton compte est activé et {kindLabel} est en cours. Télécharge TubeForge et connecte-toi avec ton
                   email et ton mot de passe.
@@ -254,7 +253,7 @@ function MerciContent() {
                 <div className="flex flex-col gap-3">
                   <Link
                     href="/download"
-                    className="w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all"
+                    className="w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
                     style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
                   >
                     <Download className="w-5 h-5" />

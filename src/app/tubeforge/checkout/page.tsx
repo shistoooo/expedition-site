@@ -80,7 +80,7 @@ function SetupForm({ months }: { months: number }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 md:p-7 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+    <form onSubmit={handleSubmit} className="p-6 md:p-7 rounded-2xl bg-[#0F0F12] border border-white/10">
       <PaymentElement options={{ layout: "tabs" }} />
 
       <AnimatePresence>
@@ -90,7 +90,7 @@ function SetupForm({ months }: { months: number }) {
       </AnimatePresence>
 
       <button type="submit" disabled={!stripe || submitting}
-        className="w-full mt-6 py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+        className="w-full mt-6 py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
         style={{ background: "linear-gradient(135deg,#ff6a1f 0%,#ef3a24 100%)", color: "#fff" }}>
         {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Démarrer mes 14 jours gratuits</>}
       </button>
@@ -136,7 +136,7 @@ function PaymentForm({ plan, price }: { plan: OneTimePlan; price: string }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 md:p-7 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+    <form onSubmit={handleSubmit} className="p-6 md:p-7 rounded-2xl bg-[#0F0F12] border border-white/10">
       <div className="space-y-2 mb-5">
         <label htmlFor="email" className="text-xs font-mono text-white/40 uppercase">Email</label>
         <div className="relative">
@@ -155,7 +155,7 @@ function PaymentForm({ plan, price }: { plan: OneTimePlan; price: string }) {
       </AnimatePresence>
 
       <button type="submit" disabled={!stripe || submitting}
-        className="w-full mt-6 py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+        className="w-full mt-6 py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
         style={{ background: "linear-gradient(135deg,#ff6a1f 0%,#ef3a24 100%)", color: "#fff" }}>
         {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Payer {price}</>}
       </button>
@@ -259,7 +259,6 @@ function OneTimeCheckoutContent() {
   return (
     <div className="w-full min-h-screen flex flex-col overflow-x-hidden relative text-white">
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2]" aria-hidden="true">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full blur-[150px]" style={{ background: "rgba(239,68,68,0.07)" }} />
         <div className="absolute inset-0" style={{ background: "#07060f" }} />
       </div>
 
@@ -324,7 +323,7 @@ function OneTimeCheckoutContent() {
                 subStep === "select" ? (
                   <MonthSelector months={months} setMonths={setMonths} mode="sub" onContinue={() => setSubStep("email")} loading={false} />
                 ) : (
-                  <form onSubmit={createSetup} className="p-6 md:p-7 rounded-2xl bg-[#0F0F12] border border-white/10 shadow-2xl">
+                  <form onSubmit={createSetup} className="p-6 md:p-7 rounded-2xl bg-[#0F0F12] border border-white/10">
                     <h2 className="text-lg font-bold mb-1">Ton email</h2>
                     <p className="text-sm text-white/45 mb-5">C&apos;est lui qui servira à te connecter à TubeForge.</p>
                     <div className="relative mb-5">
@@ -333,7 +332,7 @@ function OneTimeCheckoutContent() {
                         className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.07] transition-all text-sm" />
                     </div>
                     <button type="submit" disabled={creating}
-                      className="w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                      className="w-full py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
                       style={{ background: "linear-gradient(135deg,#ff6a1f 0%,#ef3a24 100%)", color: "#fff" }}>
                       {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Continuer vers la carte <ArrowRight className="w-4 h-4" /></>}
                     </button>

@@ -120,7 +120,7 @@ export default function TubeForgePage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   href="/tubeforge/checkout?plan=sub&months=12"
-                  className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(239,68,68,0.2)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(239,68,68,0.35)] transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+                  className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
                 >
                   Essayer gratuitement <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
                 </Link>

@@ -6,7 +6,7 @@ import { Clapperboard, Link2, Scissors, Gauge } from "lucide-react";
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const AMBER = "#ff6a1f";
 
-const CARD = "rounded-xl border border-white/10 bg-[#0b0b13] transition-colors duration-300 group-hover:border-red-400/35";
+const CARD = "rounded-xl border border-white/10 bg-[#0b0b13] transition-colors duration-300 group-hover:border-[#ff6a1f]/35";
 
 /* ── Mini-mockups littéraux (tout en CSS, DA ember) ─────────────────────── */
 

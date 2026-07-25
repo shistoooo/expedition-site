@@ -278,7 +278,7 @@ export default function VideoDownloadComparison() {
             />
             <div
               className="absolute -bottom-4 -right-2 sm:-bottom-6 sm:-right-3 z-20 rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 text-center"
-              style={{ background: "rgba(6,5,26,0.94)", border: "1px solid rgba(255,106,31,0.45)", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}
+              style={{ background: "rgba(6,5,26,0.94)", border: "1px solid rgba(255,106,31,0.45)" }}
             >
               <span className="block text-4xl sm:text-5xl md:text-6xl font-black leading-[0.9] tracking-[-0.03em]" style={{ color: "#ff6a1f" }}>
                 {SAVED_PCT}%

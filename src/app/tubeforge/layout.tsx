@@ -1,4 +1,14 @@
 import type { Metadata } from "next";
+import { Bricolage_Grotesque } from "next/font/google";
+
+// Display font scopée TubeForge : grotesque à caractère (axe optique un peu
+// rugueux) — cohérente avec l'identité mono/technique ember, contrairement au
+// Playfair éditorial hérité du reste du site via la règle h1/h2 globale.
+const tfDisplay = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["500", "700", "800"],
+  variable: "--font-tf-display",
+});
 
 // Force dynamic — page cliente ("use client"), le segment config doit vivre ici.
 export const dynamic = "force-dynamic";
@@ -66,12 +76,12 @@ const jsonLd = {
 
 export default function TubeForgeLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className={`${tfDisplay.variable} tf-scope`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {children}
-    </>
+    </div>
   );
 }
