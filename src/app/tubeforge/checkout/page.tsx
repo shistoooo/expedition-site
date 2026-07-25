@@ -89,7 +89,7 @@ function SetupForm({ months }: { months: number }) {
         )}
       </AnimatePresence>
 
-      <button type="submit" disabled={!stripe || submitting}
+      <button type="submit" data-track="checkout-carte" disabled={!stripe || submitting}
         className="w-full mt-6 py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
         style={{ background: "linear-gradient(135deg,#ff6a1f 0%,#ef3a24 100%)", color: "#fff" }}>
         {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Démarrer mes 14 jours gratuits</>}
@@ -154,7 +154,7 @@ function PaymentForm({ plan, price }: { plan: OneTimePlan; price: string }) {
         )}
       </AnimatePresence>
 
-      <button type="submit" disabled={!stripe || submitting}
+      <button type="submit" data-track="checkout-payer" disabled={!stripe || submitting}
         className="w-full mt-6 py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
         style={{ background: "linear-gradient(135deg,#ff6a1f 0%,#ef3a24 100%)", color: "#fff" }}>
         {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Payer {price}</>}
@@ -337,7 +337,7 @@ function OneTimeCheckoutContent() {
                       <input type="email" value={email} onChange={(ev) => setEmail(ev.target.value)} required placeholder="vous@email.com" autoFocus
                         className="w-full h-11 pl-10 pr-4 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.07] transition-all text-sm" />
                     </div>
-                    <button type="submit" disabled={creating}
+                    <button type="submit" data-track="checkout-email" disabled={creating}
                       className="w-full py-4 rounded-xl font-bold text-base transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
                       style={{ background: "linear-gradient(135deg,#ff6a1f 0%,#ef3a24 100%)", color: "#fff" }}>
                       {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Continuer vers la carte <ArrowRight className="w-4 h-4" /></>}

@@ -108,6 +108,7 @@ function ThreePlansGrid() {
           ))}
         </ul>
         <Link
+          data-track="pricing-mensuel"
           href="/tubeforge/checkout?plan=sub&months=1"
           className="w-full py-3 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2 transition-colors hover:bg-white/5"
           style={{ borderColor: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)" }}
@@ -144,6 +145,7 @@ function ThreePlansGrid() {
           ))}
         </ul>
         <Link
+          data-track="pricing-annee"
           href="/tubeforge/checkout?plan=sub&months=12"
           className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
           style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
@@ -174,6 +176,7 @@ function ThreePlansGrid() {
           ))}
         </ul>
         <Link
+          data-track="pricing-vie"
           href="/tubeforge/checkout?plan=lifetime"
           className="w-full py-3 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2 transition-colors hover:bg-white/5"
           style={{ borderColor: "rgba(255,106,31,0.35)", color: AMBER }}

@@ -41,7 +41,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-white/10 py-5">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between text-left gap-4">
+      <button data-track="faq-open" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between text-left gap-4">
         <span className="font-semibold text-white">{q}</span>
         <ChevronDown className={`w-4 h-4 text-white/40 shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
@@ -110,7 +110,7 @@ export default function TubeForgePage() {
             dans SA section en dessous (on descend → « le temps gagné » en grand). */}
         {/* pb > pt : biaise le centrage flex vers le HAUT (centre optique,
             pas géométrique — un hero strictement centré paraît toujours bas). */}
-        <section className="relative min-h-[92svh] flex items-center pt-12 pb-16">
+        <section data-section="hero" className="relative min-h-[92svh] flex items-center pt-12 pb-16">
           <div className="container-main w-full">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -133,12 +133,14 @@ export default function TubeForgePage() {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
+                  data-track="hero-essai"
                   href="/tubeforge/checkout?plan=sub&months=12"
                   className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
                 >
                   Essayer gratuitement <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
                 </Link>
                 <a
+                  data-track="hero-voir-demo"
                   href="#demo-tf"
                   className="group inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-white/5 text-white/85 font-semibold text-base transition-all duration-200 border border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20"
                 >
@@ -162,7 +164,7 @@ export default function TubeForgePage() {
         </section>
 
         {/* ── LE TEMPS GAGNÉ — 2ᵉ section, en grand : la preuve vidéo réelle. ── */}
-        <section id="demo-tf" className="pb-20 md:pb-28 relative scroll-mt-24">
+        <section id="demo-tf" data-section="demo" className="pb-20 md:pb-28 relative scroll-mt-24">
           <div className="container-main">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -181,17 +183,19 @@ export default function TubeForgePage() {
         </section>
 
         {/* ── FEATURES (éditorial + mini-illustration par ligne) ── */}
-        <section className="pb-16 md:pb-24 relative">
+        <section data-section="features" className="pb-16 md:pb-24 relative">
           <div className="container-main max-w-5xl">
             <FeaturesList />
           </div>
         </section>
 
         {/* ── PRIX ─────────────────────────────────────────────────────── */}
-        <TubeForgePricingSection />
+        <div data-section="pricing">
+          <TubeForgePricingSection />
+        </div>
 
         {/* ── FAQ ──────────────────────────────────────────────────────── */}
-        <section className="pb-16 md:pb-24 relative">
+        <section data-section="faq" className="pb-16 md:pb-24 relative">
           <div className="container-main max-w-2xl">
             <h2 className="text-2xl md:text-3xl font-black tracking-[-0.02em] mb-8 text-center">Questions fréquentes</h2>
             <div>

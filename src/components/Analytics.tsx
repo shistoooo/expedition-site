@@ -4,11 +4,18 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 const WORKER = "https://expedition-licensing.expedition-studio.workers.dev";
-const SITE = "site";
 
-// Seul le VRAI domaine de prod compte. localhost, previews Vercel, liens privés
-// (explauncheur.space) → jamais trackés, pour ne pas polluer les stats.
-const PROD_HOSTS = new Set(["expeditionlauncher.store", "www.expeditionlauncher.store"]);
+// Hôte → tag `site` en base. Le funnel TubeForge (lien privé) est tracké À PART
+// (site="tubeforge") pour ne pas polluer les stats du site principal.
+// localhost et previews Vercel → jamais trackés.
+const TRACKED_HOSTS: Record<string, string> = {
+  "expeditionlauncher.store": "site",
+  "www.expeditionlauncher.store": "site",
+  "tubeforge.explauncheur.space": "tubeforge",
+};
+function currentSite(): string | null {
+  return TRACKED_HOSTS[window.location.hostname] ?? null;
+}
 
 // N'inclut QUE les vrais visiteurs :
 //  - exclut tout ce qui n'est pas le domaine de prod (dev/preview/lien privé)
@@ -24,12 +31,12 @@ function shouldTrack(): boolean {
   } catch {
     /* localStorage indispo → on continue sur le seul filtre domaine */
   }
-  return PROD_HOSTS.has(window.location.hostname);
+  return currentSite() !== null;
 }
 
 function track(event: string, page: string, meta?: Record<string, unknown>) {
   if (!shouldTrack()) return;
-  const payload = { site: SITE, event, page, referrer: document.referrer || "", meta: meta ?? {} };
+  const payload = { site: currentSite() ?? "site", event, page, referrer: document.referrer || "", meta: meta ?? {} };
   const url = `${WORKER}/analytics/track`;
   const body = JSON.stringify(payload);
   if (navigator.sendBeacon) {

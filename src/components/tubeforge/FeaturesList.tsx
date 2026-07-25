@@ -29,10 +29,10 @@ const PLATFORM_LOGOS: { n: string; svg: React.ReactNode }[] = [
    comme des cartes posées à la main, pas sorties d'un gabarit. Le hover les
    redresse (cf. .tf-cell dans globals.css). */
 const LOOKS = [
-  { r: "26px 10px 22px 14px", tilt: "-0.25deg" },
-  { r: "12px 24px 10px 26px", tilt: "0.35deg" },
-  { r: "22px 14px 28px 10px", tilt: "-0.2deg" },
-  { r: "14px 26px 12px 22px", tilt: "0.3deg" },
+  { r: "26px 10px 22px 14px", tilt: "-0.7deg" },
+  { r: "12px 24px 10px 26px", tilt: "0.6deg" },
+  { r: "22px 14px 28px 10px", tilt: "-0.5deg" },
+  { r: "14px 26px 12px 22px", tilt: "0.65deg" },
 ];
 
 function Cell({ children, className = "", delay = 0, look = 0 }: { children: React.ReactNode; className?: string; delay?: number; look?: number }) {
@@ -71,6 +71,7 @@ export default function FeaturesList() {
         </p>
         <div>
           <Link
+            data-track="bento-essai"
             href="/tubeforge/checkout?plan=sub&months=12"
             className="inline-flex items-center gap-2 px-5 py-3 font-bold text-sm text-white transition-all hover:brightness-110 active:scale-[0.98]"
             style={{ background: `linear-gradient(118deg, ${AMBER} 0%, ${RED} 58%, ${VIOLET} 155%)` }}
