@@ -25,16 +25,29 @@ const PLATFORM_LOGOS: { n: string; svg: React.ReactNode }[] = [
   { n: "Facebook", svg: (<><rect width="28" height="28" rx="7" fill="#1877F2" /><path d="M16.5 14.5h2l.4-2.6h-2.4v-1.6c0-.75.35-1.4 1.5-1.4h1V6.7s-.9-.15-1.8-.15c-1.85 0-3 1.1-3 3.1v1.65H10v2.6h2.2V21h2.3v-6.5z" fill="#fff" /></>) },
 ];
 
-function Cell({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+/* Chaque carte a SES rayons asymétriques et SA micro-inclinaison de repos —
+   comme des cartes posées à la main, pas sorties d'un gabarit. Le hover les
+   redresse (cf. .tf-cell dans globals.css). */
+const LOOKS = [
+  { r: "26px 10px 22px 14px", tilt: "-0.4deg" },
+  { r: "12px 24px 10px 26px", tilt: "0.35deg" },
+  { r: "22px 14px 28px 10px", tilt: "-0.25deg" },
+  { r: "14px 26px 12px 22px", tilt: "0.3deg" },
+];
+
+function Cell({ children, className = "", delay = 0, look = 0 }: { children: React.ReactNode; className?: string; delay?: number; look?: number }) {
+  const { r, tilt } = LOOKS[look % LOOKS.length];
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay, ease: easeOutExpo }}
-      className={`tf-cell group ${className}`}
+      className={`group ${className}`}
     >
-      <div className="tf-cell__in h-full p-6 md:p-7 flex flex-col">{children}</div>
+      <div className="tf-cell h-full" style={{ "--r": r, "--tilt": tilt } as React.CSSProperties}>
+        <div className="h-full p-6 md:p-7 flex flex-col">{children}</div>
+      </div>
     </motion.div>
   );
 }
@@ -69,7 +82,7 @@ export default function FeaturesList() {
 
       {/* 01 — LA cellule riche : une VRAIE capture (timeline Premiere, clip
           importé par TubeForge). Pas un mockup dessiné : le produit, tel quel. */}
-      <Cell className="md:col-span-3">
+      <Cell className="md:col-span-3" look={0}>
         <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Ça atterrit direct sur ta timeline</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-5">
           Pas de dossier à ranger, pas de glisser-déposer. La vidéo apparaît sur Premiere ou DaVinci, prête à couper.
@@ -89,7 +102,7 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 02 — sobre : les logos (réels) suffisent */}
-      <Cell className="md:col-span-2" delay={0.07}>
+      <Cell className="md:col-span-2" delay={0.07} look={1}>
         <h3 className="font-bold text-white text-lg mb-1.5">1500+ sites, zéro prise de tête</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           Vimeo, TikTok, X, YouTube… même geste à chaque fois, peu importe d&apos;où ça vient.
@@ -105,19 +118,27 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 03 — sobre : un chiffre, c'est tout */}
-      <Cell className="md:col-span-3" delay={0.11}>
+      <Cell className="md:col-span-3" delay={0.11} look={2}>
         <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Juste le passage qui t&apos;intéresse</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.
         </p>
-        <p className="mt-auto">
-          <span className="font-black text-4xl tabular-nums" style={{ color: AMBER }}>0:30</span>
-          <span className="text-white/35 text-sm ml-2">gardées sur 2:14:00 téléchargées</span>
-        </p>
+        <div className="mt-auto">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/tubeforge/real-trim.jpg"
+            alt="Module de découpe TubeForge : curseurs début/fin, 43 secondes gardées sur 1 min 41"
+            className="w-full h-auto border border-white/10 rounded-lg"
+            loading="lazy"
+            width={622}
+            height={145}
+          />
+          <p className="mt-2 font-mono text-[9px] text-white/30">capture réelle · TubeForge</p>
+        </div>
       </Cell>
 
       {/* 04 — texte seul : tout n'a pas besoin d'une illustration */}
-      <Cell className="md:col-span-5" delay={0.15}>
+      <Cell className="md:col-span-5" delay={0.15} look={3}>
         <div className="md:flex md:items-baseline md:gap-10">
           <h3 className="font-bold text-white text-lg md:text-xl mb-1.5 md:mb-0 shrink-0">4K, et autant que tu veux à la chaîne</h3>
           <p className="text-white/45 text-sm leading-relaxed">
