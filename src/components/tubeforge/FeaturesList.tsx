@@ -5,64 +5,16 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-/* Palette = celle du wordmark TubeForge (globals.css .tf-forge-flow) :
-   ember → rouge, avec le VIOLET du logo en touche rare et signifiante
-   (piste audio, file d'attente) — jamais en décor. */
 const AMBER = "#ff6a1f";
 const RED = "#ef3a24";
 const VIOLET = "#8b3dff";
 
-/* ── Mini-mockups : 4 TEXTURES volontairement différentes ─────────────────
-   01 pistes horizontales · 02 mosaïque de tuiles · 03 typographique
-   04 colonnes verticales. Aucun ne réutilise la silhouette d'un autre. */
+/* Principe de cette section : BUDGET D'EFFORT INÉGAL, comme un humain.
+   UNE cellule riche (une vraie capture d'écran du produit, pas un mockup
+   dessiné), les autres restent sobres — logos réels, un chiffre, du texte.
+   Pas de tag/numéro systématique par cellule : l'astuce uniforme est un tell. */
 
-// 01 — la timeline de montage : règle, piste vidéo (ember), piste audio (violet)
-function VizTimeline() {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        {["00:00", "00:05", "00:10", "00:15", "00:20"].map((t) => (
-          <span key={t} className="font-mono text-[9px] text-white/25 tabular-nums">{t}</span>
-        ))}
-      </div>
-      <div className="relative space-y-1.5">
-        <div className="absolute top-0 bottom-0 left-[46%] w-px z-10" style={{ background: AMBER }}>
-          <span className="absolute -top-1 -left-[3px] w-[7px] h-[7px] rotate-45" style={{ background: AMBER }} />
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[9px] text-white/30 w-4">V1</span>
-          <div className="flex-1 h-6 bg-white/[0.04] relative">
-            <div
-              className="absolute left-[22%] top-0 h-6 w-[50%] flex items-center px-1 gap-[2px] overflow-hidden"
-              style={{ background: `linear-gradient(135deg, ${AMBER}, ${RED})` }}
-            >
-              {Array.from({ length: 13 }).map((_, i) => (
-                <span key={i} className="w-[2px] bg-white/60" style={{ height: `${25 + (i % 5) * 13}%` }} />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[9px] text-white/30 w-4">A1</span>
-          <div className="flex-1 h-4 bg-white/[0.04] relative">
-            <div
-              className="absolute left-[22%] top-0 h-4 w-[50%] flex items-center px-1 gap-[1px] overflow-hidden"
-              style={{ background: "rgba(139,61,255,0.16)" }}
-            >
-              {Array.from({ length: 26 }).map((_, i) => (
-                <span key={i} className="flex-1" style={{ height: `${20 + ((i * 29) % 55)}%`, background: "rgba(160,100,255,0.75)" }} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      <p className="mt-2.5 font-mono text-[9px] text-white/30">▸ importé dans Premiere</p>
-    </div>
-  );
-}
-
-// 02 — mosaïque : vrais logos de plateformes (couleurs de marque = du réel)
+// Logos réels des plateformes (couleurs de marque officielles)
 const PLATFORM_LOGOS: { n: string; svg: React.ReactNode }[] = [
   { n: "YouTube", svg: (<><rect width="28" height="28" rx="7" fill="#FF0000" /><path d="M11.5 9.5v9l7.5-4.5z" fill="#fff" /></>) },
   { n: "TikTok", svg: (<><rect width="28" height="28" rx="7" fill="#010101" /><path d="M17.5 7c.35 1.9 1.55 3.1 3.3 3.35v2.45c-1.15.1-2.2-.25-3.3-.85v4.55a4.55 4.55 0 1 1-4.55-4.55c.25 0 .5.02.75.06v2.5a2.15 2.15 0 1 0 1.5 2.05V7h2.3z" fill="#25F4EE" /></>) },
@@ -72,146 +24,25 @@ const PLATFORM_LOGOS: { n: string; svg: React.ReactNode }[] = [
   { n: "Vimeo", svg: (<><rect width="28" height="28" rx="7" fill="#1AB7EA" /><path d="M9 11.5c.6-.9 1.5-1.6 2.4-1.1.9.5.7 2 .4 3-.3 1-.9 2.4-.3 2.6.6.2 1.7-1.5 2.3-2.8.6-1.4 1-3 .3-3.8-.8-.9-2.2-.5-3 .2" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></>) },
   { n: "Facebook", svg: (<><rect width="28" height="28" rx="7" fill="#1877F2" /><path d="M16.5 14.5h2l.4-2.6h-2.4v-1.6c0-.75.35-1.4 1.5-1.4h1V6.7s-.9-.15-1.8-.15c-1.85 0-3 1.1-3 3.1v1.65H10v2.6h2.2V21h2.3v-6.5z" fill="#fff" /></>) },
 ];
-function VizSites() {
-  return (
-    <div>
-      <div className="flex flex-wrap gap-1.5 items-center">
-        {PLATFORM_LOGOS.map((p) => (
-          <span key={p.n} title={p.n} className="w-7 h-7 rounded-[7px] overflow-hidden">
-            <svg viewBox="0 0 28 28" className="w-7 h-7" aria-label={p.n}>{p.svg}</svg>
-          </span>
-        ))}
-        <span
-          className="h-7 px-2 inline-flex items-center font-mono text-[11px] font-bold tabular-nums"
-          style={{ background: "rgba(255,106,31,0.14)", color: AMBER, border: `1px solid rgba(255,106,31,0.28)` }}
-        >
-          +1493
-        </span>
-      </div>
-      <p className="mt-2.5 font-mono text-[9px] text-white/30">…et des centaines d&apos;autres</p>
-    </div>
-  );
-}
 
-// 03 — TYPOGRAPHIQUE : le rapport 30s / 2h14 dit tout, la piste ne fait que
-// le prouver (segment minuscule). Silhouette volontairement non-« barres ».
-function VizRatio() {
-  return (
-    <div>
-      <div className="flex items-end gap-2 mb-3">
-        <span className="font-black text-4xl leading-none tabular-nums" style={{ color: AMBER }}>0:30</span>
-        <span className="font-mono text-[10px] text-white/35 pb-1">gardées</span>
-      </div>
-      <div className="relative h-1.5 w-full bg-white/[0.06]">
-        <span
-          className="absolute inset-y-0"
-          style={{ left: "34%", width: "4%", background: `linear-gradient(90deg, ${AMBER}, ${RED})` }}
-        />
-      </div>
-      <div className="flex justify-between mt-1.5 font-mono text-[9px] text-white/25 tabular-nums">
-        <span>0:00</span>
-        <span>2:14:00</span>
-      </div>
-    </div>
-  );
-}
-
-// 04 — COLONNES VERTICALES : 3 flux qui se remplissent + file d'attente en
-// tuiles fantômes (hairline violette du logo).
-function VizParallel() {
-  const active = [
-    { n: "Trailer S2", p: 72 },
-    { n: "Reaction", p: 48 },
-    { n: "B-roll", p: 21 },
-  ];
-  return (
-    <div className="flex items-end gap-2.5">
-      {active.map((d) => (
-        <div key={d.n} className="flex-1 min-w-0">
-          <div className="relative h-16 w-full bg-white/[0.04] overflow-hidden">
-            <span
-              className="absolute inset-x-0 bottom-0"
-              style={{ height: `${d.p}%`, background: `linear-gradient(180deg, ${AMBER}, ${RED})` }}
-            />
-            <span className="absolute inset-x-0 top-1 text-center font-mono text-[9px] text-white tabular-nums">{d.p}%</span>
-          </div>
-          <p className="mt-1.5 font-mono text-[9px] text-white/35 truncate">{d.n}</p>
-        </div>
-      ))}
-      <div className="flex-1 min-w-0">
-        <div className="h-16 flex gap-[3px]">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className="flex-1 border border-dashed" style={{ borderColor: "rgba(139,61,255,0.35)" }} />
-          ))}
-        </div>
-        <p className="mt-1.5 font-mono text-[9px] text-white/35">+7 en file</p>
-      </div>
-    </div>
-  );
-}
-
-/* tag = métadonnée mono façon table de montage. Pas de numérotation : dans un
-   bento en deux colonnes l'œil descend la colonne (01 → 03), donc numéroter
-   mentirait sur l'ordre de lecture. */
-const FEATURES = [
-  {
-    tag: "V1 · A1",
-    title: "Ça atterrit direct sur ta timeline",
-    desc: "Pas de dossier à ranger, pas de glisser-déposer. La vidéo apparaît sur Premiere ou DaVinci, prête à couper.",
-    Viz: VizTimeline,
-  },
-  {
-    tag: "SRC 1500+",
-    title: "1500+ sites, zéro prise de tête",
-    desc: "Vimeo, TikTok, X, YouTube… même geste à chaque fois, peu importe d'où ça vient.",
-    Viz: VizSites,
-  },
-  {
-    tag: "IN · OUT",
-    title: "Juste le passage qui t'intéresse",
-    desc: "30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.",
-    Viz: VizRatio,
-  },
-  {
-    tag: "×3 FLUX",
-    title: "4K, et autant que tu veux à la chaîne",
-    desc: "Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s'enchaînent tout seuls pendant que tu montes.",
-    Viz: VizParallel,
-  },
-];
-
-// Cellule du bento. La signature de forme (coin coupé + angles vifs) vit dans
-// .tf-cell (globals.css) : zéro rounded-2xl, une amorce de découpe en haut à
-// droite comme une amorce de pellicule.
-function Cell({ f, i, className = "", horizontal = false }: { f: (typeof FEATURES)[number]; i: number; className?: string; horizontal?: boolean }) {
+function Cell({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: i * 0.07, ease: easeOutExpo }}
+      transition={{ duration: 0.5, delay, ease: easeOutExpo }}
       className={`tf-cell group ${className}`}
     >
-      <div className={`tf-cell__in h-full p-6 md:p-7 ${horizontal ? "flex flex-col md:flex-row md:items-center gap-6 md:gap-10" : "flex flex-col"}`}>
-        <div className={horizontal ? "md:max-w-sm shrink-0" : ""}>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] mb-4" style={{ color: "rgba(255,106,31,0.85)" }}>{f.tag}</p>
-          <h3 className={`font-bold text-white mb-1.5 ${horizontal ? "text-xl md:text-2xl" : "text-lg"}`}>{f.title}</h3>
-          <p className="text-white/45 text-sm leading-relaxed">{f.desc}</p>
-        </div>
-        <div className={horizontal ? "flex-1 min-w-0" : "mt-6 md:mt-auto md:pt-7"}>
-          <f.Viz />
-        </div>
-      </div>
+      <div className="tf-cell__in h-full p-6 md:p-7 flex flex-col">{children}</div>
     </motion.div>
   );
 }
 
 export default function FeaturesList() {
-  const [f1, f2, f3, f4] = FEATURES;
   return (
-    // Le titre vit DANS la grille (cellule intro), 01 lui fait face, 02/03 se
-    // partagent la rangée du milieu en 2/5–3/5, 04 referme en bandeau.
     <div className="grid md:grid-cols-5 gap-4 md:gap-5">
+      {/* Intro : le titre vit dans la grille */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -236,10 +67,64 @@ export default function FeaturesList() {
         </div>
       </motion.div>
 
-      <Cell f={f1} i={0} className="md:col-span-3" />
-      <Cell f={f2} i={1} className="md:col-span-2" />
-      <Cell f={f3} i={2} className="md:col-span-3" />
-      <Cell f={f4} i={3} className="md:col-span-5" horizontal />
+      {/* 01 — LA cellule riche : une VRAIE capture (timeline Premiere, clip
+          importé par TubeForge). Pas un mockup dessiné : le produit, tel quel. */}
+      <Cell className="md:col-span-3">
+        <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Ça atterrit direct sur ta timeline</h3>
+        <p className="text-white/45 text-sm leading-relaxed mb-5">
+          Pas de dossier à ranger, pas de glisser-déposer. La vidéo apparaît sur Premiere ou DaVinci, prête à couper.
+        </p>
+        <div className="mt-auto">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/tubeforge/real-timeline.jpg"
+            alt="Timeline Premiere Pro : le clip téléchargé par TubeForge posé sur les pistes V1/A1"
+            className="w-full h-auto border border-white/10"
+            loading="lazy"
+            width={830}
+            height={290}
+          />
+          <p className="mt-2 font-mono text-[9px] text-white/30">capture réelle · Premiere Pro</p>
+        </div>
+      </Cell>
+
+      {/* 02 — sobre : les logos (réels) suffisent */}
+      <Cell className="md:col-span-2" delay={0.07}>
+        <h3 className="font-bold text-white text-lg mb-1.5">1500+ sites, zéro prise de tête</h3>
+        <p className="text-white/45 text-sm leading-relaxed mb-6">
+          Vimeo, TikTok, X, YouTube… même geste à chaque fois, peu importe d&apos;où ça vient.
+        </p>
+        <div className="mt-auto flex flex-wrap gap-1.5 items-center">
+          {PLATFORM_LOGOS.map((p) => (
+            <span key={p.n} title={p.n} className="w-7 h-7 rounded-[7px] overflow-hidden">
+              <svg viewBox="0 0 28 28" className="w-7 h-7" aria-label={p.n}>{p.svg}</svg>
+            </span>
+          ))}
+          <span className="font-mono text-xs text-white/40 pl-1 tabular-nums">+1493 autres</span>
+        </div>
+      </Cell>
+
+      {/* 03 — sobre : un chiffre, c'est tout */}
+      <Cell className="md:col-span-3" delay={0.11}>
+        <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Juste le passage qui t&apos;intéresse</h3>
+        <p className="text-white/45 text-sm leading-relaxed mb-6">
+          30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.
+        </p>
+        <p className="mt-auto">
+          <span className="font-black text-4xl tabular-nums" style={{ color: AMBER }}>0:30</span>
+          <span className="text-white/35 text-sm ml-2">gardées sur 2:14:00 téléchargées</span>
+        </p>
+      </Cell>
+
+      {/* 04 — texte seul : tout n'a pas besoin d'une illustration */}
+      <Cell className="md:col-span-5" delay={0.15}>
+        <div className="md:flex md:items-baseline md:gap-10">
+          <h3 className="font-bold text-white text-lg md:text-xl mb-1.5 md:mb-0 shrink-0">4K, et autant que tu veux à la chaîne</h3>
+          <p className="text-white/45 text-sm leading-relaxed">
+            Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s&apos;enchaînent tout seuls pendant que tu montes.
+          </p>
+        </div>
+      </Cell>
     </div>
   );
 }
