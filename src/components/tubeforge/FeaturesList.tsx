@@ -102,7 +102,7 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 02 — sobre : les logos (réels) suffisent */}
-      <Cell className="md:col-span-2" delay={0.07} look={1}>
+      <Cell className="md:col-span-3" delay={0.07} look={1}>
         <h3 className="font-bold text-white text-lg mb-1.5">1500+ sites, zéro prise de tête</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           Vimeo, TikTok, X, YouTube… même geste à chaque fois, peu importe d&apos;où ça vient.
@@ -118,7 +118,7 @@ export default function FeaturesList() {
       </Cell>
 
       {/* 03 — sobre : un chiffre, c'est tout */}
-      <Cell className="md:col-span-3" delay={0.11} look={2}>
+      <Cell className="md:col-span-2" delay={0.11} look={2}>
         <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Juste le passage qui t&apos;intéresse</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.
@@ -126,12 +126,12 @@ export default function FeaturesList() {
         <div className="mt-auto">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/tubeforge/real-trim.jpg"
-            alt="Module de découpe TubeForge : curseurs début/fin, 43 secondes gardées sur 1 min 41"
+            src="/tubeforge/real-app.jpg"
+            alt="TubeForge : téléchargement MP4/MP3, choix du format, et module de découpe avec curseurs début/fin"
             className="w-full h-auto border border-white/10 rounded-lg"
             loading="lazy"
-            width={622}
-            height={145}
+            width={692}
+            height={878}
           />
           <p className="mt-2 font-mono text-[9px] text-white/30">capture réelle · TubeForge</p>
         </div>
