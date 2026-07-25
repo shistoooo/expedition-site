@@ -365,11 +365,10 @@ input:-webkit-autofill:focus {
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--r, 22px 10px 24px 12px);
   background: #0b0a14;
-  /* translateZ(0) + will-change : la carte vit en PERMANENCE sur sa couche
-     GPU -> le mouvement au hover ne déclenche plus de re-rasterisation
-     (c'était ça, le « flash/coupure » sur les captures, pas le mouvement). */
-  transform: rotate(var(--tilt, 0deg)) translateZ(0);
-  will-change: transform;
+  /* PAS de will-change ici : il force Chrome à mettre le TEXTE en cache
+     bitmap, et ce cache tranche les glyphes sur un élément incliné (le
+     « Ç » scalpé). Sans lui, le texte reste vectoriel — net à tout angle. */
+  transform: rotate(var(--tilt, 0deg));
   transition:
     transform 360ms cubic-bezier(0.34, 1.35, 0.64, 1),
     background 300ms ease,
@@ -377,7 +376,7 @@ input:-webkit-autofill:focus {
 }
 .group:hover > .tf-cell {
   z-index: 5;
-  transform: rotate(0deg) translateY(-4px) translateZ(0);
+  transform: rotate(0deg) translateY(-4px);
   background: #12111c;
   border-color: rgba(255, 106, 31, 0.28);
 }
