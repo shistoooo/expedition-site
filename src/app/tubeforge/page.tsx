@@ -77,6 +77,16 @@ export default function TubeForgePage() {
           className="absolute bottom-[-25%] right-[-12%] w-[760px] h-[560px] rounded-full blur-[170px]"
           style={{ background: "radial-gradient(ellipse at center, rgba(239,68,68,0.07), transparent 72%)" }}
         />
+        {/* Touches VIOLET (couleur du wordmark) : légères, en flancs, jamais au
+            centre — le violet reste rare et signifiant, pas décoratif. */}
+        <div
+          className="absolute top-[38%] left-[-18%] w-[620px] h-[620px] rounded-full blur-[180px]"
+          style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.075), transparent 68%)" }}
+        />
+        <div
+          className="absolute top-[68%] right-[-14%] w-[520px] h-[520px] rounded-full blur-[180px]"
+          style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.055), transparent 68%)" }}
+        />
       </div>
       {/* Grille technique — UNIQUEMENT en haut de page (derrière le hero), discrète
           et animée, s'efface en descendant + au scroll (absolute, pas fixed). */}
@@ -185,24 +195,6 @@ export default function TubeForgePage() {
           </div>
         </section>
 
-        {/* ── CTA FINAL ────────────────────────────────────────────────── */}
-        <section className="py-16 md:py-24 relative">
-          <div className="container-main max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-black tracking-[-0.02em] mb-4">
-              Tu viens de voir la différence. À toi de jouer.
-            </h2>
-            <p className="text-base md:text-lg text-white/55 leading-relaxed mb-8">
-              14 jours gratuits, accès complet. Ensuite dès 3,49€/mois, annulable à tout moment.
-            </p>
-            <Link
-              href="/tubeforge/checkout?plan=sub&months=12"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-black font-bold text-sm border border-white/20 transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
-            >
-              Essayer gratuitement
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-            </Link>
-          </div>
-        </section>
       </main>
 
       <Footer />
