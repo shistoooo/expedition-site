@@ -29,10 +29,10 @@ const PLATFORM_LOGOS: { n: string; svg: React.ReactNode }[] = [
    comme des cartes posées à la main, pas sorties d'un gabarit. Le hover les
    redresse (cf. .tf-cell dans globals.css). */
 const LOOKS = [
-  { r: "26px 10px 22px 14px", tilt: "-0.4deg" },
+  { r: "26px 10px 22px 14px", tilt: "0deg" },    // capture Premiere : d'aplomb
   { r: "12px 24px 10px 26px", tilt: "0.35deg" },
-  { r: "22px 14px 28px 10px", tilt: "-0.25deg" },
-  { r: "14px 26px 12px 22px", tilt: "0.3deg" },
+  { r: "22px 14px 28px 10px", tilt: "0deg" },    // capture TubeForge : d'aplomb
+  { r: "14px 26px 12px 22px", tilt: "-0.3deg" },
 ];
 
 function Cell({ children, className = "", delay = 0, look = 0 }: { children: React.ReactNode; className?: string; delay?: number; look?: number }) {
@@ -107,7 +107,7 @@ export default function FeaturesList() {
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           Vimeo, TikTok, X, YouTube… même geste à chaque fois, peu importe d&apos;où ça vient.
         </p>
-        <div className="mt-auto flex flex-wrap gap-1.5 items-center">
+        <div className="mt-2 flex flex-wrap gap-1.5 items-center">
           {PLATFORM_LOGOS.map((p) => (
             <span key={p.n} title={p.n} className="w-8 h-8 rounded-[8px] overflow-hidden">
               <svg viewBox="0 0 28 28" className="w-8 h-8" aria-label={p.n}>{p.svg}</svg>
@@ -123,7 +123,7 @@ export default function FeaturesList() {
         <p className="text-white/45 text-sm leading-relaxed mb-6">
           30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.
         </p>
-        <div className="mt-auto">
+        <div className="mt-auto w-full max-w-[360px] mx-auto">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/tubeforge/real-app.jpg"
@@ -139,11 +139,26 @@ export default function FeaturesList() {
 
       {/* 04 — texte seul : tout n'a pas besoin d'une illustration */}
       <Cell className="md:col-span-3" delay={0.15} look={3}>
-        <div className="my-auto">
-          <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">4K, et autant que tu veux à la chaîne</h3>
-          <p className="text-white/45 text-sm leading-relaxed">
-            Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s&apos;enchaînent tout seuls pendant que tu montes.
-          </p>
+        <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">4K, et autant que tu veux à la chaîne</h3>
+        <p className="text-white/45 text-sm leading-relaxed mb-5">
+          Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s&apos;enchaînent tout seuls pendant que tu montes.
+        </p>
+        <div className="mt-auto">
+          {/* Enregistrement d'écran RÉEL de la file TubeForge (13 téléchargements,
+              progressions et débits réels) — boucle muette, 160 Ko. */}
+          <video
+            src="/tubeforge/real-queue-1.mp4"
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="metadata"
+            width={1594}
+            height={226}
+            className="w-full h-auto border border-white/10 rounded-md"
+            aria-label="File de téléchargements TubeForge : 12 en cours, 2 terminés, progressions en direct"
+          />
+          <p className="mt-2 font-mono text-[9px] text-white/30">enregistrement réel · TubeForge</p>
         </div>
       </Cell>
     </div>
