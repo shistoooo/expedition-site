@@ -292,14 +292,20 @@ function OneTimeCheckoutContent() {
               <div className="text-right shrink-0">
                 <div className="flex items-baseline gap-1.5 justify-end">
                   {promoVie && <span className="text-sm text-white/30 line-through">{eur(LIFETIME_CENTS)}</span>}
-                  <p className="font-black text-2xl text-white tabular-nums">
-                    {isSub ? <>{eur(subPerMonthCents(months))}<span className="text-sm font-bold text-white/45">/mois</span></> : eur(totalCents)}
+                  {/* Le HÉROS = le montant réellement facturé. Le prix, c'est le
+                      prix — pas d'habillage « offre », pas de /mois d'appel. */}
+                  <p className="font-black text-3xl text-white tabular-nums">
+                    {eur(totalCents)}
                   </p>
-                  {pct > 0 && <span className="text-xs font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(255,106,31,0.18)", color: AMBER }}>−{pct}%</span>}
+                  {!isSub && pct > 0 && <span className="text-xs font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(255,106,31,0.18)", color: AMBER }}>−{pct}%</span>}
                   {promoVie && <span className="text-xs font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(255,106,31,0.18)", color: AMBER }}>offre privée</span>}
                 </div>
                 <p className="text-xs text-white/40">
-                  {isLifetime ? "une seule fois" : isSub ? "0€ aujourd'hui" : "paiement unique"}
+                  {isLifetime
+                    ? "une seule fois"
+                    : isSub
+                      ? <>0€ aujourd&apos;hui · prélevé après les 14 jours d&apos;essai{months > 1 ? <> (soit {eur(subPerMonthCents(months))}/mois)</> : null}</>
+                      : "paiement unique"}
                 </p>
               </div>
             </div>

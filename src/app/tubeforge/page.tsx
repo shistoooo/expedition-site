@@ -97,7 +97,9 @@ export default function TubeForgePage() {
       <main className="w-full relative z-10">
         {/* ── HERO — plein écran, tout au centre, rien d'autre. La démo vit
             dans SA section en dessous (on descend → « le temps gagné » en grand). */}
-        <section className="relative min-h-[92svh] flex items-center pt-24 pb-12">
+        {/* pb > pt : biaise le centrage flex vers le HAUT (centre optique,
+            pas géométrique — un hero strictement centré paraît toujours bas). */}
+        <section className="relative min-h-[92svh] flex items-center pt-16 pb-32">
           <div className="container-main w-full">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -164,12 +166,6 @@ export default function TubeForgePage() {
         {/* ── FEATURES (éditorial + mini-illustration par ligne) ── */}
         <section className="pb-16 md:pb-24 relative">
           <div className="container-main max-w-5xl">
-            <div className="mb-10 md:mb-14">
-              <h2 className="text-3xl md:text-4xl font-black tracking-[-0.02em]">
-                Pensé pour le montage <span style={{ color: "#ff6a1f" }}>sur les réseaux sociaux.</span>
-              </h2>
-            </div>
-
             <FeaturesList />
           </div>
         </section>

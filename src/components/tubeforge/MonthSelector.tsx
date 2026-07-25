@@ -42,8 +42,9 @@ export function giftKeysForMonths(months: number): number {
 export const SUB_TRIAL_DAYS = 14;
 export function subPerMonthCents(months: number): number {
   const m = Math.min(12, Math.max(1, Math.floor(months) || 1));
-  if (m >= 12) return 349;
-  return 499;
+  // Dégressif CONTINU 4,99€ → 3,49€ (MIROIR du worker tfsub.ts) : le total de
+  // période est strictement croissant, chaque mois ajouté reste payant.
+  return Math.round(499 - (150 * (m - 1)) / 11);
 }
 export function subPeriodTotalCents(months: number): number {
   const m = Math.min(12, Math.max(1, Math.floor(months) || 1));
@@ -166,19 +167,21 @@ export default function MonthSelector({ months, setMonths, onContinue, loading, 
               ? `${months === 1 ? "Mensuel, sans engagement" : `Engagement ${months} mois`} · 14 jours gratuits`
               : `${months} mois · ${months * 30} jours d'accès illimité`}
           </p>
+          {/* Le HÉROS = le montant réellement prélevé (pas un « /mois » d'appel).
+              Le prix, c'est le prix : pas de barré, pas d'habillage promo. */}
           <div className="flex items-baseline gap-2 h-9">
             <AnimatePresence mode="popLayout" initial={false}>
-              <motion.span key={isSub ? perMonth : total} initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: 0.22 }} className="text-3xl font-black text-white tabular-nums inline-block">
-                {isSub ? <>{eur(perMonth)}<span className="text-base font-bold text-white/50">/mois</span></> : eur(total)}
+              <motion.span key={total} initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: 0.22 }} className="text-3xl font-black text-white tabular-nums inline-block">
+                {eur(total)}
               </motion.span>
             </AnimatePresence>
-            {pct > 0 && <span className="text-sm text-white/30 line-through">{isSub ? "4,99€/mois" : eur(base)}</span>}
+            {!isSub && pct > 0 && <span className="text-sm text-white/30 line-through">{eur(base)}</span>}
           </div>
           {isSub ? (
             <p className="text-xs text-white/40 mt-0.5">
               {months === 1
-                ? <>renouvelé chaque mois, annulable quand tu veux</>
-                : <>facturé {eur(total)} tous les {months} mois, après l&apos;essai</>}
+                ? <>prélevé chaque mois après l&apos;essai, annulable quand tu veux</>
+                : <>prélevé tous les {months} mois après l&apos;essai, soit <span className="text-white/60 font-semibold">{eur(perMonth)}/mois</span></>}
             </p>
           ) : (
             saved > 0 && <p className="text-xs text-white/45 mt-0.5">tu économises {eur(saved)}</p>

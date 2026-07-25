@@ -1,62 +1,68 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clapperboard, Link2, Scissors, Gauge } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+/* Palette = celle du wordmark TubeForge (globals.css .tf-forge-flow) :
+   ember → rouge, avec le VIOLET du logo en touche rare et signifiante
+   (piste audio, file d'attente) — jamais en décor. */
 const AMBER = "#ff6a1f";
+const RED = "#ef3a24";
+const VIOLET = "#8b3dff";
 
-const CARD = "rounded-xl border border-white/10 bg-[#0b0b13] transition-colors duration-300 group-hover:border-[#ff6a1f]/35";
+/* ── Mini-mockups : 4 TEXTURES volontairement différentes ─────────────────
+   01 pistes horizontales · 02 mosaïque de tuiles · 03 typographique
+   04 colonnes verticales. Aucun ne réutilise la silhouette d'un autre. */
 
-/* ── Mini-mockups littéraux (tout en CSS, DA ember) ─────────────────────── */
-
-// 01 — une vraie timeline de montage : règle, pistes V1/A1, playhead, le clip posé
+// 01 — la timeline de montage : règle, piste vidéo (ember), piste audio (violet)
 function VizTimeline() {
   return (
-    <div className={`${CARD} overflow-hidden`}>
-      {/* règle temporelle */}
-      <div className="flex items-center justify-between px-3 h-6 border-b border-white/[0.06] bg-white/[0.02]">
+    <div>
+      <div className="flex items-center justify-between mb-2">
         {["00:00", "00:05", "00:10", "00:15", "00:20"].map((t) => (
-          <span key={t} className="text-[8px] font-mono text-white/25">{t}</span>
+          <span key={t} className="font-mono text-[9px] text-white/25 tabular-nums">{t}</span>
         ))}
       </div>
-      <div className="relative p-2.5 space-y-1.5">
-        {/* playhead */}
-        <div className="absolute top-1 bottom-1 left-[46%] w-px bg-red-400 z-10">
-          <span className="absolute -top-1 -left-[3px] w-[7px] h-[7px] rotate-45 bg-red-400" />
+      <div className="relative space-y-1.5">
+        <div className="absolute top-0 bottom-0 left-[46%] w-px z-10" style={{ background: AMBER }}>
+          <span className="absolute -top-1 -left-[3px] w-[7px] h-[7px] rotate-45" style={{ background: AMBER }} />
         </div>
-        {/* piste vidéo V1 avec le clip qui vient d'atterrir */}
         <div className="flex items-center gap-2">
-          <span className="text-[8px] font-mono text-white/30 w-4">V1</span>
-          <div className="flex-1 h-6 rounded bg-white/[0.03] relative">
+          <span className="font-mono text-[9px] text-white/30 w-4">V1</span>
+          <div className="flex-1 h-6 bg-white/[0.04] relative">
             <div
-              className="absolute left-[22%] top-0 h-6 w-[50%] rounded flex items-center px-1 gap-[2px] overflow-hidden ring-1 ring-white/20"
-              style={{ background: "linear-gradient(135deg, #ff6a1f, #ef3a24)" }}
+              className="absolute left-[22%] top-0 h-6 w-[50%] flex items-center px-1 gap-[2px] overflow-hidden"
+              style={{ background: `linear-gradient(135deg, ${AMBER}, ${RED})` }}
             >
               {Array.from({ length: 13 }).map((_, i) => (
-                <span key={i} className="w-[2px] rounded-full bg-white/60" style={{ height: `${25 + (i % 5) * 13}%` }} />
+                <span key={i} className="w-[2px] bg-white/60" style={{ height: `${25 + (i % 5) * 13}%` }} />
               ))}
             </div>
           </div>
         </div>
-        {/* piste audio A1 */}
         <div className="flex items-center gap-2">
-          <span className="text-[8px] font-mono text-white/30 w-4">A1</span>
-          <div className="flex-1 h-4 rounded bg-white/[0.03] relative">
-            <div className="absolute left-[22%] top-0 h-4 w-[50%] rounded flex items-center px-1 gap-[1px] overflow-hidden bg-emerald-500/20">
+          <span className="font-mono text-[9px] text-white/30 w-4">A1</span>
+          <div className="flex-1 h-4 bg-white/[0.04] relative">
+            <div
+              className="absolute left-[22%] top-0 h-4 w-[50%] flex items-center px-1 gap-[1px] overflow-hidden"
+              style={{ background: "rgba(139,61,255,0.16)" }}
+            >
               {Array.from({ length: 26 }).map((_, i) => (
-                <span key={i} className="flex-1 rounded-full bg-emerald-400/50" style={{ height: `${20 + ((i * 29) % 55)}%` }} />
+                <span key={i} className="flex-1" style={{ height: `${20 + ((i * 29) % 55)}%`, background: "rgba(160,100,255,0.75)" }} />
               ))}
             </div>
           </div>
         </div>
       </div>
-      <p className="px-3 pb-2 text-[10px] font-mono text-white/30">▸ importé dans Premiere</p>
+      <p className="mt-2.5 font-mono text-[9px] text-white/30">▸ importé dans Premiere</p>
     </div>
   );
 }
 
-// 02 — n'importe quelle plateforme : vrais logos (usage nominatif « sites supportés »)
+// 02 — mosaïque : vrais logos de plateformes (couleurs de marque = du réel)
 const PLATFORM_LOGOS: { n: string; svg: React.ReactNode }[] = [
   { n: "YouTube", svg: (<><rect width="28" height="28" rx="7" fill="#FF0000" /><path d="M11.5 9.5v9l7.5-4.5z" fill="#fff" /></>) },
   { n: "TikTok", svg: (<><rect width="28" height="28" rx="7" fill="#010101" /><path d="M17.5 7c.35 1.9 1.55 3.1 3.3 3.35v2.45c-1.15.1-2.2-.25-3.3-.85v4.55a4.55 4.55 0 1 1-4.55-4.55c.25 0 .5.02.75.06v2.5a2.15 2.15 0 1 0 1.5 2.05V7h2.3z" fill="#25F4EE" /></>) },
@@ -68,148 +74,172 @@ const PLATFORM_LOGOS: { n: string; svg: React.ReactNode }[] = [
 ];
 function VizSites() {
   return (
-    <div className={`${CARD} p-3.5`}>
+    <div>
       <div className="flex flex-wrap gap-1.5 items-center">
         {PLATFORM_LOGOS.map((p) => (
           <span key={p.n} title={p.n} className="w-7 h-7 rounded-[7px] overflow-hidden">
             <svg viewBox="0 0 28 28" className="w-7 h-7" aria-label={p.n}>{p.svg}</svg>
           </span>
         ))}
-        <span className="h-7 px-2 rounded-[7px] inline-flex items-center text-[11px] font-bold" style={{ background: "rgba(255,106,31,0.15)", color: AMBER, border: "1px solid rgba(255,106,31,0.3)" }}>
+        <span
+          className="h-7 px-2 inline-flex items-center font-mono text-[11px] font-bold tabular-nums"
+          style={{ background: "rgba(255,106,31,0.14)", color: AMBER, border: `1px solid rgba(255,106,31,0.28)` }}
+        >
           +1493
         </span>
       </div>
-      <p className="mt-2.5 text-[10px] font-mono text-white/30">…et des centaines d&apos;autres</p>
+      <p className="mt-2.5 font-mono text-[9px] text-white/30">…et des centaines d&apos;autres</p>
     </div>
   );
 }
 
-// 03 — une pellicule vidéo avec points d'entrée/sortie sur le passage gardé
-function VizTrim() {
+// 03 — TYPOGRAPHIQUE : le rapport 30s / 2h14 dit tout, la piste ne fait que
+// le prouver (segment minuscule). Silhouette volontairement non-« barres ».
+function VizRatio() {
   return (
-    <div className={`${CARD} p-3`}>
-      <div className="relative flex gap-[2px] rounded-md overflow-hidden h-12">
-        {Array.from({ length: 9 }).map((_, i) => {
-          const inSel = i >= 3 && i <= 4;
-          return (
-            <div
-              key={i}
-              className="flex-1 rounded-[3px] transition-opacity"
-              style={{
-                background: `linear-gradient(135deg, hsl(${(i * 40) % 360} 40% ${inSel ? 42 : 22}%), hsl(${(i * 40 + 60) % 360} 35% ${inSel ? 30 : 14}%))`,
-                opacity: inSel ? 1 : 0.4,
-              }}
-            />
-          );
-        })}
-        {/* cadre de sélection IN/OUT */}
-        <div className="absolute inset-y-0 rounded-md border-2 pointer-events-none" style={{ left: "33.3%", width: "22.2%", borderColor: AMBER, boxShadow: "0 0 14px rgba(255,106,31,0.35)" }}>
-          <span className="absolute -left-[3px] top-1/2 -translate-y-1/2 w-1.5 h-5 rounded-full" style={{ background: AMBER }} />
-          <span className="absolute -right-[3px] top-1/2 -translate-y-1/2 w-1.5 h-5 rounded-full" style={{ background: AMBER }} />
-        </div>
+    <div>
+      <div className="flex items-end gap-2 mb-3">
+        <span className="font-black text-4xl leading-none tabular-nums" style={{ color: AMBER }}>0:30</span>
+        <span className="font-mono text-[10px] text-white/35 pb-1">gardées</span>
       </div>
-      <div className="flex justify-between mt-2 text-[10px] font-mono">
-        <span className="text-white/30">0:00</span>
-        <span style={{ color: AMBER }}>0:30 gardées</span>
-        <span className="text-white/30">2:14:00</span>
+      <div className="relative h-1.5 w-full bg-white/[0.06]">
+        <span
+          className="absolute inset-y-0"
+          style={{ left: "34%", width: "4%", background: `linear-gradient(90deg, ${AMBER}, ${RED})` }}
+        />
+      </div>
+      <div className="flex justify-between mt-1.5 font-mono text-[9px] text-white/25 tabular-nums">
+        <span>0:00</span>
+        <span>2:14:00</span>
       </div>
     </div>
   );
 }
 
-// 04 — plusieurs téléchargements : 3 en parallèle + file d'attente
-function VizQueue() {
+// 04 — COLONNES VERTICALES : 3 flux qui se remplissent + file d'attente en
+// tuiles fantômes (hairline violette du logo).
+function VizParallel() {
   const active = [
-    { name: "Trailer S2", pct: 72 },
-    { name: "Reaction clip", pct: 48 },
-    { name: "B-roll ville", pct: 21 },
+    { n: "Trailer S2", p: 72 },
+    { n: "Reaction", p: 48 },
+    { n: "B-roll", p: 21 },
   ];
   return (
-    <div className={`${CARD} p-3.5 space-y-2`}>
+    <div className="flex items-end gap-2.5">
       {active.map((d) => (
-        <div key={d.name} className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
-          <span className="text-[10px] text-white/50 w-[74px] truncate">{d.name}</span>
-          <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-            <div className="h-full rounded-full" style={{ width: `${d.pct}%`, background: "linear-gradient(90deg,#ff6a1f,#ef3a24)" }} />
+        <div key={d.n} className="flex-1 min-w-0">
+          <div className="relative h-16 w-full bg-white/[0.04] overflow-hidden">
+            <span
+              className="absolute inset-x-0 bottom-0"
+              style={{ height: `${d.p}%`, background: `linear-gradient(180deg, ${AMBER}, ${RED})` }}
+            />
+            <span className="absolute inset-x-0 top-1 text-center font-mono text-[9px] text-white tabular-nums">{d.p}%</span>
           </div>
-          <span className="text-[10px] tabular-nums w-8 text-right" style={{ color: AMBER }}>{d.pct}%</span>
+          <p className="mt-1.5 font-mono text-[9px] text-white/35 truncate">{d.n}</p>
         </div>
       ))}
-      {/* file d'attente */}
-      <div className="pt-1 mt-1 border-t border-white/[0.06] flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
-        <span className="text-[10px] font-mono text-white/30">+7 en file, s&apos;enchaînent tout seuls</span>
+      <div className="flex-1 min-w-0">
+        <div className="h-16 flex gap-[3px]">
+          {[0, 1, 2].map((i) => (
+            <span key={i} className="flex-1 border border-dashed" style={{ borderColor: "rgba(139,61,255,0.35)" }} />
+          ))}
+        </div>
+        <p className="mt-1.5 font-mono text-[9px] text-white/35">+7 en file</p>
       </div>
     </div>
   );
 }
 
-// wide = cellule dominante du bento (2 colonnes, texte à gauche + mockup à
-// droite). L'ASYMÉTRIE est volontaire : une grille 2×2 parfaitement régulière
-// est le tell « généré » n°1 — un vrai bento a une hiérarchie.
+/* tag = métadonnée mono façon table de montage. Pas de numérotation : dans un
+   bento en deux colonnes l'œil descend la colonne (01 → 03), donc numéroter
+   mentirait sur l'ordre de lecture. */
 const FEATURES = [
   {
-    icon: Clapperboard,
+    tag: "V1 · A1",
     title: "Ça atterrit direct sur ta timeline",
     desc: "Pas de dossier à ranger, pas de glisser-déposer. La vidéo apparaît sur Premiere ou DaVinci, prête à couper.",
     Viz: VizTimeline,
-    wide: true,
   },
   {
-    icon: Link2,
+    tag: "SRC 1500+",
     title: "1500+ sites, zéro prise de tête",
     desc: "Vimeo, TikTok, X, YouTube… même geste à chaque fois, peu importe d'où ça vient.",
     Viz: VizSites,
-    wide: false,
   },
   {
-    icon: Scissors,
+    tag: "IN · OUT",
     title: "Juste le passage qui t'intéresse",
     desc: "30 secondes utiles dans une vidéo de 2h ? Tu sélectionnes, tu récupères que ça, pas le reste.",
-    Viz: VizTrim,
-    wide: false,
+    Viz: VizRatio,
   },
   {
-    icon: Gauge,
+    tag: "×3 FLUX",
     title: "4K, et autant que tu veux à la chaîne",
     desc: "Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s'enchaînent tout seuls pendant que tu montes.",
-    Viz: VizQueue,
-    wide: true,
+    Viz: VizParallel,
   },
 ];
 
-export default function FeaturesList() {
+// Cellule du bento. La signature de forme (coin coupé + angles vifs) vit dans
+// .tf-cell (globals.css) : zéro rounded-2xl, une amorce de découpe en haut à
+// droite comme une amorce de pellicule.
+function Cell({ f, i, className = "", horizontal = false }: { f: (typeof FEATURES)[number]; i: number; className?: string; horizontal?: boolean }) {
   return (
-    // Bento asymétrique : 01 (timeline) domine en haut sur 2 colonnes, 02/03
-    // se partagent la rangée du milieu, 04 (file d'attente) referme en large.
-    // Les cellules larges couchent le texte à gauche du mockup ; les étroites
-    // empilent — deux layouts internes, pas un gabarit unique.
-    <div className="grid md:grid-cols-2 gap-4 md:gap-5">
-      {FEATURES.map((f, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: i * 0.07, ease: easeOutExpo }}
-          className={`group relative rounded-2xl border border-white/[0.08] bg-[#0b0a14] transition-colors duration-300 hover:bg-[#12111c] hover:border-white/[0.14] ${f.wide ? "md:col-span-2" : ""}`}
-        >
-          <div className={`h-full p-6 md:p-7 ${f.wide ? "flex flex-col md:flex-row md:items-center gap-6 md:gap-10" : "flex flex-col"}`}>
-            <div className={f.wide ? "md:max-w-sm shrink-0" : ""}>
-              <div className="flex items-baseline gap-3 mb-5">
-                <span className="font-mono text-sm tabular-nums" style={{ color: "#ff6a1f" }}>{String(i + 1).padStart(2, "0")}</span>
-                <span className={`h-px bg-white/[0.07] ${f.wide ? "w-16" : "flex-1"}`} />
-              </div>
-              <h3 className={`font-bold text-white mb-1.5 ${f.wide ? "text-xl md:text-2xl" : "text-lg"}`}>{f.title}</h3>
-              <p className="text-white/45 text-sm leading-relaxed">{f.desc}</p>
-            </div>
-            <div className={f.wide ? "flex-1 min-w-0" : "mt-6 md:mt-auto md:pt-6"}>
-              <f.Viz />
-            </div>
-          </div>
-        </motion.div>
-      ))}
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: i * 0.07, ease: easeOutExpo }}
+      className={`tf-cell group ${className}`}
+    >
+      <div className={`tf-cell__in h-full p-6 md:p-7 ${horizontal ? "flex flex-col md:flex-row md:items-center gap-6 md:gap-10" : "flex flex-col"}`}>
+        <div className={horizontal ? "md:max-w-sm shrink-0" : ""}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] mb-4" style={{ color: "rgba(255,106,31,0.85)" }}>{f.tag}</p>
+          <h3 className={`font-bold text-white mb-1.5 ${horizontal ? "text-xl md:text-2xl" : "text-lg"}`}>{f.title}</h3>
+          <p className="text-white/45 text-sm leading-relaxed">{f.desc}</p>
+        </div>
+        <div className={horizontal ? "flex-1 min-w-0" : "mt-6 md:mt-auto md:pt-7"}>
+          <f.Viz />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function FeaturesList() {
+  const [f1, f2, f3, f4] = FEATURES;
+  return (
+    // Le titre vit DANS la grille (cellule intro), 01 lui fait face, 02/03 se
+    // partagent la rangée du milieu en 2/5–3/5, 04 referme en bandeau.
+    <div className="grid md:grid-cols-5 gap-4 md:gap-5">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease: easeOutExpo }}
+        className="md:col-span-2 flex flex-col justify-center py-2 md:pr-4"
+      >
+        <h2 className="text-3xl md:text-4xl font-black tracking-[-0.02em] mb-4">
+          Pensé pour le montage <span style={{ color: AMBER }}>sur les réseaux sociaux.</span>
+        </h2>
+        <p className="text-white/50 text-sm md:text-base leading-relaxed mb-7 max-w-sm">
+          Des outils simples, efficaces et pensés pour les créateurs qui veulent aller droit au but.
+        </p>
+        <div>
+          <Link
+            href="/tubeforge/checkout?plan=sub&months=12"
+            className="inline-flex items-center gap-2 px-5 py-3 font-bold text-sm text-white transition-all hover:brightness-110 active:scale-[0.98]"
+            style={{ background: `linear-gradient(118deg, ${AMBER} 0%, ${RED} 58%, ${VIOLET} 155%)` }}
+          >
+            Essayer gratuitement <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </motion.div>
+
+      <Cell f={f1} i={0} className="md:col-span-3" />
+      <Cell f={f2} i={1} className="md:col-span-2" />
+      <Cell f={f3} i={2} className="md:col-span-3" />
+      <Cell f={f4} i={3} className="md:col-span-5" horizontal />
     </div>
   );
 }

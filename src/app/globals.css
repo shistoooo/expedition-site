@@ -351,3 +351,43 @@ input:-webkit-autofill:focus {
 .tf-scope h3 {
   font-family: var(--font-tf-display), var(--font-geist-sans), sans-serif;
 }
+
+
+
+/* -- Bento TubeForge : SIGNATURE DE FORME ------------------------------------
+   Angles vifs (zero rounded-2xl, le rayon generique des templates) + une
+   amorce coupee en haut a droite, comme une amorce de pellicule / un coin de
+   claquette. La bordure est le fond du calque exterieur qui deborde de 1px,
+   donc elle suit la decoupe. Au survol : l arete s allume ember et une barre
+   de rendu progresse en bas de la cellule (mouvement qui SIGNIFIE). */
+.tf-cell {
+  --tf-notch: 18px;
+  padding: 1px;
+  background: rgba(255, 255, 255, 0.09);
+  clip-path: polygon(0 0, calc(100% - var(--tf-notch)) 0, 100% var(--tf-notch), 100% 100%, 0 100%);
+  transition: background 300ms ease;
+}
+.tf-cell:hover { background: rgba(255, 106, 31, 0.32); }
+.tf-cell__in {
+  position: relative;
+  overflow: hidden;
+  background: #0b0a14;
+  clip-path: polygon(0 0, calc(100% - var(--tf-notch)) 0, 100% var(--tf-notch), 100% 100%, 0 100%);
+  transition: background 300ms ease;
+}
+.tf-cell:hover .tf-cell__in { background: #12111c; }
+.tf-cell__in::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 0;
+  background: linear-gradient(90deg, #ff6a1f, #ef3a24);
+  transition: width 700ms cubic-bezier(0.25, 0.6, 0.25, 1);
+}
+.tf-cell:hover .tf-cell__in::after { width: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .tf-cell__in::after { transition: none; }
+}
+@media (max-width: 767px) { .tf-cell { --tf-notch: 14px; } }
