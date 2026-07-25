@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Le plugin Premiere & DaVinci pour monteurs YouTube freelance",
     description:
-      "Économise 5h par mois sur tes projets YouTube. Plus jamais d'aller-retour entre 20 onglets et 4K Video Downloader.",
+      "Économise 5h par mois sur tes montages. Tes extraits depuis 1500+ sites, direct dans ta timeline Premiere ou DaVinci. Plus jamais d'aller-retour entre 20 onglets.",
     url: `${siteUrl}/monteurs`,
     siteName: "Expédition",
     locale: "fr_FR",

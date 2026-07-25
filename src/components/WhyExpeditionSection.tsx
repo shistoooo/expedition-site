@@ -28,7 +28,7 @@ export default function WhyExpeditionSection() {
               </div>
               <h3 className="font-bold text-white text-xl mb-3">Tout-en-un, sans se ruiner</h3>
               <p className="text-sm text-white/45 leading-relaxed max-w-md">
-                OpusClip (25&euro;/mois), Frame.io (15&euro;/mois), 4K Video Downloader (40&euro; licence)&hellip; Ici, tout est inclus dans un seul abonnement &agrave; 11,99&euro;.
+                OpusClip (25&euro;/mois), Frame.io (15&euro;/mois), Descript (24&euro;/mois)&hellip; Ici, tout est inclus dans un seul abonnement &agrave; 11,99&euro;.
               </p>
             </div>
           </motion.div>

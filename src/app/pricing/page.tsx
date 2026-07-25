@@ -20,6 +20,8 @@ const plans = [
   {
     name: "Mensuel + Discord",
     price: "8,03\u20ac",
+    originalPrice: "11,99\u20ac",
+    discountLabel: "-33%",
     priceUnit: "/mois",
     note: "Avec le r\u00f4le Discord actif",
     badge: "Meilleure offre",
@@ -133,6 +135,14 @@ function PricingCard({ plan, index }: { plan: typeof plans[number]; index: numbe
 
         {/* Price */}
         <div className="mb-2">
+          {"originalPrice" in plan && plan.originalPrice && (
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <span className="text-base text-white/35 line-through tabular-nums">{plan.originalPrice}</span>
+              {"discountLabel" in plan && plan.discountLabel && (
+                <span className="text-xs font-bold text-emerald-400">{plan.discountLabel}</span>
+              )}
+            </div>
+          )}
           <div className="flex items-baseline justify-center gap-1">
             <span className={`font-black tracking-tight ${plan.featured ? "text-5xl text-white" : "text-4xl text-white/70"}`}>
               {plan.price}

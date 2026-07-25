@@ -220,7 +220,7 @@ export default function TubeForgeWeb() {
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Collez un lien YouTube..."
+                  placeholder="Collez un lien vidéo — 1500+ sites"
                   disabled={isDownloading}
                   style={{ outline: 'none' }}
                   className="flex-1 min-w-0 bg-transparent text-sm text-white placeholder:text-white/25 outline-none disabled:opacity-50"
@@ -325,7 +325,7 @@ export default function TubeForgeWeb() {
                             <span>&bull;</span>
                           </>
                         )}
-                        <span>YouTube</span>
+                        <span>Vidéo</span>
                       </div>
                     </div>
                   </div>

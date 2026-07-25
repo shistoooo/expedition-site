@@ -14,15 +14,15 @@ const faqs = [
   },
   {
     q: "Y a-t-il un essai gratuit ?",
-    a: "Non, mais l\u2019abonnement est annulable imm\u00e9diatement sans frais. Si \u00e7a ne vous convient pas, vous annulez en 1 clic et vous ne payez plus rien.",
+    a: "Oui : 3 jours gratuits sur TubeForge, sans carte bancaire. Cr\u00e9e ton compte, lance l\u2019essai, et acc\u00e8de \u00e0 toutes les fonctions (4K, d\u00e9coupe, plugins Premiere & DaVinci) jusqu\u2019\u00e0 25 r\u00e9cup\u00e9rations par jour. Aucun pr\u00e9l\u00e8vement \u2014 tu t\u2019abonnes seulement si tu veux continuer.",
   },
   {
     q: "Que veut dire \u00ab\u00a0tarif bloqu\u00e9\u00a0\u00bb ?",
     a: "Le prix que vous payez aujourd\u2019hui reste le m\u00eame tant que votre abonnement est actif. M\u00eame quand de nouveaux outils seront ajout\u00e9s et que le prix d\u2019entr\u00e9e augmentera pour les nouveaux abonn\u00e9s, votre tarif ne change pas.",
   },
   {
-    q: "C\u2019est l\u00e9gal de t\u00e9l\u00e9charger des vid\u00e9os YouTube ?",
-    a: "TubeForge est con\u00e7u pour t\u00e9l\u00e9charger vos propres vid\u00e9os ou des r\u00e9f\u00e9rences pour votre montage. Aucun DRM n\u2019est contourn\u00e9. Vous restez responsable de l\u2019utilisation que vous faites du contenu t\u00e9l\u00e9charg\u00e9.",
+    q: "C\u2019est l\u00e9gal de r\u00e9cup\u00e9rer des vid\u00e9os ?",
+    a: "TubeForge est un outil multi-sources con\u00e7u pour r\u00e9cup\u00e9rer vos propres vid\u00e9os, du contenu libre de droits ou des r\u00e9f\u00e9rences pour votre montage. Aucun DRM n\u2019est contourn\u00e9. Vous restez responsable de l\u2019utilisation que vous faites des fichiers r\u00e9cup\u00e9r\u00e9s.",
   },
   {
     q: "Comment fonctionne la r\u00e9duction Discord ?",

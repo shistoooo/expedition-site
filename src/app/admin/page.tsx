@@ -6,11 +6,11 @@ import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     Users, Shield, CheckCircle2, XCircle, Search, ToggleLeft, ToggleRight,
     UserCheck, UserX, RefreshCw, FileText, Link2, Copy, Check, Ticket,
-    Users2, Plus, ChevronDown, ChevronUp, TrendingUp
+    Users2, Plus, ChevronDown, ChevronUp, TrendingUp,
+    BarChart2, Eye, Globe, Smartphone, Monitor, Tablet, ExternalLink
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PageBackground from "@/components/PageBackground";
 import { useState, useEffect, useCallback } from "react";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
@@ -81,7 +81,45 @@ type PartnerConversion = {
 };
 
 type Step = "login" | "admin";
-type Tab = "users" | "ambassadors" | "applications" | "keys" | "partners" | "attribution";
+type Tab = "users" | "ambassadors" | "applications" | "keys" | "partners" | "attribution" | "stats";
+
+type DailyRow = { day: string; site: string; total_events: number; pageviews: number };
+type ReferrerRow = { referrer: string; visits: number };
+type PageRow = { page: string; views: number };
+type EventRow = { event: string; count: number };
+type CountryRow = { country: string; visits: number };
+type DeviceRow = { device: string; count: number };
+
+interface SiteStats {
+    period: string;
+    site: string;
+    totals: { total_events: number; total_pageviews: number };
+    daily: DailyRow[];
+    topPages: PageRow[];
+    sources: ReferrerRow[];
+    events: EventRow[];
+    countries: CountryRow[];
+    devices: DeviceRow[];
+}
+
+const PERIOD_LABELS: Record<string, string> = { "7d": "7 derniers jours", "30d": "30 derniers jours", "90d": "90 derniers jours" };
+const SOURCE_COLOR: Record<string, string> = {
+    discord: "text-indigo-300", youtube: "text-red-300", google: "text-blue-300",
+    twitter: "text-sky-300", tiktok: "text-pink-300", direct: "text-white/60",
+};
+const FLAG: Record<string, string> = {
+    FR: "🇫🇷", US: "🇺🇸", GB: "🇬🇧", CA: "🇨🇦", BE: "🇧🇪",
+    CH: "🇨🇭", DE: "🇩🇪", ES: "🇪🇸", IT: "🇮🇹", NL: "🇳🇱",
+    MA: "🇲🇦", TN: "🇹🇳", DZ: "🇩🇿", SN: "🇸🇳",
+};
+
+function StatBar({ pct, color = "bg-purple-500" }: { pct: number; color?: string }) {
+    return (
+        <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+            <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.max(2, pct)}%` }} />
+        </div>
+    );
+}
 
 export default function AdminPage() {
     const [step, setStep] = useState<Step>("login");
@@ -130,6 +168,12 @@ export default function AdminPage() {
 
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+    const [siteStats, setSiteStats] = useState<SiteStats | null>(null);
+    const [statsLoading, setStatsLoading] = useState(false);
+    const [statsError, setStatsError] = useState<string | null>(null);
+    const [statsPeriod, setStatsPeriod] = useState<"7d" | "30d" | "90d">("7d");
+    const [statsSite, setStatsSite] = useState<"all" | "replays" | "site">("all");
 
     // Auto-login from sessionStorage (coming from /account)
     useEffect(() => {
@@ -282,6 +326,22 @@ export default function AdminPage() {
             setConversionsLoading(false);
         }
     }, [accessToken]);
+
+    const fetchStats = useCallback(async () => {
+        setStatsLoading(true);
+        setStatsError(null);
+        try {
+            const params = new URLSearchParams({ period: statsPeriod });
+            if (statsSite !== "all") params.set("site", statsSite);
+            const res = await fetch(`/api/admin/stats?${params}`, { cache: "no-store" });
+            if (!res.ok) throw new Error(`Erreur ${res.status}`);
+            setSiteStats(await res.json());
+        } catch (e) {
+            setStatsError(e instanceof Error ? e.message : "Erreur inconnue");
+        } finally {
+            setStatsLoading(false);
+        }
+    }, [statsPeriod, statsSite]);
 
     const fetchPartnerCodes = async (partnerId: string) => {
         if (!accessToken) return;
@@ -476,6 +536,10 @@ export default function AdminPage() {
         if (step === "admin" && tab === "attribution") fetchConversions();
     }, [step, tab, fetchConversions]);
 
+    useEffect(() => {
+        if (step === "admin" && tab === "stats") fetchStats();
+    }, [step, tab, statsPeriod, statsSite, fetchStats]);
+
     const toggleBeta = async (userId: string, current: boolean) => {
         if (!accessToken) return;
         setActionLoading(userId);
@@ -548,7 +612,7 @@ export default function AdminPage() {
 
     return (
         <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden relative">
-            <PageBackground />
+            {/* Pas de PageBackground ici : panneau de données = fond uni, zéro décor */}
             <Navbar />
 
             <main className="pt-32 pb-24 container-main relative z-10">
@@ -705,6 +769,13 @@ export default function AdminPage() {
                                     >
                                         <TrendingUp className="w-4 h-4" />
                                         Attribution ({conversions.length})
+                                    </button>
+                                    <button
+                                        onClick={() => setTab("stats")}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === "stats" ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
+                                    >
+                                        <BarChart2 className="w-4 h-4" />
+                                        Analytics
                                     </button>
                                 </div>
 
@@ -1362,6 +1433,176 @@ export default function AdminPage() {
                                                 </div>
                                             )}
                                         </div>
+                                    </div>
+                                )}
+
+                                {/* Stats Tab */}
+                                {tab === "stats" && (
+                                    <div className="space-y-6">
+                                        {/* Filtres */}
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <div className="flex rounded-lg overflow-hidden border border-white/[0.08] text-[11px] font-mono">
+                                                {(["all", "replays", "site"] as const).map((s) => (
+                                                    <button
+                                                        key={s}
+                                                        onClick={() => setStatsSite(s)}
+                                                        className={`px-3 py-1.5 transition-colors ${statsSite === s ? "bg-purple-500/20 text-purple-200" : "text-white/40 hover:text-white hover:bg-white/[0.04]"}`}
+                                                    >
+                                                        {s === "all" ? "🌍 all" : s === "replays" ? "🎬 replays" : "🌐 site"}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <div className="flex rounded-lg overflow-hidden border border-white/[0.08] text-[11px] font-mono">
+                                                {(["7d", "30d", "90d"] as const).map((p) => (
+                                                    <button
+                                                        key={p}
+                                                        onClick={() => setStatsPeriod(p)}
+                                                        className={`px-3 py-1.5 transition-colors ${statsPeriod === p ? "bg-purple-500/20 text-purple-200" : "text-white/40 hover:text-white hover:bg-white/[0.04]"}`}
+                                                    >
+                                                        {p}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <button
+                                                onClick={fetchStats}
+                                                disabled={statsLoading}
+                                                className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.04] border border-white/[0.08] transition-all"
+                                            >
+                                                <RefreshCw className={`w-3.5 h-3.5 ${statsLoading ? "animate-spin" : ""}`} />
+                                            </button>
+                                        </div>
+
+                                        {statsError && (
+                                            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm">{statsError}</div>
+                                        )}
+
+                                        {statsLoading && !siteStats && (
+                                            <div className="text-center py-16 text-white/30 text-sm font-mono">Chargement des stats…</div>
+                                        )}
+
+                                        {siteStats && (() => {
+                                            const maxPV = Math.max(1, ...siteStats.daily.map((d) => d.pageviews));
+                                            const maxV = Math.max(1, ...siteStats.sources.map((s) => s.visits));
+                                            const maxVw = Math.max(1, ...siteStats.topPages.map((p) => p.views));
+                                            const totalDev = Math.max(1, siteStats.devices.reduce((a, d) => a + d.count, 0));
+                                            return (
+                                                <div className="space-y-4">
+                                                    {/* Totaux */}
+                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                                        {[
+                                                            { label: "Pages vues", value: siteStats.totals.total_pageviews.toLocaleString("fr"), icon: Eye, sub: PERIOD_LABELS[statsPeriod] },
+                                                            { label: "Events total", value: siteStats.totals.total_events.toLocaleString("fr"), icon: TrendingUp, sub: undefined },
+                                                            { label: "Sources", value: siteStats.sources.length, icon: Globe, sub: "uniques" },
+                                                            { label: "Pages", value: siteStats.topPages.length, icon: ExternalLink, sub: "distinctes" },
+                                                        ].map(({ label, value, icon: Icon, sub }) => (
+                                                            <div key={label} className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-4">
+                                                                <div className="flex items-center justify-between mb-2">
+                                                                    <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">{label}</span>
+                                                                    <Icon className="w-4 h-4 text-purple-300/60" />
+                                                                </div>
+                                                                <div className="text-2xl font-black text-white tracking-tight">{value}</div>
+                                                                {sub && <div className="text-xs text-white/30 mt-0.5">{sub}</div>}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        {/* Activité par jour */}
+                                                        <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-5">
+                                                            <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-4">Activité par jour</h3>
+                                                            <div className="space-y-2">
+                                                                {siteStats.daily.length === 0 && <p className="text-xs text-white/30 font-mono py-4 text-center">Aucune donnée encore</p>}
+                                                                {siteStats.daily.slice(0, 14).map((d) => (
+                                                                    <div key={`${d.day}-${d.site}`} className="flex items-center gap-3">
+                                                                        <span className="text-[10px] font-mono text-white/40 w-20 shrink-0">{d.day.slice(5)}</span>
+                                                                        <div className="flex-1"><StatBar pct={(d.pageviews / maxPV) * 100} color="bg-purple-500/70" /></div>
+                                                                        <span className="text-xs font-mono text-white/60 w-8 text-right">{d.pageviews}</span>
+                                                                        {statsSite === "all" && <span className="text-[9px] text-white/30 font-mono w-12">{d.site}</span>}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Sources */}
+                                                        <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-5">
+                                                            <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-4">D&apos;où viennent-ils</h3>
+                                                            <div className="space-y-2.5">
+                                                                {siteStats.sources.length === 0 && <p className="text-xs text-white/30 font-mono py-4 text-center">Aucune donnée encore</p>}
+                                                                {siteStats.sources.map((s) => (
+                                                                    <div key={s.referrer} className="flex items-center gap-3">
+                                                                        <span className={`text-xs font-mono w-24 shrink-0 ${SOURCE_COLOR[s.referrer] || "text-white/50"}`}>{s.referrer}</span>
+                                                                        <div className="flex-1"><StatBar pct={(s.visits / maxV) * 100} color="bg-indigo-500/60" /></div>
+                                                                        <span className="text-xs font-mono text-white/60 w-8 text-right">{s.visits}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Top pages */}
+                                                        <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-5">
+                                                            <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-4">Pages les plus vues</h3>
+                                                            <div className="space-y-2.5">
+                                                                {siteStats.topPages.length === 0 && <p className="text-xs text-white/30 font-mono py-4 text-center">Aucune donnée encore</p>}
+                                                                {siteStats.topPages.map((p) => (
+                                                                    <div key={p.page} className="flex items-center gap-3">
+                                                                        <span className="text-[10px] font-mono text-white/50 flex-1 truncate">{p.page || "/"}</span>
+                                                                        <div className="w-24 shrink-0"><StatBar pct={(p.views / maxVw) * 100} color="bg-emerald-500/60" /></div>
+                                                                        <span className="text-xs font-mono text-white/60 w-8 text-right">{p.views}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Events + Appareils + Pays */}
+                                                        <div className="space-y-4">
+                                                            <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-5">
+                                                                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-3">Events custom</h3>
+                                                                {siteStats.events.length === 0 ? (
+                                                                    <p className="text-xs text-white/30 font-mono text-center py-2">Aucun event encore</p>
+                                                                ) : (
+                                                                    <div className="flex flex-wrap gap-2">
+                                                                        {siteStats.events.map((e) => (
+                                                                            <div key={e.event} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.08]">
+                                                                                <span className="text-[10px] font-mono text-white/60">{e.event}</span>
+                                                                                <span className="text-[10px] font-mono text-purple-300">{e.count}</span>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-5">
+                                                                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-3">Appareils</h3>
+                                                                <div className="flex gap-4 flex-wrap">
+                                                                    {siteStats.devices.map((d) => {
+                                                                        const Icon = d.device === "mobile" ? Smartphone : d.device === "tablet" ? Tablet : Monitor;
+                                                                        return (
+                                                                            <div key={d.device} className="flex items-center gap-2">
+                                                                                <Icon className="w-3.5 h-3.5 text-white/40" />
+                                                                                <span className="text-xs font-mono text-white/60">{d.device}</span>
+                                                                                <span className="text-xs font-mono text-purple-300">{Math.round((d.count / totalDev) * 100)}%</span>
+                                                                            </div>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                            <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-5">
+                                                                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-3">Pays</h3>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {siteStats.countries.length === 0 && <p className="text-xs text-white/30 font-mono">Aucune donnée encore</p>}
+                                                                    {siteStats.countries.map((c) => (
+                                                                        <div key={c.country} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.08]">
+                                                                            <span>{FLAG[c.country] || "🌐"}</span>
+                                                                            <span className="text-[10px] font-mono text-white/60">{c.country}</span>
+                                                                            <span className="text-[10px] font-mono text-purple-300">{c.visits}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
                                 )}
 

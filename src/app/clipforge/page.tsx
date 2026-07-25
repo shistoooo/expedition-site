@@ -61,7 +61,7 @@ export default function ClipForgePage() {
                 L&apos;alternative à OpusClip
               </p>
               <p className="text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto mb-8">
-                Colle un lien YouTube. ClipForge trouve les moments viraux, recadre sur le visage, sous-titre et exporte tes clips prêts à poster.
+                Colle un lien. ClipForge trouve les moments viraux, recadre sur le visage, sous-titre et exporte tes clips prêts à poster.
               </p>
 
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-400/25 text-indigo-200 text-sm font-medium">

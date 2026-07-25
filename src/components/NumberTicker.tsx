@@ -13,7 +13,11 @@ interface NumberTickerProps {
 export default function NumberTicker({ value, suffix = "", className = "", duration = 1.2 }: NumberTickerProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const [display, setDisplay] = useState("0");
+  // État au repos = la vraie valeur (jamais "0"). Si l'IntersectionObserver ne
+  // se déclenche pas (élément déjà visible au mount, edge cases framer-motion),
+  // on affiche le vrai prix au lieu de rester bloqué sur 0€. Le compte-à-rebours
+  // 0→valeur ne joue que quand l'élément entre dans le viewport en scrollant.
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!isInView) return;

@@ -8,30 +8,30 @@ import { useMonteursUtm } from "./useMonteursUtm";
 import CompatBadge from "@/components/shared/CompatBadge";
 
 export default function MonteursHero() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = useMonteursUtm();
+  const { fireCtaEvent } = useMonteursUtm();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.clarity?.("set", "page", "monteurs");
   }, []);
 
-  const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
-  const ctaLabel = SALES_OPEN ? "Devenir Pionnier" : "Être prévenu au lancement";
+  const ctaHref = SALES_OPEN ? "/account?mode=register" : "/checkout";
+  const ctaLabel = SALES_OPEN ? "Commencer 3 jours gratuits" : "Être prévenu au lancement";
 
   return (
     <section
       id="monteurs-hero"
       className="pt-28 pb-4 md:pt-36 md:pb-6 relative"
     >
-      {/* Nebula wrapper — clipped to section bounds so it never overflows horizontally,
-          but the section itself stays overflow-visible so CTA shadows can breathe */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Nebula wrapper — overflow-x-clip : coupe le débordement HORIZONTAL (pas de
+          scroll latéral) mais laisse la lueur fondre VERTICALEMENT sans bord net. */}
+      <div className="absolute inset-0 overflow-x-clip pointer-events-none">
         <div
-          className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px]"
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px]"
           style={{
             background:
-              "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.20) 0%, rgba(99,60,200,0.10) 40%, transparent 75%)",
-            filter: "blur(1px)",
+              "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.20) 0%, rgba(99,60,200,0.10) 40%, transparent 72%)",
+            filter: "blur(40px)",
           }}
         />
       </div>

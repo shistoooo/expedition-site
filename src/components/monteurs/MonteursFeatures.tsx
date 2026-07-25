@@ -25,7 +25,7 @@ const features = [
   {
     icon: Layers,
     title: "Plugin Premiere Pro & DaVinci Resolve",
-    desc: "Colle un lien YouTube depuis l’onglet TubeForge directement dans ta timeline. Plus de Finder, plus de copier-coller. 5 à 10 minutes gagnées par référence.",
+    desc: "Colle un lien depuis l’onglet TubeForge directement dans ta timeline. Plus de Finder, plus de copier-coller. 5 à 10 minutes gagnées par référence.",
   },
   {
     icon: Search,

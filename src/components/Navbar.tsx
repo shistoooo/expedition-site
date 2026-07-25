@@ -4,13 +4,19 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useFlightStore } from "@/stores/useFlightStore";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  // Sur la partie TubeForge, le CTA reste dans SON funnel (essai ember) au lieu
+  // de renvoyer vers le flow générique violet — cohérence DA + parcours.
+  const isTubeForge = !!pathname?.startsWith("/tubeforge");
+  const trialHref = isTubeForge ? "/tubeforge/checkout?plan=sub&months=12" : "/account?mode=register";
+  const trialLabel = isTubeForge ? "14 jours gratuits" : "3 jours gratuits";
   const setPhase = useFlightStore((state) => state.setPhase);
 
   useEffect(() => {
@@ -29,12 +35,18 @@ export default function Navbar() {
     }, 2000);
   };
 
-  const navItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [
+  // Sur le funnel TubeForge (landing d\u00e9di\u00e9e = tunnel de conversion), on retire
+  // les liens qui font SORTIR vers les autres personas/tarifs de la suite \u2014
+  // seul \u00ab Mon compte \u00bb reste (connexion pour les users existants).
+  const allNavItems: { name: string; href: string; onClick?: (e: React.MouseEvent) => void }[] = [
     { name: "Monteurs", href: "/monteurs" },
     { name: "Cr\u00e9ateurs", href: "/createurs" },
     { name: "Tarifs", href: "/pricing" },
     { name: "Mon compte", href: "/account" },
   ];
+  const navItems = isTubeForge
+    ? allNavItems.filter((i) => i.name === "Mon compte")
+    : allNavItems;
 
   return (
     <motion.nav
@@ -71,10 +83,11 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/pricing"
-            className="group inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-all duration-200"
+            href={trialHref}
+            className={`group inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-200 ${isTubeForge ? "hover:brightness-110" : "bg-purple-600 hover:bg-purple-500"}`}
+            style={isTubeForge ? { background: "linear-gradient(135deg,#ff6a1f,#ef3a24)" } : undefined}
           >
-            S&apos;abonner
+            {trialLabel}
             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -105,6 +118,14 @@ export default function Navbar() {
               {item.name}
             </Link>
           ))}
+          <Link
+            href={trialHref}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="mt-3 block text-center py-3 rounded-xl text-white font-semibold"
+            style={isTubeForge ? { background: "linear-gradient(135deg,#ff6a1f,#ef3a24)" } : { background: "#9333ea" }}
+          >
+            {trialLabel}
+          </Link>
         </motion.div>
       )}
     </motion.nav>

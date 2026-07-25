@@ -7,7 +7,7 @@ import { SALES_OPEN } from "@/lib/salesConfig";
 import { useCreateursUtm } from "./useCreateursUtm";
 
 export default function CreateursStickyMobileCTA() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = useCreateursUtm();
+  const { fireCtaEvent } = useCreateursUtm();
   // Always visible on mobile EXCEPT when the in-page pricing card is on screen
   // (avoid double CTAs). IntersectionObserver is more reliable than scroll listeners.
   const [pricingInView, setPricingInView] = useState(false);
@@ -24,7 +24,7 @@ export default function CreateursStickyMobileCTA() {
   }, []);
 
   const shouldShow = !pricingInView;
-  const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
+  const ctaHref = SALES_OPEN ? "/account?mode=register" : "/checkout";
 
   return (
     <div
@@ -61,7 +61,7 @@ export default function CreateursStickyMobileCTA() {
               "0 6px 20px rgba(139,92,246,0.35), inset 0 1px 0 rgba(255,255,255,0.15)",
           }}
         >
-          {SALES_OPEN ? "Devenir Pionnier" : "Être prévenu"}
+          {SALES_OPEN ? "3 jours gratuits" : "Être prévenu"}
           {SALES_OPEN ? (
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           ) : (

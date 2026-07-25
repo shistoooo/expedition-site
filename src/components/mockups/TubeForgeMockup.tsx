@@ -96,8 +96,8 @@ export default function TubeForgeMockup() {
         <div className="px-5 pb-0 flex flex-col items-center">
           {/* Hero text */}
           <div className="text-center mb-4">
-            <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70 tracking-tight">T&eacute;l&eacute;chargez sans limites</h3>
-            <p className="text-[10px] text-white/40 mt-1">Transformez vos liens YouTube en fichiers MP4 et MP3 de haute qualit&eacute;, instantan&eacute;ment.</p>
+            <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70 tracking-tight">Direct dans ta timeline</h3>
+            <p className="text-[10px] text-white/40 mt-1">Tes extraits depuis 1500+ sites, en MP4 ou MP3, pr&ecirc;ts pour ton montage.</p>
           </div>
 
           {/* Mode Toggle */}
@@ -123,7 +123,7 @@ export default function TubeForgeMockup() {
               </div>
               <div className="rounded-xl p-3" style={{ background: 'rgba(30,27,75,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="h-16 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <p className="text-[10px] text-white/20">Ou collez votre texte avec des liens YouTube...</p>
+                  <p className="text-[10px] text-white/20">Ou collez votre texte avec vos liens...</p>
                 </div>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function TubeForgeMockup() {
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
                 <div className="relative flex-1 flex items-center gap-2 p-2 pl-4 rounded-2xl shadow-2xl backdrop-blur-xl" style={{ background: 'rgba(30,27,75,0.8)', border: '1px solid rgba(255,255,255,0.1)' }}>
                   <Search className="w-3.5 h-3.5 text-white/20 shrink-0" />
-                  <span className="flex-1 text-[11px] text-white/20">{mode === "search" ? "Rechercher sur YouTube..." : "Collez un lien YouTube..."}</span>
+                  <span className="flex-1 text-[11px] text-white/20">{mode === "search" ? "Rechercher une vidéo..." : "Collez un lien vidéo (1500+ sites)..."}</span>
                   <div className="h-5 w-px bg-white/10 mx-1" />
                   <span className="text-[9px] text-white/70 font-medium">1080p</span>
                   <div className="h-5 w-px bg-white/10 mx-1" />
@@ -156,7 +156,7 @@ export default function TubeForgeMockup() {
                     <div className="flex items-center gap-2 text-[9px] text-white/40 font-mono">
                       <span className="px-1.5 py-0.5 bg-white/5 rounded border border-white/5">1:46:23</span>
                       <span>&bull;</span>
-                      <span>YouTube</span>
+                      <span>1080p</span>
                     </div>
                   </div>
                 </div>

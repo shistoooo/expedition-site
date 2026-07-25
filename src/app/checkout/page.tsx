@@ -710,14 +710,28 @@ function CheckoutContent() {
                                                 </span>
                                             </motion.div>
                                         ) : (
-                                            <button
-                                                type="button"
-                                                onClick={handleDiscordConnect}
-                                                className="w-full py-3.5 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/40 text-white hover:bg-[#5865F2]/25 hover:border-[#5865F2]/60 transition-all text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#5865F2]/15"
-                                            >
-                                                <DiscordIcon className="w-5 h-5 text-[#a5b4fc]" />
-                                                Passer &agrave; 8,03&euro;/mois avec Discord
-                                            </button>
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleDiscordConnect}
+                                                    className="w-full py-3.5 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/40 text-white hover:bg-[#5865F2]/25 hover:border-[#5865F2]/60 transition-all text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#5865F2]/15"
+                                                >
+                                                    <DiscordIcon className="w-5 h-5 text-[#a5b4fc]" />
+                                                    Passer &agrave; 8,03&euro;/mois avec Discord
+                                                </button>
+                                                <p className="mt-2 text-xs text-white/40 text-center">
+                                                    R&eacute;serv&eacute; aux membres du{" "}
+                                                    <a
+                                                        href="https://discord.com/invite/QuV3bYDEYT"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-[#a5b4fc] hover:text-white underline underline-offset-2"
+                                                    >
+                                                        serveur Discord Expedition
+                                                    </a>
+                                                    {" "}&mdash; retir&eacute;e automatiquement si tu quittes le serveur.
+                                                </p>
+                                            </>
                                         )}
                                         {discordError && (
                                             <motion.div

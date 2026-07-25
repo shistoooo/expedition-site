@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     CreditCard, Calendar, Shield, XCircle, RotateCcw, CheckCircle2, LogOut, Download, Apple, Monitor,
-    Users, TrendingUp, Banknote, Clock, Copy, Check, Gift, Share2, ExternalLink, UserPlus, Tag
+    Users, TrendingUp, Banknote, Clock, Copy, Check, Gift, Share2, ExternalLink, UserPlus, Tag, Zap, Sparkles
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import WalletSection from "@/components/WalletSection";
 import BorderBeam from "@/components/BorderBeam";
+import { PRICING_MODE } from "@/lib/salesConfig";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -133,7 +134,7 @@ function AccountPaymentForm({ onSuccess }: { onSuccess: () => void }) {
     );
 }
 
-const ALLOWED_REDIRECT_HOSTS = ["dashboard.stripe.com", "connect.stripe.com", "billing.stripe.com"];
+const ALLOWED_REDIRECT_HOSTS = ["dashboard.stripe.com", "connect.stripe.com", "billing.stripe.com", "checkout.stripe.com"];
 
 type AccountStep = "login" | "dashboard";
 
@@ -206,6 +207,15 @@ function DownloadSection() {
 export default function AccountPage() {
     const [step, setStep] = useState<AccountStep>("login");
     const [authMode, setAuthMode] = useState<"login" | "register">("login");
+
+    // CTA « 3 jours gratuits » → /account?mode=register : ouvre direct l'onglet
+    // Inscription (meilleure conversion pour un nouveau + email capté = relance).
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        if (new URLSearchParams(window.location.search).get("mode") === "register") {
+            setAuthMode("register");
+        }
+    }, []);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -531,6 +541,55 @@ export default function AccountPage() {
             window.open(data.url, "_blank");
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Erreur lors de l'ouverture du portail");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    // Segment "recharge / lifetime" — en parallèle de l'abonnement classique
+    // ci-dessus, jamais un remplacement. Même pattern que handleBillingPortal :
+    // le worker crée une session Stripe one-time, on ouvre l'URL retournée.
+    const handleRecharge = async () => {
+        if (!accessToken) return;
+        setActionLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`${WORKER_URL}/portal/recharge`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            const redirectUrl = new URL(data.url);
+            if (!ALLOWED_REDIRECT_HOSTS.some(h => redirectUrl.hostname === h || redirectUrl.hostname.endsWith("." + h))) {
+                throw new Error("URL de redirection non autorisée");
+            }
+            window.open(data.url, "_blank");
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur lors du paiement");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleLifetime = async () => {
+        if (!accessToken) return;
+        setActionLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`${WORKER_URL}/portal/lifetime`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            const redirectUrl = new URL(data.url);
+            if (!ALLOWED_REDIRECT_HOSTS.some(h => redirectUrl.hostname === h || redirectUrl.hostname.endsWith("." + h))) {
+                throw new Error("URL de redirection non autorisée");
+            }
+            window.open(data.url, "_blank");
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Erreur lors du paiement");
         } finally {
             setActionLoading(false);
         }
@@ -909,6 +968,52 @@ export default function AccountPage() {
                                     <DownloadSection />
                                 )}
 
+                                {/* Segment "recharge / lifetime" — en parallèle de l'abonnement classique
+                                    ci-dessous (jamais un remplacement). Visible quel que soit l'état
+                                    d'abonnement. Piloté par PRICING_MODE (salesConfig.ts). */}
+                                {PRICING_MODE !== "classic" && (
+                                    <div className="p-8 rounded-2xl bg-[#0F0F12] border border-orange-500/15 shadow-2xl shadow-orange-500/5">
+                                        <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
+                                            <Zap className="w-5 h-5 text-orange-400" />
+                                            TubeForge &mdash; Recharge &amp; Lifetime
+                                        </h2>
+                                        <div className="grid sm:grid-cols-2 gap-4">
+                                            <div className="p-5 rounded-xl bg-white/5 border border-white/10 flex flex-col">
+                                                <div className="flex items-center gap-2 mb-2 text-white/70">
+                                                    <Gift className="w-4 h-4" />
+                                                    <span className="font-semibold text-sm">Recharge 1 mois</span>
+                                                </div>
+                                                <p className="text-xs text-white/40 mb-4 flex-1">
+                                                    Acc&egrave;s illimit&eacute; 30 jours, sans engagement. Le prix baisse si tu recharges des mois cons&eacute;cutifs (-15% &agrave; 6 mois, -25% &agrave; 12 mois).
+                                                </p>
+                                                <button
+                                                    onClick={handleRecharge}
+                                                    disabled={actionLoading}
+                                                    className="w-full py-2.5 rounded-lg bg-orange-500/15 border border-orange-500/30 text-orange-300 font-semibold text-sm hover:bg-orange-500/25 transition-all disabled:opacity-50"
+                                                >
+                                                    Recharger &mdash; d&egrave;s 6,75&euro;
+                                                </button>
+                                            </div>
+                                            <div className="p-5 rounded-xl bg-white/5 border border-white/10 flex flex-col">
+                                                <div className="flex items-center gap-2 mb-2 text-white/70">
+                                                    <Sparkles className="w-4 h-4" />
+                                                    <span className="font-semibold text-sm">Acc&egrave;s &agrave; vie</span>
+                                                </div>
+                                                <p className="text-xs text-white/40 mb-4 flex-1">
+                                                    Paiement unique, acc&egrave;s illimit&eacute; pour toujours. Plus jamais de facture TubeForge.
+                                                </p>
+                                                <button
+                                                    onClick={handleLifetime}
+                                                    disabled={actionLoading}
+                                                    className="w-full py-2.5 rounded-lg bg-orange-500/15 border border-orange-500/30 text-orange-300 font-semibold text-sm hover:bg-orange-500/25 transition-all disabled:opacity-50"
+                                                >
+                                                    Acc&egrave;s &agrave; vie &mdash; 149&euro;
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Subscription Card */}
                                 {subscription ? (
                                     <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
@@ -1038,6 +1143,23 @@ export default function AccountPage() {
                                         </div>
                                     </div>
                                 ) : (
+                                    <>
+                                    {/* Chemin 1 — Essai : le compte est déjà créé (on est connecté ici),
+                                        donc on débloque le téléchargement de l'app pour lancer les 3 jours. */}
+                                    {!clientSecret && (
+                                        <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5 mb-4">
+                                            <h2 className="text-lg font-bold mb-1 flex items-center gap-2">
+                                                <Download className="w-5 h-5 text-purple-400" /> Lance tes 3 jours gratuits
+                                            </h2>
+                                            <p className="text-white/50 text-sm mb-4">
+                                                T&eacute;l&eacute;charge l&apos;app et connecte-toi : 3 jours d&apos;acc&egrave;s complet (jusqu&apos;&agrave; 25 r&eacute;cup&eacute;rations/jour), sans carte.
+                                            </p>
+                                            <DownloadSection />
+                                        </div>
+                                    )}
+                                    {!clientSecret && (
+                                        <div className="text-center text-xs text-white/30 mb-4">&mdash; ou abonne-toi tout de suite &mdash;</div>
+                                    )}
                                     <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                         {!clientSecret ? (
                                             <>
@@ -1154,6 +1276,7 @@ export default function AccountPage() {
                                             </>
                                         )}
                                     </div>
+                                    </>
                                 )}
 
                                 {/* Discord Link Card */}

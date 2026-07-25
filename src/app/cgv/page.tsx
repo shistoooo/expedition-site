@@ -14,7 +14,7 @@ export default function CGVPage() {
                 <h1 className="text-3xl font-bold mt-8 mb-8">Conditions G&eacute;n&eacute;rales de Vente</h1>
 
                 <div className="prose prose-invert prose-sm max-w-none space-y-6 text-white/70 leading-relaxed">
-                    <p><strong>Derni&egrave;re mise &agrave; jour :</strong> 10 mars 2026</p>
+                    <p><strong>Derni&egrave;re mise &agrave; jour :</strong> 24 juillet 2026</p>
 
                     <h2 className="text-xl font-bold text-white mt-8">1. Objet</h2>
                     <p>
@@ -62,6 +62,78 @@ export default function CGVPage() {
                         en vigueur du nouveau tarif et pourra r&eacute;silier son abonnement sans p&eacute;nalit&eacute;
                         avant cette date.
                     </p>
+
+                    <h2 className="text-xl font-bold text-white mt-8">3 bis. Formules TubeForge</h2>
+                    <p>
+                        Pour le logiciel TubeForge, l&apos;&Eacute;diteur propose un abonnement par paliers d&apos;engagement,
+                        pr&eacute;c&eacute;d&eacute; d&apos;un essai gratuit, ainsi qu&apos;une formule &agrave; paiement unique :
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2">
+                        <li>
+                            <strong>Essai gratuit de 14 jours :</strong> la souscription requiert l&apos;enregistrement d&apos;une
+                            carte bancaire valide, mais <strong>aucun montant n&apos;est pr&eacute;lev&eacute; pendant l&apos;essai</strong>.
+                            Le Client peut r&eacute;silier &agrave; tout moment durant ces 14 jours depuis &quot;Mon compte&quot; :
+                            aucun d&eacute;bit n&apos;est alors effectu&eacute;. &Agrave; d&eacute;faut de r&eacute;siliation, le plan choisi est
+                            factur&eacute; automatiquement &agrave; la fin de l&apos;essai.
+                        </li>
+                        <li>
+                            <strong>Abonnement mensuel :</strong> 4,99&euro;/mois, sans engagement. Reconduction automatique
+                            chaque mois, r&eacute;siliable &agrave; tout moment (effet en fin de p&eacute;riode, articles 3 et 5).
+                        </li>
+                        <li>
+                            <strong>Abonnement annuel :</strong> 41,88&euro;/an (soit 3,49&euro;/mois, &minus;30&nbsp;% par rapport
+                            au tarif mensuel), <strong>factur&eacute; en une seule fois par an</strong> et reconduit automatiquement
+                            &agrave; chaque &eacute;ch&eacute;ance annuelle. R&eacute;siliable &agrave; tout moment, avec effet &agrave; la fin de la
+                            p&eacute;riode d&eacute;j&agrave; factur&eacute;e ; aucun remboursement au prorata.
+                        </li>
+                        <li>
+                            <strong>Acc&egrave;s &agrave; vie :</strong> 89,99&euro;, paiement unique, donnant acc&egrave;s &agrave; TubeForge dans les
+                            conditions de l&apos;article 3 ter ci-dessous.
+                        </li>
+                    </ul>
+                    <p>
+                        <strong>Cl&eacute;s cadeau et cl&eacute;s boost :</strong> certaines formules donnent droit &agrave; des cl&eacute;s d&apos;acc&egrave;s
+                        offertes au Client afin qu&apos;il les distribue &agrave; des tiers. Chaque cl&eacute; donne un acc&egrave;s limit&eacute; &agrave;
+                        <strong> TubeForge uniquement</strong> (&agrave; l&apos;exclusion des autres outils de la suite), pour la dur&eacute;e indiqu&eacute;e,
+                        et doit &ecirc;tre activ&eacute;e avant sa date d&apos;expiration. Les cl&eacute;s non activ&eacute;es &agrave; cette date sont
+                        d&eacute;finitivement caduques, sans compensation ni prolongation.
+                    </p>
+
+                    <h2 className="text-xl font-bold text-white mt-8">3 ter. D&eacute;finition et limites de l&apos;acc&egrave;s &laquo;&nbsp;&agrave; vie&nbsp;&raquo;</h2>
+                    <p>
+                        La formule &laquo;&nbsp;Acc&egrave;s &agrave; vie&nbsp;&raquo; s&apos;entend de la <strong>dur&eacute;e de vie commerciale du logiciel
+                        TubeForge</strong>, et non d&apos;une garantie perp&eacute;tuelle et illimit&eacute;e dans le temps. Le Client reconna&icirc;t
+                        et accepte que :
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2">
+                        <li>
+                            L&apos;acc&egrave;s est accord&eacute; sans limite de dur&eacute;e <strong>tant que l&apos;&Eacute;diteur exploite et maintient
+                            TubeForge</strong>, dans les conditions de l&apos;article 7 (obligation de moyens, absence de garantie
+                            de disponibilit&eacute;) ;
+                        </li>
+                        <li>
+                            L&apos;acc&egrave;s &agrave; vie est <strong>personnel, nominatif et non transf&eacute;rable</strong> ; il ne peut &ecirc;tre
+                            revendu, pr&ecirc;t&eacute; ni c&eacute;d&eacute; ;
+                        </li>
+                        <li>
+                            L&apos;&Eacute;diteur se r&eacute;serve le droit de faire &eacute;voluer TubeForge, d&apos;en modifier les fonctionnalit&eacute;s
+                            ou de le remplacer par un outil &eacute;quivalent, sans que cela remette en cause l&apos;acc&egrave;s &agrave; vie,
+                            d&egrave;s lors que la valeur globale du service n&apos;est pas substantiellement diminu&eacute;e ;
+                        </li>
+                        <li>
+                            En cas de <strong>cessation d&eacute;finitive de l&apos;exploitation de TubeForge</strong> &mdash; notamment pour
+                            un motif ind&eacute;pendant de la volont&eacute; de l&apos;&Eacute;diteur (force majeure au sens de l&apos;article 1218
+                            du Code civil, cessation d&apos;activit&eacute;, contrainte technique ou l&eacute;gale majeure) &mdash; l&apos;acc&egrave;s
+                            pourra prendre fin. Le paiement unique ayant donn&eacute; lieu &agrave; une ex&eacute;cution imm&eacute;diate et continue
+                            du service pendant toute sa p&eacute;riode de disponibilit&eacute;, sa cessation pour ces motifs n&apos;ouvre pas
+                            droit &agrave; remboursement, <strong>sous r&eacute;serve des droits imp&eacute;ratifs reconnus au consommateur par la
+                            loi</strong> (notamment la garantie l&eacute;gale de conformit&eacute;, article 7 bis) ;
+                        </li>
+                        <li>
+                            L&apos;&Eacute;diteur s&apos;engage, dans la mesure du possible, &agrave; informer les d&eacute;tenteurs d&apos;un acc&egrave;s &agrave; vie
+                            au moins 30 jours avant toute cessation d&eacute;finitive planifi&eacute;e du service.
+                        </li>
+                    </ul>
 
                     <h2 className="text-xl font-bold text-white mt-8">4. Droit de r&eacute;tractation — Renonciation</h2>
                     <p>

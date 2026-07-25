@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Télécharger des vidéos YouTube gratuitement | TubeForge Web",
+  title: "Récupérer une vidéo en MP4 — 1500+ sites | TubeForge Web",
   description:
-    "Téléchargez des vidéos YouTube en MP4 gratuitement avec TubeForge Web. Qualité 720p, 15 téléchargements par jour. Passez à Pro pour la vitesse maximale et le 4K.",
+    "Récupère une vidéo en MP4 depuis plus de 1 500 sites, gratuitement, avec TubeForge Web. Qualité 720p, 15 par jour. Passe à Pro pour le 4K et la vitesse max.",
   openGraph: {
-    title: "TubeForge Web — Téléchargeur YouTube gratuit",
-    description: "Téléchargez vos vidéos YouTube en MP4 720p gratuitement. 15 téléchargements par jour.",
+    title: "TubeForge Web — une vidéo en MP4, depuis 1500+ sites",
+    description: "Récupère une vidéo en MP4 720p, gratuitement. 15 par jour.",
     url: "https://expedition.so/download",
   },
 };

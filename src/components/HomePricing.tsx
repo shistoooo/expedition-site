@@ -170,10 +170,18 @@ function PricingCard({ plan }: { plan: typeof plans[number] }) {
             />
           )}
           <span className="relative z-10 inline-flex items-center gap-2">
-            {SALES_OPEN ? "Commencer" : "\u00catre pr\u00e9venu"}
+            {SALES_OPEN ? "S\u2019abonner" : "\u00catre pr\u00e9venu"}
             {SALES_OPEN ? <Rocket className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
           </span>
         </Link>
+        {SALES_OPEN && (
+          <Link
+            href="/account?mode=register"
+            className="mt-2.5 block text-center text-[11px] text-white/40 hover:text-white/70 transition-colors"
+          >
+            ou commence par 3&nbsp;jours gratuits, sans carte &rarr;
+          </Link>
+        )}
       </div>
     </div>
   );

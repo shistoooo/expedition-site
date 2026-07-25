@@ -9,9 +9,9 @@ import { useMonteursUtm } from "./useMonteursUtm";
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export default function MonteursFinalCTA() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = useMonteursUtm();
-  const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
-  const ctaLabel = SALES_OPEN ? "Devenir Pionnier" : "Être prévenu au lancement";
+  const { fireCtaEvent } = useMonteursUtm();
+  const ctaHref = SALES_OPEN ? "/account?mode=register" : "/checkout";
+  const ctaLabel = SALES_OPEN ? "Commencer 3 jours gratuits" : "Être prévenu au lancement";
 
   return (
     <>

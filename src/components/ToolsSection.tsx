@@ -130,7 +130,7 @@ function ClipForgeMockup() {
             {inputTab === "youtube" ? (
               <>
                 <Link2 className="w-3.5 h-3.5 text-white/25 shrink-0" />
-                <span className="text-[10px] text-white/25">Collez un lien YouTube...</span>
+                <span className="text-[10px] text-white/25">Collez un lien vidéo...</span>
               </>
             ) : (
               <>
@@ -273,7 +273,7 @@ export default function ToolsSection({ layout = "vertical", blurred = false, det
         </h2>
         <p className="text-xs text-white/35 mb-4 font-mono uppercase tracking-wider">L&apos;alternative &agrave; OpusClip</p>
         <p className="text-base text-white/60 mb-6 leading-relaxed">
-          Collez un lien YouTube. ClipForge trouve les moments viraux, recadre, sous-titre et exporte vos clips pr&ecirc;ts &agrave; poster.
+          Collez un lien. ClipForge trouve les moments viraux, recadre, sous-titre et exporte vos clips pr&ecirc;ts &agrave; poster.
         </p>
 
         <motion.ul

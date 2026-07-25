@@ -46,6 +46,16 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {
+        // Vidéos de démo (assets statiques immuables du dossier public) : par
+        // défaut Next les sert en `max-age=0, must-revalidate` → chaque visite
+        // re-télécharge ~2,3 Mo. On force un cache long côté navigateur ; si on
+        // remplace une vidéo, on versionne son nom de fichier.
+        source: "/tubeforge/:file(.*\\.mp4)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
     ];
   },
   async redirects() {

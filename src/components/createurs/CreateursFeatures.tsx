@@ -25,7 +25,7 @@ const features = [
   {
     icon: Layers,
     title: "Plugin direct dans ta timeline",
-    desc: "Colle un lien YouTube depuis l'onglet TubeForge dans Premiere ou DaVinci. La vidéo apparaît dans ta timeline. Aucun aller-retour dans le Finder, aucun dossier qui déborde.",
+    desc: "Colle un lien depuis l'onglet TubeForge dans Premiere ou DaVinci. La vidéo apparaît dans ta timeline. Aucun aller-retour dans le Finder, aucun dossier qui déborde.",
   },
   {
     icon: Search,

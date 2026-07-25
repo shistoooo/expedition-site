@@ -62,7 +62,7 @@ export default function ClipForgeMockup() {
             {inputTab === "youtube" ? (
               <>
                 <Link2 className="w-3.5 h-3.5 text-white/25 shrink-0" />
-                <span className="text-[10px] text-white/25">Collez un lien YouTube...</span>
+                <span className="text-[10px] text-white/25">Collez un lien vidéo...</span>
               </>
             ) : (
               <>

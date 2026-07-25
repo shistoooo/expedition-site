@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import GlobalSpace from "@/components/GlobalSpace";
+import Analytics from "@/components/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Expédition — Outils desktop pour créateurs YouTube | TubeForge, ClipForge, ReviewForge",
   description: "Suite d'outils desktop pour YouTubeurs et monteurs : téléchargement 4K, clips automatiques, review sécurisé. Un abonnement, tous les outils. Dès 8,03€/mois.",
-  keywords: ["expedition", "tools", "clipforge", "tubeforge", "youtube", "tiktok", "discord", "création", "vidéo", "ia"],
+  keywords: ["expedition", "tools", "clipforge", "tubeforge", "montage", "premiere pro", "davinci resolve", "discord", "création", "vidéo", "ia"],
   openGraph: {
     title: "Expédition | Les outils pour les créateurs",
     description: "Rejoignez l'aventure Expédition et accédez aux meilleurs outils pour créateurs de contenu.",
@@ -101,6 +102,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased noise-overlay`}
       >
         <GlobalSpace />
+        <Analytics />
         {children}
       </body>
     </html>

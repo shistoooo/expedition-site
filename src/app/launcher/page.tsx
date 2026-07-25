@@ -6,7 +6,6 @@ import { Download, Rocket, Layers, Sparkles, Terminal, Hammer, Palette, Brain, F
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
-import DownloadButtons from "@/components/DownloadButtons";
 
 // Status visual config — each state has its own color language so users
 // immediately parse the roadmap without reading the label.
@@ -183,14 +182,15 @@ export default function LauncherPage() {
                 Centralisez votre flux de production. Accédez à tous les outils Expedition, gérez vos mises à jour et découvrez les nouveautés depuis une interface unique.
               </p>
 
-              <div className="flex flex-wrap gap-4 mt-8">
-                <DownloadButtons 
-                  macUrl="https://api.clipapp.uk/downloads/launcher-install/macos"
-                  windowsUrl="https://api.clipapp.uk/downloads/launcher-install/windows"
-                  macFallbackPath=""
-                  windowsFallbackPath=""
-                  accentColor="blue"
-                />
+              <div className="flex flex-wrap items-center gap-4 mt-8">
+                <Link
+                  href="/account?mode=register"
+                  className="group inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-white text-black font-bold text-base transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px] shadow-[0_8px_24px_rgba(59,130,246,0.25)]"
+                >
+                  Cr&eacute;er un compte pour t&eacute;l&eacute;charger
+                  <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+                </Link>
+                <span className="text-sm text-white/40">Gratuit, sans carte &middot; 3 jours offerts</span>
               </div>
             </motion.div>
 
@@ -544,7 +544,7 @@ export default function LauncherPage() {
 
                 <p className="text-white/50 text-sm mb-7 leading-relaxed">
                   Transformez vos vidéos longues en clips courts prêts pour TikTok, Shorts et Reels.
-                  Collez un lien YouTube ou importez un fichier, l&apos;IA fait le reste.
+                  Collez un lien ou importez un fichier, l&apos;IA fait le reste.
                 </p>
 
                 <div className="grid grid-cols-2 gap-3 mb-8">

@@ -8,15 +8,15 @@ import { useCreateursUtm } from "./useCreateursUtm";
 import CompatBadge from "@/components/shared/CompatBadge";
 
 export default function CreateursHero() {
-  const { getDiscordOAuthUrl, fireCtaEvent } = useCreateursUtm();
+  const { fireCtaEvent } = useCreateursUtm();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.clarity?.("set", "page", "createurs");
   }, []);
 
-  const ctaHref = SALES_OPEN ? getDiscordOAuthUrl() : "/checkout";
-  const ctaLabel = SALES_OPEN ? "Devenir Pionnier" : "Être prévenu au lancement";
+  const ctaHref = SALES_OPEN ? "/account?mode=register" : "/checkout";
+  const ctaLabel = SALES_OPEN ? "Commencer 3 jours gratuits" : "Être prévenu au lancement";
 
   return (
     <section
@@ -25,13 +25,13 @@ export default function CreateursHero() {
     >
       {/* Nebula wrapper — clipped so it doesn't overflow horizontally,
           but section stays overflow-visible so CTA shadows can breathe */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-x-clip pointer-events-none">
         <div
-          className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px]"
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px]"
           style={{
             background:
-              "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(34,211,238,0.20) 0%, rgba(56,189,248,0.10) 40%, transparent 75%)",
-            filter: "blur(1px)",
+              "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(34,211,238,0.20) 0%, rgba(56,189,248,0.10) 40%, transparent 72%)",
+            filter: "blur(40px)",
           }}
         />
       </div>
