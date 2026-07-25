@@ -366,7 +366,7 @@ input:-webkit-autofill:focus {
      un border de 1px tombe entre les pixels (segments « coupés »), et 1.5px
      est arrondi à 1px par Chrome en écran non-retina. L'anneau inset, lui,
      s'anti-aliase proprement à tout angle. */
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.11);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.10);
   border-radius: var(--r, 22px 10px 24px 12px);
   background: #0b0a14;
   /* PAS de will-change ici : il force Chrome à mettre le TEXTE en cache
@@ -382,9 +382,20 @@ input:-webkit-autofill:focus {
   z-index: 5;
   transform: rotate(0deg) translateY(-4px);
   background: #12111c;
-  box-shadow: inset 0 0 0 1.5px rgba(255, 106, 31, 0.3);
+  box-shadow: inset 0 0 0 2px rgba(255, 106, 31, 0.3);
 }
 @media (prefers-reduced-motion: reduce) {
   .tf-cell { transform: none; transition: background 300ms ease, border-color 300ms ease; }
   .group:hover > .tf-cell { transform: none; }
+}
+
+/* -- LA cause profonde des cadres coupes (TubeForge) ------------------------
+   La regle globale section/overflow-x-hidden transforme chaque section
+   en boite qui ROGNE (overflow-y devient auto par spec). Les cartes inclinees
+   depassent de quelques px au-dessus du bord de section -> haut du cadre
+   tranche, pire au hover (+4px). Dans le scope TubeForge, les sections
+   laissent respirer ; le clip horizontal global reste assure par le
+   conteneur racine de la page (overflow-x-hidden). */
+.tf-scope section {
+  overflow: visible;
 }

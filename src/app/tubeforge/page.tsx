@@ -183,7 +183,7 @@ export default function TubeForgePage() {
         </section>
 
         {/* ── FEATURES (éditorial + mini-illustration par ligne) ── */}
-        <section data-section="features" className="pb-16 md:pb-24 relative">
+        <section id="features-tf" data-section="features" className="pb-16 md:pb-24 relative">
           <div className="container-main max-w-5xl">
             <FeaturesList />
           </div>
