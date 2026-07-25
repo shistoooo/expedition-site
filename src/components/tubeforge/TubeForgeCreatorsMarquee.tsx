@@ -15,7 +15,7 @@ export default function TubeForgeCreatorsMarquee() {
 
   return (
     <div
-      className="relative max-w-4xl mx-auto"
+      className="relative max-w-3xl mx-auto"
       style={{
         overflowX: "hidden",
         overflowY: "visible",
@@ -24,7 +24,7 @@ export default function TubeForgeCreatorsMarquee() {
       }}
     >
       <div
-        className="flex items-start gap-9 md:gap-12 py-4 will-change-transform animate-marquee w-max"
+        className="flex items-start gap-7 md:gap-9 py-3 will-change-transform animate-marquee w-max"
         style={{ "--marquee-duration": `${MARQUEE_DURATION_SEC}s` } as React.CSSProperties}
       >
         {duplicated.map((y, i) => (
@@ -38,7 +38,7 @@ export default function TubeForgeCreatorsMarquee() {
             aria-hidden={i >= youtubers.length ? "true" : undefined}
             tabIndex={i >= youtubers.length ? -1 : undefined}
           >
-            <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden ring-2 ring-white/10 group-hover:ring-[#ff6a1f]/60 transition-all duration-300 shadow-xl shadow-black/40">
+            <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden ring-2 ring-white/10 group-hover:ring-[#ff6a1f]/60 transition-all duration-300 shadow-xl shadow-black/40">
               <div
                 className="absolute -inset-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                 style={{ background: "radial-gradient(circle at center, rgba(255,106,31,0.5), transparent 70%)", filter: "blur(14px)" }}
@@ -47,11 +47,11 @@ export default function TubeForgeCreatorsMarquee() {
                 src={y.avatar}
                 alt={`Avatar de la chaîne @${y.handle}`}
                 fill
-                sizes="(min-width: 768px) 80px, 64px"
+                sizes="(min-width: 768px) 56px, 48px"
                 className="object-cover relative"
               />
             </div>
-            <span className="text-xs md:text-sm text-white/50 group-hover:text-white/90 transition-colors font-mono tracking-tight whitespace-nowrap">
+            <span className="text-[11px] text-white/45 group-hover:text-white/90 transition-colors font-mono tracking-tight whitespace-nowrap">
               @{y.handle}
             </span>
           </a>

@@ -10,6 +10,7 @@ import VideoDownloadComparison from "@/components/tubeforge/VideoDownloadCompari
 import TubeForgePricingSection from "@/components/tubeforge/TubeForgePricingSection";
 import FeaturesList from "@/components/tubeforge/FeaturesList";
 import CompatBadge from "@/components/shared/CompatBadge";
+import TubeForgeCreatorsMarquee from "@/components/tubeforge/TubeForgeCreatorsMarquee";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -109,7 +110,7 @@ export default function TubeForgePage() {
             dans SA section en dessous (on descend → « le temps gagné » en grand). */}
         {/* pb > pt : biaise le centrage flex vers le HAUT (centre optique,
             pas géométrique — un hero strictement centré paraît toujours bas). */}
-        <section className="relative min-h-[92svh] flex items-center pt-16 pb-32">
+        <section className="relative min-h-[92svh] flex items-center pt-12 pb-16">
           <div className="container-main w-full">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -149,6 +150,12 @@ export default function TubeForgePage() {
                   question que se pose un monteur avant même le prix. */}
               <div className="mt-8">
                 <CompatBadge delay={0.35} />
+              </div>
+              {/* Social proof intégrée au hero : les 9 chaînes, triées par
+                  nombre d'abonnés (source unique lib/youtubers.ts). */}
+              <div className="mt-12">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-white/30 mb-4">Ils l&apos;utilisent déjà</p>
+                <TubeForgeCreatorsMarquee />
               </div>
             </motion.div>
           </div>
