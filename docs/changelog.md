@@ -1,4 +1,23 @@
 ---
+### [2026-07-27 05:20] — Logos Premiere/DaVinci a cote du titre, gain de temps remonte avant les preuves
+
+**Quoi :** Le badge « Compatible · Premiere Pro · DaVinci Resolve » se place a cote du titre de section. Les chiffres de temps (2 h par video, 8 h par mois) quittent la carte de cloture pour une bande posee juste avant les quatre cartes. La cloture ne garde que l'action.
+
+**Pourquoi :**
+- **Les logos** : le titre parle de « ta timeline », et la premiere question d'un monteur devant un outil est de savoir s'il fonctionne avec SON logiciel. Repondre au moment ou la question se pose vaut mieux que la renvoyer en bas de page. Composant `CompatBadge` deja utilise dans le hero de la one-page, donc zero code nouveau et une coherence visuelle acquise.
+- **Le gain de temps remonte** : c'est ce qu'on achete. Il etait enterre sous 1500 px de cartes, la ou le lecteur decide en haut. L'hypothese du calcul (dix minutes par extrait, douze extraits) est ecrite dans la meme bande, a cote du chiffre, pour qu'il reste verifiable au lieu d'etre assene.
+- **La cloture allegee** : elle repetait 2 h et 8 h a l'identique. Remplacee par une seule phrase qui parle du risque pris (« Quatorze jours pour voir si ca change ta facon de monter »), suivie des boutons. Verifie : chaque chiffre n'apparait plus qu'une fois dans la page.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — import `CompatBadge`, titre en `flex` avec le badge, bande de temps, carte de cloture reduite
+
+**Verification en production :** ordre de lecture confirme (accroche, titre, badge Compatible, les quatre gestes, la bande 2 h / 8 h, puis les cartes). « 2 h » et « 8 h » n'apparaissent qu'une fois chacun. Zero exclamation, un seul tiret cadratin (`Footer` global).
+
+**Comment annuler :** `git revert <hash>`.
+
+**Effets de bord possibles :** `CompatBadge` s'anime avec `animate` et non `whileInView` : son apparition se declenche au chargement de la page, donc bien avant que le lecteur arrive a cette section. L'effet de reveal est perdu ici, sans consequence visuelle notable puisque le badge est deja en place quand on y arrive. Sur les largeurs intermediaires (autour de 1024 px), le titre et le badge se retrouvent sur deux lignes : c'est prevu par le `flex-col lg:flex-row`, mais ca fait respirer moins haut que prevu.
+
+---
 ### [2026-07-27 04:50] — La question rejoint sa carte, l'accroche de section porte la promesse
 
 **Quoi :** La question chiffree (« Tu viens de telecharger 440 Mo. Combien vas-tu en garder ? ») quitte le titre de section pour entrer dans la carte de decoupe, juste au-dessus des deux barres. Le titre de section porte desormais la promesse du produit : « Tes extraits arrivent sur ta timeline pendant que tu montes. »

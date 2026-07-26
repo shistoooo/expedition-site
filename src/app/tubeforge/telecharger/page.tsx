@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, Download, Loader2, LogOut, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CompatBadge from "@/components/shared/CompatBadge";
 import {
   clearToken, download, fetchMe, getToken, loginUrl, readTokenFromHash, resolve, warmSession,
   type Me, type Progress, type Resolved, type Upsell,
@@ -198,13 +199,44 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
             La question chiffree (« combien vas-tu en garder ? ») a rejoint la
             carte qu'elle interroge : elle y a un sens, ici elle n'en avait que
             pour un tiers du bloc. */}
-        <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] mb-3 max-w-3xl">
-          Tes extraits arrivent sur ta timeline pendant que tu montes<span style={{ color: RED }}>.</span>
-        </h2>
-        <p className="text-base text-white/52 leading-relaxed mb-8 max-w-2xl">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-3">
+          <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] max-w-2xl">
+            Tes extraits arrivent sur ta timeline pendant que tu montes<span style={{ color: RED }}>.</span>
+          </h2>
+          {/* Les logos ici plutot qu'ailleurs : le titre parle de « ta timeline »,
+              et la premiere question d'un monteur est de savoir si ca marche avec
+              SON logiciel. Composant deja utilise dans le hero de la one-page. */}
+          <div className="shrink-0">
+            <CompatBadge />
+          </div>
+        </div>
+
+        <p className="text-base text-white/52 leading-relaxed mb-6 max-w-2xl">
           Le téléchargement, la recherche du fichier dans un dossier, le glisser-déposer, la
           relecture pour retrouver le bon passage : les quatre gestes que TubeForge raccourcit.
         </p>
+
+        {/* Le gain de temps remonte AVANT les preuves : c'est ce qu'on achete, et
+            l'hypothese du calcul est ecrite a cote pour que le chiffre reste
+            verifiable au lieu d'etre assene. */}
+        <div
+          className="flex flex-wrap items-center gap-x-8 gap-y-4 rounded-2xl border px-6 py-5 mb-8"
+          style={{ borderColor: "rgba(239,58,36,0.28)", background: "rgba(239,58,36,0.05)" }}
+        >
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none" style={{ color: RED }}>2 h</span>
+            <span className="text-sm text-white/52">par vidéo</span>
+          </div>
+          <span className="hidden sm:block w-px self-stretch bg-white/10" aria-hidden="true" />
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none text-white">8 h</span>
+            <span className="text-sm text-white/52">par mois</span>
+          </div>
+          <p className="text-[13px] text-white/32 leading-relaxed sm:ml-auto sm:max-w-[300px]">
+            Le temps que tu passes à récupérer des fichiers, compté sur dix minutes par extrait
+            et douze extraits par vidéo.
+          </p>
+        </div>
       </motion.div>
 
       {/* ── L'argument massue : le gaspillage, en proportions reelles ── */}
@@ -367,25 +399,11 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
         className="mt-4 rounded-2xl border p-6 md:p-8"
         style={{ borderColor: "rgba(239,58,36,0.3)", background: "rgba(239,58,36,0.055)" }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-end gap-6 sm:gap-10 mb-7">
-          <div>
-            <p className="text-4xl md:text-5xl font-black tracking-[-0.03em] leading-none" style={{ color: RED }}>2 h</p>
-            <p className="text-[13px] text-white/52 mt-2 leading-snug">
-              par vidéo, passées à<br />récupérer des fichiers
-            </p>
-          </div>
-          <div className="hidden sm:block w-px self-stretch bg-white/10" />
-          <div>
-            <p className="text-4xl md:text-5xl font-black tracking-[-0.03em] leading-none text-white">8 h</p>
-            <p className="text-[13px] text-white/52 mt-2 leading-snug">
-              par mois, à raison d’une<br />vidéo par semaine
-            </p>
-          </div>
-          <div className="hidden md:block w-px self-stretch bg-white/10" />
-          <p className="text-[13px] text-white/32 leading-relaxed max-w-[210px]">
-            Compté sur dix minutes par extrait et douze extraits par vidéo.
-          </p>
-        </div>
+        {/* Les chiffres de temps vivent maintenant en haut de section : les
+            repeter ici n'ajoutait rien. Cette carte ne garde que l'action. */}
+        <p className="text-lg md:text-xl font-bold text-white leading-snug mb-6 max-w-xl">
+          Quatorze jours pour voir si ça change ta façon de monter.
+        </p>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <Link
