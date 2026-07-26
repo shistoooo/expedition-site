@@ -42,7 +42,7 @@ export type Resolved = {
   attested?: boolean;
   video?: { url: string; size: number; height: number; codec: string; container: string };
   audio?: { url: string; size: number; codec: string };
-  file?: { url: string; size: number | null; label: string; container: string };
+  file?: { url: string; relayUrl?: string; size: number | null; label: string; container: string };
   quota: { used: number; limit: number };
 };
 
@@ -135,7 +135,11 @@ async function fetchChunked(
       if (k >= ranges.length) return;
       const [s, e] = ranges[k];
       const sep = url.includes("?") ? "&" : "?";
-      const r = await fetch(`${url}${sep}start=${s}&end=${e}`, { signal });
+      // `no-referrer` est indispensable, pas cosmetique : les CDN de X et de
+      // Twitch renvoient 403 des qu'un Referer etranger accompagne la requete
+      // (mesure : sans Referer 200, avec Referer 403, meme URL). Le navigateur
+      // en envoie un par defaut — il faut donc le lui interdire.
+      const r = await fetch(`${url}${sep}start=${s}&end=${e}`, { signal, referrerPolicy: "no-referrer" });
       if (!r.ok) throw new Error("Le téléchargement a échoué (tranche " + (k + 1) + ").");
       const buf = new Uint8Array(await r.arrayBuffer());
       out.set(buf, s);
@@ -152,7 +156,7 @@ async function fetchWhole(
   onBytes: (n: number) => void,
   signal: AbortSignal
 ): Promise<ArrayBuffer> {
-  const r = await fetch(url, { signal });
+  const r = await fetch(url, { signal, referrerPolicy: "no-referrer" });
   if (!r.ok) throw new Error("Le téléchargement a échoué (" + r.status + ").");
   if (!r.body) return r.arrayBuffer();
   const parts: Uint8Array[] = [];
@@ -276,9 +280,24 @@ export async function download(
 
   if (r.muxed && r.file) {
     // Fichier deja complet cote plateforme : rien a fusionner.
-    const buf = r.file.size
-      ? await fetchChunked(r.file.url, r.file.size, bump, signal)
-      : await fetchWhole(r.file.url, bump, signal);
+    // On tente d'abord le CDN en direct (aucun octet ne passe chez nous), et on
+    // retombe sur le relais si ca echoue. Ce repli n'est pas theorique : le CDN
+    // de Twitch sert au navigateur des reponses en cache privees d'en-tete
+    // CORS, ce qui casse le direct sans que rien ne soit reparable de notre
+    // cote (mesure du 26/07).
+    const grab = (u: string) =>
+      r.file!.size
+        ? fetchChunked(u, r.file!.size, bump, signal)
+        : fetchWhole(u, bump, signal);
+
+    let buf: ArrayBuffer;
+    try {
+      buf = await grab(r.file.url);
+    } catch (e) {
+      if (!r.file.relayUrl || r.file.relayUrl === r.file.url || signal.aborted) throw e;
+      got = 0; // le compteur repart : on recommence le fichier
+      buf = await grab(r.file.relayUrl);
+    }
     onProgress({ phase: "save", pct: 100, label: "Enregistrement" });
     saveBlob(new Blob([buf], { type: "video/mp4" }), safeName(r.meta.title, r.file.container));
     return;

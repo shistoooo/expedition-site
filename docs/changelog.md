@@ -1,4 +1,32 @@
 ---
+### [2026-07-26 16:50] — Trois bugs de telechargement trouves en verifiant les 4 plateformes de bout en bout
+
+**Quoi :** Avant de repondre « oui c'est fonctionnel », j'ai teste un VRAI telechargement par l'interface pour chacune des 4 plateformes. YouTube passait ; **les trois autres etaient cassees**, chacune pour une raison differente. Toutes corrigees et re-verifiees.
+
+**Pourquoi cette verification :** je n'avais prouve que la RESOLUTION pour TikTok, X et Twitch (le lien est bien reconnu, les metadonnees remontent). Le telechargement lui-meme n'avait jamais ete execute par la page. C'etait un trou dans mes preuves, et les trois bugs etaient dedans.
+
+**Bug 1 — X/Twitter : 403, cause = l'en-tete `Referer`.** Mesure sur la meme URL : `curl` sans `Referer` -> 200 ; `curl` avec un `Referer` etranger -> **403**. Le navigateur en envoie un par defaut. Correctif : `referrerPolicy: "no-referrer"` sur les deux chemins de telechargement. Ce n'est pas cosmetique, c'est la condition pour que le CDN reponde.
+
+**Bug 2 — Twitch : « Failed to fetch », cause = cache CORS de CloudFront.** La requete SORT bien du navigateur (un `fetch` en `mode: 'no-cors'` reussit, reponse opaque) mais revient **sans en-tete CORS**, alors que `curl` avec `Origin` obtient bien `Access-Control-Allow-Origin: *`. C'est le piege connu de CloudFront : il met en cache une reponse produite pour une requete sans `Origin`, puis la sert au navigateur. **Cet etat de cache ne nous appartient pas** : on ne peut donc pas se fier au telechargement direct. Correctif : le Worker fournit TOUJOURS une URL de relais en plus de l'URL directe, et la page tente le direct (gratuit) puis retombe sur le relais si ca casse. Aucune violation de CSP n'etait en cause — verifie avec un ecouteur `securitypolicyviolation`.
+
+**Bug 3 — TikTok : 403 des la 2e requete, cause = URLs liees a la session.** La premiere tranche passait, les suivantes non ; et depuis `curl`, meme la premiere echouait. Les URLs de media TikTok exigent les cookies poses par la page (`ttwid` & co). Correctif : `resolveTikTok` capture les `set-cookie` de la page et les renvoie ; le relais les transmet en `Cookie`. Verifie : requete unique -> 200 avec les 11 872 497 octets exacts, puis une requete partielle -> 206.
+
+**Fichiers touches :**
+- `src/lib/webdl.ts` — `referrerPolicy: "no-referrer"` sur `fetchChunked` et `fetchWhole` ; repli automatique sur `file.relayUrl` quand le direct echoue ; champ `relayUrl` sur le type
+- (hors repo) `tubeforge-webdl/src/index.js` — URL de relais systematiquement calculee et renvoyee ; parametre `ck` transmis en `Cookie` par `/api/stream`
+- (hors repo) `tubeforge-webdl/src/platforms.js` — capture des cookies de session TikTok
+
+**Verification finale, par l'interface, fichier inspecte a chaque fois :**
+- YouTube 441 Mo, 1080p, `ftyp`+`moov`+`mdat`, **2 pistes** (avc1 + mp4a), 904 s, audio present
+- X/Twitter 20,21 Mo, en-tete `ftyp`
+- Twitch 44,41 Mo, en-tete `ftyp` (passe par le repli relais)
+- TikTok 11,32 Mo, en-tete `ftyp` (relais + cookies de session)
+
+**Comment annuler :** `git revert <hash>` cote page ; `npx wrangler rollback` depuis `tubeforge-webdl/`.
+
+**Effets de bord possibles :** le repli relais fait passer par nous des octets qui auraient pu etre gratuits — c'est un choix de fiabilite, et il ne se declenche qu'apres un echec du direct. Le compteur de progression repart de zero quand le repli s'active (le fichier est retelecharge depuis le debut). Les cookies de session TikTok voyagent dans l'URL signee du relais : ce sont des cookies d'un visiteur anonyme, pas des donnees personnelles, et la signature empeche qu'on detourne le relais. **A retenir : prouver la resolution ne prouve RIEN sur le telechargement** — chaque plateforme a son propre piege cote CDN.
+
+---
 ### [2026-07-26 15:40] — Vraie solution anti-robot : PoToken BotGuard dans le navigateur + plafond iOS decouvert
 
 **Quoi :** Le telechargeur ne depend plus de la reputation de nos IP. Une attestation BotGuard (PoToken) est desormais frappee **dans le navigateur du visiteur** et transmise au Worker, qui la joint a ses appels InnerTube. Au passage, un second bug bien plus grave a ete trouve et corrige : les URLs servies au client iOS sont plafonnees a ~25 Mo.
