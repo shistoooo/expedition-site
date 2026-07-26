@@ -217,19 +217,18 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
           </div>
 
           <div>
-            {/* Capture recadree sur le module de decoupe : on garde tout ce qui
-                prouve l'argument (curseur, Debut/Fin/Duree, mode de coupe) et on
-                retire seulement l'en-tete MP4/MP3, qui parle d'autre chose. En
-                portrait 692x878 la carte faisait 730 px de haut et le texte
-                flottait au milieu d'un vide ; en 692x668 elle tombe a ~500. */}
+            {/* Capture fournie par le user, cadree exactement sur le module de
+                decoupe : libelle « Couper un extrait », apercu, curseur a deux
+                poignees, Debut/Fin/Duree, mode de coupe. C'est tout ce qui prouve
+                l'argument du paragraphe d'a cote, et rien de plus. */}
             {/* eslint-disable-next-line @next/next/no-img-element -- capture locale, aucun gain a passer par next/image */}
             <img
-              src="/tubeforge/real-cut-1.jpg"
+              src="/tubeforge/real-cut-2.jpg"
               alt="TubeForge : curseurs de début et de fin, durée de l’extrait et mode de coupe, avant téléchargement"
               className="w-full h-auto rounded-lg border border-white/10 max-w-[400px] mx-auto"
               loading="lazy"
-              width={692}
-              height={668}
+              width={647}
+              height={716}
             />
             <p className="text-[11px] font-mono text-white/32 mt-3 text-center">capture réelle · TubeForge</p>
           </div>

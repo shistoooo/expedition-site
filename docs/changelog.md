@@ -1,4 +1,23 @@
 ---
+### [2026-07-27 02:05] — Capture du module de decoupe remplacee par celle fournie
+
+**Quoi :** `real-cut-2.jpg` (647x716, 79 Ko) remplace mon recadrage maison `real-cut-1.jpg`, supprime. Source : capture fournie par le user (`Capture d'ecran 2026-07-26 a 18.16.16.png` sur le disque SAMSUNG T5), convertie en JPEG — 333 Ko en PNG, 79 Ko en JPEG qualite 2, sans perte visible sur une capture d'interface.
+
+**Pourquoi :** le user a designe precisement cette capture. Elle est mieux cadree que mon recadrage : elle part de « + Options avancees » et garde le libelle « Couper un extrait », l'apercu, le curseur a deux poignees, Debut/Fin/Duree et le mode de coupe — exactement ce que prouve le paragraphe d'a cote, et rien de plus. Son rapport de forme (0,904) est aussi un peu plus favorable que le mien (1,04).
+
+**Geometrie :** affichee a 400 px de large -> 443 px de haut, soit une carte d'environ **499 px** contre 730 au depart (-32 %). Legerement plus haute que les 442 px de l'etape precedente, parce que cette capture inclut la ligne « + Options avancees » que mon recadrage coupait — c'est le prix du cadrage choisi, et il est assume.
+
+**Fichiers touches :**
+- `public/tubeforge/real-cut-2.jpg` (nouveau) ; `real-cut-1.jpg` supprime
+- `src/app/tubeforge/telecharger/page.tsx` — source, dimensions et commentaire mis a jour
+
+**Verification :** HTML de prod ne reference plus que `real-cut-2.jpg` (une occurrence, zero de l'ancienne), le fichier repond en 200 / 81 Ko, et l'ancien renvoie bien 404.
+
+**Comment annuler :** `git revert <hash>` — mais `real-cut-1.jpg` etant supprime, il faudrait le regenerer (`ffmpeg -i real-app.jpg -vf crop=692:668:0:190`).
+
+**Effets de bord possibles :** le nom est versionne (`-2`) parce que les fichiers de `/tubeforge/` sont servis en cache immuable un an : ecraser un nom existant aurait laisse l'ancienne image chez les visiteurs deja passes. **Toute future capture doit suivre la meme regle.** `real-app.jpg` reste en place et inchangee : elle sert toujours sur la one-page.
+
+---
 ### [2026-07-27 01:40] — Premiere carte du bloc promo : -39 % de hauteur, capture recadree
 
 **Quoi :** La carte principale du bloc promo etait trop haute et desequilibree — le texte flottait au milieu d'un grand vide a cote d'une capture en portrait. Capture recadree, colonnes reequilibrees : la carte passe de **730 px a ~442 px**.
