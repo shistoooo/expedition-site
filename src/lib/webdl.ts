@@ -153,13 +153,38 @@ async function fetchChunked(
       if (k >= ranges.length) return;
       const [s, e] = ranges[k];
       const sep = url.includes("?") ? "&" : "?";
-      // `no-referrer` est indispensable, pas cosmetique : les CDN de X et de
-      // Twitch renvoient 403 des qu'un Referer etranger accompagne la requete
-      // (mesure : sans Referer 200, avec Referer 403, meme URL). Le navigateur
-      // en envoie un par defaut — il faut donc le lui interdire.
-      const r = await fetch(`${url}${sep}start=${s}&end=${e}`, { signal, referrerPolicy: "no-referrer" });
-      if (!r.ok) throw new Error("Le téléchargement a échoué (tranche " + (k + 1) + ").");
-      const buf = new Uint8Array(await r.arrayBuffer());
+
+      /**
+       * Chaque tranche a droit a plusieurs essais.
+       *
+       * Ce n'est pas de la prudence gratuite : googlevideo refuse
+       * SPORADIQUEMENT des tranches parfaitement valides (mesure du 26/07 :
+       * 1 refus sur 6 a 12 requetes, sans lien avec le parallelisme). Sur une
+       * video de 426 Mo decoupee en 75 tranches, abandonner au premier refus
+       * revient a ne presque jamais finir. Un simple nouvel essai passe.
+       *
+       * `no-referrer` est tout aussi indispensable : les CDN de X et de Twitch
+       * repondent 403 des qu'un Referer etranger accompagne la requete (mesure :
+       * sans Referer 200, avec Referer 403, meme URL), et le navigateur en
+       * envoie un par defaut.
+       */
+      let buf: Uint8Array | null = null;
+      let lastStatus = 0;
+      for (let attempt = 0; attempt < 4 && !buf; attempt++) {
+        if (signal.aborted) throw new Error("Téléchargement annulé.");
+        if (attempt > 0) {
+          await new Promise((r) => setTimeout(r, 300 * attempt + Math.random() * 200));
+        }
+        const r = await fetch(`${url}${sep}start=${s}&end=${e}`, { signal, referrerPolicy: "no-referrer" });
+        if (r.ok) buf = new Uint8Array(await r.arrayBuffer());
+        else lastStatus = r.status;
+      }
+      if (!buf) {
+        throw new Error(
+          `Le téléchargement a échoué (tranche ${k + 1} sur ${ranges.length}, code ${lastStatus}). ` +
+          "Réessaie : YouTube refuse parfois des morceaux au hasard."
+        );
+      }
       out.set(buf, s);
       onBytes(buf.byteLength);
     }

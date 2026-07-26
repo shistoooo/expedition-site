@@ -1,4 +1,32 @@
 ---
+### [2026-07-26 19:30] — Limite portee a 25/jour + nouvel essai par tranche (403 sporadiques)
+
+**Quoi :** `DAILY_LIMIT` passe de 10 a 25 telechargements par jour et par IP. Et surtout : chaque tranche a desormais droit a 4 essais, parce qu'un seul refus tuait tout le telechargement.
+
+**Pourquoi le nouvel essai :** en mesurant la capacite, j'ai trouve que googlevideo refuse **sporadiquement** des tranches parfaitement valides — 1 refus sur 6 a 12 requetes, **sans lien avec le parallelisme** (teste a 1, 3, 6 et 12 connexions : 0/1, 3/3, 5/6, 11/12). Sur une video de 426 Mo decoupee en 75 tranches, abandonner au premier refus revient a ne presque jamais finir. C'est probablement la vraie cause de l'« echec tranche 6 » que j'avais mis sur le compte du plafond iOS : il y avait DEUX causes, pas une. Correctif : 4 tentatives par tranche, attente croissante + gigue.
+
+**Capacite mesuree.** Le mur n'est pas la bande passante (Cloudflare ne facture pas l'egress des Workers) mais le **nombre de requetes**, et il est domine par le decoupage en tranches de 6 Mo :
+
+| cas | poids | requetes Cloudflare |
+|---|---|---|
+| TikTok / X / Twitch | 20 Mo | **1** en direct, 5 si repli relais |
+| YouTube ~5 min 1080p | 80 Mo | 16 |
+| YouTube ~15 min 1080p | 441 Mo | 76 |
+| YouTube ~1 h | 490 Mo | 84 |
+
+Sur le plan **gratuit** (100 000 requetes/jour) : ~20 000 telechargements/jour de TikTok/X/Twitch, ~6 250 de YouTube courts, ~1 315 de YouTube de 15 min. Avec la limite de 25/jour/personne : **~52 personnes/jour** si tout le monde prend du 15 min, ~250 sur du court, ~800 sur du TikTok. Sur le plan **payant** ($5/mois, ~333 000 requetes/jour) : x3,3.
+
+**Sur la simultaneite :** aucune limite de notre cote (Workers montent en charge tout seuls, et on n'utilise qu'**1 sous-requete** par invocation sur les 50 autorisees). Le facteur limitant observe est googlevideo lui-meme, et il ne depend pas du nombre de personnes : les refus sont sporadiques a tous les niveaux de parallelisme. Debit mesure : 4 a 8 Mo/s par telechargement, et une taille de tranche plus grosse ne gagne rien (6 Mo : 6,5 Mo/s ; 24 Mo : 2,7 Mo/s ; 48 Mo : 4,6 Mo/s) — donc **inutile d'augmenter la tranche pour economiser des requetes**, ca coute du debit.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/index.js` — `DAILY_LIMIT = 25`
+- `src/lib/webdl.ts` — 4 essais par tranche dans `fetchChunked`, message d'erreur qui donne le rang de la tranche et le code
+
+**Comment annuler :** remettre `DAILY_LIMIT = 10` et `npx wrangler deploy` ; `git revert <hash>` pour le nouvel essai.
+
+**Effets de bord possibles :** 25/jour/personne multiplie par 2,5 la consommation de requetes par utilisateur actif — sur le plan gratuit, une cinquantaine de personnes qui telechargent des videos de 15 min suffiraient a epuiser le quota journalier. **Le plan Workers n'a pas pu etre determine depuis la configuration** (aucune fonctionnalite payante utilisee) : a verifier dans le tableau de bord Cloudflare, car c'est ce qui separe ~1 300 et ~4 400 telechargements/jour. Le nouvel essai par tranche peut masquer une degradation reelle de YouTube en la transformant en lenteur plutot qu'en erreur — le message d'erreur final donne desormais le code HTTP pour qu'on puisse quand meme le voir.
+
+---
 ### [2026-07-26 18:30] — Mon diagnostic du PoToken etait FAUX : c'est le visitorData qui compte
 
 **Quoi :** Un agent de recherche lance sur les plans de secours a isole une variable que je n'avais pas isolee, et sa conclusion invalide la mienne. **Ce n'est pas le PoToken BotGuard qui leve le blocage anti-robot, c'est le `visitorData`.** J'avais attribue le merite au jeton parce que je les envoyais toujours ENSEMBLE. Le systeme marchait, mais pas pour la raison ecrite dans mon code — et j'avais cree un point de rupture unique en couplant la session a BotGuard.
