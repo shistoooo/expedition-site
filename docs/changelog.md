@@ -1,4 +1,31 @@
 ---
+### [2026-07-26 20:45] — Le plafond que je venais de poser ne protegeait rien sur le plan gratuit
+
+**Quoi :** `MAX_DAILY_RESOLVES` corrige de 3000 a **1200**, et la valeur a utiliser selon le plan est desormais ecrite dans le code et dans `wrangler.toml`.
+
+**Pourquoi :** question du user — « donc si les 635 telechargent les 25 videos par jour ». En faisant le calcul, mon garde-fou etait mal calibre. Je l'avais dimensionne sur le forfait PAYANT (10 M requetes/mois, soit ~333 000/jour) alors que je venais de conseiller de rester en GRATUIT (100 000 requetes/JOUR, plafond DUR).
+
+Resultat : avec un plafond a 3000 resolutions, le plafond dur de Cloudflare tombait le premier — vers **1315 telechargements** — et coupait le service pour tout le monde. **Un garde-fou pose au-dessus de la limite qu'il est censé proteger ne protege rien.** Il fallait le mettre en dessous : 1200.
+
+**Les chiffres du scenario complet** (635 membres x 25 videos = 15 875 telechargements/jour) :
+
+| | pire cas (441 Mo, 76 req) | realiste (150 Mo, 28 req) |
+|---|---|---|
+| requetes/jour | 1 206 500 | 444 500 |
+| gratuit | coupe des **1 315** telechargements | coupe des **3 571** |
+| payant | 5 $ + 7,86 $ = **12,86 $/mois** | 5 $ + 1 $ = **6 $/mois** |
+
+Autrement dit : soutenir le Discord entier a son maximum theorique coute entre 6 et 13 $/mois. Le gratuit, lui, ne tient pas ce scenario — mais le plafond a 1200 fait que le service se bride proprement au lieu de tomber.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/index.js` — `MAX_DAILY_RESOLVES = 1200`, commentaire qui donne la valeur par plan et explique le piege
+- (hors repo) `tubeforge-webdl/wrangler.toml` — `1200` avec les deux valeurs documentees (gratuit 1200 / payant 4385)
+
+**Comment annuler :** remettre la valeur souhaitee dans `wrangler.toml` et redeployer.
+
+**Effets de bord possibles :** 1200 resolutions/jour est un plafond BAS si l'outil prend — il se declenchera avant que le Discord entier n'en profite. C'est assume : mieux vaut brider tot et voir le message apparaitre (signal clair qu'il faut passer au payant et monter a 4385) que couper sans prevenir. **Lecon de methode : un garde-fou doit etre calibre sur la limite REELLE de l'environnement ou il tourne, pas sur celle d'un environnement qu'on envisage.**
+
+---
 ### [2026-07-26 20:15] — Plafond de depense construit a la main (Cloudflare n'en propose aucun)
 
 **Quoi :** Un plafond GLOBAL de resolutions par jour (`MAX_DAILY_RESOLVES`, 3000 par defaut) dans le Worker, et la duree de vie des URLs de relais ramenee de 6 h a 2 h.
