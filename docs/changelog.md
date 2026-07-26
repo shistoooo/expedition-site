@@ -1,4 +1,34 @@
 ---
+### [2026-07-27 07:10] — Canari : surveillance horaire des quatre extracteurs
+
+**Quoi :** Un canari verifie que les quatre extracteurs repondent encore, garde son etat en KV, et previent sur Discord quand une plateforme tombe ou refonctionne. Lisible sans Discord sur `/api/canary`, declenchable a la main sur `/api/canary/run`.
+
+**Pourquoi :** les extracteurs sont ecrits a la main et casseront un par un. Sans surveillance, la panne est decouverte par un utilisateur, ou par personne s'il se contente de partir. Le canari ne repare rien : il transforme « quelqu'un finit par le signaler » en « on le sait dans l'heure, avec le message d'erreur exact ».
+
+**🚨 Decouverte en cours de route : le compte est sur le plan GRATUIT.** Le deploiement a echoue sur `You have exceeded the limit of 5 cron triggers`. Verifie dans la documentation : 5 taches planifiees par compte en gratuit, 250 en payant. Les cinq places sont occupees par des workers de production (`expedition-licensing` x2, `forgenote-sync`, `swipeforge-sync`, `expeprod-sync`, `reviewforge-keepalive`). Je n'ai touche a aucun. **Ca confirme aussi les chiffres de capacite donnes plus tot : plafond DUR de 100 000 requetes par jour, avec erreur 1027 au-dela.**
+
+**Consequence de conception : le canari se declenche sur le TRAFIC.** A chaque appel de `/api/me` (soit chaque chargement de page), si le dernier passage date de plus d'une heure, la requete en cours lance une verification en tache de fond via `waitUntil`, sans ralentir la reponse. Un marqueur est pose AVANT le lancement pour que deux visites simultanees ne declenchent pas deux series. Le handler `scheduled` reste en place, pret pour le jour ou une place de cron se libere.
+
+**Limite assumee :** sans visite, pas de verification. Sur un outil sans utilisateur, une panne non detectee ne gene personne ; des qu'il y a du trafic, le premier visiteur de l'heure paie la verification pour les suivants.
+
+**Deux garde-fous contre le bruit, qui comptent plus que la detection elle-meme :**
+- **Deux echecs consecutifs** avant d'alerter. Un blocage anti-robot passager (mesure : 9 succes sur 15 appels d'affilee) ne doit pas reveiller quelqu'un a 3 h du matin.
+- **Notification sur CHANGEMENT d'etat seulement.** Une plateforme cassee depuis trois jours a envoye un message, pas 72.
+
+**Verification du mecanisme d'alerte, faite pour de vrai.** J'ai pointe la cible Twitch sur un clip supprime, sur un worker de developpement : passage 1 -> echec enregistre, `echecs=1`, statut toujours `ok`, **zero alerte** ; passage 2 -> `echecs=2`, statut `ko`, **une alerte**. La cible reelle a ensuite ete restauree et l'etat purge. Un systeme d'alerte qui n'alerte pas serait pire que pas de surveillance.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/canary.js` (nouveau) — cibles, test par plateforme, machine a etats, notification Discord
+- (hors repo) `tubeforge-webdl/src/index.js` — handler `scheduled`, `peutEtreCanari` sur le trafic, routes `/api/canary` et `/api/canary/run`
+- (hors repo) `tubeforge-webdl/wrangler.toml` — pas de `[triggers]`, avec la raison ecrite dans le fichier
+
+**Ce qui reste a faire cote user :** creer un webhook dans Discord (Parametres du serveur, Integrations, Webhooks) puis `npx wrangler secret put DISCORD_WEBHOOK_URL`. Sans lui le canari tourne et garde ses resultats, il ne notifie pas.
+
+**Comment annuler :** retirer l'appel a `peutEtreCanari` dans `/api/me` suffit a l'endormir ; `npx wrangler rollback` pour tout defaire.
+
+**Effets de bord possibles :** les videos de reference peuvent etre supprimees par leurs auteurs, ce qui produirait une fausse alerte. `jNQXAC9IVRw` (la premiere video de YouTube) ne risque rien, les trois autres oui — et le clip Twitch est le plus fragile, les clips expirant reellement (j'en ai perdu un ce matin). C'est pourquoi l'alerte cite l'erreur brute au lieu de conclure : « Clip introuvable ou supprime » se distingue d'un coup d'oeil de « Reponse Twitch illisible ». Le canari ajoute 4 appels par heure aux plateformes, soit 96 par jour : negligeable face aux 200 que mes tests ont produits en une heure, mais non nul dans le budget anti-robot.
+
+---
 ### [2026-07-27 06:00] — Le produit payant existe enfin sur la page : mise en regard 12 journees / 41,88 EUR
 
 **Quoi :** Trois changements pour que le lecteur comprenne qu'un autre produit existe et ce qu'il lui rapporte : le nom **TubeForge** entre dans le titre de section avec son wordmark anime, le cout se compte en **journees de travail** au lieu d'heures, et la carte de cloture met face a face **12 journees de travail** et **41,88 EUR**.
