@@ -59,13 +59,29 @@ export type Progress = { phase: "download" | "merge" | "save"; pct: number; labe
 
 /* ── Jeton ─────────────────────────────────────────────────────────── */
 
-export function readTokenFromHash(): string | null {
-  if (typeof window === "undefined") return null;
-  const m = window.location.hash.match(/tfdl=([^&]+)/);
-  if (!m) return null;
-  localStorage.setItem(TOKEN_KEY, m[1]);
+/**
+ * Recupere ce que le retour de Discord a depose dans le fragment.
+ *
+ * Deux issues possibles, et la seconde manquait : `tfdl` est la session, mais un
+ * refus de Discord produisait auparavant une page blanche portant une phrase et
+ * aucun lien de retour. Le worker renvoie desormais `tfdl_err`, que la page
+ * affiche dans son encart d'erreur habituel.
+ *
+ * Le fragment est efface dans les deux cas : il ne doit pas survivre a un
+ * rechargement, ni partir dans un lien copie-colle.
+ */
+export function readHashResult(): { token: string | null; erreur: string | null } {
+  if (typeof window === "undefined") return { token: null, erreur: null };
+  const hash = window.location.hash;
+  const jeton = hash.match(/tfdl=([^&]+)/);
+  const erreur = hash.match(/tfdl_err=([^&]+)/);
+  if (!jeton && !erreur) return { token: null, erreur: null };
+  if (jeton) localStorage.setItem(TOKEN_KEY, jeton[1]);
   history.replaceState(null, "", window.location.pathname + window.location.search);
-  return m[1];
+  return {
+    token: jeton ? jeton[1] : null,
+    erreur: erreur ? decodeURIComponent(erreur[1]) : null,
+  };
 }
 
 export const getToken = () =>

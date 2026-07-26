@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CompatBadge from "@/components/shared/CompatBadge";
 import {
-  clearToken, download, fetchMe, getToken, loginUrl, readTokenFromHash, resolve, warmSession,
+  clearToken, download, fetchMe, getToken, loginUrl, readHashResult, resolve, warmSession,
   type Me, type Progress, type Resolved, type Upsell,
 } from "@/lib/webdl";
 
@@ -506,7 +506,11 @@ export default function TelechargerPage() {
 
   useEffect(() => {
     setAuthHref(loginUrl());
-    readTokenFromHash();
+    // Un retour de Discord qui a echoue depose sa raison dans le fragment. Sans
+    // ca, la personne revenait sur une page d'apparence normale qui refusait de
+    // fonctionner sans jamais dire pourquoi.
+    const retour = readHashResult();
+    if (retour.erreur) setError(retour.erreur);
     refreshMe();
     // On prechauffe la session YouTube (quelques Ko) pendant que la personne
     // colle son lien. Le calcul BotGuard, lui, n'a plus lieu ici : il ne sert
@@ -618,10 +622,15 @@ export default function TelechargerPage() {
               transition={{ duration: 0.6, ease: easeOutExpo }}
               className="text-center"
             >
-              {/* L'accroche suit l'etat reel de la porte : annoncer « sans compte »
-                  alors qu'on demande Discord serait un mensonge des la premiere ligne. */}
+              {/* Cette ligne ne parle plus de la porte Discord, et c'est voulu.
+                  Elle disait « Gratuit, sans compte » tant que /api/me n'avait pas
+                  repondu, puis se corrigeait : la premiere phrase de la page etait
+                  donc fausse pendant deux cents millisecondes, et sautait sous les
+                  yeux. On garde ici la seule promesse vraie dans tous les cas ; la
+                  condition d'acces est dite dans la carte, a l'endroit ou elle
+                  s'applique. */}
               <p className="text-xs font-mono uppercase tracking-widest mb-5" style={{ color: "rgba(255,106,31,0.7)" }}>
-                {gated ? "Gratuit pour les membres du Discord" : "Gratuit, sans compte"}
+                Gratuit, sans publicité
               </p>
               <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] mb-5">
                 Télécharge une vidéo<span style={{ color: RED }}>.</span>
@@ -668,6 +677,20 @@ export default function TelechargerPage() {
               transition={{ duration: 0.6, delay: 0.12, ease: easeOutExpo }}
               className="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-8"
             >
+              {/* Tant que le worker n'a pas dit si la porte est fermee, aucune des
+                  trois branches ci-dessous ne rendait quoi que ce soit : la carte
+                  restait un rectangle vide, puis le bouton Discord apparaissait
+                  d'un coup. Vu de l'autre cote, l'outil avait l'air casse. On
+                  occupe la place avec la forme de ce qui arrive, aux memes
+                  dimensions, pour que rien ne saute. */}
+              {me === null && (
+                <div className="text-center" aria-busy="true" aria-label="Vérification de l’accès">
+                  <div className="h-4 w-64 max-w-full mx-auto rounded bg-white/[0.07] animate-pulse" />
+                  <div className="h-3 w-44 max-w-full mx-auto rounded bg-white/[0.05] animate-pulse mt-3.5" />
+                  <div className="h-[50px] w-[266px] max-w-full mx-auto rounded-xl bg-white/[0.06] animate-pulse mt-7" />
+                </div>
+              )}
+
               {gated && !connected && (
                 <div className="text-center">
                   <p className="text-white/70 mb-1">Le téléchargeur est réservé aux membres du Discord.</p>

@@ -1,4 +1,37 @@
 ---
+### [2026-07-27 07:55] — Faille de redirection ouverte sur /auth/start, carte vide et echecs Discord muets
+
+**Quoi :** Trois defauts trouves en repondant a « le bloc Discord ne s'affiche pas, puis s'affiche, et ca marche pas ». Le premier est une faille de securite, les deux autres expliquent le symptome.
+
+**🚨 1. Redirection ouverte : le jeton de session pouvait etre livre a un site tiers.**
+`/auth/start?next=<url>` signait la destination fournie dans le `state`, et `/auth/callback` terminait par `new URL(st.n)` + le jeton de session DANS LE FRAGMENT. Une signature prouve seulement que NOUS l'avons emise, jamais que la destination nous appartient. **Verifie sur le worker de production** : `/auth/start?next=https://exemple-malveillant.test/vol` renvoyait un state signe contenant `{"n":"https://exemple-malveillant.test/vol"}`. Il suffisait de faire cliquer un membre sur ce lien pour recevoir sa session apres son passage par Discord.
+
+Corrige par `destinationAutorisee()`, qui compare l'ORIGINE a `ALLOWED_ORIGINS` et retombe sur la notre sinon. Filtre a l'entree (`/auth/start`) ET revalide au retour (`/auth/callback`), pour qu'un state signe avant le correctif ne serve plus. Compare l'origine, pas un prefixe : `startsWith` aurait laisse passer `tubeforge.explauncheur.space.evil.test` et `tubeforge.explauncheur.spaceX`. **Sept cas testes sur un worker de dev, sept refuses** (origine hostile, sous-domaine trompeur, prefixe trompeur, `javascript:`, chaine non parsable, parametre absent), puis reverifie en production.
+
+**2. La carte restait un rectangle vide avant d'afficher le bouton Discord.**
+`gated = me?.gate === true` et `toolOpen = me !== null && …` : tant que `/api/me` n'avait pas repondu, AUCUNE des trois branches ne rendait quoi que ce soit. Mesure : `/api/me` repond en 140-320 ms, donc un rectangle vide pendant un tiers de seconde, puis un bouton qui surgit. Vu de l'autre cote, l'outil a l'air casse. Ajout d'une branche `me === null` qui occupe la place avec la forme de ce qui arrive, aux memes dimensions.
+
+**Au passage, l'accroche mentait pendant ce meme delai.** Elle affichait « Gratuit, sans compte » (valeur par defaut quand `gate` est inconnu) puis se corrigeait en « Gratuit pour les membres du Discord ». La premiere phrase de la page etait donc fausse le temps de l'aller-retour, et sautait sous les yeux. Remplacee par « Gratuit, sans publicite », vraie dans les deux cas ; la condition d'acces est dite dans la carte, la ou elle s'applique.
+
+**3. Un echec de connexion Discord donnait une page blanche sans retour.**
+`/auth/callback` repondait `new Response(err, {status: 400})` : une phrase sur fond blanc, aucun lien, et rien dans la console. Desormais l'erreur revient dans le fragment (`tfdl_err`) et s'affiche dans l'encart rouge de la page. `error=access_denied` (clic sur « Annuler » chez Discord) ramene simplement sur la page, sans message : ce n'est pas une panne.
+
+**Ce que ces trois points n'expliquent PAS :** aucune cle `q:<discordId>:<date>` n'existe en KV, donc personne n'a encore reussi a passer la porte. Le tour OAuth complet reste a tester par quelqu'un qui a un compte Discord — je ne peux pas me connecter a la place du user.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/index.js` — `destinationAutorisee()`, `retourAvecErreur()`, reecriture de `/auth/start` et `/auth/callback`
+- `src/lib/webdl.ts` — `readTokenFromHash` devient `readHashResult`, qui rend aussi l'erreur
+- `src/app/tubeforge/telecharger/page.tsx` — branche de chargement, accroche neutre, affichage de l'erreur de retour
+
+**Comment annuler :** `npx wrangler rollback` cote worker ; `git revert` cote site. **Ne pas annuler le point 1 seul** : c'est une fuite de session.
+
+**Effets de bord possibles :** ajouter un domaine (preview Vercel, autre alias) exige de l'ajouter a `ALLOWED_ORIGINS` dans `wrangler.toml`, sinon la connexion Discord y ramene sur l'origine principale au lieu de la page d'ou l'on vient. C'est le prix de la liste blanche, et c'est le bon sens de l'echange.
+
+**Deux bruits de console constates, non corriges (hors perimetre, signales) :**
+- `vercel.live/feedback.js` bloque par la CSP : c'est la barre d'outils Vercel, injectee parce que le deploiement est un PREVIEW aliase sur le domaine (consequence de `npx vercel --yes` + `alias set`). Bloquee, donc sans effet — mais c'est une erreur a chaque visite.
+- Dix echecs `WebGLRenderer: Error creating WebGL context` : aucun composant Three.js n'est importe par cette page ni par `Navbar`/`Footer`. Ces erreurs viennent d'une autre page du meme onglet (fond anime de l'accueil). La cause reelle est cote navigateur (`FEATURE_FAILURE_EGL_NO_CONFIG` = acceleration materielle indisponible) : sur cette machine, le fond anime du site ne s'affiche pas du tout.
+
+---
 ### [2026-07-27 07:10] — Canari : surveillance horaire des quatre extracteurs
 
 **Quoi :** Un canari verifie que les quatre extracteurs repondent encore, garde son etat en KV, et previent sur Discord quand une plateforme tombe ou refonctionne. Lisible sans Discord sur `/api/canary`, declenchable a la main sur `/api/canary/run`.
