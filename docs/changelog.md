@@ -1,4 +1,38 @@
 ---
+### [2026-07-27 11:30] — Levee de doute sur la connexion Discord, et passe mobile
+
+**Quoi :** Deux demandes. Preciser que la connexion Discord est la methode officielle et qu'on veut seulement verifier l'appartenance au serveur, parce que « se connecter avec Discord » sur un site tiers sonne comme une arnaque. Puis adapter la page au telephone.
+
+**1. Bloc de levee de doute sous le bouton.**
+Le reflexe de mefiance est SAIN : c'est exactement la forme que prend un vol de compte. On n'y repond donc pas par « fais-nous confiance », mais en annoncant a l'avance ce que l'ecran suivant va montrer — quand Discord affiche ensuite les trois memes autorisations, l'ecran CONFIRME au lieu de surprendre.
+
+Le bloc dit : c'est la connexion officielle, le mot de passe se tape sur discord.com et on ne le voit jamais ; puis les trois autorisations avec ce qu'on en fait (pseudo et avatar pour l'affichage, liste des serveurs pour verifier l'appartenance, e-mail pour prevenir des changements) ; puis ce qu'on ne peut PAS faire, et comment retirer l'acces.
+
+**L'e-mail est nomme ici plutot que decouvert la-bas.** C'est le point qui compte : le scope reel est `identify guilds email` (verifie sur `/auth/start` en production), donc le taire aurait produit exactement l'effet inverse de celui recherche — une prise en traitre a l'ecran suivant.
+
+**2. Passe mobile, mesuree plutot que jugee a l'oeil.**
+Etat a 375 px et 320 px apres correction : **0 debordement horizontal, 0 cible tactile sous 44 px, aucune image trop large**. La structure tenait deja.
+
+Ce qui n'allait pas, c'est la LISIBILITE. Regle appliquee : un texte a la fois petit (moins de 13 px) et pale (sous `white/50`) est illisible sur telephone. Les tailles remontent sur mobile uniquement (`md:` preserve l'echelle voulue sur ordinateur), les opacites remontent partout — sur ces libelles, c'est le style mono/majuscules qui porte la hierarchie, pas la paleur.
+- libelles de jauges 10 -> 11 px, `white/30` -> `white/50`
+- legendes de captures et unites 11 -> 12 px, `white/32` -> `white/50`
+- mentions en PROSE (tarif, notes) 11 -> 13 px, `white/30-35` -> `white/50`
+- bloc de levee de doute 13 -> 14 px sur mobile
+
+**🚨 Defaut trouve par le calcul, invisible a l'ecran : la rangee des deux jauges deborde a 320 px.** Le libelle le plus long fait 136 px et « 1194 restants sur 1200 » 133 px, pour une colonne de 120 px — et les deux etant en `whitespace-nowrap`, ca ne se replie pas, ca deborde la carte. **Ce bloc ne s'affiche qu'une fois connecte**, donc il n'apparait jamais pendant un test porte fermee : c'est en mesurant la largeur du texte dans la vraie police que le probleme est sorti. Les jauges s'empilent desormais sous 360 px — point de bascule calcule, pas choisi : c'est la premiere largeur ou la colonne (144 px) depasse le libelle (136 px).
+
+**Constat plus large, NON corrige, signale :** sur le fond `#07060f`, **tout ce qui est sous `white/50` echoue au seuil de 4,5:1**, y compris sur ordinateur — `white/45` plafonne a 4,47, `white/32` a 2,77. Une bonne partie de la page est concernee (`ICI`, `SECONDAIRE`, sous-textes). Remonter tout d'un coup applatirait la hierarchie construite au fil des iterations, donc je n'y touche pas sans validation. Restent aussi hors correction : le point de separation « · » (decoratif, sans contenu) et « Compatible » dans `CompatBadge` a 4,47:1 (composant PARTAGE avec d'autres pages).
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — bloc de levee de doute, echelle typographique mobile, empilement des jauges sous 360 px
+
+**Comment annuler :** `git revert` du commit. Le bloc de levee de doute peut etre retire seul sans rien casser.
+
+**Effets de bord possibles :** le bloc allonge la carte d'environ 190 px sur telephone, avant le pli. C'est assume : sur cette page, la question « est-ce que c'est une arnaque ? » se pose avant toute autre.
+
+**Artefact de mesure, quatrieme de la session :** j'ai d'abord conclu que la variante `min-[360px]:` n'etait pas generee par Tailwind. Elle l'etait — mon `grep --include=*.css` echouait sur l'expansion du shell. **Verifier l'outil de mesure avant de conclure a un bug.** Meme famille que le `scroll-behavior: smooth` qui a fait croire que la page ne defilait pas.
+
+---
 ### [2026-07-27 10:40] — « Tu n'es pas sur le serveur » alors qu'on y est : un echec de lecture pris pour un refus
 
 **Quoi :** Question posee — « pourquoi ca marche chez moi et pas chez les autres ? ». La verification d'appartenance au Discord concluait « non-membre » des que l'appel echouait.

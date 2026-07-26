@@ -62,7 +62,7 @@ function Compteurs({
     const vide = reste === 0;
     return (
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-mono uppercase tracking-wider text-white/30 whitespace-nowrap mb-1">
+        <p className="text-[11px] md:text-[10px] font-mono uppercase tracking-wider text-white/50 whitespace-nowrap mb-1">
           {libelle}
         </p>
         <p className="text-[13px] mb-2 whitespace-nowrap">
@@ -82,7 +82,15 @@ function Compteurs({
   };
 
   return (
-    <div className="flex items-start gap-8 sm:gap-12">
+    /* Cote a cote des 360 px, empilees en dessous.
+       Mesure a 320 px : le libelle le plus long fait 136 px et les chiffres
+       « 1194 restants sur 1200 » 133 px, pour une colonne de 120 px seulement —
+       et comme les deux sont en `whitespace-nowrap`, ca ne se replie pas, ca
+       DEBORDE la carte. Le defaut ne se voit qu'une fois connecte, donc jamais
+       pendant les tests porte fermee. Empilees, chaque jauge dispose des 272 px
+       de la carte. Le point de bascule est calcule, pas choisi : a 360 px la
+       colonne fait 144 px, soit la premiere largeur ou le libelle tient. */
+    <div className="flex flex-col gap-5 min-[360px]:flex-row min-[360px]:items-start min-[360px]:gap-6 sm:gap-12">
       <Jauge reste={perso} sur={total} libelle="Tes téléchargements" />
       {srvLeft !== null && serveur && (
         <Jauge reste={srvLeft} sur={serveur.limit} libelle="Réserve du serveur" />
@@ -111,7 +119,7 @@ function Compteurs({
 const TITRE = "text-[15px] text-white leading-relaxed";
 const SECONDAIRE = "text-sm text-white/52 leading-relaxed mt-1.5";
 const ICI = "text-sm text-white/32 leading-relaxed mt-3";
-const LEGENDE = "text-[11px] font-mono uppercase tracking-wider text-white/32 mt-2.5";
+const LEGENDE = "text-[12px] md:text-[11px] font-mono uppercase tracking-wider text-white/50 mt-2.5";
 
 /** Une capacite : la preuve en image, le chiffre qui frappe, puis le texte. */
 function Feature({
@@ -128,7 +136,7 @@ function Feature({
 
       <div className="flex items-baseline gap-2.5 mt-5">
         <span className="text-4xl font-black tracking-[-0.03em] leading-none" style={{ color: AMBER }}>{chiffre}</span>
-        <span className="text-[11px] font-mono uppercase tracking-wider text-white/32">{unite}</span>
+        <span className="text-[12px] md:text-[11px] font-mono uppercase tracking-wider text-white/50">{unite}</span>
       </div>
 
       <p className={TITRE + " mt-3"}>{titre}</p>
@@ -192,7 +200,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
         viewport={{ once: true }}
         transition={{ duration: 0.5, ease: easeOutExpo }}
       >
-        <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-2">
+        <p className="text-xs font-mono uppercase tracking-widest text-white/50 mb-2">
           L’application payante d’Expédition
         </p>
         {/* L'accroche de section porte la PROMESSE, pas le detail d'une carte.
@@ -237,7 +245,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
             <span className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none text-white">12 journées</span>
             <span className="text-sm text-white/52">de travail par an</span>
           </div>
-          <p className="text-[13px] text-white/32 leading-relaxed sm:ml-auto sm:max-w-[290px]">
+          <p className="text-[13px] text-white/50 leading-relaxed sm:ml-auto sm:max-w-[290px]">
             Le temps que tu passes à récupérer des fichiers. Compté sur dix minutes par extrait,
             douze extraits par vidéo, une vidéo par semaine.
           </p>
@@ -422,7 +430,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
 
           <div className="flex sm:flex-col items-center gap-3">
             <span className="hidden sm:block w-px h-8 bg-white/12" aria-hidden="true" />
-            <span className="text-[11px] font-mono uppercase tracking-widest text-white/32">contre</span>
+            <span className="text-[12px] md:text-[11px] font-mono uppercase tracking-widest text-white/50">contre</span>
             <span className="hidden sm:block w-px h-8 bg-white/12" aria-hidden="true" />
           </div>
 
@@ -459,7 +467,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
             Voir TubeForge en action
           </Link>
         </div>
-        <p className="text-[11px] text-white/32 mt-3.5">
+        <p className="text-[13px] md:text-[11px] text-white/50 mt-3.5 leading-relaxed">
           3,49&nbsp;€ par mois à l&apos;année. On demande ta carte, on ne prélève rien avant le
           quinzième jour, et tu annules en un clic.
         </p>
@@ -739,6 +747,45 @@ export default function TelechargerPage() {
                     <DiscordMark className="w-5 h-4" />
                     Se connecter avec Discord
                   </a>
+
+                  {/* Levee de doute.
+                      « Se connecter avec Discord » sur un site tiers declenche le
+                      meme reflexe qu'un lien de phishing, et c'est un reflexe SAIN :
+                      c'est exactement la forme que prend le vol de compte. On ne
+                      repond donc pas « fais-nous confiance », on annonce a l'avance
+                      ce que l'ecran suivant va montrer. Quand Discord affiche
+                      ensuite les trois memes autorisations, l'ecran CONFIRME au lieu
+                      de surprendre — et l'e-mail est nomme ici plutot que decouvert
+                      la-bas, ou il ressemblerait a une prise en tratre. */}
+                  <div className="mt-8 pt-6 border-t border-white/[0.07] text-left max-w-md mx-auto">
+                    <p className="text-[13px] text-white/45 leading-relaxed mb-3.5">
+                      C&apos;est la connexion officielle de Discord, la même que sur n&apos;importe quel
+                      site qui l&apos;utilise. <span className="text-white/70">Ton mot de passe se tape sur
+                      discord.com</span>, jamais ici : on ne le voit à aucun moment.
+                    </p>
+                    <p className="text-[14px] md:text-[13px] text-white/55 leading-relaxed mb-2.5">
+                      Discord va te demander d&apos;autoriser trois choses, et voilà ce qu&apos;on en fait :
+                    </p>
+                    <ul className="space-y-1.5">
+                      {[
+                        ["Ton pseudo et ton avatar", "pour t’afficher ici"],
+                        ["La liste de tes serveurs", "pour vérifier que tu es sur Expédition"],
+                        ["Ton adresse e-mail", "pour te prévenir si l’outil change"],
+                      ].map(([quoi, pourquoi]) => (
+                        <li key={quoi} className="flex items-start gap-2 text-[14px] md:text-[13px] leading-relaxed">
+                          <Check className="w-3.5 h-3.5 shrink-0 mt-[3px]" style={{ color: RED }} />
+                          <span className="text-white/75">
+                            {quoi} <span className="text-white/50">— {pourquoi}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-[14px] md:text-[13px] text-white/55 leading-relaxed mt-3.5">
+                      C&apos;est tout. On ne peut ni lire tes messages, ni écrire à ta place, ni te faire
+                      rejoindre quoi que ce soit. Tu retires l&apos;accès quand tu veux depuis les
+                      réglages de ton compte Discord.
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -854,7 +901,7 @@ export default function TelechargerPage() {
                     Voir ce que fait TubeForge
                   </Link>
                 </div>
-                <p className="text-[11px] text-white/30 mt-3">
+                <p className="text-[13px] md:text-[11px] text-white/50 mt-3 leading-relaxed">
                   On demande ta carte à l&apos;inscription et on ne prélève rien avant le quinzième
                   jour. Tu annules en un clic depuis Mon compte.
                 </p>
@@ -893,7 +940,7 @@ export default function TelechargerPage() {
                       ].filter(Boolean).join("  ·  ")}
                     </p>
                     {result.downgraded && (
-                      <p className="text-[11px] text-white/35 mt-2 leading-relaxed">
+                      <p className="text-[13px] md:text-[11px] text-white/50 mt-2 leading-relaxed">
                         {result.downgradeReason === "plafond-youtube"
                           ? `Qualité réduite : YouTube limite en ce moment ce qu'il nous laisse récupérer${result.bestHeight ? ` (le ${result.bestHeight}p existe)` : ""}. Réessaie dans quelques minutes.`
                           : "Qualité réduite volontairement : en pleine résolution, cette vidéo dépasserait ce qu'un navigateur peut assembler en mémoire."}
