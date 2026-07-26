@@ -1,4 +1,30 @@
 ---
+### [2026-07-27 10:05] — 144p au lieu de 720p : un client plafonne gagnait la course
+
+**Quoi :** Le telechargeur proposait 144p pour une video dont le 720p existe (et 360p pour du 1080p), et le telechargement cassait sur un 403 en cours de route. Une seule cause pour les deux.
+
+**La cause.** La chaine de clients YouTube etait parcourue dans l'ordre, et le PREMIER qui repondait gagnait. `android_vr` (sans plafond) prend regulierement un **403 de limite de debit sur l'IP partagee de Cloudflare** ; `android` repond OK juste apres. On servait donc `android`, dont les URLs refusent les octets au-dela de ~25 Mo (`cappedBytes`, mesure du 26/07). Deux consequences pour la meme cause :
+- `pickPair` doit rester sous le plafond, donc il descend a **144p alors que le 720p est la** — sur une video de 13 min, le 720p depasse largement 25 Mo ;
+- le telechargement casse sur un **403 de tranche** des qu'on demande des octets au-dela du plafond.
+
+Diagnostic : les trois clients sondes directement depuis ma machine repondaient `OK` avec le 720p et ses URLs, alors que le Worker retenait `android`. C'est ce qui a designe la limite de debit par IP plutot que la configuration du client. Le canari le disait aussi sans que je le voie : « client **android** » au lieu d'`android_vr`.
+
+**Le correctif.** Sonder les clients SANS plafond en premier, avec reprise et attente croissante, et n'accepter un client plafonne qu'apres avoir vraiment insiste. Le bug de fond etait que la boucle de reprise se declenchait sur `!hit` : un succes **plafonne** l'empechait donc de tourner. Un succes plafonne ne doit pas arreter la recherche.
+
+**Mesure apres correction**, six videos distinctes (pour ne pas mesurer le cache) : 6/6 sur `android_vr`, aucune degradation — 720p pour la video concernee, 1080p pour quatre autres. Avant : `android`, 144p. Verifie en production via le canari, qui rapporte desormais `client android_vr`.
+
+**🚨 Piege du cache, qui aurait masque le correctif.** Les resolutions sont mises en cache 90 min sous `yt:<videoId>`. Le resultat degrade en 144p etait donc resservi tel quel apres le deploiement. Les sept entrees ont ete purgees. **A retenir : tout correctif qui change la QUALITE choisie exige de purger `yt:*`, sinon on teste l'ancien resultat.**
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/youtube.js` — `resolveYouTube` sonde `sansPlafond` puis `avecPlafond`, chacun avec sa reprise
+
+**Comment annuler :** `npx wrangler rollback`. Penser a purger `yt:*` ensuite, sinon les resultats en cache brouillent la comparaison.
+
+**Effets de bord possibles :** une resolution peut prendre plus longtemps quand `android_vr` est limite, puisqu'on insiste au lieu d'accepter tout de suite le premier client venu. C'est l'echange voulu : quelques centaines de millisecondes contre du 1080p au lieu du 144p. Si YouTube durcit un jour `android_vr` durablement, les plafonnes reprendront la main tout seuls — avec la degradation de qualite, mais sans panne.
+
+**Non prouve independamment :** le 403 sur « tranche 2 sur 2 » n'a pas ete reproduit directement (les URLs de mon worker de dev pointaient sur un `PUBLIC_ORIGIN` local mort). L'explication par le plafond d'octets du client `android` est coherente avec la mesure du 26/07, mais elle reste une deduction. A reverifier si le symptome revient alors que `client` vaut `android_vr`.
+
+---
 ### [2026-07-27 09:10] — Le spinner infini et le bouton Discord absent
 
 **Quoi :** Deux symptomes rapportes (« le bouton Discord ne s'affiche pas » et « quand je colle un lien ca charge en boucle »), deux causes distinctes, les deux reelles.
