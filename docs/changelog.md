@@ -1,4 +1,37 @@
 ---
+### [2026-07-27 03:40] — Copy reecrite avec les skills `stop-slop` + `copywriting`, et metadonnees SEO propres
+
+**Quoi :** Tous les textes visibles de `/tubeforge/telecharger` et tous les messages du Worker reecrits contre les regles du skill `stop-slop`. Ajout d'un `layout.tsx` de segment avec des metadonnees propres a la page.
+
+**Pourquoi :** le user a juge la copy inacceptable (« ecrit comme une IA ») et a demande d'aller chercher un vrai skill. La bibliotheque en contenait trois pertinents : `stop-slop` (supprimer les tics d'ecriture IA), `copywriting` (structure et CTA), `ai-seo`. Charges et appliques.
+
+**Les infractions que j'avais commises, et ce qu'elles sont devenues :**
+- **Tirets cadratins** : 12 dans la page, 7 dans le Worker. La regle est « aucun ». Tous remplaces par des points ou des virgules. Il en reste UN dans le HTML servi, dans le `Footer` global (« depuis Paris — Expedition ») : hors perimetre, il concerne tout le site.
+- **Phrase-slogan** : « Le telechargement n'est pas le travail. » cumulait deux fautes, l'opposition binaire et la phrase faite pour etre citee. Devenu « Ce que tu fais avant de monter. », qui decrit au lieu de proclamer.
+- **Questions suivies de leur reponse** : « Trente secondes utiles dans une video de deux heures ? Tu ne recuperes que ces trente secondes. » et « Sans carte pendant l'essai ? Non : ... ». Les deux reecrites en affirmations. Zero restante dans le texte servi.
+- **Listes de trois** : « A pleine vitesse, sans recompression, et sans une seule publicite » -> deux items. La rangee de garanties passe de cinq a quatre items, en retirant le doublon « aucune recompression » qui repetait le sous-titre.
+- **Adverbes** : `forcement`, `volontairement`, `directement` supprimes. Zero adverbe proscrit dans le texte servi.
+- **Titres vagues** : « Plusieurs videos en une fois » -> « Neuf videos, un seul clic ». « Une playlist entiere » -> « Cinquante-trois videos d'affilee ». Le chiffre visible dans la capture devient le titre.
+- **« Ici : »** repete trois fois en tete de phrase -> « Sur cette page : », et la formulation dit ce qu'on fait plutot que ce qu'on subit.
+
+**Metadonnees, et l'intention de recherche qu'on evite.** La page etant un composant client, elle ne pouvait pas exporter `metadata` : elle heritait donc du titre de la one-page TubeForge et se presentait comme une page produit. Nouveau `layout.tsx` de segment.
+
+⚠️ **Choix strategique explicite : on ne vise PAS « telecharger video youtube gratuit ».** Deux raisons. Le trafic arriverait sur une porte Discord et repartirait aussitot, donc zero conversion. Et cette requete est un marecage de sites publicitaires ou etre confondu avec eux ne rapporte rien. On vise le probleme du monteur : « telecharger une video pour Premiere Pro ou DaVinci ». Titre de 50 caracteres (tient sans troncature dans un resultat de recherche), description qui nomme les quatre plateformes et les deux garanties.
+
+**Note du skill `ai-seo` qui s'applique ici :** le contenu derriere une porte n'est pas citable par les moteurs IA. L'outil est garde, mais tout le bloc d'argumentation reste public et indexable, avec ses chiffres et ses captures. C'est cette partie qui peut etre citee.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/layout.tsx` (nouveau) — metadonnees, avec le raisonnement sur l'intention de recherche ecrit dans le fichier
+- `src/app/tubeforge/telecharger/page.tsx` — 26 textes reecrits
+- (hors repo) `tubeforge-webdl/src/index.js` et `src/platforms.js` — 12 messages reecrits
+
+**Verification sur le HTML servi en production :** 0 point d'exclamation, 0 question suivie de sa reponse, 0 adverbe proscrit, 1 tiret cadratin (celui du `Footer` global), title a 50 caracteres, description presente. Les six nouvelles formulations testees sont bien la.
+
+**Comment annuler :** `git revert <hash>` ; `npx wrangler rollback` pour les messages du Worker.
+
+**Effets de bord possibles :** les messages d'erreur du Worker sont maintenant plus secs. C'est voulu, mais si un utilisateur trouve un message brutal, c'est la contrepartie de la suppression des adoucisseurs. Le titre SEO ne contient plus le mot « gratuit », qui aide le taux de clic : il est dans la description, arbitre au profit d'un titre non tronque. Enfin **ces metadonnees ne serviront a rien tant que la page n'est liee depuis nulle part** : aucun moteur ne la connait.
+
+---
 ### [2026-07-27 02:50] — Deux capacites mises en avant (lots + playlists) sur une vraie grille de lecture
 
 **Quoi :** Ajout de deux arguments demandes par le user, chacun avec sa capture reelle : **telecharger plusieurs videos d'un coup** (recherche par mot-cle, 9 cochees) et **telecharger une playlist entiere** (53 videos, un clic). Le bloc promo est restructure en quatre rangees, avec une echelle typographique unique partagee par toutes les cartes.

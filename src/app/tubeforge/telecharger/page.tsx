@@ -195,7 +195,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
           Ce que ça change au montage
         </p>
         <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] mb-8">
-          Le téléchargement n’est pas le travail<span style={{ color: RED }}>.</span>
+          Ce que tu fais avant de monter<span style={{ color: RED }}>.</span>
         </h2>
       </motion.div>
 
@@ -236,15 +236,15 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
               </div>
               <p className="text-sm text-white/52 mt-3.5 leading-relaxed">
                 Soit <span className="text-white font-semibold">{pourcentTexte} %</span> du fichier.
-                Le reste, tu l’as attendu pour rien.
+                Tu as attendu le reste pour rien.
               </p>
             </div>
 
             <p className={TITRE + " mt-8"}>
-              TubeForge te fait poser ton point d’entrée et ton point de sortie
+              Dans TubeForge, tu poses ton point d’entrée et ton point de sortie
               <span className="text-white/52"> avant </span>
-              de télécharger. Trente secondes utiles dans une vidéo de deux heures ?
-              Tu ne récupères que ces trente secondes.
+              de télécharger. Sur une vidéo de deux heures, tu récupères tes trente
+              secondes et tu passes à la suite.
             </p>
           </div>
 
@@ -280,9 +280,9 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
             legende="capture réelle · TubeForge"
             chiffre="9"
             unite="d’un coup"
-            titre="Plusieurs vidéos en une fois."
-            texte="Tu cherches par mot-clé sans même avoir les liens, tu coches ce que tu veux, tu lances. Tout part en même temps."
-            ici="Ici : un lien à la fois, et tu attends chaque fichier."
+            titre="Neuf vidéos, un seul clic."
+            texte="Tu tapes un mot-clé, tu coches les vidéos qui t’intéressent, tout part ensemble. Tu n’as même pas besoin des liens."
+            ici="Sur cette page : un lien, puis le suivant, et tu attends chaque fichier."
           />
         </Carte>
 
@@ -295,9 +295,9 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
             legende="capture réelle · TubeForge"
             chiffre="53"
             unite="en un clic"
-            titre="Une playlist entière."
-            texte="Tu colles le lien de la playlist, elle arrive au complet — et l’option « Numéroter » garde l’ordre dans les noms de fichiers."
-            ici="Ici : les playlists ne sont pas prises en charge."
+            titre="Cinquante-trois vidéos d’affilée."
+            texte="Tu colles le lien de la playlist, elle descend au complet. L’option « Numéroter » garde l’ordre dans les noms de fichiers."
+            ici="Sur cette page : les playlists ne passent pas."
           />
         </Carte>
       </div>
@@ -320,12 +320,12 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
             <p className={LEGENDE}>capture réelle · Premiere Pro</p>
           </div>
           <div>
-            <p className={TITRE}>Il arrive dans ton chutier, nommé, prêt à poser.</p>
+            <p className={TITRE}>Le fichier arrive dans ton chutier, nommé, prêt à poser.</p>
             <p className={SECONDAIRE}>
-              Tu ne quittes jamais ton logiciel de montage.
+              Tu restes dans Premiere ou DaVinci du début à la fin.
             </p>
             <p className={ICI}>
-              Ici : le fichier atterrit dans tes Téléchargements, à toi d’aller le chercher.
+              Sur cette page : il atterrit dans tes Téléchargements, et tu vas le chercher.
             </p>
           </div>
         </div>
@@ -359,19 +359,19 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
           <div>
             <p className="text-4xl md:text-5xl font-black tracking-[-0.03em] leading-none" style={{ color: RED }}>2 h</p>
             <p className="text-[13px] text-white/52 mt-2 leading-snug">
-              par vidéo, à récupérer<br />des fichiers au lieu de monter
+              par vidéo, passées à<br />récupérer des fichiers
             </p>
           </div>
           <div className="hidden sm:block w-px self-stretch bg-white/10" />
           <div>
             <p className="text-4xl md:text-5xl font-black tracking-[-0.03em] leading-none text-white">8 h</p>
             <p className="text-[13px] text-white/52 mt-2 leading-snug">
-              par mois, si tu sors<br />une vidéo par semaine
+              par mois, à raison d’une<br />vidéo par semaine
             </p>
           </div>
           <div className="hidden md:block w-px self-stretch bg-white/10" />
           <p className="text-[13px] text-white/32 leading-relaxed max-w-[210px]">
-            Sur la base de dix minutes par extrait et douze extraits par vidéo.
+            Compté sur dix minutes par extrait et douze extraits par vidéo.
           </p>
         </div>
 
@@ -394,8 +394,8 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
           </Link>
         </div>
         <p className="text-[11px] text-white/32 mt-3.5">
-          3,49&nbsp;€ par mois à l&apos;année. La carte est demandée, rien n&apos;est prélevé avant la fin
-          des 14 jours, et tu annules en un clic.
+          3,49&nbsp;€ par mois à l&apos;année. On demande ta carte, on ne prélève rien avant le
+          quinzième jour, et tu annules en un clic.
         </p>
       </motion.div>
     </div>
@@ -512,15 +512,15 @@ export default function TelechargerPage() {
       ? {
           titre: "Tu télécharges assez pour que ça vaille le coup",
           texte:
-            "Tes " + (me?.quota?.limit ?? 25) + " téléchargements du jour sont passés. TubeForge n’a pas de compteur : " +
-            "autant de vidéos que tu veux, en 4K, déposées directement dans ta timeline Premiere ou DaVinci.",
+            "Tu as utilisé tes " + (me?.quota?.limit ?? 25) + " téléchargements du jour. TubeForge n’a pas de compteur : " +
+            "autant de vidéos que tu veux, en 4K, déposées dans ton chutier Premiere ou DaVinci.",
         }
       : srvLeft === 0
         ? {
             titre: "Ne plus dépendre d’un quota partagé",
             texte:
-              "Le serveur a épuisé sa réserve du jour — l’outil est gratuit, donc partagé entre tout le monde. " +
-              "TubeForge télécharge sans limite et sans file d’attente.",
+              "Le serveur a épuisé sa réserve du jour. L’outil est gratuit, donc tous les membres " +
+              "se partagent la même réserve. TubeForge n’a ni compteur ni file d’attente.",
           }
         : null;
 
@@ -564,8 +564,7 @@ export default function TelechargerPage() {
                   et Twitch, faux pour YouTube dont le CDN interdit au navigateur de
                   lire les octets. On garde ce qui est vrai partout. */}
               <p className="text-lg text-white/60 leading-relaxed max-w-xl mx-auto">
-                Colle un lien, récupère le fichier. À pleine vitesse, sans recompression, et
-                sans une seule publicité.
+                Colle un lien, récupère le fichier. Pas de publicité, pas de recompression.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-2 mt-7">
@@ -583,11 +582,10 @@ export default function TelechargerPage() {
                   convaincant que n'importe quelle liste de fonctionnalites. */}
               <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5 mt-8">
                 {[
-                  "Zéro publicité",
-                  "Zéro pop-up",
+                  "Aucune publicité",
+                  "Aucun pop-up",
                   "Rien à installer",
-                  "Aucune recompression",
-                  "Sans filigrane",
+                  "Le fichier d’origine, sans filigrane",
                 ].map((m) => (
                   <span key={m} className="inline-flex items-center gap-1.5 text-[13px] text-white/50">
                     <Check className="w-3.5 h-3.5 shrink-0" style={{ color: RED }} />
@@ -607,7 +605,7 @@ export default function TelechargerPage() {
               {gated && !connected && (
                 <div className="text-center">
                   <p className="text-white/70 mb-1">Le téléchargeur est réservé aux membres du Discord.</p>
-                  <p className="text-sm text-white/40 mb-6">C&apos;est gratuit, et ça prend dix secondes.</p>
+                  <p className="text-sm text-white/40 mb-6">Rejoindre prend dix secondes et ne coûte rien.</p>
                   <a
                     href={authHref}
                     className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white transition-transform duration-200 hover:translate-y-[-1px]"
@@ -622,7 +620,7 @@ export default function TelechargerPage() {
               {gated && connected && !member && (
                 <div className="text-center">
                   <p className="text-white/80 mb-1">
-                    Salut {me?.user?.name} — tu n&apos;es pas encore sur le serveur.
+                    Salut {me?.user?.name}. Tu n&apos;es pas encore sur le serveur.
                   </p>
                   <p className="text-sm text-white/40 mb-6">Rejoins-le, puis reviens vérifier.</p>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -732,8 +730,8 @@ export default function TelechargerPage() {
                   </Link>
                 </div>
                 <p className="text-[11px] text-white/30 mt-3">
-                  Sans carte pendant l&apos;essai ? Non : la carte est demandée, mais rien n&apos;est prélevé
-                  avant la fin des 14 jours, et tu annules en un clic.
+                  On demande ta carte à l&apos;inscription et on ne prélève rien avant le quinzième
+                  jour. Tu annules en un clic depuis Mon compte.
                 </p>
               </motion.div>
             )}
@@ -785,7 +783,7 @@ export default function TelechargerPage() {
                       <div className="flex items-center justify-between text-xs font-mono text-white/50 mb-2">
                         <span>
                           {progress.phase === "download" ? "Téléchargement" : progress.phase === "merge" ? "Assemblage image + son" : "Enregistrement"}
-                          {" — "}{progress.label}
+                          {" · "}{progress.label}
                         </span>
                         <button
                           onClick={() => abortRef.current?.abort()}
