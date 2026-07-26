@@ -105,6 +105,38 @@ function Compteurs({
  * cloture suit deliberement le langage des encarts d'alerte deja presents plus
  * haut sur cette page, pas celui du bento.
  */
+/** Une seule echelle de texte pour tout le bloc : c'est ce qui donne la grille
+ *  de lecture. Trois niveaux (titre / secondaire / « ici ») plus la legende. */
+const TITRE = "text-[15px] text-white leading-relaxed";
+const SECONDAIRE = "text-sm text-white/52 leading-relaxed mt-1.5";
+const ICI = "text-sm text-white/32 leading-relaxed mt-3";
+const LEGENDE = "text-[11px] font-mono uppercase tracking-wider text-white/32 mt-2.5";
+
+/** Une capacite : la preuve en image, le chiffre qui frappe, puis le texte. */
+function Feature({
+  src, w, h, alt, legende, chiffre, unite, titre, texte, ici,
+}: {
+  src: string; w: number; h: number; alt: string; legende: string;
+  chiffre: string; unite: string; titre: string; texte: string; ici: string;
+}) {
+  return (
+    <div className="flex flex-col h-full">
+      {/* eslint-disable-next-line @next/next/no-img-element -- capture locale */}
+      <img src={src} alt={alt} className="w-full h-auto rounded-lg border border-white/10" loading="lazy" width={w} height={h} />
+      <p className={legende ? LEGENDE : ""}>{legende}</p>
+
+      <div className="flex items-baseline gap-2.5 mt-5">
+        <span className="text-4xl font-black tracking-[-0.03em] leading-none" style={{ color: AMBER }}>{chiffre}</span>
+        <span className="text-[11px] font-mono uppercase tracking-wider text-white/32">{unite}</span>
+      </div>
+
+      <p className={TITRE + " mt-3"}>{titre}</p>
+      <p className={SECONDAIRE}>{texte}</p>
+      <p className={ICI + " mt-auto pt-3"}>{ici}</p>
+    </div>
+  );
+}
+
 function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSec: number | null }) {
   const EXTRAIT_S = 20;
   // A defaut de mesure vecue, l'exemple par defaut est lui aussi mesure :
@@ -171,7 +203,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
       <Carte r="24px 10px 22px 12px" tilt="-0.5deg" delay={0}>
         <div className="grid md:grid-cols-[1.3fr_1fr] gap-8 md:gap-10 items-center">
           <div>
-            <p className="text-[11px] font-mono uppercase tracking-widest text-white/32 mb-7">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-white/32 mb-7">
               {vecu ? "Le fichier que tu viens de récupérer" : "Une vidéo de 15 minutes en 1080p"}
             </p>
 
@@ -208,7 +240,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
               </p>
             </div>
 
-            <p className="text-[15px] text-white leading-relaxed mt-8">
+            <p className={TITRE + " mt-8"}>
               TubeForge te fait poser ton point d’entrée et ton point de sortie
               <span className="text-white/52"> avant </span>
               de télécharger. Trente secondes utiles dans une vidéo de deux heures ?
@@ -230,58 +262,87 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
               width={647}
               height={716}
             />
-            <p className="text-[11px] font-mono text-white/32 mt-3 text-center">capture réelle · TubeForge</p>
+            <p className={LEGENDE + " text-center"}>capture réelle · TubeForge</p>
           </div>
         </div>
       </Carte>
 
-      {/* ── Une seule carte pour les deux angles restants : ou ca arrive,
-             et a quel rythme. Quatre cartes d'affilee, c'etait trop haut. ── */}
-      <Carte r="12px 24px 10px 22px" tilt="0.55deg" delay={0.08} className="mt-4">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-10">
+      {/* ── Le volume : deux cartes qui se repondent. Meme rapport de forme
+             pour les deux captures (1,60 et 1,54) afin que la rangee se lise
+             comme une grille et pas comme deux blocs empiles au hasard. ── */}
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
+        <Carte r="12px 24px 10px 22px" tilt="0.5deg" delay={0.06}>
+          <Feature
+            src="/tubeforge/real-multi-2.jpg"
+            w={903}
+            h={555}
+            alt="TubeForge : recherche par mot-clé, neuf vidéos cochées, boutons MP4 (9) et MP3 (9)"
+            legende="capture réelle · TubeForge"
+            chiffre="9"
+            unite="d’un coup"
+            titre="Plusieurs vidéos en une fois."
+            texte="Tu cherches par mot-clé sans même avoir les liens, tu coches ce que tu veux, tu lances. Tout part en même temps."
+            ici="Ici : un lien à la fois, et tu attends chaque fichier."
+          />
+        </Carte>
+
+        <Carte r="22px 12px 24px 10px" tilt="-0.6deg" delay={0.12}>
+          <Feature
+            src="/tubeforge/real-playlist-2.jpg"
+            w={902}
+            h={632}
+            alt="TubeForge : playlist de 53 vidéos, toutes sélectionnées, boutons MP4 (53) et MP3 (53)"
+            legende="capture réelle · TubeForge"
+            chiffre="53"
+            unite="en un clic"
+            titre="Une playlist entière."
+            texte="Tu colles le lien de la playlist, elle arrive au complet — et l’option « Numéroter » garde l’ordre dans les noms de fichiers."
+            ici="Ici : les playlists ne sont pas prises en charge."
+          />
+        </Carte>
+      </div>
+
+      {/* ── La destination : bande large, la capture de timeline s'y prete
+             (rapport 2,86) et les chiffres tiennent a cote sans se serrer. ── */}
+      <Carte r="24px 12px 10px 22px" tilt="0.45deg" delay={0.18} className="mt-4">
+        <div className="grid md:grid-cols-[1.4fr_1fr] gap-8 md:gap-10 items-center">
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element -- capture locale */}
             <img
               src="/tubeforge/real-timeline.jpg"
               alt="L’extrait posé sur une timeline Premiere Pro"
-              className="w-full h-[128px] object-cover rounded-lg border border-white/10"
+              className="w-full h-[124px] object-cover rounded-lg border border-white/10"
               style={{ objectPosition: "50% 35%" }}
               loading="lazy"
               width={830}
               height={290}
             />
-            <p className="text-[11px] font-mono text-white/32 mt-2.5">capture réelle · Premiere Pro</p>
-            <p className="text-[15px] text-white leading-relaxed mt-4">
-              Il arrive dans ton chutier, nommé, prêt à poser.
+            <p className={LEGENDE}>capture réelle · Premiere Pro</p>
+          </div>
+          <div>
+            <p className={TITRE}>Il arrive dans ton chutier, nommé, prêt à poser.</p>
+            <p className={SECONDAIRE}>
+              Tu ne quittes jamais ton logiciel de montage.
             </p>
-            <p className="text-sm text-white/52 leading-relaxed mt-1.5">
-              Ici, le fichier atterrit dans tes Téléchargements et c’est à toi d’aller le chercher.
+            <p className={ICI}>
+              Ici : le fichier atterrit dans tes Téléchargements, à toi d’aller le chercher.
             </p>
           </div>
+        </div>
 
-          <div className="flex flex-col">
-            <div className="grid grid-cols-3 gap-3 mb-5">
-              {[
-                { n: "1500+", l: "sites" },
-                { n: "4K", l: "maximum" },
-                { n: "∞", l: "par jour" },
-              ].map((st) => (
-                <div key={st.l}>
-                  <p className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none" style={{ color: AMBER }}>
-                    {st.n}
-                  </p>
-                  <p className="text-[11px] font-mono uppercase tracking-wider text-white/32 mt-1.5">{st.l}</p>
-                </div>
-              ))}
+        <div className="grid grid-cols-3 gap-4 mt-7 pt-6 border-t border-white/[0.07]">
+          {[
+            { n: "1500+", l: "sites" },
+            { n: "4K", l: "maximum" },
+            { n: "∞", l: "par jour" },
+          ].map((st) => (
+            <div key={st.l}>
+              <p className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none" style={{ color: AMBER }}>
+                {st.n}
+              </p>
+              <p className={LEGENDE + " mt-1.5"}>{st.l}</p>
             </div>
-            <p className="text-[15px] text-white leading-relaxed">
-              Tu colles tes liens à la chaîne et tu continues à monter pendant qu’ils arrivent.
-            </p>
-            <p className="text-sm text-white/52 leading-relaxed mt-1.5">
-              Ici : un lien à la fois, 25 par jour, 1080p, quatre plateformes — Instagram et Facebook
-              exigent d’être connecté, ce qu’une page web ne peut pas faire.
-            </p>
-          </div>
+          ))}
         </div>
       </Carte>
 

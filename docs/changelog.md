@@ -1,4 +1,30 @@
 ---
+### [2026-07-27 02:50] — Deux capacites mises en avant (lots + playlists) sur une vraie grille de lecture
+
+**Quoi :** Ajout de deux arguments demandes par le user, chacun avec sa capture reelle : **telecharger plusieurs videos d'un coup** (recherche par mot-cle, 9 cochees) et **telecharger une playlist entiere** (53 videos, un clic). Le bloc promo est restructure en quatre rangees, avec une echelle typographique unique partagee par toutes les cartes.
+
+**La grille de lecture.** C'etait la demande explicite (« met un point d'honneur a la grille de lecture et a la lisibilite de tous les elements »). Trois decisions :
+1. **Une seule echelle de texte pour tout le bloc**, extraite en constantes (`TITRE` 15 px blanc, `SECONDAIRE` 14 px a 52 %, `ICI` 14 px a 32 %, `LEGENDE` 11 px mono a 32 %). Avant, chaque carte redefinissait ses tailles a la main et rien ne s'alignait d'une carte a l'autre.
+2. **Les deux captures de la paire recadrees au meme rapport de forme** (1,63 et 1,43) pour que la rangee se lise comme une grille. Resultat mesure : les deux cartes font 608 et 609 px — **1 px d'ecart**.
+3. **Un composant `Feature` partage** par les deux cartes de la paire : meme ordre (preuve en image, chiffre qui frappe, titre, explication, puis la limite de la page gratuite en bas), et `mt-auto` sur la derniere ligne pour que les bas de carte s'alignent quelle que soit la longueur du texte.
+
+**Structure finale** — quatre rangees, dans un ordre narratif : precision (la decoupe avant telechargement) -> volume (les deux nouvelles cartes) -> destination (le chutier, en bande large avec les chiffres 1500+/4K/∞) -> temps (2 h / 8 h et les CTA).
+
+**Les captures.** `real-multi-2.jpg` (903x555) et `real-playlist-2.jpg` (902x632), recadrees depuis les captures fournies par le user sur le disque T5. J'ai d'abord produit des recadrages larges (`-1`, supprimes) puis les ai resserres en retirant les marges vides laterales : l'echelle d'affichage passe de **0,40 a 0,54**, soit 35 % de contenu utile en plus a largeur d'ecran identique. Le cadrage retenu garde exactement ce qui prouve l'argument — « 9 selectionnees » + « MP4 (9) / MP3 (9) » d'un cote, l'en-tete « 53 videos dans cette playlist » + « 53 selectionnees » de l'autre, plus deux rangees completes de vignettes cochees.
+
+**Poids** : les PNG d'origine faisaient 896 et 674 Ko ; convertis en JPEG qualite 3, ils tombent a 209 et 139 Ko. Total des quatre captures du bloc : ~450 Ko, toutes en `loading="lazy"`.
+
+**Fichiers touches :**
+- `public/tubeforge/real-multi-2.jpg`, `real-playlist-2.jpg` (nouveaux ; les versions `-1` intermediaires supprimees)
+- `src/app/tubeforge/telecharger/page.tsx` — constantes typographiques, composant `Feature`, rangee paire, bande « destination » avec les chiffres deplaces sous un separateur
+
+**Verification :** a 1280 px — cartes de 535 / 608 / 609 / 331 px, paire alignee a 1 px, captures a l'echelle 0,54 et 0,55. A 375 px — aucun debordement horizontal, captures a 280-282 px, triptyque de chiffres a 3 x 83 px, aucune carte ne casse.
+
+**Comment annuler :** `git revert <hash>` ; les captures sources restent sur le disque T5.
+
+**Effets de bord possibles :** ⚠️ **le bloc est maintenant long** — environ 2100 px a 1280, apres un parcours deja charge. L'audit avait deja signale la densite avec deux cartes ; il y en a quatre. C'est un choix assume (les deux capacites ajoutees etaient demandees) mais si le taux de clic sur les CTA decoit, c'est la premiere piste a examiner. **Second point d'honnetete : a l'echelle 0,54, les petits libelles des captures restent difficiles a lire.** Les elements gras (« MP4 (9) », « 53 selectionnees ») passent, mais pas les titres de vignettes. Le parti pris est donc : l'image porte le CONCEPT (une grille de vignettes cochees se comprend d'un coup d'oeil), la typographie porte les FAITS (les chiffres 9 et 53 en 36 px). Aucun argument ne depend de la lecture d'une capture. Les rendre pleinement lisibles demanderait de passer les deux cartes en pleine largeur, ce qui rallongerait le bloc de ~700 px.
+
+---
 ### [2026-07-27 02:05] — Capture du module de decoupe remplacee par celle fournie
 
 **Quoi :** `real-cut-2.jpg` (647x716, 79 Ko) remplace mon recadrage maison `real-cut-1.jpg`, supprime. Source : capture fournie par le user (`Capture d'ecran 2026-07-26 a 18.16.16.png` sur le disque SAMSUNG T5), convertie en JPEG — 333 Ko en PNG, 79 Ko en JPEG qualite 2, sans perte visible sur une capture d'interface.
