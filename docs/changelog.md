@@ -1,4 +1,30 @@
 ---
+### [2026-07-26 12:10] — Telechargeur web gratuit (produit d'appel TubeForge), gate Discord
+
+**Quoi :** Nouvelle page `/tubeforge/telecharger` + nouveau Worker Cloudflare `tubeforge-webdl`. L'utilisateur colle un lien (YouTube, TikTok, X, Twitch), le Worker resout les URLs de flux, et le **navigateur** telecharge puis fusionne audio+video sans re-encodage (mediabunny). Acces reserve aux membres du Discord Expedition (OAuth2 Discord, verification `users/@me/guilds`), 10 telechargements/jour/membre, 1080p max.
+
+**Pourquoi :** Produit d'appel : faire gouter le geste « colle un lien -> tu as le fichier », dont TubeForge est la version sans limites (1500+ sites, 4K, chutier Premiere/DaVinci). Contrainte posee : ne rien couter. Tenue en ne faisant JAMAIS transiter d'octets par un serveur qu'on paie quand c'est evitable.
+
+**Mesures qui ont dicte l'architecture** (26/07/2026, tests reels depuis l'edge Cloudflare) :
+- Extraction InnerTube : **40/40 videos**, latence mediane **175 ms**, chaine de clients `ios -> android_vr -> mweb -> tv` (un client seul echoue sur une partie du catalogue : `LOGIN_REQUIRED`). Aucun PoToken requis.
+- Les URLs googlevideo **ne sont PAS liees a l'IP** : extraite chez Cloudflare, elle se telecharge depuis chez l'utilisateur (verifie dans les deux sens).
+- YouTube bride une connexion unique a **670 Ko/s** ; en tranches paralleles (`&range=`), **7 a 9 Mo/s** = la vitesse de la ligne.
+- CORS googlevideo : autorise **uniquement** `youtube.com` -> le relais est obligatoire pour YouTube. X renvoie notre origine, Twitch renvoie `*` -> **telecharges en direct, zero relais**. TikTok exige un `Referer` -> relais, mais fichiers de 2-5 Mo.
+- Fusion navigateur mesuree : 720p en 6,2 s / 1080p en 10,8 s / 4K en 46,7 s. Le muxage lui-meme prend **0,1 a 0,4 s** (recopie de paquets, zero re-encodage).
+- Aucun format deja fusionne au-dela de 360p cote YouTube : la fusion n'est pas optionnelle.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — page (porte Discord, resolution, progression, garde-fou 500 Mo, encart vers TubeForge)
+- `src/lib/webdl.ts` — client : jeton, tranches paralleles, fusion mediabunny, enregistrement
+- `next.config.ts` — CSP : `connect-src` + worker webdl / `video.twimg.com` / `*.cloudfront.net` ; ajout de `media-src 'self' blob:` (sans lui, un `<video src=blob:>` retombe sur `default-src` et casse)
+- `package.json` — dependance `mediabunny` (fusion sans re-encodage, ~10 Mo en node_modules, tree-shake au build)
+- (hors repo) `tubeforge-webdl/` — Worker : `src/index.js`, `src/youtube.js`, `src/platforms.js`, `src/auth.js`
+
+**Comment annuler :** Front : `git revert <hash>` (la page disparait, aucune autre page ne la reference). Worker : `npx wrangler delete tubeforge-webdl` depuis `tubeforge-webdl/`, et supprimer le namespace KV `expedition-licensing-TFDL_QUOTA`. Rien dans le licensing, Stripe ni D1 n'a ete touche.
+
+**Effets de bord possibles :** La page n'est **liee depuis nulle part** (accessible par URL seulement) : c'est volontaire, le placement du lien dans le funnel reste a decider. L'OAuth Discord est **inerte** jusqu'a ce que `DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` soient poses en secrets (placeholders `0` actuellement) : la page affiche le bouton, Discord repond « invalid client ». Le relais YouTube fait passer des octets par Cloudflare : c'est gratuit en egress mais reste une zone grise des CGU a volume eleve — le quota de 10/jour et la limite 1080p sont la pour ca, et couper le relais degrade proprement (X et Twitch continuent de fonctionner). Les extracteurs TikTok/Twitch dependent du format des pages/API de ces plateformes : ils casseront un jour, isolement.
+
+---
 ### [2026-06-08 18:14] — PROD : onglet "Attribution" dans le panel admin + déploiement worker attribution
 
 **Quoi :**

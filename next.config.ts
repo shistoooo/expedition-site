@@ -21,8 +21,12 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https:",
-      "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms",
+      // Les 3 dernieres entrees servent le telechargeur web (/tubeforge/telecharger) :
+      // le Worker resout les liens, et les CDN de X et Twitch sont appeles EN DIRECT
+      // par le navigateur (ils autorisent notre origine) pour ne rien nous couter.
+      "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://tubeforge-webdl.expedition-studio.workers.dev https://video.twimg.com https://*.cloudfront.net",
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube-nocookie.com https://www.youtube.com",
+      "media-src 'self' blob:",
       "worker-src 'self' blob:",
     ].join("; "),
   },
