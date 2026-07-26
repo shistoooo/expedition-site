@@ -1,4 +1,28 @@
 ---
+### [2026-07-27 12:05] — Expliquer ce qu'est Expedition, et remonter le bouton au-dessus du pli
+
+**Quoi :** La page exigeait de rejoindre un Discord sans jamais dire ce qu'on y trouve. « Reserve aux membres du Discord » se lisait donc comme un peage, pas comme une porte. Ajout d'un bloc « Expedition, c'est quoi », et reorganisation de la carte.
+
+**Le contenu.** Trois usages concrets plutot qu'une phrase sur une « communaute active » — on nomme ce qu'on y FAIT : poser ses questions (montage, YouTube, business), trouver une mission ou un monteur, et les outils de la maison dont ce telechargeur fait partie. Ce dernier point n'est pas decoratif : il rattache la page gratuite au reste de la suite.
+
+**« Plus de 600 » plutot que le compte exact.** L'API d'invitation Discord donne 635 membres et 141 en ligne au 27/07 — mais un chiffre fige perime tout seul, et un chiffre faux sur la page qui promet de l'honnetete couterait plus qu'il ne rapporte. Un compteur en direct reste possible via cette meme API si on le veut.
+
+**🚨 Mesure qui a impose de tout reorganiser.** Place AVANT le bouton — l'ordre logique, puisque c'est la raison de cliquer — le bloc faisait monter la carte a **1062 px, soit 131 % de l'ecran**, et le bouton tombait a **948 px alors que le pli est a 812 px**. On enterrait l'action principale derriere un mur de texte. Le bouton passe donc en premier : qui connait deja Expedition clique tout de suite, qui ne connait pas lit juste en dessous.
+
+**Deuxieme economie : la liste des autorisations Discord repasse en prose.** Deux listes a coches consecutives se lisaient comme une repetition et coutaient 90 px pour rien. Une phrase dit la meme chose : « Discord te demandera ton pseudo, la liste de tes serveurs et ton e-mail : de quoi t'afficher ici, verifier que tu es bien sur Expedition, et te prevenir si l'outil change. »
+
+**Apres reorganisation, sur un vrai 375x812 :** carte a **904 px** (contre 1062), **bouton entierement au-dessus du pli a 716 px**, 0 debordement horizontal.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — bloc « Expedition, c'est quoi », bouton remonte, autorisations en prose
+
+**Comment annuler :** `git revert` du commit.
+
+**Effets de bord possibles :** la carte reste a 111 % de la hauteur d'ecran sur telephone, donc le bas depasse le pli. C'est voulu : ce qui depasse, ce sont les explications, pas l'action.
+
+**Artefact de mesure, cinquieme de la session :** une premiere serie de mesures donnait une carte de 3638 px et un bouton a 1568 px — le panneau du navigateur etait retombe a `0x0`, donc tout se repliait a l'infini. **Verifier que le viewport n'est pas nul AVANT de lire une mesure de mise en page.** Meme famille que le `scroll-behavior: smooth` et le `grep --include` avale par le shell.
+
+---
 ### [2026-07-27 11:30] — Levee de doute sur la connexion Discord, et passe mobile
 
 **Quoi :** Deux demandes. Preciser que la connexion Discord est la methode officielle et qu'on veut seulement verifier l'appartenance au serveur, parce que « se connecter avec Discord » sur un site tiers sonne comme une arnaque. Puis adapter la page au telephone.

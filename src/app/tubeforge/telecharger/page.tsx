@@ -738,7 +738,15 @@ export default function TelechargerPage() {
               {gated && !connected && (
                 <div className="text-center">
                   <p className="text-white/70 mb-1">Le téléchargeur est réservé aux membres du Discord.</p>
-                  <p className="text-sm text-white/40 mb-6">Rejoindre prend dix secondes et ne coûte rien.</p>
+                  <p className="text-sm text-white/50 mb-7">Rejoindre prend dix secondes et ne coûte rien.</p>
+
+                  {/* ORDRE : le bouton D'ABORD, les explications ensuite.
+                      Mesure qui a impose ce choix : en placant la presentation
+                      d'Expedition avant le bouton, la carte montait a 1062 px
+                      (131 % de l'ecran) et le bouton tombait a 948 px, donc SOUS
+                      LE PLI a 812 px. On enterrait l'action principale derriere
+                      un mur de texte. Qui connait deja Expedition clique tout de
+                      suite ; qui ne connait pas lit juste en dessous. */}
                   <a
                     href={authHref}
                     className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white transition-transform duration-200 hover:translate-y-[-1px]"
@@ -748,41 +756,66 @@ export default function TelechargerPage() {
                     Se connecter avec Discord
                   </a>
 
+                  {/* Ce qu'on demande de rejoindre.
+                      Trou d'entonnoir corrige : la page exigeait l'adhesion a un
+                      serveur sans jamais dire ce qu'on y trouve. « Reserve aux
+                      membres du Discord » se lisait alors comme un peage, pas
+                      comme une porte. Trois usages concrets valent mieux qu'une
+                      phrase sur une « communaute active » : on nomme ce qu'on y
+                      FAIT.
+
+                      « Plus de 600 » plutot que le compte exact (635 au 27/07) :
+                      un chiffre fige perime tout seul, et un chiffre faux sur la
+                      page qui promet de l'honnetete couterait plus qu'il ne
+                      rapporte. Un compteur en direct reste possible via l'API
+                      d'invitation, si on veut. */}
+                  <div className="mt-8 pt-7 border-t border-white/[0.07] text-left max-w-md mx-auto">
+                    <p className="text-[11px] font-mono uppercase tracking-widest text-white/50 mb-3">
+                      Expédition, c’est quoi
+                    </p>
+                    <p className="text-[14px] md:text-[13px] text-white/75 leading-relaxed mb-3.5">
+                      Un serveur de plus de 600 monteurs et vidéastes francophones.
+                    </p>
+                    <ul className="space-y-1.5">
+                      {[
+                        ["Poser ses questions", "montage, YouTube, business, et obtenir une réponse"],
+                        ["Trouver une mission, ou un monteur", "les offres et les portfolios y circulent"],
+                        ["Les outils de la maison", "TubeForge, ClipForge, et ce téléchargeur"],
+                      ].map(([quoi, detail]) => (
+                        <li key={quoi} className="flex items-start gap-2 text-[14px] md:text-[13px] leading-relaxed">
+                          <Check className="w-3.5 h-3.5 shrink-0 mt-[4px]" style={{ color: RED }} />
+                          <span className="text-white/75">
+                            {quoi} <span className="text-white/50">— {detail}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
                   {/* Levee de doute.
                       « Se connecter avec Discord » sur un site tiers declenche le
                       meme reflexe qu'un lien de phishing, et c'est un reflexe SAIN :
                       c'est exactement la forme que prend le vol de compte. On ne
                       repond donc pas « fais-nous confiance », on annonce a l'avance
                       ce que l'ecran suivant va montrer. Quand Discord affiche
-                      ensuite les trois memes autorisations, l'ecran CONFIRME au lieu
-                      de surprendre — et l'e-mail est nomme ici plutot que decouvert
-                      la-bas, ou il ressemblerait a une prise en tratre. */}
-                  <div className="mt-8 pt-6 border-t border-white/[0.07] text-left max-w-md mx-auto">
-                    <p className="text-[13px] text-white/45 leading-relaxed mb-3.5">
-                      C&apos;est la connexion officielle de Discord, la même que sur n&apos;importe quel
-                      site qui l&apos;utilise. <span className="text-white/70">Ton mot de passe se tape sur
+                      ensuite les memes autorisations, l'ecran CONFIRME au lieu de
+                      surprendre — et l'e-mail est nomme ici plutot que decouvert
+                      la-bas, ou il ressemblerait a une prise en traitre.
+
+                      Ecrit en PROSE et sans coches, deliberement : une seconde
+                      liste a coches juste apres celle du dessus se lisait comme
+                      une repetition et ajoutait 90 px pour rien. */}
+                  <div className="mt-7 pt-6 border-t border-white/[0.07] text-left max-w-md mx-auto">
+                    <p className="text-[14px] md:text-[13px] text-white/55 leading-relaxed">
+                      C’est la connexion officielle de Discord, la même que sur n’importe quel site
+                      qui l’utilise. <span className="text-white/75">Ton mot de passe se tape sur
                       discord.com</span>, jamais ici : on ne le voit à aucun moment.
                     </p>
-                    <p className="text-[14px] md:text-[13px] text-white/55 leading-relaxed mb-2.5">
-                      Discord va te demander d&apos;autoriser trois choses, et voilà ce qu&apos;on en fait :
-                    </p>
-                    <ul className="space-y-1.5">
-                      {[
-                        ["Ton pseudo et ton avatar", "pour t’afficher ici"],
-                        ["La liste de tes serveurs", "pour vérifier que tu es sur Expédition"],
-                        ["Ton adresse e-mail", "pour te prévenir si l’outil change"],
-                      ].map(([quoi, pourquoi]) => (
-                        <li key={quoi} className="flex items-start gap-2 text-[14px] md:text-[13px] leading-relaxed">
-                          <Check className="w-3.5 h-3.5 shrink-0 mt-[3px]" style={{ color: RED }} />
-                          <span className="text-white/75">
-                            {quoi} <span className="text-white/50">— {pourquoi}</span>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="text-[14px] md:text-[13px] text-white/55 leading-relaxed mt-3.5">
-                      C&apos;est tout. On ne peut ni lire tes messages, ni écrire à ta place, ni te faire
-                      rejoindre quoi que ce soit. Tu retires l&apos;accès quand tu veux depuis les
+                    <p className="text-[14px] md:text-[13px] text-white/55 leading-relaxed mt-3">
+                      Discord te demandera <span className="text-white/75">ton pseudo, la liste de tes
+                      serveurs et ton e-mail</span> : de quoi t’afficher ici, vérifier que tu es bien
+                      sur Expédition, et te prévenir si l’outil change. On ne peut ni lire tes
+                      messages, ni écrire à ta place. Tu retires l’accès quand tu veux depuis les
                       réglages de ton compte Discord.
                     </p>
                   </div>
