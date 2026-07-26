@@ -9,7 +9,7 @@
  *    contre plusieurs secondes de CPU facture cote serveur.
  */
 
-import { getAttestation } from "./potoken";
+import { getPoToken, getVisitorData } from "./potoken";
 
 const WORKER =
   process.env.NEXT_PUBLIC_WEBDL_URL || "https://tubeforge-webdl.expedition-studio.workers.dev";
@@ -36,8 +36,14 @@ export type Resolved = {
   direct: boolean;
   meta: { title: string; author: string | null; durationSec: number | null; thumb: string | null };
   maxHeight?: number;
-  /** true quand la qualite a du etre baissee pour tenir dans la memoire du navigateur. */
+  /** true quand la qualite a du etre baissee. `downgradeReason` dit pourquoi. */
   downgraded?: boolean;
+  /** 'memoire' (trop lourd pour le navigateur) ou 'plafond-youtube' (client plafonne). */
+  downgradeReason?: "memoire" | "plafond-youtube" | null;
+  /** meilleure hauteur qui existait, pour pouvoir l'annoncer honnetement. */
+  bestHeight?: number | null;
+  /** client InnerTube qui a repondu — diagnostic, non affiche. */
+  client?: string | null;
   /** true quand l'extraction a ete faite avec l'attestation BotGuard. */
   attested?: boolean;
   video?: { url: string; size: number; height: number; codec: string; container: string };
@@ -82,30 +88,42 @@ async function api<T>(path: string, params?: Record<string, string>): Promise<T>
 
 export const fetchMe = () => api<Me>("/api/me");
 
-/**
- * L'attestation n'est demandee que pour YouTube : c'est le seul a controler
- * l'origine des requetes. Elle est mise en cache, donc seul le premier appel
- * de la session paie le calcul BotGuard.
- */
 const isYouTube = (u: string) => /youtu\.?be|youtube\.com/.test(u);
 
-export async function warmAttestation() {
-  await getAttestation(WORKER);
+type ResolveResult =
+  | Resolved
+  | { ok: false; err: string; kind?: string; needAuth?: boolean; quotaReached?: boolean };
+
+/** Prechauffe la session (quelques Ko). Aucun calcul BotGuard ici. */
+export async function warmSession() {
+  await getVisitorData(WORKER);
 }
 
-export async function resolve(url: string) {
+/**
+ * Resolution en deux temps.
+ *
+ * D'abord avec le seul `visitorData` : c'est lui qui leve le blocage anti-robot
+ * (mesure du 26/07, cf. potoken.ts), et il ne coute qu'un aller-retour. Le
+ * PoToken n'est frappe QUE si YouTube nous refuse quand meme pour motif
+ * anti-robot — inutile de faire tourner BotGuard 1,2 s chez tout le monde pour
+ * un gain qui n'est pas prouve.
+ *
+ * Si le Worker ne recoit pas de `vd`, il s'en procure un de son cote : une
+ * panne de cette page ne peut donc pas priver l'extraction de sa session.
+ */
+export async function resolve(url: string): Promise<ResolveResult> {
   const params: Record<string, string> = { url };
-  if (isYouTube(url)) {
-    const att = await getAttestation(WORKER);
-    if (att) {
-      params.vd = att.visitorData;
-      params.pot = att.poToken;
-    }
-  }
-  return api<Resolved | { ok: false; err: string; needAuth?: boolean; quotaReached?: boolean }>(
-    "/api/resolve",
-    params
-  );
+  const yt = isYouTube(url);
+  const visitorData = yt ? await getVisitorData(WORKER) : null;
+  if (visitorData) params.vd = visitorData;
+
+  const first = await api<ResolveResult>("/api/resolve", params);
+  if (first.ok || !yt || !visitorData) return first;
+  if (!("kind" in first) || first.kind !== "bot") return first;
+
+  const poToken = await getPoToken(visitorData);
+  if (!poToken) return first;
+  return api<ResolveResult>("/api/resolve", { ...params, pot: poToken });
 }
 
 /* ── Telechargement ────────────────────────────────────────────────── */

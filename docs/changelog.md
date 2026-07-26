@@ -1,4 +1,41 @@
 ---
+### [2026-07-26 18:30] — Mon diagnostic du PoToken etait FAUX : c'est le visitorData qui compte
+
+**Quoi :** Un agent de recherche lance sur les plans de secours a isole une variable que je n'avais pas isolee, et sa conclusion invalide la mienne. **Ce n'est pas le PoToken BotGuard qui leve le blocage anti-robot, c'est le `visitorData`.** J'avais attribue le merite au jeton parce que je les envoyais toujours ENSEMBLE. Le systeme marchait, mais pas pour la raison ecrite dans mon code — et j'avais cree un point de rupture unique en couplant la session a BotGuard.
+
+**La mesure, variable isolee, client `android_vr`, meme instant :**
+
+| condition | resultat |
+|---|---|
+| sans `visitorData` | 2 videos sur 4 refusees |
+| `visitorData` SEUL, aucun jeton | **4 sur 4 passent** |
+
+Reproduit par l'agent sur 5 videos (5/5) puis 2 autres series. Test apparie `vd` seul contre `vd` + vrai PoToken : **4/6 contre 3/6** — du bruit. Le jeton n'apporte rien de mesurable.
+
+**Le point de rupture que j'avais introduit :** dans `webdl.ts`, `resolve()` obtenait le `visitorData` *a travers* `getAttestation()`. Une panne de BotGuard renvoyait `null` et **emportait le `visitorData` avec elle**. Mon test de « mode degrade » etait passe uniquement parce que le point de presence n'etait pas bloque a cet instant : il ne prouvait pas ce que je croyais.
+
+**Ce qui a ete corrige :**
+1. **Le `visitorData` ne depend plus de rien cote page.** Le Worker en obtient un tout seul (`vd:current` en KV, puis `fetchVisitorData()`) quand la page n'en fournit pas. Verifie : 4 videos sur 4 resolues avec **rien du tout** envoye par le client.
+2. **Le PoToken passe en SECOURS a la demande.** Plus de calcul BotGuard au chargement : il n'est frappe que si une resolution est refusee pour motif anti-robot, puis la resolution est rejouee. Verifie en prod : `client=android_vr`, 1080p, `botguard_appele: false`, aucun jeton en cache, et les 440,5 Mo arrivent quand meme (2 pistes, avc1 + mp4a).
+3. **Chaine de clients elaguee de 7 a 3.** Mesure de l'agent : `tv_embed`, `web_embed`, `mweb`, `tv` et `ios_music` etaient **morts a 100%** (ERROR / « La page doit etre actualisee » / LOGIN_REQUIRED). Ils ne produisaient que de la latence et des appels — donc du 403. Reste `android_vr` (aligne sur la version 1.65.10 que yt-dlp utilise, et **seul client sans plafond d'octets**, verifie jusqu'a 440 Mo), puis `android` (id 3, absent de ma chaine, **lui aussi plafonne** — piege que mon code n'attendait pas) et `ios`, tous deux avec `cappedBytes`.
+4. **Reprise avec attente croissante et gigue sur les erreurs transitoires.** Le mode d'echec le plus frequent n'est ni le robot ni le PoToken : c'est un **HTTP 403** sur l'appel player, une limite de debit par IP declenchee par les rafales (9 succes sur 15 appels d'affilee). Une pause suffit.
+5. **`/api/stream` utilise l'en-tete `Range:` pour tout le monde.** Mesure : sur 4 connexions paralleles, l'en-tete donne 7,79 Mo/s contre 7,47 pour `&range=` — **c'est le parallelisme qui debride, pas la forme du range** (une connexion unique plafonne a ~0,8 Mo/s dans les deux cas). Et un en-tete ne touche pas a l'URL, alors qu'ajouter un parametre non signe a une URL googlevideo la fait passer en 403. Le scenario « YouTube ferme `&range=` » disparait.
+6. **Le message de baisse de qualite ne ment plus.** Il distinguait mal deux causes tres differentes : le fichier trop lourd pour la memoire du navigateur, ou un client plafonne par YouTube. Dire « memoire » dans le second cas etait faux ; la page annonce maintenant la vraie raison et la resolution qui existait.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/youtube.js` — chaine reduite a 3 clients, `android_vr` en 1.65.10, `android` ajoute avec `cappedBytes`, reprise exponentielle + gigue, `bestHeight`
+- (hors repo) `tubeforge-webdl/src/index.js` — `visitorData` autonome, `Range:` seul, `client` / `downgradeReason` / `bestHeight` exposes
+- `src/lib/potoken.ts` — `getVisitorData()` et `getPoToken()` separees ; en-tete recrit pour dire ce qui est mesure
+- `src/lib/webdl.ts` — resolution en deux temps (vd, puis jeton seulement si refus anti-robot) ; `warmSession()` remplace `warmAttestation()`
+- `src/app/tubeforge/telecharger/page.tsx` — prechauffage de session au lieu de BotGuard ; message de baisse honnete
+
+**Culs-de-sac enterres par l'agent, a ne pas reexplorer :** `createColpstartToken` (teste dans un etat reellement bloque : LOGIN_REQUIRED partout) ; parser `ytInitialPlayerResponse` (la page `watch` ne contient **plus aucune URL**, ni chiffree ni en clair — le client web est passe 100% SABR) ; Invidious (0 instance exploitable sur 7 testees) ; Piped (0 sur 5) ; faire lire googlevideo directement par le navigateur (ACAO est une liste blanche stricte, et ajouter `&origin=` casse la signature). Les autres bibliotheques de PoToken enrobent **la meme** VM Google : elles tomberont ensemble.
+
+**Comment annuler :** `npx wrangler rollback` depuis `tubeforge-webdl/` ; `git revert <hash>` cote page.
+
+**Effets de bord possibles :** `'unsafe-eval'` reste dans la CSP de cette seule route parce que le secours BotGuard doit pouvoir s'executer le jour ou il sert — c'est un relachement conserve pour une valeur non prouvee, et c'est un candidat au retrait si le secours ne se declenche jamais. Reduire la chaine a 3 clients diminue la couverture theorique : si `android_vr` tombe durablement, il ne reste que deux clients plafonnes a 25 Mo, donc les videos longues echoueront proprement au lieu d'etre servies en mauvaise qualite. **A retenir sur la methode : envoyer deux nouveautes ensemble et conclure que ca marche, c'est ne rien avoir mesure.**
+
+---
 ### [2026-07-26 16:50] — Trois bugs de telechargement trouves en verifiant les 4 plateformes de bout en bout
 
 **Quoi :** Avant de repondre « oui c'est fonctionnel », j'ai teste un VRAI telechargement par l'interface pour chacune des 4 plateformes. YouTube passait ; **les trois autres etaient cassees**, chacune pour une raison differente. Toutes corrigees et re-verifiees.

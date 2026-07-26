@@ -1,18 +1,23 @@
 /**
- * PoToken : l'attestation « un vrai navigateur, une vraie personne ».
+ * Session YouTube et attestation BotGuard.
  *
- * Le probleme qu'il resout : notre Worker interroge YouTube depuis les IP de
- * Cloudflare, et au-dela d'un certain volume YouTube repond « Connectez-vous
- * pour confirmer que vous n'etes pas un robot ». Le jeton contourne ca non pas
- * en cachant l'IP, mais en prouvant qu'un vrai navigateur est derriere : c'est
- * BotGuard, la machine virtuelle de Google, qui tourne ICI, dans la page du
- * visiteur, et signe une attestation liee a la session (`visitorData`).
+ * ⚠️ Ce qui leve le blocage « Connectez-vous pour confirmer que vous n'etes pas
+ * un robot », c'est le **visitorData**, PAS le PoToken. Variable isolee le
+ * 26/07/2026 sur le client android_vr : sans visitorData, 2 videos sur 4 sont
+ * refusees ; avec le visitorData SEUL et aucun jeton, 4 sur 4 passent. Un test
+ * apparie visitorData seul contre visitorData + vrai PoToken donne 4/6 contre
+ * 3/6 — du bruit. Ma premiere conclusion attribuait le merite au jeton parce
+ * que je les envoyais toujours ENSEMBLE : la variable n'etait pas isolee.
  *
- * Mesure du 26/07/2026, meme video au meme instant depuis l'edge Cloudflare :
- *   client android_vr — sans jeton : LOGIN_REQUIRED / « ...pas un robot »
- *                       avec jeton : OK, 23 formats, 1080p
- *   client ios        — sans jeton : HTTP 403
- *                       avec jeton : OK, 28 formats, 1080p
+ * Consequence de conception : le visitorData ne doit JAMAIS dependre de
+ * BotGuard. Le Worker sait desormais s'en procurer un tout seul, et les deux
+ * fonctions ci-dessous sont separees pour qu'un echec de frappe n'emporte
+ * jamais la session avec lui.
+ *
+ * Le jeton reste en place, mais en SECOURS a la demande : il n'est frappe que
+ * si une resolution est refusee pour motif anti-robot. Sa valeur reelle n'est
+ * pas prouvee ; il coute ~1,2 s et exige `'unsafe-eval'` (CSP scopee a cette
+ * seule page), donc on ne le paie plus a chaque visite.
  *
  * L'API BotGuard (`jnn-pa.googleapis.com`) renvoie notre origine dans
  * Access-Control-Allow-Origin : tout se fait dans le navigateur, sans relais.
@@ -129,24 +134,39 @@ async function mint(visitorData: string): Promise<string> {
  * clients passe souvent), il est juste plus fragile. Une attestation ratee ne
  * doit pas empecher un telechargement.
  */
-export async function getAttestation(workerUrl: string): Promise<Attestation | null> {
-  const t0 = Date.now();
+let sessionCache: { visitorData: string; ts: number } | null = null;
+
+/**
+ * Le visitorData de la session, sans jamais toucher a BotGuard.
+ * C'est la piece qui compte : elle doit rester disponible meme si tout le
+ * reste tombe. Le Worker en a un de secours de son cote.
+ */
+export async function getVisitorData(workerUrl: string): Promise<string | null> {
+  if (sessionCache && Date.now() - sessionCache.ts < CACHE_TTL_MS) return sessionCache.visitorData;
   try {
     const sess = await fetch(workerUrl + "/api/session").then((r) => r.json());
     const visitorData: string | undefined = sess?.visitorData;
-    if (!visitorData) throw new Error("session YouTube indisponible");
+    if (!visitorData) return null;
+    sessionCache = { visitorData, ts: Date.now() };
+    return visitorData;
+  } catch {
+    return null;
+  }
+}
 
+/** Frappe (ou relit) un PoToken lie a ce visitorData. Ne jette jamais. */
+export async function getPoToken(visitorData: string): Promise<string | null> {
+  const t0 = Date.now();
+  try {
     const cached = readCache(visitorData);
     if (cached) {
       window.__tfdlAttestation = { ok: true, ms: Date.now() - t0, tokenLength: cached.length };
-      return { visitorData, poToken: cached };
+      return cached;
     }
-
     const poToken = await mint(visitorData);
-    const att = { visitorData, poToken };
-    writeCache(att);
+    writeCache({ visitorData, poToken });
     window.__tfdlAttestation = { ok: true, ms: Date.now() - t0, tokenLength: poToken.length };
-    return att;
+    return poToken;
   } catch (e) {
     const err = e instanceof Error ? e.message : String(e);
     window.__tfdlAttestation = { ok: false, err, ms: Date.now() - t0 };

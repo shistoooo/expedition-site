@@ -7,7 +7,7 @@ import { ArrowRight, Check, Download, Loader2, LogOut, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
-  clearToken, download, fetchMe, getToken, loginUrl, readTokenFromHash, resolve, warmAttestation,
+  clearToken, download, fetchMe, getToken, loginUrl, readTokenFromHash, resolve, warmSession,
   type Me, type Progress, type Resolved,
 } from "@/lib/webdl";
 
@@ -60,9 +60,10 @@ export default function TelechargerPage() {
     setAuthHref(loginUrl());
     readTokenFromHash();
     refreshMe();
-    // L'attestation BotGuard prend quelques secondes : on la prepare pendant
-    // que la personne colle son lien, pour qu'elle soit deja prete au clic.
-    warmAttestation();
+    // On prechauffe la session YouTube (quelques Ko) pendant que la personne
+    // colle son lien. Le calcul BotGuard, lui, n'a plus lieu ici : il ne sert
+    // qu'en secours si YouTube nous refuse (cf. lib/potoken.ts).
+    warmSession();
   }, [refreshMe]);
 
   const onResolve = async () => {
@@ -298,8 +299,9 @@ export default function TelechargerPage() {
                     </p>
                     {result.downgraded && (
                       <p className="text-[11px] text-white/35 mt-2 leading-relaxed">
-                        Qualité réduite volontairement : en 1080p, cette vidéo dépasserait ce qu&apos;un
-                        navigateur peut assembler en mémoire.
+                        {result.downgradeReason === "plafond-youtube"
+                          ? `Qualité réduite : YouTube limite en ce moment ce qu'il nous laisse récupérer${result.bestHeight ? ` (le ${result.bestHeight}p existe)` : ""}. Réessaie dans quelques minutes.`
+                          : "Qualité réduite volontairement : en pleine résolution, cette vidéo dépasserait ce qu'un navigateur peut assembler en mémoire."}
                       </p>
                     )}
                   </div>
