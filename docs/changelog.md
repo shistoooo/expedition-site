@@ -1,4 +1,32 @@
 ---
+### [2026-07-26 23:50] — Compteurs lisibles, arguments propres a la page gratuite, Instagram tranche
+
+**Quoi :** Correction du piege d'ergonomie sur les quotas, refonte du bloc de promotion TubeForge depuis le point de vue d'un monteur, rangee « zero pub », et reponse mesuree sur Instagram.
+
+**Le piege d'ergonomie sur les quotas.** L'affichage montrait `25/25` avec une barre **pleine**. Or un lecteur decode spontanement une barre remplie comme de la **consommation** : « 25 consommes sur 25 », donc « c'est fini » — l'inverse exact du sens voulu. Et `1196/1200` avec une barre pleine donnait l'impression d'etre au bout alors qu'il restait tout. Corrige : le mot « restants » ecrit en clair (« 25 restants sur 25 »), une barre qui se VIDE comme une jauge de carburant, les libelles forces sur une ligne (« POUR TOUT LE SERVEUR » passait a la ligne et desalignait tout), et les compteurs sortis de sous l'avatar pour occuper leur propre rangee.
+
+**Fausse alerte que j'ai failli « corriger ».** Mes mesures donnaient des barres de **0 px** de large. Avant de toucher au code, j'ai remonte la chaine des parents : la carte entiere faisait 50 px — le panneau de navigation etait a une largeur minuscule. A 1280 px : pistes de 495 px, remplissages 100% et 99,67%, libelles sur une ligne. **Il n'y avait aucun bug.**
+
+**Le bloc de promotion, refait depuis le poste de montage.** L'ancien enumerait des specifications (« 1500 sites, 4K, sans limite »). Le nouveau nomme les trois moments que la personne vient de vivre et dit ce qu'ils deviennent : (1) elle a telecharge des centaines de Mo pour garder vingt secondes -> TubeForge pose les points d'entree/sortie AVANT le telechargement ; (2) le fichier est dans son dossier Telechargements -> il arrive dans le chutier Premiere/DaVinci, nomme ; (3) quatre plateformes, 25/jour -> 1500 sites, 4K, a la chaine. Puis le calcul pose noir sur blanc : dix minutes par extrait, douze extraits, deux heures par video, huit heures par mois. La premiere ligne est **personnalisee avec le poids reel du dernier fichier** recupere : un chiffre vecu porte plus qu'un exemple.
+
+**Deux affirmations devenues fausses, corrigees :**
+- L'accroche disait « GRATUIT, SANS COMPTE » alors qu'on demande maintenant Discord. Elle suit desormais l'etat reel de la porte.
+- Le sous-titre disait « Rien ne passe par nos serveurs » : vrai pour X et Twitch, **faux pour YouTube** dont le CDN interdit au navigateur de lire les octets. Remplace par ce qui est vrai partout : « A pleine vitesse, sans recompression, et sans une seule publicite. »
+
+**La rangee « zero pub ».** Cinq mentions sous les plateformes : zero publicite, zero pop-up, rien a installer, aucune recompression, sans filigrane. C'est l'argument le plus fort de cette page : tout le monde a deja essaye un telechargeur en ligne avec ses faux boutons « Download », ses pop-up qui s'ouvrent dans le dos et son fichier recompresse en 480p. **Dire ce qu'on ne fait PAS est ici plus convaincant qu'une liste de fonctionnalites.**
+
+**Instagram : NON, mesure.** La page profil publique ne contient plus aucun identifiant de publication (tout passe par une API authentifiee), et yt-dlp — la reference du domaine — repond « reponse media vide, verifie si le post est accessible sans etre connecte, sinon passe tes cookies ». C'est un mur d'**authentification**, pas une question d'IP : aucun contournement cote serveur. Instagram n'est donc PAS annonce. Mais plutot qu'un « plateforme non supportee » sec, les liens Instagram, Facebook, Vimeo et Dailymotion recoivent desormais un message qui **explique** — et l'encart precise le vrai mecanisme : un logiciel installe sur la machine peut utiliser la session du navigateur, une page web non.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/platforms.js` — `REFUS_EXPLIQUES` + `refusExplique()`
+- (hors repo) `tubeforge-webdl/src/index.js` — refus de plateforme explique avec encart
+- `src/app/tubeforge/telecharger/page.tsx` — `Compteurs` refait, `PromoTubeForge`, rangee de garanties, accroche dynamique, sous-titre corrige, memorisation du poids du dernier fichier
+
+**Verification :** compteurs relus a 1280 px (495 px de piste, libelles sur une ligne, « restants sur » explicite) ; bloc promo et boutons verifies en production ; les quatre refus de plateforme testes sur un worker de developpement, chacun avec le bon message ; porte de prod re-verifiee fermee apres les tests.
+
+**Effets de bord possibles :** la promo personnalisee n'affiche le poids reel qu'apres une resolution reussie — sinon elle retombe sur une formulation generique. La liste `REFUS_EXPLIQUES` est a maintenir a la main : une plateforme absente retombe sur le message generique, ce qui reste correct. Enfin le chiffre « dix minutes par extrait » vient de la page TubeForge : si cet argument evolue la-bas, il faut le repercuter ici.
+
+---
 ### [2026-07-26 22:40] — Porte Discord ACTIVE, deux compteurs visibles, rouge exact, scope email
 
 **Quoi :** La porte Discord est fermee et fonctionnelle (application `tubeforge`, ID `1530946642352803921`). La page affiche desormais les DEUX reserves — la personnelle et celle du serveur — en jauges. L'encart de conversion se declenche aussi a l'arrivee si une reserve est deja vide. Et le scope `email` est ajoute a l'OAuth.

@@ -33,11 +33,17 @@ const RED = "#ef3a24";
 const AMBER = "#ff6a1f";
 
 /**
- * Les deux reserves, cote a cote : la sienne et celle du serveur.
+ * Les deux reserves du jour : la sienne, et celle partagee par le serveur.
  *
- * Montrer la seconde change la lecture d'un refus. Sans elle, un blocage
+ * Le piege d'ergonomie qu'on a corrige : afficher « 25/25 » avec une barre
+ * pleine se lit spontanement « 25 consommes sur 25 », donc « c'est fini » —
+ * l'inverse exact du sens voulu. Un lecteur decode une barre remplie comme de
+ * la consommation, pas comme une reserve. D'ou le mot « restants » ecrit en
+ * clair, et une barre qui se VIDE en descendant, comme une jauge de carburant.
+ *
+ * Montrer la reserve collective n'est pas cosmetique : sans elle, un blocage
  * ressemble a une panne ; avec elle, on comprend qu'on partage un outil gratuit
- * avec 600 autres personnes. La barre passe au rouge quand il reste peu.
+ * avec des centaines de personnes.
  */
 function Compteurs({
   perso, total, serveur,
@@ -48,20 +54,23 @@ function Compteurs({
 }) {
   if (perso === null || total === null) return null;
   const srvLeft = serveur ? Math.max(0, serveur.limit - serveur.used) : null;
-  const pct = (n: number, d: number) => (d > 0 ? Math.min(100, Math.max(0, (n / d) * 100)) : 0);
 
   const Jauge = ({ reste, sur, libelle }: { reste: number; sur: number; libelle: string }) => {
-    const p = pct(reste, sur);
+    const p = sur > 0 ? Math.min(100, Math.max(0, (reste / sur) * 100)) : 0;
     const bas = p <= 20;
+    const vide = reste === 0;
     return (
-      <div className="flex-1 min-w-[130px]">
-        <div className="flex items-baseline justify-between gap-2 mb-1.5">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-white/30">{libelle}</span>
-          <span className="text-[11px] font-mono tabular-nums" style={{ color: bas ? RED : "rgba(255,255,255,0.55)" }}>
-            {reste}<span className="text-white/25">/{sur}</span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-white/30 whitespace-nowrap mb-1">
+          {libelle}
+        </p>
+        <p className="text-[13px] mb-2 whitespace-nowrap">
+          <span className="font-mono tabular-nums font-semibold" style={{ color: vide ? RED : bas ? AMBER : "#fff" }}>
+            {reste}
           </span>
-        </div>
-        <div className="h-[3px] rounded-full bg-white/[0.07] overflow-hidden">
+          <span className="text-white/40"> {vide ? "restant" : reste === 1 ? "restant" : "restants"} sur {sur}</span>
+        </p>
+        <div className="h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
           <div
             className="h-full rounded-full transition-[width] duration-500"
             style={{ width: `${p}%`, background: bas ? RED : `linear-gradient(90deg, ${AMBER}, ${RED})` }}
@@ -72,11 +81,108 @@ function Compteurs({
   };
 
   return (
-    <div className="flex flex-wrap gap-x-6 gap-y-3">
-      <Jauge reste={perso} sur={total} libelle="Pour toi, aujourd’hui" />
+    <div className="flex items-start gap-8 sm:gap-12">
+      <Jauge reste={perso} sur={total} libelle="Tes téléchargements" />
       {srvLeft !== null && serveur && (
-        <Jauge reste={srvLeft} sur={serveur.limit} libelle="Pour tout le serveur" />
+        <Jauge reste={srvLeft} sur={serveur.limit} libelle="Réserve du serveur" />
       )}
+    </div>
+  );
+}
+
+/**
+ * Ce qui separe cette page de TubeForge, raconte depuis le poste de montage.
+ *
+ * Volontairement PAS une liste de specifications. Quelqu'un qui arrive ici vient
+ * de vivre une sequence tres concrete : attendre des centaines de Mo, aller
+ * chercher le fichier dans son dossier Telechargements parmi cent autres, le
+ * glisser dans Premiere, scruter la timeline pour retrouver les vingt secondes
+ * qui l'interessaient, jeter le reste. Chaque ligne ci-dessous nomme un de ces
+ * moments et dit ce qu'il devient. « 1500 sites » et « 4K » sont des arguments
+ * de fiche produit ; « tu ne telecharges que le passage » est un argument de
+ * monteur.
+ *
+ * `poidsMo` personnalise la premiere ligne avec le fichier reellement recupere
+ * quand on le connait : un chiffre vecu porte plus qu'un exemple.
+ */
+function PromoTubeForge({ poidsMo }: { poidsMo: number | null }) {
+  const lignes = [
+    {
+      ici: poidsMo
+        ? `Tu viens de télécharger ${poidsMo} Mo — même si tu ne gardes que vingt secondes au montage.`
+        : "Tu télécharges la vidéo entière, même si tu ne gardes que vingt secondes au montage.",
+      la: "Tu poses ton point d’entrée et ton point de sortie AVANT de télécharger. Trente secondes utiles dans une vidéo de deux heures ? Tu ne récupères que ces trente secondes.",
+    },
+    {
+      ici: "Le fichier atterrit dans ton dossier Téléchargements, à toi de le retrouver et de le glisser dans ton projet.",
+      la: "Il arrive directement dans ton chutier Premiere ou DaVinci, nommé, prêt à poser sur la timeline. Tu ne quittes jamais ton logiciel de montage.",
+    },
+    {
+      ici: "Un lien à la fois, 25 par jour, 1080p, une réserve partagée — et quatre plateformes seulement : Instagram et Facebook exigent d’être connecté, ce qu’une page web ne peut pas faire.",
+      la: "Plus de 1500 sites, en 4K, à la chaîne. Il tourne sur ta machine, donc il peut utiliser ta propre session de navigateur : c’est ce qui lui ouvre les plateformes fermées.",
+    },
+  ];
+
+  return (
+    <div className="mt-14">
+      <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-2">
+        Ce que ça change au montage
+      </p>
+      <h2 className="text-2xl md:text-3xl font-black tracking-[-0.02em] mb-7">
+        Le téléchargement n’est pas le travail<span style={{ color: RED }}>.</span>
+      </h2>
+
+      <div className="space-y-3">
+        {lignes.map((l, i) => (
+          <div
+            key={i}
+            className="grid md:grid-cols-2 gap-x-8 gap-y-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 md:p-6"
+          >
+            <p className="text-sm text-white/45 leading-relaxed">{l.ici}</p>
+            <div className="flex gap-3">
+              <span
+                className="mt-[7px] w-1 shrink-0 rounded-full self-stretch"
+                style={{ background: `linear-gradient(180deg, ${AMBER}, ${RED})` }}
+                aria-hidden="true"
+              />
+              <p className="text-sm text-white leading-relaxed">{l.la}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Le calcul que fait le lecteur de tete, pose noir sur blanc. Le chiffre
+          des 10 minutes par extrait est celui deja avance sur la page TubeForge. */}
+      <div className="mt-6 rounded-2xl border p-5 md:p-6"
+        style={{ borderColor: "rgba(239,58,36,0.28)", background: "rgba(239,58,36,0.05)" }}>
+        <p className="text-white/70 leading-relaxed">
+          Dix minutes par extrait, douze extraits dans une vidéo : <span className="text-white font-semibold">deux heures
+          passées à récupérer des fichiers</span> au lieu de monter. Une vidéo par semaine, et ça fait
+          huit heures par mois.
+        </p>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mt-5">
+          <Link
+            data-track="webdl-promo-essai"
+            href="/tubeforge/checkout?plan=sub&months=12"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-black transition-transform duration-200 hover:translate-y-[-1px]"
+            style={{ background: `linear-gradient(118deg, ${AMBER} 0%, ${RED} 58%, #8b3dff 155%)` }}
+          >
+            Essayer 14 jours gratuitement
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            data-track="webdl-promo-voir"
+            href="/tubeforge"
+            className="inline-flex items-center justify-center px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white/80 font-semibold text-sm hover:bg-white/10 transition-colors"
+          >
+            Voir TubeForge en action
+          </Link>
+        </div>
+        <p className="text-[11px] text-white/30 mt-3">
+          3,49&nbsp;€ par mois à l&apos;année. La carte est demandée, rien n&apos;est prélevé avant la fin
+          des 14 jours, et tu annules en un clic.
+        </p>
+      </div>
     </div>
   );
 }
@@ -103,6 +209,9 @@ export default function TelechargerPage() {
   // L'URL de connexion depend de window.location : la calculer au rendu
   // provoquerait un ecart entre le HTML du serveur et celui du client.
   const [authHref, setAuthHref] = useState("");
+  // Poids du dernier fichier resolu : sert a personnaliser l'argumentaire avec
+  // un chiffre que la personne vient reellement de vivre.
+  const [dernierPoidsMo, setDernierPoidsMo] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const refreshMe = useCallback(async () => {
@@ -137,6 +246,8 @@ export default function TelechargerPage() {
       } else {
         setResult(r);
         setMe((m) => (m ? { ...m, quota: r.quota, serveur: r.serveur ?? m.serveur } : m));
+        const octets = r.video ? (r.video.size ?? 0) + (r.audio?.size ?? 0) : r.file?.size ?? 0;
+        if (octets > 0) setDernierPoidsMo(Math.round(octets / 1048576));
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Une erreur est survenue.");
@@ -221,21 +332,46 @@ export default function TelechargerPage() {
               transition={{ duration: 0.6, ease: easeOutExpo }}
               className="text-center"
             >
+              {/* L'accroche suit l'etat reel de la porte : annoncer « sans compte »
+                  alors qu'on demande Discord serait un mensonge des la premiere ligne. */}
               <p className="text-xs font-mono uppercase tracking-widest mb-5" style={{ color: "rgba(255,106,31,0.7)" }}>
-                Gratuit, sans compte
+                {gated ? "Gratuit pour les membres du Discord" : "Gratuit, sans compte"}
               </p>
               <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] mb-5">
                 Télécharge une vidéo<span style={{ color: RED }}>.</span>
               </h1>
+              {/* Ne dit plus « rien ne passe par nos serveurs » : c'est vrai pour X
+                  et Twitch, faux pour YouTube dont le CDN interdit au navigateur de
+                  lire les octets. On garde ce qui est vrai partout. */}
               <p className="text-lg text-white/60 leading-relaxed max-w-xl mx-auto">
-                Colle un lien, récupère le fichier. Rien ne passe par nos serveurs : ton navigateur
-                télécharge en direct, à pleine vitesse.
+                Colle un lien, récupère le fichier. À pleine vitesse, sans recompression, et
+                sans une seule publicité.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-2 mt-7">
                 {PLATFORMS.map((p) => (
                   <span key={p.key} className="text-xs font-mono px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/55">
                     {p.label}
+                  </span>
+                ))}
+              </div>
+
+              {/* Le vrai argument de cette page. Tout le monde a deja essaye un
+                  telechargeur en ligne : faux boutons « Download », pop-up qui
+                  s'ouvrent dans le dos, redirections, fichier recompresse en
+                  480p avec un filigrane. Dire ce qu'on ne fait PAS est ici plus
+                  convaincant que n'importe quelle liste de fonctionnalites. */}
+              <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5 mt-8">
+                {[
+                  "Zéro publicité",
+                  "Zéro pop-up",
+                  "Rien à installer",
+                  "Aucune recompression",
+                  "Sans filigrane",
+                ].map((m) => (
+                  <span key={m} className="inline-flex items-center gap-1.5 text-[13px] text-white/50">
+                    <Check className="w-3.5 h-3.5 shrink-0" style={{ color: RED }} />
+                    {m}
                   </span>
                 ))}
               </div>
@@ -293,17 +429,17 @@ export default function TelechargerPage() {
                 <>
                   {/* Bandeau d'identite : n'a de sens que si la porte Discord est
                       active. Ouverte, on garde juste le compteur du jour. */}
-                  {gated ? (
-                    <div className="flex items-center justify-between gap-4 mb-5 pb-5 border-b border-white/10">
-                      <div className="flex items-center gap-3 min-w-0">
+                  {/* Identite sur sa ligne, compteurs sur la leur : entassés
+                      cote a cote, les libelles passaient a la ligne et les
+                      chiffres se retrouvaient loin de ce qu'ils comptent. */}
+                  {gated && (
+                    <div className="flex items-center justify-between gap-4 mb-4">
+                      <div className="flex items-center gap-2.5 min-w-0">
                         {me?.user?.avatar && (
                           // eslint-disable-next-line @next/next/no-img-element -- avatar Discord, domaine externe non liste dans next/image
-                          <img src={me.user.avatar} alt="" className="w-8 h-8 rounded-full" />
+                          <img src={me.user.avatar} alt="" className="w-7 h-7 rounded-full" />
                         )}
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold truncate">{me?.user?.name}</p>
-                          <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} />
-                        </div>
+                        <p className="text-sm font-semibold truncate">{me?.user?.name}</p>
                       </div>
                       <button
                         onClick={() => { clearToken(); setMe({ auth: false }); setResult(null); }}
@@ -313,11 +449,11 @@ export default function TelechargerPage() {
                         <LogOut className="w-4 h-4" />
                       </button>
                     </div>
-                  ) : (
-                    <div className="mb-4">
-                      <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} />
-                    </div>
                   )}
+
+                  <div className="mb-5 pb-5 border-b border-white/10">
+                    <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} />
+                  </div>
 
                   <div className="flex flex-col sm:flex-row gap-2.5">
                     <input
@@ -462,25 +598,7 @@ export default function TelechargerPage() {
               </motion.div>
             )}
 
-            {/* ── Vers TubeForge ────────────────────────────────────── */}
-            <div className="mt-14 rounded-2xl border border-white/10 bg-white/[0.02] p-6 md:p-7">
-              <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-3">
-                Les limites de cette page
-              </p>
-              <p className="text-white/65 leading-relaxed">
-                Ici : 4 plateformes, 1080p, 25 vidéos par jour et par personne, une réserve partagée
-                entre tous les membres, et le fichier atterrit dans ton dossier Téléchargements. <span className="text-white">TubeForge fait la même chose depuis plus de 1500 sites,
-                en 4K, sans limite, et dépose l&apos;extrait directement dans ton chutier Premiere ou DaVinci.</span>
-              </p>
-              <Link
-                href="/tubeforge"
-                className="group inline-flex items-center gap-2 mt-5 text-sm font-bold"
-                style={{ color: "#ff6a1f" }}
-              >
-                Voir TubeForge
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
-            </div>
+            <PromoTubeForge poidsMo={dernierPoidsMo} />
           </div>
         </section>
       </main>
