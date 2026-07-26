@@ -90,9 +90,19 @@ export const fetchMe = () => api<Me>("/api/me");
 
 const isYouTube = (u: string) => /youtu\.?be|youtube\.com/.test(u);
 
-type ResolveResult =
-  | Resolved
-  | { ok: false; err: string; kind?: string; needAuth?: boolean; quotaReached?: boolean };
+/** Encart de conversion renvoye par le Worker sur les refus de quota. */
+export type Upsell = { titre: string; texte: string };
+
+export type ResolveFailure = {
+  ok: false;
+  err: string;
+  kind?: string;
+  needAuth?: boolean;
+  quotaReached?: boolean;
+  upsell?: Upsell;
+};
+
+type ResolveResult = Resolved | ResolveFailure;
 
 /** Prechauffe la session (quelques Ko). Aucun calcul BotGuard ici. */
 export async function warmSession() {

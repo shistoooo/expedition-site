@@ -1,4 +1,33 @@
 ---
+### [2026-07-26 21:40] — Porte Discord pilotable + messages de refus qui convertissent
+
+**Quoi :** Trois choses. La porte Discord devient activable par variable d'environnement, avec une securite anti-verrouillage. Les refus de quota portent desormais un encart de conversion vers TubeForge, affiche dans la page. Et le quota par personne devient reglable sans redeployer.
+
+**Pourquoi :** demande du user — brancher la connexion Discord et preparer les messages « trop de telechargements ont ete faits par les membres du Discord, passez a TubeForge ». Le moment ou quelqu'un bute sur une limite est le SEUL ou il a une raison concrete de s'interesser au produit payant : c'est la qu'il faut parler, pas dans une banniere permanente.
+
+**Porte Discord — pilotable, et impossible a se tirer dans le pied :**
+`REQUIRE_DISCORD` est maintenant une variable (`"false"` aujourd'hui). Mais elle **ne se ferme que si l'application Discord est reellement configuree** : si `DISCORD_CLIENT_ID` ou `DISCORD_CLIENT_SECRET` valent encore le placeholder `0`, la porte reste ouverte quoi qu'on demande. Sans ce garde-fou, activer la porte avant de poser les secrets enfermerait **tout le monde dehors** — le bouton « Se connecter » renverrait une erreur Discord et plus personne ne pourrait telecharger. Mieux vaut un outil ouvert qu'un outil mort.
+
+**Trois messages, trois situations :**
+- **Plafond global atteint** : « Les membres du Discord ont epuise le quota du jour. L'outil est gratuit, donc partage entre tout le monde et forcement bride — il repart demain matin. » + encart « Ne plus dependre d'un quota partage ».
+- **Quota personnel atteint** : « Tu as utilise tes 25 telechargements du jour. Le compteur repart demain a minuit. » + encart « Tu telecharges assez pour que ca vaille le coup ». (Singulier gere : « ton telechargement » si la limite vaut 1.)
+- **Video bridee par YouTube** : le message ne promet plus rien, il explique — et l'encart dit *pourquoi* TubeForge n'a pas ce probleme : il passe par la connexion de l'utilisateur, pas par nos serveurs.
+
+L'encart porte deux boutons (`Essayer 14 jours gratuitement` vers le checkout annuel, `Voir ce que fait TubeForge` vers la one-page), tous deux tracks, et une ligne qui dit franchement que la carte est demandee mais que rien n'est preleve avant 14 jours.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/index.js` — `gateActive(env)`, `dailyLimit(env)`, messages + `upsell` sur les trois refus
+- (hors repo) `tubeforge-webdl/wrangler.toml` — `DAILY_LIMIT = "25"`, `REQUIRE_DISCORD = "false"`
+- `src/lib/webdl.ts` — types `Upsell` et `ResolveFailure`
+- `src/app/tubeforge/telecharger/page.tsx` — encart de conversion sous le message d'erreur
+
+**Verification :** limite temporairement mise a 1 sur un worker de developpement -> refus au 1er appel avec `kind: 'quota-perso'`, le bon message et l'encart. Rendu de l'encart verifie en production (les deux boutons pointent au bon endroit). Config restauree, compteurs de test purges, prod re-verifiee (porte ouverte, quota 25).
+
+**Comment annuler :** `REQUIRE_DISCORD` et `DAILY_LIMIT` sont des variables : les changer et redeployer. `git revert <hash>` retire l'encart.
+
+**Effets de bord possibles :** l'encart n'apparait que sur les refus de quota, donc la plupart des visiteurs ne le verront jamais — c'est voulu, mais ca veut dire que le funnel ne se declenche que chez les utilisateurs intensifs. Le bloc de conversion pointe vers le checkout ANNUEL (`months=12`) : c'est le plan mis en avant sur la one-page, a changer si la strategie de prix bouge. Enfin, tant que les secrets Discord ne sont pas poses, `REQUIRE_DISCORD = "true"` **n'aura aucun effet** — c'est deliberе, et c'est verifiable via `gate` dans `/api/me`.
+
+---
 ### [2026-07-26 20:45] — Le plafond que je venais de poser ne protegeait rien sur le plan gratuit
 
 **Quoi :** `MAX_DAILY_RESOLVES` corrige de 3000 a **1200**, et la valeur a utiliser selon le plan est desormais ecrite dans le code et dans `wrangler.toml`.

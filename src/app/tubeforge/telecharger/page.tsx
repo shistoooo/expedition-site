@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
   clearToken, download, fetchMe, getToken, loginUrl, readTokenFromHash, resolve, warmSession,
-  type Me, type Progress, type Resolved,
+  type Me, type Progress, type Resolved, type Upsell,
 } from "@/lib/webdl";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -41,6 +41,10 @@ export default function TelechargerPage() {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Resolved | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Quand le refus vient d'un quota, le Worker joint de quoi expliquer ce que
+  // TubeForge fait differemment. C'est le seul moment ou la personne a une
+  // raison concrete de s'y interesser : elle vient de buter sur une limite.
+  const [upsell, setUpsell] = useState<Upsell | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [done, setDone] = useState(false);
   // L'URL de connexion depend de window.location : la calculer au rendu
@@ -67,14 +71,15 @@ export default function TelechargerPage() {
   }, [refreshMe]);
 
   const onResolve = async () => {
-    setError(null); setResult(null); setDone(false); setProgress(null);
+    setError(null); setUpsell(null); setResult(null); setDone(false); setProgress(null);
     if (!url.trim()) return;
     setBusy(true);
     try {
       const r = await resolve(url.trim());
       if (!r.ok) {
         setError(r.err);
-        if ("needAuth" in r && r.needAuth) clearToken();
+        setUpsell(r.upsell ?? null);
+        if (r.needAuth) clearToken();
         await refreshMe();
       } else {
         setResult(r);
@@ -264,6 +269,41 @@ export default function TelechargerPage() {
               <div className="mt-4 rounded-xl border border-red-500/25 bg-red-500/[0.07] px-5 py-4 text-sm text-red-200/90 leading-relaxed">
                 {error}
               </div>
+            )}
+
+            {upsell && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: easeOutExpo }}
+                className="mt-3 rounded-2xl border p-5 md:p-6"
+                style={{ borderColor: "rgba(255,106,31,0.28)", background: "rgba(255,106,31,0.05)" }}
+              >
+                <p className="font-bold text-white mb-1.5">{upsell.titre}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{upsell.texte}</p>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mt-5">
+                  <Link
+                    data-track="webdl-upsell-essai"
+                    href="/tubeforge/checkout?plan=sub&months=12"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-black transition-transform duration-200 hover:translate-y-[-1px]"
+                    style={{ background: "linear-gradient(118deg, #ff6a1f 0%, #ef3a24 58%, #8b3dff 155%)" }}
+                  >
+                    Essayer 14 jours gratuitement
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    data-track="webdl-upsell-voir"
+                    href="/tubeforge"
+                    className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 font-semibold text-sm hover:bg-white/10 transition-colors"
+                  >
+                    Voir ce que fait TubeForge
+                  </Link>
+                </div>
+                <p className="text-[11px] text-white/30 mt-3">
+                  Sans carte pendant l&apos;essai ? Non : la carte est demandée, mais rien n&apos;est prélevé
+                  avant la fin des 14 jours, et tu annules en un clic.
+                </p>
+              </motion.div>
             )}
 
             {/* ── Resultat ──────────────────────────────────────────── */}
