@@ -1,4 +1,28 @@
 ---
+### [2026-07-27 01:40] — Premiere carte du bloc promo : -39 % de hauteur, capture recadree
+
+**Quoi :** La carte principale du bloc promo etait trop haute et desequilibree — le texte flottait au milieu d'un grand vide a cote d'une capture en portrait. Capture recadree, colonnes reequilibrees : la carte passe de **730 px a ~442 px**.
+
+**Pourquoi :** retour direct du user (« le premier cadran est trop gros, essaye de mieux equilibrer le tout »). La cause etait geometrique : `real-app.jpg` est en 692x878 (portrait). Affichee a 500 px de large, elle faisait 635 px de haut, alors que la colonne de texte n'en faisait que 280 — d'ou 165 px de vide de chaque cote du texte centre.
+
+**Ce que j'ai failli faire de travers.** J'avais commence a recadrer serre sur le seul curseur de decoupe, ce qui aurait supprime le libelle « Couper un extrait », l'apercu video et le mode de coupe. Le user a interrompu : « peut-etre qu'on peut garder tout ca en vrai ». Il avait raison — le recadrage ne devait retirer que l'en-tete « Telecharger MP4 / MP3 », qui parle d'autre chose que l'argument. **Nouveau fichier `real-cut-1.jpg`** (692x668, 80 Ko), qui garde le libelle, l'apercu, le curseur, Debut/Fin/Duree et le mode de coupe. Nom versionne, comme l'exigent les assets de `/tubeforge/` servis en cache immuable un an.
+
+**Les trois leviers, dans l'ordre d'effet :**
+1. **Recadrage** : 878 -> 668 px de haut, soit 24 % de moins, sans rien perdre de ce qui prouve l'argument.
+2. **Capture plafonnee a 400 px** et centree dans sa colonne -> 386 px de haut, echelle 0,58. C'est un compromis assume : l'audit avait signale qu'a l'echelle 0,43 le texte interne devenait illisible ; a 0,58 les valeurs Debut/Fin restent dechiffrables et les formes (curseur a deux poignees, deux champs de temps, duree en orange) parlent d'elles-memes.
+3. **Colonnes reequilibrees** (`1.3fr_1fr`) et **barres qui respirent** (hauteur 10 -> 12 px, libelles a 15 px, rythme vertical elargi). Faire monter la colonne de texte valait mieux que combler avec du vide : les barres sont l'argument central, elles meritent cette presence.
+
+**Fichiers touches :**
+- `public/tubeforge/real-cut-1.jpg` (nouveau, recadrage 692x668 de `real-app.jpg`)
+- `src/app/tubeforge/telecharger/page.tsx` — `PromoTubeForge` : nouvelle capture, plafond 400 px, grille 1.3fr, barres et rythme elargis, rembourrage `md:p-7`
+
+**Verification :** valeurs confirmees dans le HTML servi en production (`real-cut-1.jpg`, `max-w-[400px]`, `h-3`, `1.3fr_1fr`, `md:p-7`) et la capture repond bien en 200 / 80 Ko. Mesures a l'ecran prises a l'etape precedente (carte 517 px, capture 442x427) ; **la derniere mesure visuelle n'a PAS pu etre refaite** — le panneau navigateur a cesse de repondre. La hauteur de ~442 px est donc calculee depuis les valeurs deployees, pas relevee a l'ecran.
+
+**Comment annuler :** `git revert <hash>` ; `real-app.jpg` reste en place et inchangee (elle sert toujours sur la one-page).
+
+**Effets de bord possibles :** a l'echelle 0,58 la capture reste petite — si le texte interne s'avere illisible a l'usage, le vrai correctif serait un recadrage plus serre (au prix du contexte) ou une capture refaite a une resolution plus adaptee, pas un simple agrandissement qui redeséquilibrerait la carte. Il reste ~70 px de vide repartis autour du texte centre : c'est le prix d'une capture presque carree a cote d'un bloc de texte, et ca se lit maintenant comme un centrage voulu plutot que comme un trou.
+
+---
 ### [2026-07-27 00:50] — Bloc promo rendu visuel, et un defaut d'HONNETETE trouve par l'audit
 
 **Quoi :** Le bloc de promotion TubeForge, qui etait un mur de six paragraphes, devient une comparaison de proportions chiffree sur la vraie video de la personne, appuyee par les captures reelles du produit. Un audit en contexte frais (agent `design-critic`) a ensuite trouve trois defauts bloquants, tous corriges.

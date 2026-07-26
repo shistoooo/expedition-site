@@ -145,7 +145,7 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
       transition={{ duration: 0.55, delay, ease: easeOutExpo }}
       className={`group ${className}`}
     >
-      <div className="tf-cell h-full p-6 md:p-8" style={{ "--r": r, "--tilt": tilt } as React.CSSProperties}>
+      <div className="tf-cell h-full p-6 md:p-7" style={{ "--r": r, "--tilt": tilt } as React.CSSProperties}>
         {children}
       </div>
     </motion.div>
@@ -169,30 +169,30 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
 
       {/* ── L'argument massue : le gaspillage, en proportions reelles ── */}
       <Carte r="24px 10px 22px 12px" tilt="-0.5deg" delay={0}>
-        <div className="grid md:grid-cols-[1fr_1fr] gap-8 md:gap-10 items-center">
+        <div className="grid md:grid-cols-[1.3fr_1fr] gap-8 md:gap-10 items-center">
           <div>
-            <p className="text-[11px] font-mono uppercase tracking-widest text-white/32 mb-6">
+            <p className="text-[11px] font-mono uppercase tracking-widest text-white/32 mb-7">
               {vecu ? "Le fichier que tu viens de récupérer" : "Une vidéo de 15 minutes en 1080p"}
             </p>
 
-            <div className="mb-6">
-              <div className="flex items-baseline justify-between gap-3 mb-2">
-                <span className="text-sm text-white/52">Téléchargé</span>
+            <div className="mb-7">
+              <div className="flex items-baseline justify-between gap-3 mb-2.5">
+                <span className="text-[15px] text-white/52">Téléchargé</span>
                 <span className="font-mono text-sm text-white/52 tabular-nums whitespace-nowrap">{poids} Mo</span>
               </div>
-              <div className="h-2.5 rounded-full bg-white/[0.09]" />
+              <div className="h-3 rounded-full bg-white/[0.09]" />
             </div>
 
             <div>
               <div className="flex items-baseline justify-between gap-3 mb-2">
-                <span className="text-sm text-white">
+                <span className="text-[15px] text-white">
                   Utile pour <span className="whitespace-nowrap">{EXTRAIT_S} s</span>
                 </span>
                 <span className="font-mono text-sm tabular-nums font-semibold whitespace-nowrap" style={{ color: RED }}>
                   {utileMo} Mo
                 </span>
               </div>
-              <div className="h-2.5 rounded-full bg-white/[0.05] overflow-hidden">
+              <div className="h-3 rounded-full bg-white/[0.05] overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -202,13 +202,13 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
                   }}
                 />
               </div>
-              <p className="text-[13px] text-white/52 mt-3 leading-relaxed">
+              <p className="text-sm text-white/52 mt-3.5 leading-relaxed">
                 Soit <span className="text-white font-semibold">{pourcentTexte} %</span> du fichier.
                 Le reste, tu l’as attendu pour rien.
               </p>
             </div>
 
-            <p className="text-[15px] text-white leading-relaxed mt-7">
+            <p className="text-[15px] text-white leading-relaxed mt-8">
               TubeForge te fait poser ton point d’entrée et ton point de sortie
               <span className="text-white/52"> avant </span>
               de télécharger. Trente secondes utiles dans une vidéo de deux heures ?
@@ -217,14 +217,19 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
           </div>
 
           <div>
+            {/* Capture recadree sur le module de decoupe : on garde tout ce qui
+                prouve l'argument (curseur, Debut/Fin/Duree, mode de coupe) et on
+                retire seulement l'en-tete MP4/MP3, qui parle d'autre chose. En
+                portrait 692x878 la carte faisait 730 px de haut et le texte
+                flottait au milieu d'un vide ; en 692x668 elle tombe a ~500. */}
             {/* eslint-disable-next-line @next/next/no-img-element -- capture locale, aucun gain a passer par next/image */}
             <img
-              src="/tubeforge/real-app.jpg"
-              alt="TubeForge : module de découpe avec curseurs de début et de fin, avant téléchargement"
-              className="w-full h-auto rounded-lg border border-white/10"
+              src="/tubeforge/real-cut-1.jpg"
+              alt="TubeForge : curseurs de début et de fin, durée de l’extrait et mode de coupe, avant téléchargement"
+              className="w-full h-auto rounded-lg border border-white/10 max-w-[400px] mx-auto"
               loading="lazy"
               width={692}
-              height={878}
+              height={668}
             />
             <p className="text-[11px] font-mono text-white/32 mt-3 text-center">capture réelle · TubeForge</p>
           </div>
