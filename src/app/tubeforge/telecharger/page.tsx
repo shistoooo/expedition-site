@@ -91,80 +91,230 @@ function Compteurs({
 }
 
 /**
- * Ce qui separe cette page de TubeForge, raconte depuis le poste de montage.
+ * Ce qui separe cette page de TubeForge, montre plutot que raconte.
  *
- * Volontairement PAS une liste de specifications. Quelqu'un qui arrive ici vient
- * de vivre une sequence tres concrete : attendre des centaines de Mo, aller
- * chercher le fichier dans son dossier Telechargements parmi cent autres, le
- * glisser dans Premiere, scruter la timeline pour retrouver les vingt secondes
- * qui l'interessaient, jeter le reste. Chaque ligne ci-dessous nomme un de ces
- * moments et dit ce qu'il devient. « 1500 sites » et « 4K » sont des arguments
- * de fiche produit ; « tu ne telecharges que le passage » est un argument de
- * monteur.
+ * Ce qu'on a de plus fort ici, c'est un CHIFFRE que la personne vient de vivre :
+ * le poids du fichier qu'elle a attendu. On le transforme en comparaison de
+ * proportions — la meme piste, une fois pleine, une fois presque vide. Le
+ * contraste porte le sens avant meme qu'on lise le texte.
  *
- * `poidsMo` personnalise la premiere ligne avec le fichier reellement recupere
- * quand on le connait : un chiffre vecu porte plus qu'un exemple.
+ * Les visuels sont les captures REELLES de la one-page (module de decoupe,
+ * timeline Premiere) : pas d'icones decoratives, conformement a la direction
+ * artistique — un outil se montre en fonctionnement. Les trois premieres cartes
+ * reprennent `.tf-cell` (rayons asymetriques, legere inclinaison) ; la carte de
+ * cloture suit deliberement le langage des encarts d'alerte deja presents plus
+ * haut sur cette page, pas celui du bento.
  */
-function PromoTubeForge({ poidsMo }: { poidsMo: number | null }) {
-  const lignes = [
-    {
-      ici: poidsMo
-        ? `Tu viens de télécharger ${poidsMo} Mo — même si tu ne gardes que vingt secondes au montage.`
-        : "Tu télécharges la vidéo entière, même si tu ne gardes que vingt secondes au montage.",
-      la: "Tu poses ton point d’entrée et ton point de sortie AVANT de télécharger. Trente secondes utiles dans une vidéo de deux heures ? Tu ne récupères que ces trente secondes.",
-    },
-    {
-      ici: "Le fichier atterrit dans ton dossier Téléchargements, à toi de le retrouver et de le glisser dans ton projet.",
-      la: "Il arrive directement dans ton chutier Premiere ou DaVinci, nommé, prêt à poser sur la timeline. Tu ne quittes jamais ton logiciel de montage.",
-    },
-    {
-      ici: "Un lien à la fois, 25 par jour, 1080p, une réserve partagée — et quatre plateformes seulement : Instagram et Facebook exigent d’être connecté, ce qu’une page web ne peut pas faire.",
-      la: "Plus de 1500 sites, en 4K, à la chaîne. Il tourne sur ta machine, donc il peut utiliser ta propre session de navigateur : c’est ce qui lui ouvre les plateformes fermées.",
-    },
-  ];
+function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSec: number | null }) {
+  const EXTRAIT_S = 20;
+  // A defaut de mesure vecue, l'exemple par defaut est lui aussi mesure :
+  // une video de 15 min en 1080p pese ~440 Mo (releve du 26/07/2026).
+  const poids = poidsMo ?? 440;
+  const duree = dureeSec && dureeSec > EXTRAIT_S ? dureeSec : 904;
+  const part = Math.min(1, EXTRAIT_S / duree);
+  const utileMo = Math.max(1, Math.round(poids * part));
+  const vecu = poidsMo !== null;
+
+  /**
+   * Le chiffre affiche est le VRAI, sans plancher.
+   *
+   * Piege corrige apres audit : un plancher applique au pourcentage servait a la
+   * fois a la largeur de la barre ET au texte. Sur une video de deux heures — le
+   * cas que ce bloc cherche justement a dramatiser — la vraie valeur (0,28 %)
+   * etait remplacee en silence par 0,6 % dans le texte. Un chiffre gonfle de
+   * deux fois, sur la page qui prone l'honnetete des chiffres.
+   *
+   * La lisibilite de la barre se regle donc en PIXELS (`minWidth`), ce qui ne
+   * touche pas au nombre annonce.
+   */
+  const pourcentReel = part * 100;
+  const pourcentTexte = pourcentReel
+    .toFixed(pourcentReel < 1 ? 2 : 1)
+    .replace(".", ",")
+    .replace(/,0$/, "");
+
+  const Carte = ({
+    r, tilt, delay, className = "", children,
+  }: {
+    r: string; tilt: string; delay: number; className?: string; children: React.ReactNode;
+  }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.55, delay, ease: easeOutExpo }}
+      className={`group ${className}`}
+    >
+      <div className="tf-cell h-full p-6 md:p-8" style={{ "--r": r, "--tilt": tilt } as React.CSSProperties}>
+        {children}
+      </div>
+    </motion.div>
+  );
 
   return (
-    <div className="mt-14">
-      <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-2">
-        Ce que ça change au montage
-      </p>
-      <h2 className="text-2xl md:text-3xl font-black tracking-[-0.02em] mb-7">
-        Le téléchargement n’est pas le travail<span style={{ color: RED }}>.</span>
-      </h2>
-
-      <div className="space-y-3">
-        {lignes.map((l, i) => (
-          <div
-            key={i}
-            className="grid md:grid-cols-2 gap-x-8 gap-y-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 md:p-6"
-          >
-            <p className="text-sm text-white/45 leading-relaxed">{l.ici}</p>
-            <div className="flex gap-3">
-              <span
-                className="mt-[7px] w-1 shrink-0 rounded-full self-stretch"
-                style={{ background: `linear-gradient(180deg, ${AMBER}, ${RED})` }}
-                aria-hidden="true"
-              />
-              <p className="text-sm text-white leading-relaxed">{l.la}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Le calcul que fait le lecteur de tete, pose noir sur blanc. Le chiffre
-          des 10 minutes par extrait est celui deja avance sur la page TubeForge. */}
-      <div className="mt-6 rounded-2xl border p-5 md:p-6"
-        style={{ borderColor: "rgba(239,58,36,0.28)", background: "rgba(239,58,36,0.05)" }}>
-        <p className="text-white/70 leading-relaxed">
-          Dix minutes par extrait, douze extraits dans une vidéo : <span className="text-white font-semibold">deux heures
-          passées à récupérer des fichiers</span> au lieu de monter. Une vidéo par semaine, et ça fait
-          huit heures par mois.
+    <div className="mt-16">
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease: easeOutExpo }}
+      >
+        <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-2">
+          Ce que ça change au montage
         </p>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mt-5">
+        <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] mb-8">
+          Le téléchargement n’est pas le travail<span style={{ color: RED }}>.</span>
+        </h2>
+      </motion.div>
+
+      {/* ── L'argument massue : le gaspillage, en proportions reelles ── */}
+      <Carte r="24px 10px 22px 12px" tilt="-0.5deg" delay={0}>
+        <div className="grid md:grid-cols-[1fr_1fr] gap-8 md:gap-10 items-center">
+          <div>
+            <p className="text-[11px] font-mono uppercase tracking-widest text-white/32 mb-6">
+              {vecu ? "Le fichier que tu viens de récupérer" : "Une vidéo de 15 minutes en 1080p"}
+            </p>
+
+            <div className="mb-6">
+              <div className="flex items-baseline justify-between gap-3 mb-2">
+                <span className="text-sm text-white/52">Téléchargé</span>
+                <span className="font-mono text-sm text-white/52 tabular-nums whitespace-nowrap">{poids} Mo</span>
+              </div>
+              <div className="h-2.5 rounded-full bg-white/[0.09]" />
+            </div>
+
+            <div>
+              <div className="flex items-baseline justify-between gap-3 mb-2">
+                <span className="text-sm text-white">
+                  Utile pour <span className="whitespace-nowrap">{EXTRAIT_S} s</span>
+                </span>
+                <span className="font-mono text-sm tabular-nums font-semibold whitespace-nowrap" style={{ color: RED }}>
+                  {utileMo} Mo
+                </span>
+              </div>
+              <div className="h-2.5 rounded-full bg-white/[0.05] overflow-hidden">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${pourcentReel}%`,
+                    minWidth: "6px",
+                    background: `linear-gradient(90deg, ${AMBER}, ${RED})`,
+                  }}
+                />
+              </div>
+              <p className="text-[13px] text-white/52 mt-3 leading-relaxed">
+                Soit <span className="text-white font-semibold">{pourcentTexte} %</span> du fichier.
+                Le reste, tu l’as attendu pour rien.
+              </p>
+            </div>
+
+            <p className="text-[15px] text-white leading-relaxed mt-7">
+              TubeForge te fait poser ton point d’entrée et ton point de sortie
+              <span className="text-white/52"> avant </span>
+              de télécharger. Trente secondes utiles dans une vidéo de deux heures ?
+              Tu ne récupères que ces trente secondes.
+            </p>
+          </div>
+
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- capture locale, aucun gain a passer par next/image */}
+            <img
+              src="/tubeforge/real-app.jpg"
+              alt="TubeForge : module de découpe avec curseurs de début et de fin, avant téléchargement"
+              className="w-full h-auto rounded-lg border border-white/10"
+              loading="lazy"
+              width={692}
+              height={878}
+            />
+            <p className="text-[11px] font-mono text-white/32 mt-3 text-center">capture réelle · TubeForge</p>
+          </div>
+        </div>
+      </Carte>
+
+      {/* ── Une seule carte pour les deux angles restants : ou ca arrive,
+             et a quel rythme. Quatre cartes d'affilee, c'etait trop haut. ── */}
+      <Carte r="12px 24px 10px 22px" tilt="0.55deg" delay={0.08} className="mt-4">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-10">
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- capture locale */}
+            <img
+              src="/tubeforge/real-timeline.jpg"
+              alt="L’extrait posé sur une timeline Premiere Pro"
+              className="w-full h-[128px] object-cover rounded-lg border border-white/10"
+              style={{ objectPosition: "50% 35%" }}
+              loading="lazy"
+              width={830}
+              height={290}
+            />
+            <p className="text-[11px] font-mono text-white/32 mt-2.5">capture réelle · Premiere Pro</p>
+            <p className="text-[15px] text-white leading-relaxed mt-4">
+              Il arrive dans ton chutier, nommé, prêt à poser.
+            </p>
+            <p className="text-sm text-white/52 leading-relaxed mt-1.5">
+              Ici, le fichier atterrit dans tes Téléchargements et c’est à toi d’aller le chercher.
+            </p>
+          </div>
+
+          <div className="flex flex-col">
+            <div className="grid grid-cols-3 gap-3 mb-5">
+              {[
+                { n: "1500+", l: "sites" },
+                { n: "4K", l: "maximum" },
+                { n: "∞", l: "par jour" },
+              ].map((st) => (
+                <div key={st.l}>
+                  <p className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none" style={{ color: AMBER }}>
+                    {st.n}
+                  </p>
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-white/32 mt-1.5">{st.l}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-[15px] text-white leading-relaxed">
+              Tu colles tes liens à la chaîne et tu continues à monter pendant qu’ils arrivent.
+            </p>
+            <p className="text-sm text-white/52 leading-relaxed mt-1.5">
+              Ici : un lien à la fois, 25 par jour, 1080p, quatre plateformes — Instagram et Facebook
+              exigent d’être connecté, ce qu’une page web ne peut pas faire.
+            </p>
+          </div>
+        </div>
+      </Carte>
+
+      {/* ── La cloture : le temps, en gros, parce que c'est ca qu'on achete ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, delay: 0.16, ease: easeOutExpo }}
+        className="mt-4 rounded-2xl border p-6 md:p-8"
+        style={{ borderColor: "rgba(239,58,36,0.3)", background: "rgba(239,58,36,0.055)" }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-end gap-6 sm:gap-10 mb-7">
+          <div>
+            <p className="text-4xl md:text-5xl font-black tracking-[-0.03em] leading-none" style={{ color: RED }}>2 h</p>
+            <p className="text-[13px] text-white/52 mt-2 leading-snug">
+              par vidéo, à récupérer<br />des fichiers au lieu de monter
+            </p>
+          </div>
+          <div className="hidden sm:block w-px self-stretch bg-white/10" />
+          <div>
+            <p className="text-4xl md:text-5xl font-black tracking-[-0.03em] leading-none text-white">8 h</p>
+            <p className="text-[13px] text-white/52 mt-2 leading-snug">
+              par mois, si tu sors<br />une vidéo par semaine
+            </p>
+          </div>
+          <div className="hidden md:block w-px self-stretch bg-white/10" />
+          <p className="text-[13px] text-white/32 leading-relaxed max-w-[210px]">
+            Sur la base de dix minutes par extrait et douze extraits par vidéo.
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <Link
             data-track="webdl-promo-essai"
             href="/tubeforge/checkout?plan=sub&months=12"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-black transition-transform duration-200 hover:translate-y-[-1px]"
+            className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl font-bold text-black text-[15px] transition-transform duration-200 hover:translate-y-[-1px]"
             style={{ background: `linear-gradient(118deg, ${AMBER} 0%, ${RED} 58%, #8b3dff 155%)` }}
           >
             Essayer 14 jours gratuitement
@@ -173,16 +323,16 @@ function PromoTubeForge({ poidsMo }: { poidsMo: number | null }) {
           <Link
             data-track="webdl-promo-voir"
             href="/tubeforge"
-            className="inline-flex items-center justify-center px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white/80 font-semibold text-sm hover:bg-white/10 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-4 rounded-xl bg-white/5 border border-white/10 text-white/80 font-semibold text-sm hover:bg-white/10 transition-colors"
           >
             Voir TubeForge en action
           </Link>
         </div>
-        <p className="text-[11px] text-white/30 mt-3">
+        <p className="text-[11px] text-white/32 mt-3.5">
           3,49&nbsp;€ par mois à l&apos;année. La carte est demandée, rien n&apos;est prélevé avant la fin
           des 14 jours, et tu annules en un clic.
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -212,6 +362,7 @@ export default function TelechargerPage() {
   // Poids du dernier fichier resolu : sert a personnaliser l'argumentaire avec
   // un chiffre que la personne vient reellement de vivre.
   const [dernierPoidsMo, setDernierPoidsMo] = useState<number | null>(null);
+  const [dernierDureeSec, setDernierDureeSec] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const refreshMe = useCallback(async () => {
@@ -248,6 +399,7 @@ export default function TelechargerPage() {
         setMe((m) => (m ? { ...m, quota: r.quota, serveur: r.serveur ?? m.serveur } : m));
         const octets = r.video ? (r.video.size ?? 0) + (r.audio?.size ?? 0) : r.file?.size ?? 0;
         if (octets > 0) setDernierPoidsMo(Math.round(octets / 1048576));
+        if (r.meta?.durationSec) setDernierDureeSec(r.meta.durationSec);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Une erreur est survenue.");
@@ -325,7 +477,10 @@ export default function TelechargerPage() {
 
       <main className="w-full relative z-10">
         <section className="pt-16 pb-20 md:pt-24 md:pb-28">
-          <div className="container-main max-w-3xl">
+          {/* Pas de `max-w-*` ici : `.container-main` (globals.css) est declaree hors
+                de tout @layer et l'emporte sur les utilitaires Tailwind v4 — la classe
+                serait morte, et deviendrait un piege si le CSS global etait range un jour. */}
+            <div className="container-main">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -598,7 +753,7 @@ export default function TelechargerPage() {
               </motion.div>
             )}
 
-            <PromoTubeForge poidsMo={dernierPoidsMo} />
+            <PromoTubeForge poidsMo={dernierPoidsMo} dureeSec={dernierDureeSec} />
           </div>
         </section>
       </main>

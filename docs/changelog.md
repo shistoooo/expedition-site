@@ -1,4 +1,34 @@
 ---
+### [2026-07-27 00:50] — Bloc promo rendu visuel, et un defaut d'HONNETETE trouve par l'audit
+
+**Quoi :** Le bloc de promotion TubeForge, qui etait un mur de six paragraphes, devient une comparaison de proportions chiffree sur la vraie video de la personne, appuyee par les captures reelles du produit. Un audit en contexte frais (agent `design-critic`) a ensuite trouve trois defauts bloquants, tous corriges.
+
+**🚨 Le defaut le plus grave, que je n'avais pas vu : un chiffre falsifie.**
+J'avais mis un plancher `Math.max(0.6, part*100)` pour que la barre minuscule reste visible. Mais cette meme valeur servait AUSSI au texte « Soit X % du fichier ». Sur une video de deux heures — precisement le cas que ce bloc cherche a dramatiser — la vraie valeur est **0,28 %** et le texte affichait **0,6 %**. Un chiffre gonfle de plus du double, presente comme une mesure, sur une page dont l'argument central est l'honnetete. Corrige en separant les deux : le texte affiche toujours la valeur reelle, la lisibilite de la barre se regle en **pixels** (`minWidth: 6px`), ce qui ne touche pas au nombre annonce. Verifie sur quatre cas : 2 h -> 0,28 % · 15 min -> 2,2 % · 2 min -> 16,7 % · 15 s -> 100 %.
+
+**Les deux autres bloquants.**
+- `max-w-3xl` sur le conteneur etait une classe **morte** : `.container-main` (globals.css) est declaree hors de tout `@layer` et l'emporte donc toujours sur les utilitaires Tailwind v4. La page fait 1200 px, pas 768. Je n'ai PAS touche au CSS global (il concerne tout le site) mais j'ai retire la classe morte et documente le piege : le jour ou quelqu'un range `.container-main` dans un layer, cette page se retrecirait et la grille casserait.
+- Consequence : la capture du module de decoupe etait plafonnee a 300 px alors que 500 px etaient disponibles. A cette taille, le texte interne (« DEBUT 00:00:21 ») tombait a ~7 px — **illisible**. La preuve visuelle echouait a son seul travail : montrer la fonctionnalite dont parle le paragraphe d'a cote. Passee a **506 px** (echelle 0,73 au lieu de 0,43).
+
+**Le reste des corrections de l'audit :**
+- **Densite** : quatre cartes empilees apres un parcours deja long, c'etait trop. Les deux cartes « chutier » et « 1500+/4K/∞ » fusionnent en une seule a deux colonnes -> trois blocs.
+- **Animation d'entree manquante** : le bloc apparaissait d'un coup alors que toute la page (et `FeaturesList`) utilise des reveals decales. Ajout de `whileInView` avec delais echelonnes.
+- **`object-left` inoperant** : la boite d'affichage est proportionnellement plus large que `real-timeline.jpg`, donc `object-cover` rogne en HAUTEUR — l'axe horizontal n'entrait pas en jeu. Remplace par `objectPosition: 50% 35%`.
+- **Commentaire trompeur** : il affirmait que les quatre cartes utilisaient `.tf-cell`, faux pour la carte de cloture. Corrige dans le commentaire, pas dans le CSS — la cloture suit deliberement le langage des encarts d'alerte de la page.
+- **Niveaux d'opacite** resserres (`/32` et `/52` au lieu de six valeurs differentes).
+
+**Ce que l'audit a valide** : la mecanique des deux barres (meme piste, une pleine une vide) porte le sens sans lecture ; les captures reelles plutot que des icones ; et le fait d'ecrire l'hypothese du calcul (« dix minutes par extrait, douze extraits ») au lieu de sortir un chiffre magique.
+
+**Verifications :** a 1280 px — barre pleine 500 px contre 11 px pour la barre utile, capture a 506 px, deux `.tf-cell`, pourcentage « 2,2 % ». A 375 px — aucun debordement horizontal, le libelle tient sur une ligne (21 px de haut), le triptyque de chiffres tient (3 x 85 px), capture a 282 px.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — `PromoTubeForge` reecrit, conteneur nettoye de sa classe morte
+
+**Comment annuler :** `git revert <hash>`.
+
+**Effets de bord possibles :** la comparaison n'est personnalisee qu'apres une resolution reussie ; sinon elle retombe sur l'exemple par defaut, lui aussi mesure (15 min en 1080p = ~440 Mo). Le bloc reste haut : trois cartes apres un parcours deja long, c'est un pari sur l'attention de quelqu'un qui vient d'obtenir ce qu'il voulait. Et **le piege `.container-main` hors `@layer` reste entier** pour tout le site : ce n'est pas mon perimetre, mais c'est une mine documentee.
+
+---
 ### [2026-07-26 23:50] — Compteurs lisibles, arguments propres a la page gratuite, Instagram tranche
 
 **Quoi :** Correction du piege d'ergonomie sur les quotas, refonte du bloc de promotion TubeForge depuis le point de vue d'un monteur, rangee « zero pub », et reponse mesuree sur Instagram.
