@@ -1,4 +1,22 @@
 ---
+### [2026-07-27 04:50] — La question rejoint sa carte, l'accroche de section porte la promesse
+
+**Quoi :** La question chiffree (« Tu viens de telecharger 440 Mo. Combien vas-tu en garder ? ») quitte le titre de section pour entrer dans la carte de decoupe, juste au-dessus des deux barres. Le titre de section porte desormais la promesse du produit : « Tes extraits arrivent sur ta timeline pendant que tu montes. »
+
+**Pourquoi :** remarque du user, structurelle et juste. La question interroge ce que montre UNE carte (le gaspillage d'octets) ; en tete de section elle n'annoncait qu'un tiers du bloc, alors que la section couvre aussi les lots, les playlists et la destination du fichier. Deux consequences :
+- **Dans la carte**, la question est collee aux deux barres qui y repondent. Le lecteur ne peut pas deviner la reponse avant de les regarder, ce qui lui fait descendre l'oeil de la question vers la preuve.
+- **En tete de section**, une promesse couvre les quatre cartes. « Tes extraits arrivent sur ta timeline pendant que tu montes » decrit un etat que le lecteur n'a pas, ce qui est ce qui accroche un prospect. Elle est aussi verifiable : c'est la conjonction de la file d'attente et du depot dans le chutier, tous deux montres plus bas.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — `h2` de section, accroche mono, question deplacee dans la carte
+
+**Verification :** ordre de lecture confirme en production (accroche, promesse, les quatre gestes, puis la question dans la carte). Zero exclamation, un seul tiret cadratin (`Footer` global).
+
+**Comment annuler :** `git revert <hash>`.
+
+**Effets de bord possibles :** quatrieme iteration sur cette meme accroche. Les trois precedentes ont echoue pour des raisons differentes (phrase-slogan, declaration vague, reponse avant la question) et celle-ci change de nature : elle ne decrit plus le probleme mais la promesse. Si elle ne prend pas, le probleme n'est plus la formulation mais le fait qu'un titre de section doive porter quatre arguments a la fois.
+
+---
 ### [2026-07-27 04:20] — L'accroche de section devient une QUESTION (troisieme essai)
 
 **Quoi :** Le titre du bloc promo passe de constat a question ouverte, calculee sur les chiffres de la personne : « Tu viens de telecharger 440 Mo. Combien vas-tu en garder ? » (ou « Une video de 15 minutes pese 440 Mo. Combien vas-tu en garder ? » avant tout telechargement). Suppression au passage d'une etiquette qui repetait l'accroche a 40 px d'ecart.

@@ -192,20 +192,14 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
         transition={{ duration: 0.5, ease: easeOutExpo }}
       >
         <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-2">
-          Avant de monter
+          Ce que TubeForge fait autrement
         </p>
-        {/* Une QUESTION, pas un constat. Deux essais avant celui-la : une
-            phrase-slogan (« le telechargement n'est pas le travail »), puis un
-            constat plat (« ce que tu fais avant de monter »), qui ne designait
-            rien. La question, elle, ouvre : le lecteur ne connait pas la reponse
-            avant d'avoir regarde les barres juste en dessous.
-            Le skill copywriting autorise la question rhetorique ; stop-slop
-            interdit seulement de la refermer dans la phrase suivante. Ici c'est
-            la section entiere qui repond, sur SES chiffres a lui. */}
+        {/* L'accroche de section porte la PROMESSE, pas le detail d'une carte.
+            La question chiffree (« combien vas-tu en garder ? ») a rejoint la
+            carte qu'elle interroge : elle y a un sens, ici elle n'en avait que
+            pour un tiers du bloc. */}
         <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] mb-3 max-w-3xl">
-          {vecu
-            ? `Tu viens de télécharger ${poids} Mo. Combien vas-tu en garder\u00A0?`
-            : `Une vidéo de 15 minutes pèse ${poids} Mo. Combien vas-tu en garder\u00A0?`}
+          Tes extraits arrivent sur ta timeline pendant que tu montes<span style={{ color: RED }}>.</span>
         </h2>
         <p className="text-base text-white/52 leading-relaxed mb-8 max-w-2xl">
           Le téléchargement, la recherche du fichier dans un dossier, le glisser-déposer, la
@@ -217,8 +211,14 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
       <Carte r="24px 10px 22px 12px" tilt="-0.5deg" delay={0}>
         <div className="grid md:grid-cols-[1.3fr_1fr] gap-8 md:gap-10 items-center">
           <div>
-            {/* Pas d'etiquette ici : l'accroche de section dit deja de quel
-                fichier on parle. La repeter a 40 px d'ecart n'apprend rien. */}
+            {/* La question vit ici, collee aux deux barres qui y repondent. Le
+                lecteur ne peut pas deviner la reponse avant de les regarder :
+                c'est ce qui lui fait descendre l'oeil. */}
+            <p className="text-lg md:text-xl font-bold text-white leading-snug mb-6">
+              {vecu
+                ? `Tu viens de télécharger ${poids} Mo. Combien vas-tu en garder\u00A0?`
+                : `Une vidéo de 15 minutes pèse ${poids} Mo. Combien vas-tu en garder\u00A0?`}
+            </p>
             <div className="mb-7">
               <div className="flex items-baseline justify-between gap-3 mb-2.5">
                 <span className="text-[15px] text-white/52">Téléchargé</span>
