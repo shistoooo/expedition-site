@@ -192,21 +192,33 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
         transition={{ duration: 0.5, ease: easeOutExpo }}
       >
         <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-2">
-          Ce que ça change au montage
+          Avant de monter
         </p>
-        <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] mb-8">
-          Ce que tu fais avant de monter<span style={{ color: RED }}>.</span>
+        {/* Une QUESTION, pas un constat. Deux essais avant celui-la : une
+            phrase-slogan (« le telechargement n'est pas le travail »), puis un
+            constat plat (« ce que tu fais avant de monter »), qui ne designait
+            rien. La question, elle, ouvre : le lecteur ne connait pas la reponse
+            avant d'avoir regarde les barres juste en dessous.
+            Le skill copywriting autorise la question rhetorique ; stop-slop
+            interdit seulement de la refermer dans la phrase suivante. Ici c'est
+            la section entiere qui repond, sur SES chiffres a lui. */}
+        <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] mb-3 max-w-3xl">
+          {vecu
+            ? `Tu viens de télécharger ${poids} Mo. Combien vas-tu en garder\u00A0?`
+            : `Une vidéo de 15 minutes pèse ${poids} Mo. Combien vas-tu en garder\u00A0?`}
         </h2>
+        <p className="text-base text-white/52 leading-relaxed mb-8 max-w-2xl">
+          Le téléchargement, la recherche du fichier dans un dossier, le glisser-déposer, la
+          relecture pour retrouver le bon passage : les quatre gestes que TubeForge raccourcit.
+        </p>
       </motion.div>
 
       {/* ── L'argument massue : le gaspillage, en proportions reelles ── */}
       <Carte r="24px 10px 22px 12px" tilt="-0.5deg" delay={0}>
         <div className="grid md:grid-cols-[1.3fr_1fr] gap-8 md:gap-10 items-center">
           <div>
-            <p className="text-[11px] font-mono uppercase tracking-wider text-white/32 mb-7">
-              {vecu ? "Le fichier que tu viens de récupérer" : "Une vidéo de 15 minutes en 1080p"}
-            </p>
-
+            {/* Pas d'etiquette ici : l'accroche de section dit deja de quel
+                fichier on parle. La repeter a 40 px d'ecart n'apprend rien. */}
             <div className="mb-7">
               <div className="flex items-baseline justify-between gap-3 mb-2.5">
                 <span className="text-[15px] text-white/52">Téléchargé</span>

@@ -1,4 +1,27 @@
 ---
+### [2026-07-27 04:20] — L'accroche de section devient une QUESTION (troisieme essai)
+
+**Quoi :** Le titre du bloc promo passe de constat a question ouverte, calculee sur les chiffres de la personne : « Tu viens de telecharger 440 Mo. Combien vas-tu en garder ? » (ou « Une video de 15 minutes pese 440 Mo. Combien vas-tu en garder ? » avant tout telechargement). Suppression au passage d'une etiquette qui repetait l'accroche a 40 px d'ecart.
+
+**Pourquoi, et les deux erreurs qui ont precede :**
+1. **« Le telechargement n'est pas le travail. »** — opposition binaire + phrase faite pour etre citee. Deux fautes que `stop-slop` proscrit.
+2. **« Ce que tu fais avant de monter. »** — en fuyant le slogan, j'ai ecrit une declaration vague, exactement ce que le meme skill interdit : une phrase qui annonce un sujet sans nommer la chose. Le user : « pas assez clair, pas assez evocateur ». Il avait raison.
+3. **« Recuperer tes extraits te coute deux heures par video. »** — clair et chiffre, mais ca **repond avant d'avoir pose la question**. Le user voulait une formulation qui intrigue et donne envie de lire.
+
+**Pourquoi une question est ici legitime :** le skill `copywriting` recommande la question rhetorique (« Questions engage readers and make them think about their own situation »). Le skill `stop-slop` n'interdit pas les questions, il interdit de les **refermer dans la phrase suivante**. Ici la reponse n'est pas dans le texte : elle est dans les deux barres juste en dessous, calculees sur le fichier reel. Le lecteur ne peut pas connaitre la reponse avant de regarder.
+
+**Le doublon supprime :** l'accroche annonce « Une video de 15 minutes pese 440 Mo », et l'etiquette de la carte disait « Une video de 15 minutes en 1080p » quarante pixels plus bas. Etiquette retiree ; l'accroche indique deja s'il s'agit du fichier de la personne ou d'un exemple.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — accroche, sous-titre, etiquette retiree
+
+**Verification :** en production, la question apparait bien, la phrase qui la suit enumere les quatre gestes sans y repondre, « 15 minutes » n'apparait plus qu'une fois. Zero exclamation, zero adverbe proscrit, un seul tiret cadratin (celui du `Footer` global).
+
+**Comment annuler :** `git revert <hash>`.
+
+**Effets de bord possibles :** la question mentionne 20 secondes comme extrait de reference ; quelqu'un qui garde trois minutes trouvera le calcul severe. Le chiffre est defendable comme ordre de grandeur d'un extrait de montage, mais c'est une hypothese, pas une mesure. **Trois formulations en trois iterations sur la meme phrase** : le signe qu'il faut faire valider une accroche avant de l'habiller, pas apres.
+
+---
 ### [2026-07-27 03:40] — Copy reecrite avec les skills `stop-slop` + `copywriting`, et metadonnees SEO propres
 
 **Quoi :** Tous les textes visibles de `/tubeforge/telecharger` et tous les messages du Worker reecrits contre les regles du skill `stop-slop`. Ajout d'un `layout.tsx` de segment avec des metadonnees propres a la page.
