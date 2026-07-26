@@ -79,7 +79,8 @@ async function mint(visitorData: string): Promise<string> {
 
   const challenge = await getChallenge({
     requestKey: REQUEST_KEY,
-    fetchFunction: (...args: Parameters<typeof fetch>) => fetch(...args),
+    fetchFunction: (entree: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) =>
+      fetch(entree, { ...init, signal: AbortSignal.timeout(10_000) }),
   });
   if (!challenge) throw new Error("défi BotGuard vide");
 
@@ -117,6 +118,7 @@ async function mint(visitorData: string): Promise<string> {
     method: "POST",
     headers: WAA_HEADERS,
     body: JSON.stringify([REQUEST_KEY, botguardResponse]),
+    signal: AbortSignal.timeout(10_000),
   });
   if (!itRes.ok) throw new Error("jeton d'intégrité refusé (" + itRes.status + ")");
   const itData = (await itRes.json()) as unknown[];
@@ -144,7 +146,13 @@ let sessionCache: { visitorData: string; ts: number } | null = null;
 export async function getVisitorData(workerUrl: string): Promise<string | null> {
   if (sessionCache && Date.now() - sessionCache.ts < CACHE_TTL_MS) return sessionCache.visitorData;
   try {
-    const sess = await fetch(workerUrl + "/api/session").then((r) => r.json());
+    // Echeance courte et volontairement stricte : cet appel est sur le chemin de
+    // CHAQUE resolution YouTube, et sans borne il suffisait qu'il reste suspendu
+    // pour que le bouton tourne sans fin. Le Worker sait se procurer un
+    // visitorData de son cote, donc renoncer ici ne casse rien.
+    const sess = await fetch(workerUrl + "/api/session", {
+      signal: AbortSignal.timeout(8_000),
+    }).then((r) => r.json());
     const visitorData: string | undefined = sess?.visitorData;
     if (!visitorData) return null;
     sessionCache = { visitorData, ts: Date.now() };
@@ -163,7 +171,18 @@ export async function getPoToken(visitorData: string): Promise<string | null> {
       window.__tfdlAttestation = { ok: true, ms: Date.now() - t0, tokenLength: cached.length };
       return cached;
     }
-    const poToken = await mint(visitorData);
+    // Borne GLOBALE, en plus des echeances sur les deux appels reseau de `mint`.
+    // L'essentiel du travail se passe dans une machine virtuelle JavaScript
+    // fournie par Google (`bg.snapshot()`) : aucun signal d'annulation ne
+    // l'interrompt, et rien ne garantit qu'elle rende la main. Une course contre
+    // un minuteur est le seul moyen de reprendre la main — le jeton n'est qu'un
+    // secours, donc y renoncer coute moins cher qu'un bouton qui tourne sans fin.
+    const poToken = await Promise.race([
+      mint(visitorData),
+      new Promise<never>((_, rejeter) =>
+        setTimeout(() => rejeter(new Error("BotGuard n’a pas répondu en 20 s")), 20_000)
+      ),
+    ]);
     writeCache({ visitorData, poToken });
     window.__tfdlAttestation = { ok: true, ms: Date.now() - t0, tokenLength: poToken.length };
     return poToken;

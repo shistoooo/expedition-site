@@ -477,6 +477,9 @@ function fmtDuration(s: number | null) {
 
 export default function TelechargerPage() {
   const [me, setMe] = useState<Me | null>(null);
+  // Distinct de `me === null` : « pas encore lu » et « impossible de lire » ne
+  // meritent pas le meme ecran, et surtout pas la meme hypothese sur la porte.
+  const [echecMe, setEchecMe] = useState(false);
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Resolved | null>(null);
@@ -496,11 +499,27 @@ export default function TelechargerPage() {
   const [dernierDureeSec, setDernierDureeSec] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  /**
+   * ⚠️ Le repli d'echec est le point sensible de tout ce fichier.
+   *
+   * Avant, un `/api/me` en echec faisait `setMe({ auth: false })`. Consequence :
+   * `gated` passait a FAUX — donc la page cachait le bouton Discord et affichait
+   * le champ de saisie, alors que le Worker, lui, exigeait toujours Discord.
+   * Chaque collage repartait avec « Connecte-toi avec Discord » et aucun moyen de
+   * le faire. C'est exactement le symptome rapporte : « le bouton Discord ne
+   * s'affiche pas, et quand je colle un lien ça ne marche pas ».
+   *
+   * La porte est une decision du serveur. Quand on n'a pas pu la lire, on ne
+   * DEVINE pas qu'elle est ouverte : on le dit et on propose de reessayer.
+   */
   const refreshMe = useCallback(async () => {
     try {
-      setMe(await fetchMe());
+      const r = await fetchMe();
+      setMe(r);
+      setEchecMe(false);
     } catch {
-      setMe({ auth: false });
+      setMe(null);
+      setEchecMe(true);
     }
   }, []);
 
@@ -683,11 +702,28 @@ export default function TelechargerPage() {
                   d'un coup. Vu de l'autre cote, l'outil avait l'air casse. On
                   occupe la place avec la forme de ce qui arrive, aux memes
                   dimensions, pour que rien ne saute. */}
-              {me === null && (
+              {me === null && !echecMe && (
                 <div className="text-center" aria-busy="true" aria-label="Vérification de l’accès">
                   <div className="h-4 w-64 max-w-full mx-auto rounded bg-white/[0.07] animate-pulse" />
                   <div className="h-3 w-44 max-w-full mx-auto rounded bg-white/[0.05] animate-pulse mt-3.5" />
                   <div className="h-[50px] w-[266px] max-w-full mx-auto rounded-xl bg-white/[0.06] animate-pulse mt-7" />
+                </div>
+              )}
+
+              {/* Echec de lecture de la porte. On ne montre PAS le champ de saisie :
+                  il ne servirait qu'a produire un refus incomprehensible. */}
+              {echecMe && (
+                <div className="text-center">
+                  <p className="text-white/80 mb-1">Impossible de vérifier ton accès.</p>
+                  <p className="text-sm text-white/40 mb-6">
+                    Le service n’a pas répondu. Ça vient de nous, pas de toi.
+                  </p>
+                  <button
+                    onClick={() => { setEchecMe(false); refreshMe(); }}
+                    className="px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white/80 font-semibold hover:bg-white/10 transition-colors"
+                  >
+                    Réessayer
+                  </button>
                 </div>
               )}
 

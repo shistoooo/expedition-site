@@ -94,12 +94,64 @@ export const loginUrl = () =>
     typeof window !== "undefined" ? window.location.origin + window.location.pathname : ""
   )}`;
 
+/**
+ * Echeance sur un appel reseau.
+ *
+ * ⚠️ La raison d'etre de ce fichier-ci. Aucun `fetch` de ce chemin n'avait de
+ * delai maximum. Un appel refuse jette et on affiche l'erreur ; un appel qui
+ * reste SUSPENDU ne jette jamais, donc le `await` ne rend pas la main, donc le
+ * `finally` qui eteint le bouton « Analyse » ne s'execute pas : le bouton tourne
+ * indefiniment. C'est exactement le symptome rapporte (« ça charge en boucle »).
+ *
+ * Il n'existe aucun cas ou tourner sans fin est le bon comportement. Une
+ * echeance transforme un blocage muet en phrase lisible.
+ */
+function echeance(ms: number, signalAppelant?: AbortSignal): AbortSignal {
+  const minuteur = AbortSignal.timeout(ms);
+  if (!signalAppelant) return minuteur;
+  // `AbortSignal.any` combine annulation manuelle et echeance. S'il manque, on
+  // garde au moins l'echeance : mieux vaut perdre l'annulation que la borne.
+  return typeof AbortSignal.any === "function"
+    ? AbortSignal.any([signalAppelant, minuteur])
+    : signalAppelant;
+}
+
+/** Vrai quand l'echec vient d'une echeance depassee et non d'un refus du serveur. */
+function estDelaiDepasse(e: unknown): boolean {
+  return e instanceof DOMException && (e.name === "TimeoutError" || e.name === "AbortError");
+}
+
+/**
+ * Le Worker interroge YouTube en direct, et l'anti-robot le fait parfois
+ * attendre une dizaine de secondes. L'echeance doit donc etre large — mais
+ * finie.
+ */
+const DELAI_API_MS = 45_000;
+
+/**
+ * Echeance par tranche de 6 Mo. Genereuse : a 1 Mo/s une tranche prend 6 s, et
+ * on ne veut pas punir une connexion lente. Au-dela, la tranche est rejouee —
+ * le mecanisme d'essais existait deja, il ne servait qu'aux refus explicites.
+ */
+const DELAI_TRANCHE_MS = 60_000;
+
 async function api<T>(path: string, params?: Record<string, string>): Promise<T> {
   const qs = params ? "?" + new URLSearchParams(params).toString() : "";
   const token = getToken();
-  const r = await fetch(WORKER + path + qs, {
-    headers: token ? { Authorization: "Bearer " + token } : {},
-  });
+  let r: Response;
+  try {
+    r = await fetch(WORKER + path + qs, {
+      headers: token ? { Authorization: "Bearer " + token } : {},
+      signal: echeance(DELAI_API_MS),
+    });
+  } catch (e) {
+    if (estDelaiDepasse(e)) {
+      throw new Error(
+        "Le service n’a pas répondu au bout de 45 secondes. Réessaie — si ça se reproduit, c’est de notre côté."
+      );
+    }
+    throw new Error("Impossible de joindre le service. Vérifie ta connexion.");
+  }
   const data = await r.json();
   if (!r.ok && !data?.err) throw new Error("Le service est momentanément indisponible.");
   return data as T;
@@ -204,9 +256,22 @@ async function fetchChunked(
         if (attempt > 0) {
           await new Promise((r) => setTimeout(r, 300 * attempt + Math.random() * 200));
         }
-        const r = await fetch(`${url}${sep}start=${s}&end=${e}`, { signal, referrerPolicy: "no-referrer" });
-        if (r.ok) buf = new Uint8Array(await r.arrayBuffer());
-        else lastStatus = r.status;
+        try {
+          // Echeance par tranche : une tranche suspendue gelait la barre de
+          // progression aussi surement qu'un blocage a la resolution, mais sans
+          // jamais rien afficher. Bornee, elle devient un simple nouvel essai.
+          const r = await fetch(`${url}${sep}start=${s}&end=${e}`, {
+            signal: echeance(DELAI_TRANCHE_MS, signal),
+            referrerPolicy: "no-referrer",
+          });
+          if (r.ok) buf = new Uint8Array(await r.arrayBuffer());
+          else lastStatus = r.status;
+        } catch (e2) {
+          // Annulation demandee par la personne : on sort tout de suite. Une
+          // echeance depassee, elle, vaut un nouvel essai.
+          if (signal.aborted) throw new Error("Téléchargement annulé.");
+          if (!estDelaiDepasse(e2)) throw e2;
+        }
       }
       if (!buf) {
         throw new Error(
@@ -228,7 +293,13 @@ async function fetchWhole(
   onBytes: (n: number) => void,
   signal: AbortSignal
 ): Promise<ArrayBuffer> {
-  const r = await fetch(url, { signal, referrerPolicy: "no-referrer" });
+  // Fichier d'un seul bloc (TikTok, X, Twitch) : pas de decoupage possible, donc
+  // pas de nouvel essai par tranche. L'echeance est large mais existe, sinon un
+  // flux qui s'arrete de couler laisse la barre figee pour toujours.
+  const r = await fetch(url, {
+    signal: echeance(5 * 60_000, signal),
+    referrerPolicy: "no-referrer",
+  });
   if (!r.ok) throw new Error("Le téléchargement a échoué (" + r.status + ").");
   if (!r.body) return r.arrayBuffer();
   const parts: Uint8Array[] = [];
