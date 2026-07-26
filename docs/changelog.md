@@ -1,4 +1,26 @@
 ---
+### [2026-07-26 20:15] — Plafond de depense construit a la main (Cloudflare n'en propose aucun)
+
+**Quoi :** Un plafond GLOBAL de resolutions par jour (`MAX_DAILY_RESOLVES`, 3000 par defaut) dans le Worker, et la duree de vie des URLs de relais ramenee de 6 h a 2 h.
+
+**Pourquoi :** question directe du user — « en payant 5 $ je peux me retrouver a etre facture plus, non ? ». **Oui.** Verifie le 26/07/2026 : le plan payant facture 0,30 $ par million de requetes au-dela du forfait, et **Cloudflare ne propose AUCUN reglage de plafond de facturation** — c'est une demande recurrente de leur communaute, jamais implementee. La seule borne technique disponible est le CPU par invocation, qui ne limite pas la depense totale. Sans garde-fou maison, un partage qui prend ou un abus transforme « 5 $/mois » en montant inconnu.
+
+**Le calcul derriere le 3000 :** une resolution entraine jusqu'a ~76 appels au relais (video de 441 Mo en tranches de 6 Mo). 3000 x 76 = 228 000 requetes/jour, soit **~6,8 M/mois — sous les 10 M inclus dans le forfait a 5 $**. Autrement dit, meme dans le pire des cas ou tous les telechargements sont des videos longues, la facture reste a 5 $. Le quota par IP (25/jour) ne protegeait que contre un utilisateur seul ; celui-la protege la facture.
+
+**Duree de vie des signatures ramenee a 2 h :** une resolution donnait auparavant six heures de relais a qui gardait le lien. Un fichier de 441 Mo descend en ~2 minutes, donc 2 h reste tres large et reduit d'autant la fenetre d'abus.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/index.js` — `MAX_DAILY_RESOLVES`, compteur KV `g:<date>` verifie AVANT le quota individuel, message `plafond-global`
+- (hors repo) `tubeforge-webdl/src/auth.js` — `signUrl` par defaut a 2 h
+- (hors repo) `tubeforge-webdl/wrangler.toml` — variable `MAX_DAILY_RESOLVES = "3000"`, reglable sans toucher au code
+
+**Verification :** plafond temporairement mis a 1 sur un worker de developpement — 1er appel OK, 2e et 3e bloques avec `kind: 'plafond-global'` et un message qui explique que l'outil est gratuit donc bride et qu'il repart demain. Plafond restaure a 3000, compteurs de test purges, prod re-verifiee (resolution OK, `android_vr`, 1080p).
+
+**Comment annuler :** changer `MAX_DAILY_RESOLVES` dans `wrangler.toml` puis `npx wrangler deploy`. Mettre une valeur tres haute revient a retirer le plafond.
+
+**Effets de bord possibles :** le compteur global est en KV, donc **souple** comme celui par IP (coherence eventuelle : on peut depasser de quelques unites en rafale) — suffisant pour un garde-fou de facturation, pas pour de la comptabilite. Quand le plafond tombe, il tombe pour TOUT LE MONDE jusqu'au lendemain : c'est voulu (mieux vaut un service bride qu'une facture surprise), mais ca veut dire qu'un abus peut priver les vrais utilisateurs — le quota de 25/IP limite deja ce risque. Enfin le plafond compte les RESOLUTIONS, pas les octets : quelqu'un qui garde une URL signee peut encore consommer du relais pendant 2 h sans passer par le compteur.
+
+---
 ### [2026-07-26 19:30] — Limite portee a 25/jour + nouvel essai par tranche (403 sporadiques)
 
 **Quoi :** `DAILY_LIMIT` passe de 10 a 25 telechargements par jour et par IP. Et surtout : chaque tranche a desormais droit a 4 essais, parce qu'un seul refus tuait tout le telechargement.
