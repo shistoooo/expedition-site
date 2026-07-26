@@ -9,6 +9,8 @@
  *    contre plusieurs secondes de CPU facture cote serveur.
  */
 
+import { getAttestation } from "./potoken";
+
 const WORKER =
   process.env.NEXT_PUBLIC_WEBDL_URL || "https://tubeforge-webdl.expedition-studio.workers.dev";
 
@@ -36,6 +38,8 @@ export type Resolved = {
   maxHeight?: number;
   /** true quand la qualite a du etre baissee pour tenir dans la memoire du navigateur. */
   downgraded?: boolean;
+  /** true quand l'extraction a ete faite avec l'attestation BotGuard. */
+  attested?: boolean;
   video?: { url: string; size: number; height: number; codec: string; container: string };
   audio?: { url: string; size: number; codec: string };
   file?: { url: string; size: number | null; label: string; container: string };
@@ -78,11 +82,31 @@ async function api<T>(path: string, params?: Record<string, string>): Promise<T>
 
 export const fetchMe = () => api<Me>("/api/me");
 
-export const resolve = (url: string) =>
-  api<Resolved | { ok: false; err: string; needAuth?: boolean; quotaReached?: boolean }>(
+/**
+ * L'attestation n'est demandee que pour YouTube : c'est le seul a controler
+ * l'origine des requetes. Elle est mise en cache, donc seul le premier appel
+ * de la session paie le calcul BotGuard.
+ */
+const isYouTube = (u: string) => /youtu\.?be|youtube\.com/.test(u);
+
+export async function warmAttestation() {
+  await getAttestation(WORKER);
+}
+
+export async function resolve(url: string) {
+  const params: Record<string, string> = { url };
+  if (isYouTube(url)) {
+    const att = await getAttestation(WORKER);
+    if (att) {
+      params.vd = att.visitorData;
+      params.pot = att.poToken;
+    }
+  }
+  return api<Resolved | { ok: false; err: string; needAuth?: boolean; quotaReached?: boolean }>(
     "/api/resolve",
-    { url }
+    params
   );
+}
 
 /* ── Telechargement ────────────────────────────────────────────────── */
 

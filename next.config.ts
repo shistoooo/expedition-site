@@ -1,6 +1,42 @@
 import type { NextConfig } from "next";
 
-const securityHeaders = [
+/**
+ * Directives CSP communes. `script-src` est ajoute a part, parce qu'UNE seule
+ * page a besoin d'un cran de plus (voir CSP_SCRIPT_SRC_DOWNLOADER).
+ */
+const CSP_BASE = [
+  "default-src 'self'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https:",
+  // Les 3 dernieres entrees servent le telechargeur web (/tubeforge/telecharger) :
+  // le Worker resout les liens, les CDN de X et Twitch sont appeles EN DIRECT par
+  // le navigateur (ils autorisent notre origine), et jnn-pa est l'API BotGuard.
+  "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://tubeforge-webdl.expedition-studio.workers.dev https://jnn-pa.googleapis.com https://video.twimg.com https://*.cloudfront.net",
+  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube-nocookie.com https://www.youtube.com",
+  "media-src 'self' blob:",
+  "worker-src 'self' blob:",
+];
+
+const CSP_SCRIPT_SRC =
+  "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://www.youtube.com https://s.ytimg.com";
+
+/**
+ * `'unsafe-eval'`, UNIQUEMENT pour /tubeforge/telecharger.
+ *
+ * Pourquoi : l'attestation BotGuard (le PoToken qui empeche YouTube de nous
+ * prendre pour un robot) execute un interpreteur fourni par Google qui evalue
+ * du bytecode via `new Function`. Sans `'unsafe-eval'` il leve
+ * « EvalError: ... 'unsafe-eval' is not an allowed source of script » et la VM
+ * ne s'installe jamais — verifie en production le 26/07/2026.
+ *
+ * Pourquoi scope a cette page : la relacher partout affaiblirait aussi le
+ * paiement et le compte. Cette page ne contient ni formulaire, ni donnee
+ * personnelle, ni Stripe : c'est la seule ou le compromis est acceptable.
+ */
+const CSP_SCRIPT_SRC_DOWNLOADER = CSP_SCRIPT_SRC + " 'unsafe-eval'";
+
+const baseSecurityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-XSS-Protection", value: "1; mode=block" },
@@ -13,24 +49,15 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
   },
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://www.youtube.com https://s.ytimg.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https:",
-      // Les 3 dernieres entrees servent le telechargeur web (/tubeforge/telecharger) :
-      // le Worker resout les liens, et les CDN de X et Twitch sont appeles EN DIRECT
-      // par le navigateur (ils autorisent notre origine) pour ne rien nous couter.
-      "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://tubeforge-webdl.expedition-studio.workers.dev https://video.twimg.com https://*.cloudfront.net",
-      "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube-nocookie.com https://www.youtube.com",
-      "media-src 'self' blob:",
-      "worker-src 'self' blob:",
-    ].join("; "),
-  },
 ];
+
+const csp = (scriptSrc: string) => ({
+  key: "Content-Security-Policy",
+  value: [scriptSrc, ...CSP_BASE].join("; "),
+});
+
+const securityHeaders = [...baseSecurityHeaders, csp(CSP_SCRIPT_SRC)];
+const downloaderSecurityHeaders = [...baseSecurityHeaders, csp(CSP_SCRIPT_SRC_DOWNLOADER)];
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -47,7 +74,14 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/:path*",
+        source: "/tubeforge/telecharger",
+        headers: downloaderSecurityHeaders,
+      },
+      {
+        // Tout le reste, en strict. L'exclusion est indispensable : deux regles
+        // qui matchent enverraient deux en-tetes CSP, et le navigateur applique
+        // l'INTERSECTION — `'unsafe-eval'` resterait donc bloque.
+        source: "/((?!tubeforge/telecharger$).*)",
         headers: securityHeaders,
       },
       {

@@ -1,4 +1,41 @@
 ---
+### [2026-07-26 15:40] — Vraie solution anti-robot : PoToken BotGuard dans le navigateur + plafond iOS decouvert
+
+**Quoi :** Le telechargeur ne depend plus de la reputation de nos IP. Une attestation BotGuard (PoToken) est desormais frappee **dans le navigateur du visiteur** et transmise au Worker, qui la joint a ses appels InnerTube. Au passage, un second bug bien plus grave a ete trouve et corrige : les URLs servies au client iOS sont plafonnees a ~25 Mo.
+
+**Pourquoi :** Le correctif precedent (cache + 7 clients) reduisait la frequence du blocage « Connectez-vous pour confirmer que vous n'etes pas un robot » sans le supprimer. Le PoToken s'y attaque a la racine : il ne cache pas l'IP, il prouve qu'un vrai navigateur est derriere.
+
+**La preuve, mesuree le 26/07 sur la meme video au meme instant depuis l'edge Cloudflare :**
+
+| client | sans jeton | avec jeton |
+|---|---|---|
+| `android_vr` | `LOGIN_REQUIRED` / « ...pas un robot » | **OK, 23 formats, 1080p** |
+| `ios` | HTTP 403 | **OK, 28 formats, 1080p** |
+
+Et derriere : octets reellement servis, HTTP 200, 65 536 o de `video/mp4`.
+
+**Ce qui a rendu la chose possible :** `jnn-pa.googleapis.com` (l'API BotGuard) renvoie **notre origine** dans `Access-Control-Allow-Origin`. Tout se fait donc dans le navigateur, sans relais. A l'inverse, l'API InnerTube refuse toute origine tierce (403 des le preflight) : l'extraction, elle, doit rester chez nous — c'est ce qui rendait l'anti-robot inevitable.
+
+**🚨 Le bug decouvert en chemin — plafond de 25 Mo sur les URLs iOS :** en faisant marcher le client iOS, le PoToken l'a fait GAGNER la chaine, et les telechargements ont commence a mourir en cours de route (« echec tranche 6 », 23 Mo sur 441). Diagnostic : sur une URL iOS, les offsets 0, 12 et 24 Mo renvoient http 200, et les offsets 30, 60, 120, 240 Mo renvoient **403**. Les URLs `android_vr` n'ont pas ce plafond (prouve le matin meme : 342 Mo de 4K telecharges d'un bloc). **`android_vr` passe donc devant `ios` dans la chaine**, et un garde-fou refuse proprement plutot que de livrer un fichier tronque quand seul un client plafonne est disponible. Sans le PoToken, ce bug etait latent : chaque fois qu'iOS gagnait (ce qui etait le cas des 40 videos du test de fiabilite), tout fichier de plus de 25 Mo etait condamne.
+
+**Fichiers touches :**
+- `src/lib/potoken.ts` (nouveau) — defi BotGuard, VM, GenerateIT, frappe liee au `visitorData`, cache localStorage 3 h, diagnostic `window.__tfdlAttestation`. Ne jette jamais : sans jeton, l'outil fonctionne encore, en plus fragile.
+- `src/lib/webdl.ts` — `resolve()` joint `vd`+`pot` pour YouTube seulement ; `warmAttestation()`
+- `src/app/tubeforge/telecharger/page.tsx` — prechauffage de l'attestation au montage (~1,2 s), pour qu'elle soit prete au clic
+- `next.config.ts` — **CSP par route** : `'unsafe-eval'` uniquement sur `/tubeforge/telecharger`, plus `jnn-pa.googleapis.com` en `connect-src`
+- `package.json` — dependance `bgutils-js` (168 Ko dans node_modules)
+- (hors repo) `tubeforge-webdl/src/youtube.js` — `fetchVisitorData()`, parametre `auth` propage, `cappedBytes` sur la famille iOS, ordre de la chaine corrige
+- (hors repo) `tubeforge-webdl/src/index.js` — `/api/session` (visitorData stable, cache KV 6 h), `vd`/`pot` acceptes, garde-fou plafond
+
+**Pourquoi `'unsafe-eval'` et pourquoi seulement la : ** l'interpreteur BotGuard evalue du bytecode via `new Function`. Sans la directive il leve « EvalError: ... 'unsafe-eval' is not an allowed source of script » et la VM ne s'installe jamais (verifie en prod). La relacher partout affaiblirait le paiement et le compte ; cette page n'a ni formulaire, ni donnee personnelle, ni Stripe. **Attention au piege : deux regles `headers()` qui matchent la meme route envoient DEUX en-tetes CSP et le navigateur applique l'INTERSECTION** — la regle globale exclut donc explicitement cette page. Verifie route par route : un seul en-tete partout, `unsafe-eval` present sur le telechargeur, absent sur `/tubeforge`, `/tubeforge/checkout` et `/pricing`.
+
+**Verification finale, en production, parcours complet :** attestation OK en 1,2 s (jeton 220 o), `attested: true` cote Worker, 441 Mo telecharges sans un seul 403, fichier de sortie inspecte atome par atome — `ftyp` + `moov` (739 Ko) + `mdat`, **2 pistes** (`vide` + `soun`), `avc1` + `mp4a`, 904 s, 1920x1080, audio present, aucune erreur de lecture.
+
+**Comment annuler :** Worker : `npx wrangler rollback` depuis `tubeforge-webdl/`. Front : `git revert <hash>` — l'attestation etant facultative par conception, le retirer ne casse rien, ca ramene juste la fragilite d'avant.
+
+**Effets de bord possibles :** L'attestation ajoute ~1,2 s au premier chargement (en tache de fond, pendant que la personne colle son lien) puis rien, grace au cache. Le `visitorData` est **partage** entre tous les visiteurs (un seul en KV) : c'est voulu, un jeton frappe par n'importe qui vaut pour tout le monde tant que le visitorData ne tourne pas ; s'il tourne, la page detecte le desaccord et refrappe. `bgutils-js` depend d'un endpoint prive de Google : il cassera un jour, et ce jour-la l'outil retombera sur le comportement d'avant sans planter. Enfin `'unsafe-eval'` sur cette route est un vrai relachement, assume et documente ci-dessus.
+
+---
 ### [2026-07-26 14:20] — Telechargeur web : « video privee » etait un FAUX diagnostic + cache de resolution
 
 **Quoi :** Sur une video parfaitement publique (CHAMP LIBRE, `7obQlmThI58`), la page repondait « Cette video demande une connexion (privee, ou reservee aux adultes) ». C'etait faux. Trois corrections : classification des refus sur le MOTIF et non le statut, cache des resolutions pour reduire notre volume d'appels, et baisse automatique de qualite au lieu d'un refus sur les videos lourdes.

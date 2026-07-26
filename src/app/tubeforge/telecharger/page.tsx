@@ -7,7 +7,7 @@ import { ArrowRight, Check, Download, Loader2, LogOut, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
-  clearToken, download, fetchMe, getToken, loginUrl, readTokenFromHash, resolve,
+  clearToken, download, fetchMe, getToken, loginUrl, readTokenFromHash, resolve, warmAttestation,
   type Me, type Progress, type Resolved,
 } from "@/lib/webdl";
 
@@ -60,6 +60,9 @@ export default function TelechargerPage() {
     setAuthHref(loginUrl());
     readTokenFromHash();
     refreshMe();
+    // L'attestation BotGuard prend quelques secondes : on la prepare pendant
+    // que la personne colle son lien, pour qu'elle soit deja prete au clic.
+    warmAttestation();
   }, [refreshMe]);
 
   const onResolve = async () => {
