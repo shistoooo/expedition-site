@@ -1,4 +1,25 @@
 ---
+### [2026-07-26 13:05] — Telechargeur web : retrait de la porte Discord (quota par IP)
+
+**Quoi :** L'outil `/tubeforge/telecharger` est desormais utilisable **sans compte**. La verification d'appartenance au Discord est desactivee par une constante `REQUIRE_DISCORD = false` dans le Worker ; tout le flux OAuth reste en place et fonctionnel.
+
+**Pourquoi :** Decision produit du user (« pour l'instant enleve la barriere Discord ») : maximiser l'essai avant de refermer eventuellement la porte.
+
+**Ce qui remplace la porte** (sans identite, il fallait autre chose pour que le relais ne devienne pas un proxy public) :
+- **Quota par adresse IP** (`CF-Connecting-IP`) au lieu du compte Discord, meme plafond de 10/jour. Si l'en-tete manque, on laisse passer sans compter plutot que de mettre tous les visiteurs dans le meme seau.
+- **Verification d'origine** sur `/api/resolve` : refus si l'en-tete `Origin` existe et n'est pas une origine Expedition. Ce n'est pas une securite (un `Origin` se falsifie en CLI) : ca empeche l'endpoint de finir cable dans le site de quelqu'un d'autre.
+- Inchange : relais signe par HMAC (URL arbitraire -> 403), plafond 1080p, garde-fou 500 Mo.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` (hors repo) — `REQUIRE_DISCORD`, `readClaims`, `quotaSubject` (Discord ou IP), `originAllowed`, `/api/me` renvoie `gate`
+- `src/app/tubeforge/telecharger/page.tsx` — la page lit `gate` depuis `/api/me` au lieu d'avoir sa propre notion de la porte ; bandeau d'identite Discord affiche seulement si la porte est active ; accroche « Gratuit pour le Discord » -> « Gratuit, sans compte » ; pluriel corrige (« 1 telechargement restant »)
+- `src/lib/webdl.ts` — champ `gate` sur le type `Me`
+
+**Comment annuler :** remettre `REQUIRE_DISCORD = true` dans `tubeforge-webdl/src/index.js`, poser les deux secrets Discord, `npx wrangler deploy`. **Aucun changement de page necessaire** : elle suit ce que le Worker annonce.
+
+**Effets de bord possibles :** Le quota est **souple** — KV est a coherence eventuelle et le lire-puis-ecrire n'est pas atomique, donc en rafale on peut depasser de quelques unites (verifie : des appels a moins d'une seconde d'intervalle voient un compteur qui oscille). Assume : au rythme d'un humain le compte est juste, et un compteur exact demanderait un Durable Object, disproportionne ici. Autre limite du quota par IP : un lieu a IP partagee (entreprise, campus, CGNAT mobile) partage le meme plafond. Enfin, sans porte, le volume passant par le relais YouTube n'est plus borne par la taille du Discord : c'est le point a surveiller, et `REQUIRE_DISCORD = true` est le frein d'urgence.
+
+---
 ### [2026-07-26 12:10] — Telechargeur web gratuit (produit d'appel TubeForge), gate Discord
 
 **Quoi :** Nouvelle page `/tubeforge/telecharger` + nouveau Worker Cloudflare `tubeforge-webdl`. L'utilisateur colle un lien (YouTube, TikTok, X, Twitch), le Worker resout les URLs de flux, et le **navigateur** telecharge puis fusionne audio+video sans re-encodage (mediabunny). Acces reserve aux membres du Discord Expedition (OAuth2 Discord, verification `users/@me/guilds`), 10 telechargements/jour/membre, 1080p max.

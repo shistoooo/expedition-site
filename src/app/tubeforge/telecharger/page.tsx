@@ -102,6 +102,14 @@ export default function TelechargerPage() {
 
   const connected = !!me?.auth && !!getToken();
   const member = connected && me?.member;
+  // Le Worker decide seul s'il exige Discord ou non (constante REQUIRE_DISCORD).
+  // La page suit : elle n'a pas sa propre notion de la porte, sinon les deux
+  // finiraient par diverger. Tant que /api/me n'a pas repondu, on n'affiche rien.
+  const gated = me?.gate === true;
+  const toolOpen = me !== null && (gated ? member : true);
+  const left = me?.quota ? Math.max(0, me.quota.limit - me.quota.used) : null;
+  const remaining =
+    left === null ? "" : `${left} téléchargement${left === 1 ? "" : "s"} restant${left === 1 ? "" : "s"} aujourd’hui`;
 
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative text-white">
@@ -129,7 +137,7 @@ export default function TelechargerPage() {
               className="text-center"
             >
               <p className="text-xs font-mono uppercase tracking-widest mb-5" style={{ color: "rgba(255,106,31,0.7)" }}>
-                Gratuit pour le Discord
+                Gratuit, sans compte
               </p>
               <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] mb-5">
                 Télécharge une vidéo<span style={{ color: "#ff6a1f" }}>.</span>
@@ -155,7 +163,7 @@ export default function TelechargerPage() {
               transition={{ duration: 0.6, delay: 0.12, ease: easeOutExpo }}
               className="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-8"
             >
-              {!connected && (
+              {gated && !connected && (
                 <div className="text-center">
                   <p className="text-white/70 mb-1">Le téléchargeur est réservé aux membres du Discord.</p>
                   <p className="text-sm text-white/40 mb-6">C&apos;est gratuit, et ça prend dix secondes.</p>
@@ -170,7 +178,7 @@ export default function TelechargerPage() {
                 </div>
               )}
 
-              {connected && !member && (
+              {gated && connected && !member && (
                 <div className="text-center">
                   <p className="text-white/80 mb-1">
                     Salut {me?.user?.name} — tu n&apos;es pas encore sur le serveur.
@@ -196,29 +204,35 @@ export default function TelechargerPage() {
                 </div>
               )}
 
-              {member && (
+              {toolOpen && (
                 <>
-                  <div className="flex items-center justify-between gap-4 mb-5 pb-5 border-b border-white/10">
-                    <div className="flex items-center gap-3 min-w-0">
-                      {me?.user?.avatar && (
-                        // eslint-disable-next-line @next/next/no-img-element -- avatar Discord, domaine externe non liste dans next/image
-                        <img src={me.user.avatar} alt="" className="w-8 h-8 rounded-full" />
-                      )}
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold truncate">{me?.user?.name}</p>
-                        <p className="text-[11px] font-mono text-white/40">
-                          {me?.quota ? `${me.quota.limit - me.quota.used} téléchargements restants aujourd’hui` : ""}
-                        </p>
+                  {/* Bandeau d'identite : n'a de sens que si la porte Discord est
+                      active. Ouverte, on garde juste le compteur du jour. */}
+                  {gated ? (
+                    <div className="flex items-center justify-between gap-4 mb-5 pb-5 border-b border-white/10">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {me?.user?.avatar && (
+                          // eslint-disable-next-line @next/next/no-img-element -- avatar Discord, domaine externe non liste dans next/image
+                          <img src={me.user.avatar} alt="" className="w-8 h-8 rounded-full" />
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold truncate">{me?.user?.name}</p>
+                          <p className="text-[11px] font-mono text-white/40">{remaining}</p>
+                        </div>
                       </div>
+                      <button
+                        onClick={() => { clearToken(); setMe({ auth: false }); setResult(null); }}
+                        className="text-white/30 hover:text-white/60 transition-colors shrink-0"
+                        aria-label="Se déconnecter"
+                      >
+                        <LogOut className="w-4 h-4" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => { clearToken(); setMe({ auth: false }); setResult(null); }}
-                      className="text-white/30 hover:text-white/60 transition-colors shrink-0"
-                      aria-label="Se déconnecter"
-                    >
-                      <LogOut className="w-4 h-4" />
-                    </button>
-                  </div>
+                  ) : (
+                    remaining && (
+                      <p className="text-[11px] font-mono text-white/35 mb-4">{remaining}</p>
+                    )
+                  )}
 
                   <div className="flex flex-col sm:flex-row gap-2.5">
                     <input

@@ -18,6 +18,8 @@ const TOKEN_KEY = "tfdl_token";
 export const MAX_BYTES = 500 * 1024 * 1024;
 
 export type Me = {
+  /** true si le Worker exige d'etre membre du Discord (constante cote Worker). */
+  gate?: boolean;
   auth: boolean;
   member?: boolean;
   user?: { name: string; avatar: string | null };
