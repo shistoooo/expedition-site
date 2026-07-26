@@ -5,9 +5,13 @@ import TubeForgeTracking from "@/components/tubeforge/TubeForgeTracking";
 // Display font scopée TubeForge : grotesque à caractère (axe optique un peu
 // rugueux) — cohérente avec l'identité mono/technique ember, contrairement au
 // Playfair éditorial hérité du reste du site via la règle h1/h2 globale.
+// Sans `weight`, next/font sert la version VARIABLE : un seul fichier couvre
+// l'axe 200-800. Avant, trois fichiers statiques etaient declares alors que
+// seul le 800 etait rendu ; les deux autres n'etaient pas telecharges (un
+// navigateur ne va chercher un fichier de police qu'au premier glyphe qui en
+// a besoin) mais tout titre en font-bold aurait declenche une requete de plus.
 const tfDisplay = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["500", "700", "800"],
   variable: "--font-tf-display",
 });
 
