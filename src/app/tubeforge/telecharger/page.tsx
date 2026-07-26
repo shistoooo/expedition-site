@@ -88,12 +88,12 @@ export default function TelechargerPage() {
     setError(null); setDone(false);
     const ctrl = new AbortController();
     abortRef.current = ctrl;
-    setProgress({ phase: "download", pct: 0, label: "Demarrage" });
+    setProgress({ phase: "download", pct: 0, label: "Démarrage" });
     try {
       await download(result, setProgress, ctrl.signal);
       setDone(true);
     } catch (e) {
-      if (!ctrl.signal.aborted) setError(e instanceof Error ? e.message : "Le telechargement a echoue.");
+      if (!ctrl.signal.aborted) setError(e instanceof Error ? e.message : "Le téléchargement a échoué.");
     } finally {
       setProgress(null);
       abortRef.current = null;
@@ -132,11 +132,11 @@ export default function TelechargerPage() {
                 Gratuit pour le Discord
               </p>
               <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] mb-5">
-                Telecharge une video<span style={{ color: "#ff6a1f" }}>.</span>
+                Télécharge une vidéo<span style={{ color: "#ff6a1f" }}>.</span>
               </h1>
               <p className="text-lg text-white/60 leading-relaxed max-w-xl mx-auto">
-                Colle un lien, recupere le fichier. Rien ne passe par nos serveurs : ton navigateur
-                telecharge en direct, a pleine vitesse.
+                Colle un lien, récupère le fichier. Rien ne passe par nos serveurs : ton navigateur
+                télécharge en direct, à pleine vitesse.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-2 mt-7">
@@ -157,8 +157,8 @@ export default function TelechargerPage() {
             >
               {!connected && (
                 <div className="text-center">
-                  <p className="text-white/70 mb-1">Le telechargeur est reserve aux membres du Discord.</p>
-                  <p className="text-sm text-white/40 mb-6">C&apos;est gratuit, et ca prend dix secondes.</p>
+                  <p className="text-white/70 mb-1">Le téléchargeur est réservé aux membres du Discord.</p>
+                  <p className="text-sm text-white/40 mb-6">C&apos;est gratuit, et ça prend dix secondes.</p>
                   <a
                     href={authHref}
                     className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white transition-transform duration-200 hover:translate-y-[-1px]"
@@ -175,7 +175,7 @@ export default function TelechargerPage() {
                   <p className="text-white/80 mb-1">
                     Salut {me?.user?.name} — tu n&apos;es pas encore sur le serveur.
                   </p>
-                  <p className="text-sm text-white/40 mb-6">Rejoins-le, puis reviens verifier.</p>
+                  <p className="text-sm text-white/40 mb-6">Rejoins-le, puis reviens vérifier.</p>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a
                       href={me?.invite || "https://discord.com/invite/QuV3bYDEYT"}
@@ -190,7 +190,7 @@ export default function TelechargerPage() {
                       href={authHref}
                       className="px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white/80 font-semibold hover:bg-white/10 transition-colors"
                     >
-                      J&apos;ai rejoint, verifier
+                      J&apos;ai rejoint, vérifier
                     </a>
                   </div>
                 </div>
@@ -207,14 +207,14 @@ export default function TelechargerPage() {
                       <div className="min-w-0">
                         <p className="text-sm font-semibold truncate">{me?.user?.name}</p>
                         <p className="text-[11px] font-mono text-white/40">
-                          {me?.quota ? `${me.quota.limit - me.quota.used} telechargements restants aujourd'hui` : ""}
+                          {me?.quota ? `${me.quota.limit - me.quota.used} téléchargements restants aujourd’hui` : ""}
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={() => { clearToken(); setMe({ auth: false }); setResult(null); }}
                       className="text-white/30 hover:text-white/60 transition-colors shrink-0"
-                      aria-label="Se deconnecter"
+                      aria-label="Se déconnecter"
                     >
                       <LogOut className="w-4 h-4" />
                     </button>
@@ -235,7 +235,7 @@ export default function TelechargerPage() {
                       style={{ background: "linear-gradient(118deg, #ff6a1f 0%, #ef3a24 58%, #8b3dff 155%)" }}
                     >
                       {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      {busy ? "Analyse" : "Recuperer"}
+                      {busy ? "Analyse" : "Récupérer"}
                     </button>
                   </div>
                 </>
@@ -287,7 +287,7 @@ export default function TelechargerPage() {
                     <div>
                       <div className="flex items-center justify-between text-xs font-mono text-white/50 mb-2">
                         <span>
-                          {progress.phase === "download" ? "Telechargement" : progress.phase === "merge" ? "Assemblage image + son" : "Enregistrement"}
+                          {progress.phase === "download" ? "Téléchargement" : progress.phase === "merge" ? "Assemblage image + son" : "Enregistrement"}
                           {" — "}{progress.label}
                         </span>
                         <button
@@ -306,7 +306,7 @@ export default function TelechargerPage() {
                     </div>
                   ) : done ? (
                     <p className="inline-flex items-center gap-2 text-sm text-green-300/90">
-                      <Check className="w-4 h-4" /> Fichier enregistre dans tes telechargements.
+                      <Check className="w-4 h-4" /> Fichier enregistré dans tes téléchargements.
                     </p>
                   ) : (
                     <button
@@ -314,7 +314,7 @@ export default function TelechargerPage() {
                       className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-black font-bold transition-transform duration-200 hover:translate-y-[-1px]"
                     >
                       <Download className="w-4 h-4" />
-                      Telecharger {result.video ? `en ${result.video.height}p` : ""}
+                      Télécharger {result.video ? `en ${result.video.height}p` : ""}
                     </button>
                   )}
                 </div>
@@ -327,9 +327,9 @@ export default function TelechargerPage() {
                 Les limites de cette page
               </p>
               <p className="text-white/65 leading-relaxed">
-                Ici : 4 plateformes, 1080p, 10 videos par jour, et le fichier atterrit dans ton dossier
-                Telechargements. <span className="text-white">TubeForge fait la meme chose depuis plus de 1500 sites,
-                en 4K, sans limite, et depose l&apos;extrait directement dans ton chutier Premiere ou DaVinci.</span>
+                Ici : 4 plateformes, 1080p, 10 vidéos par jour, et le fichier atterrit dans ton dossier
+                Téléchargements. <span className="text-white">TubeForge fait la même chose depuis plus de 1500 sites,
+                en 4K, sans limite, et dépose l&apos;extrait directement dans ton chutier Premiere ou DaVinci.</span>
               </p>
               <Link
                 href="/tubeforge"

@@ -68,7 +68,7 @@ async function api<T>(path: string, params?: Record<string, string>): Promise<T>
     headers: token ? { Authorization: "Bearer " + token } : {},
   });
   const data = await r.json();
-  if (!r.ok && !data?.err) throw new Error("Le service est momentanement indisponible.");
+  if (!r.ok && !data?.err) throw new Error("Le service est momentanément indisponible.");
   return data as T;
 }
 
@@ -108,7 +108,7 @@ async function fetchChunked(
       const [s, e] = ranges[k];
       const sep = url.includes("?") ? "&" : "?";
       const r = await fetch(`${url}${sep}start=${s}&end=${e}`, { signal });
-      if (!r.ok) throw new Error("Le telechargement a echoue (tranche " + (k + 1) + ").");
+      if (!r.ok) throw new Error("Le téléchargement a échoué (tranche " + (k + 1) + ").");
       const buf = new Uint8Array(await r.arrayBuffer());
       out.set(buf, s);
       onBytes(buf.byteLength);
@@ -125,7 +125,7 @@ async function fetchWhole(
   signal: AbortSignal
 ): Promise<ArrayBuffer> {
   const r = await fetch(url, { signal });
-  if (!r.ok) throw new Error("Le telechargement a echoue (" + r.status + ").");
+  if (!r.ok) throw new Error("Le téléchargement a échoué (" + r.status + ").");
   if (!r.body) return r.arrayBuffer();
   const parts: Uint8Array[] = [];
   const reader = r.body.getReader();
@@ -160,7 +160,7 @@ async function mux(
   const openVideo = async (buf: ArrayBuffer) => {
     const input = new Input({ source: new BufferSource(buf), formats: ALL_FORMATS });
     const track = await input.getPrimaryVideoTrack();
-    if (!track) throw new Error("Piste video illisible.");
+    if (!track) throw new Error("Piste vidéo illisible.");
     return { cfg: await track.getDecoderConfig(), codec: await track.getCodec(), sink: new EncodedPacketSink(track) };
   };
   const openAudio = async (buf: ArrayBuffer) => {
@@ -230,7 +230,7 @@ export async function download(
 
   if (totalKnown > MAX_BYTES) {
     throw new Error(
-      "Cette video depasse 500 Mo : au-dela, le navigateur n'a pas assez de memoire pour l'assembler. C'est exactement ce que TubeForge fait sans limite."
+      "Cette vidéo dépasse 500 Mo : au-delà, le navigateur n’a pas assez de mémoire pour l’assembler. C’est exactement ce que TubeForge fait sans limite."
     );
   }
 
@@ -256,7 +256,7 @@ export async function download(
     return;
   }
 
-  if (!r.video || !r.audio) throw new Error("Format introuvable pour cette video.");
+  if (!r.video || !r.audio) throw new Error("Format introuvable pour cette vidéo.");
 
   const [vb, ab] = await Promise.all([
     fetchChunked(r.video.url, r.video.size, bump, signal),
