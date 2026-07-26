@@ -1,4 +1,35 @@
 ---
+### [2026-07-27 10:40] — « Tu n'es pas sur le serveur » alors qu'on y est : un echec de lecture pris pour un refus
+
+**Quoi :** Question posee — « pourquoi ca marche chez moi et pas chez les autres ? ». La verification d'appartenance au Discord concluait « non-membre » des que l'appel echouait.
+
+**Le defaut.** `fetchDiscordIdentity` faisait :
+```js
+let member = false;
+if (guilds.ok) { member = list.some((g) => g.id === guildId); }
+```
+`/users/@me/guilds` est l'un des points les plus limites en debit de l'API Discord. Un 429 — ou n'importe quelle panne — laissait `member` a `false`, et la personne s'entendait dire « Tu n'es pas encore sur le serveur ». Elle ne pouvait rien y faire : rejoindre un serveur ou l'on est deja ne change rien, et le refus est indistinguable d'un vrai refus, donc personne ne peut diagnostiquer.
+
+**C'est la meme faute que celle corrigee ce matin sur la page** (repli qui supposait la porte ouverte) : traiter une panne comme une reponse ferme. Une fois sous cet angle, les deux se voient d'un coup.
+
+Ca explique aussi l'asymetrie « chez moi ca marche » : le succes depend d'un appel limite en debit, donc du hasard et de la simultaneite, pas de la personne.
+
+**Le correctif.** Une reprise sur 429 en respectant le `Retry-After` de Discord (borne a 3 s), puis un refus EXPLICITE si la lecture echoue encore. On ne conclut que sur une liste reellement lue. Le message passe par le fragment `tfdl_err` pose ce matin, donc il s'affiche dans l'encart rouge de la page au lieu d'une page blanche.
+
+**Verifie sur cinq scenarios simules** (impossible a provoquer a la demande sinon) : membre + appel OK -> membre ; non-membre + appel OK -> non-membre ; 429 puis OK -> **membre** (la reprise sauve le cas) ; 429 deux fois -> erreur explicite ; panne 500 -> erreur explicite. 5/5.
+
+**Constat annexe, rassurant :** **deux** comptes Discord distincts ont deja telecharge (cles `q:d:<id>`), plus une entree `q:ip:` datant de la periode ou la porte etait ouverte. La porte fonctionne donc pour d'autres que le proprietaire du serveur.
+
+**Visite neutre verifiee** (localStorage vide — il restait un `tfdl_token` d'un test precedent, ce qui suffit a changer le chemin de code) : bouton Discord affiche, aucune erreur console, `/api/me` en 78 ms.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/auth.js` — `listerServeurs()` avec reprise, et refus explicite quand la liste n'a pas pu etre lue
+
+**Comment annuler :** `npx wrangler rollback`. **A eviter** : on remet un cul-de-sac ou la personne est accusee de ne pas etre membre.
+
+**Effets de bord possibles :** une panne Discord produit maintenant une erreur au lieu d'un « non-membre » silencieux. C'est voulu — mais ca veut dire qu'une panne Discord devient visible sur la page au lieu d'etre maquillee en probleme de l'utilisateur. Reste non couvert : `/users/@me/guilds` ne pagine pas au-dela de 200 serveurs. Un compte Nitro present dans plus de 200 serveurs pourrait ne pas voir Expedition dans sa liste. Cas rare, non traite, note ici pour ne pas le redecouvrir.
+
+---
 ### [2026-07-27 10:05] — 144p au lieu de 720p : un client plafonne gagnait la course
 
 **Quoi :** Le telechargeur proposait 144p pour une video dont le 720p existe (et 360p pour du 1080p), et le telechargement cassait sur un 403 en cours de route. Une seule cause pour les deux.
