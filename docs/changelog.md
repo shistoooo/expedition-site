@@ -1,4 +1,28 @@
 ---
+### [2026-07-26 14:20] — Telechargeur web : « video privee » etait un FAUX diagnostic + cache de resolution
+
+**Quoi :** Sur une video parfaitement publique (CHAMP LIBRE, `7obQlmThI58`), la page repondait « Cette video demande une connexion (privee, ou reservee aux adultes) ». C'etait faux. Trois corrections : classification des refus sur le MOTIF et non le statut, cache des resolutions pour reduire notre volume d'appels, et baisse automatique de qualite au lieu d'un refus sur les videos lourdes.
+
+**Pourquoi :** `LOGIN_REQUIRED` ne signifie PAS « video privee ». Mesure faite le jour meme : la meme video renvoie `status=OK` et 28 formats depuis une IP residentielle, et `LOGIN_REQUIRED` avec le motif **« Connectez-vous pour confirmer que vous n'etes pas un robot »** depuis les IP Cloudflare. C'est du controle anti-robot, declenche par le VOLUME d'appels — mes propres tests (40 videos x 4 clients + des dizaines de sondes) ont grille la reputation de l'IP de sortie, et l'utilisateur est tombe dedans. **Verifie ensuite : le code de prod inchange refonctionnait une heure plus tard**, donc ce n'etait pas un defaut de code mais un blocage transitoire mal traduit.
+
+**Ce qui a ete corrige :**
+1. **Classification sur le motif.** `classify()` lit le texte du refus, pas le statut. Piege : l'age ET le robot renvoient tous deux `LOGIN_REQUIRED` avec un motif qui commence par « Connectez-vous pour confirmer » — seul le mot suivant les distingue. Message robot desormais honnete (« c'est temporaire, ca ne vient pas de toi ») avec l'argument TubeForge qui est ici factuellement vrai : il passe par la connexion de l'utilisateur.
+2. **Cache des resolutions** (`yt:<videoId>` en KV, TTL 90 min, bien sous les ~6 h de validite des URLs googlevideo). Deux personnes sur la meme video, ou quelqu'un qui reessaie, ne coutent qu'un appel InnerTube. C'est la mesure qui reduit reellement le risque de blocage, puisque la cause est le volume.
+3. **Chaine de clients elargie** de 4 a 7 (ajout `tv_embed` 85, `ios_music` 26, `web_embed` 56, avec le `thirdParty.embedUrl` que les clients embed exigent). Retire `userAgentIsBot: false`, un champ invente qui n'existe pas dans l'API. Second essai sur les 2 meilleurs clients quand le motif est « robot » (une autre IP de sortie du meme point de presence peut passer).
+4. **Baisse de qualite au lieu de refus.** `pickPair` prend un budget d'octets et descend l'echelle des hauteurs. Verifie : un podcast de 2 h, refuse avant, sort en 676p / 229 Mo avec `downgraded: true`, et la page explique pourquoi. Une video de 15 min reste en 1080p (441 Mo).
+5. **`attempts` dans la reponse d'erreur** (non affiche) : sans ca, un rapport de bug se resume a « ca marche pas » et on ne sait pas quel client a ete refuse.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/youtube.js` (hors repo) — 7 clients, `classify()`, second essai, `pickPair(formats, maxHeight, maxBytes)`
+- `tubeforge-webdl/src/index.js` (hors repo) — `MAX_BYTES`, cache KV `yt:<id>`, `downgraded` et `attempts` dans la reponse
+- `src/lib/webdl.ts` — champ `downgraded` sur `Resolved`
+- `src/app/tubeforge/telecharger/page.tsx` — mention « Qualite reduite volontairement » sous les metadonnees
+
+**Comment annuler :** `npx wrangler rollback` depuis `tubeforge-webdl/`. Le cache se purge en supprimant les cles `yt:*` du namespace KV `b0ae98d3c33844e78f3aee9794b60524`. Cote page, `git revert <hash>`.
+
+**Effets de bord possibles :** Le cache sert la MEME URL googlevideo a plusieurs personnes — sans risque, il est prouve que ces URLs ne sont pas liees a l'IP, mais une entree de cache dont les URLs expirent avant les 90 min donnerait un echec de telechargement (le TTL a 90 min garde une marge de 4 h). **Le fond du probleme reste entier** : l'extraction doit venir de nos IP de datacenter (CORS d'InnerTube verifie ferme, 403 meme en preflight), donc le blocage anti-robot reviendra a fort trafic. La seule parade durable est un PoToken genere dans le navigateur de l'utilisateur (bgutils) — chantier non engage.
+
+---
 ### [2026-07-26 13:05] — Telechargeur web : retrait de la porte Discord (quota par IP)
 
 **Quoi :** L'outil `/tubeforge/telecharger` est desormais utilisable **sans compte**. La verification d'appartenance au Discord est desactivee par une constante `REQUIRE_DISCORD = false` dans le Worker ; tout le flux OAuth reste en place et fonctionnel.

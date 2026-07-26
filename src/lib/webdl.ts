@@ -34,6 +34,8 @@ export type Resolved = {
   direct: boolean;
   meta: { title: string; author: string | null; durationSec: number | null; thumb: string | null };
   maxHeight?: number;
+  /** true quand la qualite a du etre baissee pour tenir dans la memoire du navigateur. */
+  downgraded?: boolean;
   video?: { url: string; size: number; height: number; codec: string; container: string };
   audio?: { url: string; size: number; codec: string };
   file?: { url: string; size: number | null; label: string; container: string };

@@ -293,6 +293,12 @@ export default function TelechargerPage() {
                             : null,
                       ].filter(Boolean).join("  ·  ")}
                     </p>
+                    {result.downgraded && (
+                      <p className="text-[11px] text-white/35 mt-2 leading-relaxed">
+                        Qualité réduite volontairement : en 1080p, cette vidéo dépasserait ce qu&apos;un
+                        navigateur peut assembler en mémoire.
+                      </p>
+                    )}
                   </div>
                 </div>
 
