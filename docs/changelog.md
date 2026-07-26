@@ -1,4 +1,32 @@
 ---
+### [2026-07-27 09:10] — Le spinner infini et le bouton Discord absent
+
+**Quoi :** Deux symptomes rapportes (« le bouton Discord ne s'affiche pas » et « quand je colle un lien ca charge en boucle »), deux causes distinctes, les deux reelles.
+
+**🚨 1. Un `/api/me` en echec faisait croire a la page que la porte etait OUVERTE.**
+`refreshMe` retombait sur `setMe({ auth: false })`. Or `gated = me?.gate === true` : avec cet objet, `gated` passe a FAUX, donc `toolOpen` passe a VRAI. Resultat : la page cachait le bouton Discord et affichait le champ de saisie, alors que le Worker exigeait toujours Discord. Chaque collage repartait avec « Connecte-toi avec Discord » et aucun bouton pour le faire. Cul-de-sac parfait, et rien dans la console : c'est un chemin nominal du code, pas une exception.
+
+La porte est une decision du SERVEUR. Quand on n'a pas pu la lire, on ne devine plus qu'elle est ouverte : etat `echecMe` distinct de « pas encore lu », message « Impossible de verifier ton acces », bouton « Reessayer », et **jamais** de champ de saisie. **Verifie en local** en rendant le Worker injoignable : avant, champ de saisie affiche sans bouton Discord ; apres, message + Reessayer et plus de champ.
+
+**2. Aucun des six `fetch` du chemin n'avait d'echeance.**
+C'est ca, « ca charge en boucle ». Un appel REFUSE jette, et on affiche l'erreur. Un appel SUSPENDU ne jette jamais : le `await` ne rend pas la main, donc le `finally` qui eteint le bouton « Analyse » ne s'execute pas, et le bouton tourne indefiniment. Il n'existe aucun cas ou tourner sans fin est correct.
+
+Delais poses : `api()` 45 s (le Worker interroge YouTube en direct, l'anti-robot le fait attendre une dizaine de secondes), `/api/session` 8 s (sur le chemin de CHAQUE resolution YouTube, et le Worker sait s'en passer), tranche de 6 Mo 60 s (rejouee — le mecanisme d'essais existait deja mais ne servait qu'aux refus explicites), fichier d'un seul bloc 5 min.
+
+**BotGuard a droit a un traitement a part** : `Promise.race` contre un minuteur de 20 s, EN PLUS des echeances sur ses deux appels reseau. L'essentiel de son travail se passe dans une machine virtuelle JavaScript fournie par Google (`bg.snapshot()`) qu'aucun signal d'annulation n'interrompt. C'est le suspect le plus credible dans le cas rapporte : le navigateur concerne n'arrive pas a creer de contexte WebGL (`FEATURE_FAILURE_EGL_NO_CONFIG`), et BotGuard empreinte lourdement le materiel.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — etat `echecMe`, ecran d'echec avec « Reessayer », repli qui ne suppose plus la porte ouverte
+- `src/lib/webdl.ts` — `echeance()`, `estDelaiDepasse()`, delais sur `api()`, sur les tranches et sur le fichier d'un bloc
+- `src/lib/potoken.ts` — delais sur les deux appels BotGuard et borne globale de 20 s
+
+**Comment annuler :** `git revert c55d2ff`. **Ne pas annuler le point 1** : il remet un cul-de-sac silencieux des que le reseau hoquette.
+
+**Effets de bord possibles :** un reseau tres lent voit maintenant des messages d'echeance la ou il patientait. C'est l'echange voulu — une phrase lisible vaut mieux qu'un bouton qui tourne. Les echeances sont volontairement larges pour ne pas punir une connexion modeste : 60 s pour 6 Mo, soit 100 Ko/s.
+
+**Constat au passage, non modifie :** `connect-src` autorise `video.twimg.com` (X) et `*.cloudfront.net` (Twitch) mais PAS `*.googlevideo.com`. Ce n'est pas un oubli — YouTube passe deliberement par le relais du Worker, son CDN n'autorisant pas notre origine. A ne pas « corriger » sans mesurer.
+
+---
 ### [2026-07-27 07:55] — Faille de redirection ouverte sur /auth/start, carte vide et echecs Discord muets
 
 **Quoi :** Trois defauts trouves en repondant a « le bloc Discord ne s'affiche pas, puis s'affiche, et ca marche pas ». Le premier est une faille de securite, les deux autres expliquent le symptome.
