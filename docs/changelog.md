@@ -1,4 +1,27 @@
 ---
+### [2026-07-27 06:00] — Le produit payant existe enfin sur la page : mise en regard 12 journees / 41,88 EUR
+
+**Quoi :** Trois changements pour que le lecteur comprenne qu'un autre produit existe et ce qu'il lui rapporte : le nom **TubeForge** entre dans le titre de section avec son wordmark anime, le cout se compte en **journees de travail** au lieu d'heures, et la carte de cloture met face a face **12 journees de travail** et **41,88 EUR**.
+
+**Pourquoi :** remarque du user, et elle visait juste. La page **parlait** de TubeForge sans jamais le **presenter**. Le nom n'apparaissait qu'en corps de texte, l'accroche etait en petit mono, et aucun moment ne mettait le gain de temps en face d'un prix. Resultat : rien a arbitrer, donc aucune raison de cliquer.
+
+**Les trois leviers :**
+1. **Le produit est nomme dans le titre**, avec la classe `.tf-forge-flow` de la one-page (degrade ember vers violet, anime). C'est le traitement typographique qui signe le produit ailleurs sur le site ; l'utiliser ici le presente comme un produit et non comme une reference. L'accroche mono devient « L'application payante d'Expedition », sans ambiguite possible.
+2. **Le cout passe des heures aux journees.** 96 heures par an ne se ressentent pas ; **douze journees de travail** si. Meme calcul, meme hypothese, une unite que le lecteur eprouve.
+3. **La mise en regard, qui manquait.** 12 journees d'un cote, 41,88 EUR de l'autre, le mot « contre » entre les deux. Les deux chiffres sortent du meme calcul ecrit plus haut dans la bande de cout, donc la comparaison est verifiable et pas un effet de manche.
+
+**L'arithmetique, verifiee avant d'ecrire :** 10 min par extrait x 12 extraits = 2 h par video. Une video par semaine fait 8,7 h par mois (on annonce 8, prudent). 8 x 12 = 96 h par an, soit 12 journees de 8 h. Prix : 3,49 x 12 = 41,88 EUR. Aucun chiffre invente, et l'hypothese reste ecrite a l'ecran.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — accroche mono, `h2` avec wordmark, bande de cout en journees, carte de cloture avec la mise en regard
+
+**Verification en production :** le nom apparait dans le titre avec le wordmark (deux occurrences de `tf-forge-flow`, titre et cloture), la mise en regard est en place, zero exclamation, un seul tiret cadratin (`Footer` global).
+
+**Comment annuler :** `git revert <hash>`.
+
+**Effets de bord possibles :** « 12 journees de travail » repose sur une journee de 8 heures, ce qui n'est pas la realite d'un independant. Le chiffre reste un ordre de grandeur, et l'hypothese est ecrite juste a cote. Le calcul suppose aussi une video par semaine : quelqu'un qui publie une fois par mois verra un chiffre quatre fois trop grand pour lui, et l'hypothese affichee est la seule protection contre ce malentendu. Enfin `.tf-forge-flow` anime un degrade en continu ; deux occurrences sur la page restent discretes, mais en ajouter d'autres transformerait la signature en decoration.
+
+---
 ### [2026-07-27 05:20] — Logos Premiere/DaVinci a cote du titre, gain de temps remonte avant les preuves
 
 **Quoi :** Le badge « Compatible · Premiere Pro · DaVinci Resolve » se place a cote du titre de section. Les chiffres de temps (2 h par video, 8 h par mois) quittent la carte de cloture pour une bande posee juste avant les quatre cartes. La cloture ne garde que l'action.

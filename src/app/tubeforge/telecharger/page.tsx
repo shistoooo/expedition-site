@@ -193,15 +193,20 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
         transition={{ duration: 0.5, ease: easeOutExpo }}
       >
         <p className="text-xs font-mono uppercase tracking-widest text-white/30 mb-2">
-          Ce que TubeForge fait autrement
+          L’application payante d’Expédition
         </p>
         {/* L'accroche de section porte la PROMESSE, pas le detail d'une carte.
             La question chiffree (« combien vas-tu en garder ? ») a rejoint la
             carte qu'elle interroge : elle y a un sens, ici elle n'en avait que
             pour un tiers du bloc. */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-3">
+          {/* Le nom du produit dans le titre, avec le wordmark anime de la
+              one-page : sans ca, la page parlait de TubeForge sans jamais le
+              presenter, et le lecteur ne comprenait pas qu'un autre produit
+              existe. */}
           <h2 className="text-2xl md:text-4xl font-black tracking-[-0.02em] max-w-2xl">
-            Tes extraits arrivent sur ta timeline pendant que tu montes<span style={{ color: RED }}>.</span>
+            <span className="tf-forge-flow">TubeForge</span> pose tes extraits sur ta
+            timeline pendant que tu montes<span style={{ color: RED }}>.</span>
           </h2>
           {/* Les logos ici plutot qu'ailleurs : le titre parle de « ta timeline »,
               et la premiere question d'un monteur est de savoir si ca marche avec
@@ -229,12 +234,12 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
           </div>
           <span className="hidden sm:block w-px self-stretch bg-white/10" aria-hidden="true" />
           <div className="flex items-baseline gap-2.5">
-            <span className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none text-white">8 h</span>
-            <span className="text-sm text-white/52">par mois</span>
+            <span className="text-3xl md:text-4xl font-black tracking-[-0.03em] leading-none text-white">12 journées</span>
+            <span className="text-sm text-white/52">de travail par an</span>
           </div>
-          <p className="text-[13px] text-white/32 leading-relaxed sm:ml-auto sm:max-w-[300px]">
-            Le temps que tu passes à récupérer des fichiers, compté sur dix minutes par extrait
-            et douze extraits par vidéo.
+          <p className="text-[13px] text-white/32 leading-relaxed sm:ml-auto sm:max-w-[290px]">
+            Le temps que tu passes à récupérer des fichiers. Compté sur dix minutes par extrait,
+            douze extraits par vidéo, une vidéo par semaine.
           </p>
         </div>
       </motion.div>
@@ -399,8 +404,39 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
         className="mt-4 rounded-2xl border p-6 md:p-8"
         style={{ borderColor: "rgba(239,58,36,0.3)", background: "rgba(239,58,36,0.055)" }}
       >
-        {/* Les chiffres de temps vivent maintenant en haut de section : les
-            repeter ici n'ajoutait rien. Cette carte ne garde que l'action. */}
+        {/* LE CHOC : la mise en regard. Douze journees de travail d'un cote,
+            41,88 euros de l'autre. Les deux chiffres sortent du meme calcul,
+            ecrit plus haut dans la bande de cout, donc la comparaison est
+            verifiable et pas un effet de manche. C'est ce moment-la qui manquait :
+            la page parlait de gain de temps sans jamais le mettre en face d'un
+            prix, donc sans jamais donner a arbitrer. */}
+        <div className="grid sm:grid-cols-[1fr_auto_1fr] items-center gap-6 sm:gap-8 mb-8">
+          <div>
+            <p className="text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[0.95]" style={{ color: RED }}>
+              12 journées
+            </p>
+            <p className="text-sm text-white/52 mt-2.5 leading-snug">
+              de travail par an, passées à<br className="hidden sm:block" /> récupérer des fichiers
+            </p>
+          </div>
+
+          <div className="flex sm:flex-col items-center gap-3">
+            <span className="hidden sm:block w-px h-8 bg-white/12" aria-hidden="true" />
+            <span className="text-[11px] font-mono uppercase tracking-widest text-white/32">contre</span>
+            <span className="hidden sm:block w-px h-8 bg-white/12" aria-hidden="true" />
+          </div>
+
+          <div>
+            <p className="text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[0.95] text-white">
+              41,88&nbsp;€
+            </p>
+            <p className="text-sm text-white/52 mt-2.5 leading-snug">
+              par an, soit 3,49&nbsp;€ par mois<br className="hidden sm:block" /> pour{" "}
+              <span className="tf-forge-flow font-bold">TubeForge</span>
+            </p>
+          </div>
+        </div>
+
         <p className="text-lg md:text-xl font-bold text-white leading-snug mb-6 max-w-xl">
           Quatorze jours pour voir si ça change ta façon de monter.
         </p>
