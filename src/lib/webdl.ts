@@ -24,8 +24,10 @@ export type Me = {
   gate?: boolean;
   auth: boolean;
   member?: boolean;
-  user?: { name: string; avatar: string | null };
+  user?: { name: string; avatar: string | null; email?: string | null };
   quota?: { used: number; limit: number };
+  /** Reserve COLLECTIVE du jour : ce que tout le serveur a consomme. */
+  serveur?: { used: number; limit: number };
   invite?: string;
 };
 
@@ -50,6 +52,7 @@ export type Resolved = {
   audio?: { url: string; size: number; codec: string };
   file?: { url: string; relayUrl?: string; size: number | null; label: string; container: string };
   quota: { used: number; limit: number };
+  serveur?: { used: number; limit: number };
 };
 
 export type Progress = { phase: "download" | "merge" | "save"; pct: number; label: string };

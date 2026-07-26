@@ -28,6 +28,59 @@ function DiscordMark({ className }: { className?: string }) {
   );
 }
 
+/** Rouge exact du wordmark TubeForge — celui qui clôt le dégradé du logo. */
+const RED = "#ef3a24";
+const AMBER = "#ff6a1f";
+
+/**
+ * Les deux reserves, cote a cote : la sienne et celle du serveur.
+ *
+ * Montrer la seconde change la lecture d'un refus. Sans elle, un blocage
+ * ressemble a une panne ; avec elle, on comprend qu'on partage un outil gratuit
+ * avec 600 autres personnes. La barre passe au rouge quand il reste peu.
+ */
+function Compteurs({
+  perso, total, serveur,
+}: {
+  perso: number | null;
+  total: number | null;
+  serveur: { used: number; limit: number } | null;
+}) {
+  if (perso === null || total === null) return null;
+  const srvLeft = serveur ? Math.max(0, serveur.limit - serveur.used) : null;
+  const pct = (n: number, d: number) => (d > 0 ? Math.min(100, Math.max(0, (n / d) * 100)) : 0);
+
+  const Jauge = ({ reste, sur, libelle }: { reste: number; sur: number; libelle: string }) => {
+    const p = pct(reste, sur);
+    const bas = p <= 20;
+    return (
+      <div className="flex-1 min-w-[130px]">
+        <div className="flex items-baseline justify-between gap-2 mb-1.5">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-white/30">{libelle}</span>
+          <span className="text-[11px] font-mono tabular-nums" style={{ color: bas ? RED : "rgba(255,255,255,0.55)" }}>
+            {reste}<span className="text-white/25">/{sur}</span>
+          </span>
+        </div>
+        <div className="h-[3px] rounded-full bg-white/[0.07] overflow-hidden">
+          <div
+            className="h-full rounded-full transition-[width] duration-500"
+            style={{ width: `${p}%`, background: bas ? RED : `linear-gradient(90deg, ${AMBER}, ${RED})` }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-wrap gap-x-6 gap-y-3">
+      <Jauge reste={perso} sur={total} libelle="Pour toi, aujourd’hui" />
+      {srvLeft !== null && serveur && (
+        <Jauge reste={srvLeft} sur={serveur.limit} libelle="Pour tout le serveur" />
+      )}
+    </div>
+  );
+}
+
 function fmtDuration(s: number | null) {
   if (!s) return null;
   const m = Math.floor(s / 60);
@@ -83,7 +136,7 @@ export default function TelechargerPage() {
         await refreshMe();
       } else {
         setResult(r);
-        setMe((m) => (m ? { ...m, quota: r.quota } : m));
+        setMe((m) => (m ? { ...m, quota: r.quota, serveur: r.serveur ?? m.serveur } : m));
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Une erreur est survenue.");
@@ -117,8 +170,31 @@ export default function TelechargerPage() {
   const gated = me?.gate === true;
   const toolOpen = me !== null && (gated ? member : true);
   const left = me?.quota ? Math.max(0, me.quota.limit - me.quota.used) : null;
-  const remaining =
-    left === null ? "" : `${left} téléchargement${left === 1 ? "" : "s"} restant${left === 1 ? "" : "s"} aujourd’hui`;
+  const srv = me?.serveur ?? null;
+  const srvLeft = srv ? Math.max(0, srv.limit - srv.used) : null;
+
+  /**
+   * Quand une des deux reserves est vide, on ne laisse pas la personne cliquer
+   * pour rien : on lui dit tout de suite, et on lui montre l'alternative. C'est
+   * le moment le plus honnete pour parler de TubeForge — elle vient de se
+   * cogner a une limite, pas au milieu d'un bandeau publicitaire.
+   */
+  const epuise: Upsell | null =
+    left === 0
+      ? {
+          titre: "Tu télécharges assez pour que ça vaille le coup",
+          texte:
+            "Tes " + (me?.quota?.limit ?? 25) + " téléchargements du jour sont passés. TubeForge n’a pas de compteur : " +
+            "autant de vidéos que tu veux, en 4K, déposées directement dans ta timeline Premiere ou DaVinci.",
+        }
+      : srvLeft === 0
+        ? {
+            titre: "Ne plus dépendre d’un quota partagé",
+            texte:
+              "Le serveur a épuisé sa réserve du jour — l’outil est gratuit, donc partagé entre tout le monde. " +
+              "TubeForge télécharge sans limite et sans file d’attente.",
+          }
+        : null;
 
   return (
     <div className="w-full min-h-screen overflow-x-hidden relative text-white">
@@ -149,7 +225,7 @@ export default function TelechargerPage() {
                 Gratuit, sans compte
               </p>
               <h1 className="text-4xl md:text-6xl font-black tracking-[-0.03em] mb-5">
-                Télécharge une vidéo<span style={{ color: "#ff6a1f" }}>.</span>
+                Télécharge une vidéo<span style={{ color: RED }}>.</span>
               </h1>
               <p className="text-lg text-white/60 leading-relaxed max-w-xl mx-auto">
                 Colle un lien, récupère le fichier. Rien ne passe par nos serveurs : ton navigateur
@@ -226,7 +302,7 @@ export default function TelechargerPage() {
                         )}
                         <div className="min-w-0">
                           <p className="text-sm font-semibold truncate">{me?.user?.name}</p>
-                          <p className="text-[11px] font-mono text-white/40">{remaining}</p>
+                          <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} />
                         </div>
                       </div>
                       <button
@@ -238,9 +314,9 @@ export default function TelechargerPage() {
                       </button>
                     </div>
                   ) : (
-                    remaining && (
-                      <p className="text-[11px] font-mono text-white/35 mb-4">{remaining}</p>
-                    )
+                    <div className="mb-4">
+                      <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} />
+                    </div>
                   )}
 
                   <div className="flex flex-col sm:flex-row gap-2.5">
@@ -249,7 +325,7 @@ export default function TelechargerPage() {
                       onChange={(e) => setUrl(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && !busy && onResolve()}
                       placeholder="https://www.youtube.com/watch?v=..."
-                      className="flex-1 min-w-0 px-4 py-3.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/25 font-mono text-sm focus:outline-none focus:border-[rgba(255,106,31,0.5)] transition-colors"
+                      className="flex-1 min-w-0 px-4 py-3.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/25 font-mono text-sm focus:outline-none focus:border-[rgba(239,58,36,0.55)] transition-colors"
                     />
                     <button
                       onClick={onResolve}
@@ -271,16 +347,16 @@ export default function TelechargerPage() {
               </div>
             )}
 
-            {upsell && (
+            {(upsell || epuise) && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: easeOutExpo }}
                 className="mt-3 rounded-2xl border p-5 md:p-6"
-                style={{ borderColor: "rgba(255,106,31,0.28)", background: "rgba(255,106,31,0.05)" }}
+                style={{ borderColor: "rgba(239,58,36,0.32)", background: "rgba(239,58,36,0.055)" }}
               >
-                <p className="font-bold text-white mb-1.5">{upsell.titre}</p>
-                <p className="text-sm text-white/60 leading-relaxed">{upsell.texte}</p>
+                <p className="font-bold text-white mb-1.5">{(upsell || epuise)!.titre}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{(upsell || epuise)!.texte}</p>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mt-5">
                   <Link
                     data-track="webdl-upsell-essai"
@@ -365,7 +441,7 @@ export default function TelechargerPage() {
                       <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
                         <div
                           className="h-full rounded-full transition-[width] duration-300"
-                          style={{ width: `${progress.pct}%`, background: "linear-gradient(90deg, #ff6a1f, #ef3a24)" }}
+                          style={{ width: `${progress.pct}%`, background: `linear-gradient(90deg, ${AMBER}, ${RED})` }}
                         />
                       </div>
                     </div>
@@ -392,8 +468,8 @@ export default function TelechargerPage() {
                 Les limites de cette page
               </p>
               <p className="text-white/65 leading-relaxed">
-                Ici : 4 plateformes, 1080p, 10 vidéos par jour, et le fichier atterrit dans ton dossier
-                Téléchargements. <span className="text-white">TubeForge fait la même chose depuis plus de 1500 sites,
+                Ici : 4 plateformes, 1080p, 25 vidéos par jour et par personne, une réserve partagée
+                entre tous les membres, et le fichier atterrit dans ton dossier Téléchargements. <span className="text-white">TubeForge fait la même chose depuis plus de 1500 sites,
                 en 4K, sans limite, et dépose l&apos;extrait directement dans ton chutier Premiere ou DaVinci.</span>
               </p>
               <Link

@@ -1,4 +1,37 @@
 ---
+### [2026-07-26 22:40] — Porte Discord ACTIVE, deux compteurs visibles, rouge exact, scope email
+
+**Quoi :** La porte Discord est fermee et fonctionnelle (application `tubeforge`, ID `1530946642352803921`). La page affiche desormais les DEUX reserves — la personnelle et celle du serveur — en jauges. L'encart de conversion se declenche aussi a l'arrivee si une reserve est deja vide. Et le scope `email` est ajoute a l'OAuth.
+
+**Bug corrige avant meme d'activer la porte :** mon `discordAuthorizeUrl()` envoyait `prompt=none`. Discord ne saute l'ecran d'autorisation que si la personne a **deja** autorise l'application ; au premier passage — donc pour tout le monde au debut — `none` renvoie `consent_required` **au lieu d'afficher l'ecran**. La premiere connexion de chaque membre aurait echoue. Parametre retire : Discord affiche l'ecran la premiere fois puis l'escamote seul ensuite.
+
+**Verifications faites apres activation :**
+- `gate = true` dans `/api/me`
+- `/api/resolve` sans connexion -> refus avec `needAuth`
+- l'URL construite par `/auth/start` porte le bon `client_id`, le `redirect_uri` exact, le scope `identify guilds email`, et **plus de `prompt`**
+- Discord repond **200** sur cette URL : ni `invalid_redirect_uri` ni `invalid_client`, donc la redirection enregistree correspond
+- la page affiche bien l'ecran « reserve aux membres du Discord »
+
+**Les deux compteurs.** Nouveau composant `Compteurs` : deux jauges cote a cote, « Pour toi, aujourd'hui » (x/25) et « Pour tout le serveur » (x/1200), qui passent au rouge sous 20% de reserve. Raison : sans le compteur collectif, un blocage ressemble a une panne ; avec lui, on comprend qu'on partage un outil gratuit avec 600 personnes. Le Worker expose `serveur: { used, limit }` dans `/api/me` **et** dans chaque resolution reussie, pour que l'affichage se rafraichisse sans second appel.
+
+**Le « canal » de conversion.** L'encart ne se declenche plus seulement APRES un refus : si une reserve est deja vide au chargement, il s'affiche immediatement avec le texte adapte (personnel ou collectif). On ne laisse plus quelqu'un cliquer pour rien avant de lui parler.
+
+**Rouge exact.** `#ef3a24` (celui qui clot le degrade du wordmark) applique la ou il porte du sens : le point du titre, la bordure de l'encart de conversion, le focus du champ, les jauges et la barre de progression. L'ambre `#ff6a1f` reste la couleur dominante — le rouge marque l'alerte et l'action, pas la decoration.
+
+**Scope `email`.** `identify guilds` devient `identify guilds email`, et l'adresse (si le compte Discord en a une **verifiee**) voyage dans le jeton signe et ressort dans `/api/me`. ⚠️ Elle n'est **stockee nulle part** : le jeton vit chez la personne, cote navigateur. En faire une liste de diffusion serait une autre decision, avec un consentement explicite et une mention dans la politique de confidentialite.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/auth.js` — `prompt=none` retire, scope `email`, `user.email` (null si non verifiee)
+- (hors repo) `tubeforge-webdl/src/index.js` — email dans le jeton, `serveur` dans `/api/me` et dans les resolutions, compteurs dans le refus de plafond
+- (hors repo) `tubeforge-webdl/wrangler.toml` — `REQUIRE_DISCORD = "true"`
+- `src/lib/webdl.ts` — types `serveur` et `user.email`
+- `src/app/tubeforge/telecharger/page.tsx` — composant `Compteurs`, encart proactif, constantes `RED`/`AMBER`, texte des limites corrige (disait encore « 10 videos par jour »)
+
+**Comment annuler :** `REQUIRE_DISCORD = "false"` + `npx wrangler deploy` rouvre l'outil a tous en une minute. `git revert <hash>` cote page.
+
+**Effets de bord possibles :** l'outil n'est **plus utilisable sans compte Discord** — tout visiteur hors du serveur voit une porte. Le scope `email` ajoute une ligne « voir votre adresse e-mail » sur l'ecran d'autorisation Discord : un peu plus de friction, et une demande a laquelle certains diront non. Le compteur serveur est en KV, donc **souple** comme les autres (il peut afficher une valeur en retard de quelques secondes). Enfin le parcours OAuth complet — clic, retour de Discord, verification d'appartenance — **n'a pas pu etre teste de bout en bout** : il faut se connecter avec un vrai compte Discord, ce que je ne fais pas a la place de quelqu'un.
+
+---
 ### [2026-07-26 21:40] — Porte Discord pilotable + messages de refus qui convertissent
 
 **Quoi :** Trois choses. La porte Discord devient activable par variable d'environnement, avec une securite anti-verrouillage. Les refus de quota portent desormais un encart de conversion vers TubeForge, affiche dans la page. Et le quota par personne devient reglable sans redeployer.
