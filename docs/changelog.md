@@ -27,6 +27,20 @@ Il ne reste que l'adresse de sortie.
 
 **🚨 Et la sortie de secours est fermee.** Faire recuperer les octets par le navigateur du visiteur — son IP residentielle, exactement l'avantage de TubeForge — est **impossible** : `googlevideo` n'envoie **aucun en-tete CORS**, meme apres avoir suivi ses redirections (verifie : 302 puis 206, sans jamais d'`access-control-allow-origin`). Le navigateur refuse de lire une reponse sans ces en-tetes. **Le relais n'est donc pas un choix d'architecture, c'est une obligation.** Et l'appel a `youtubei/v1/player` depuis le navigateur est refuse pareil (403, sans en-tete CORS).
 
+**⚠️ Complement du 27/07 15:50 — ce n'est PAS propre a Cloudflare, c'est TOUT DATACENTER.** Sonde temporaire deployee sur Vercel (donc sortie par des IP AWS) et interrogee avec **exactement la meme URL** que les deux autres sorties :
+
+| sortie reseau | resultat |
+|---|---|
+| connexion residentielle | **206**, 200 001 octets |
+| **Vercel (AWS)** | **403**, 0 octet |
+| Cloudflare Worker | 403 (13/13 sur 45 min) |
+
+Consequence directe : l'option gratuite « demenager le relais sur Vercel, ou le site est deja heberge » est **morte**. Et comme AWS et Cloudflare sont les deux plages les plus abusees d'Internet, un VPS bon marche (Hetzner, OVH, Scaleway) a des chances d'etre refuse aussi — a verifier avant de s'engager, pas a supposer.
+
+Chiffrage de la seule voie qui marche techniquement, un proxy residentiel (tarifs releves 27/07) : de **1 $/GB** en paiement a l'usage le moins cher a 4-8 $/GB en milieu de gamme. Une video de 15 min en 1080p pese 440 Mo, soit 0,44 GB, donc **~0,44 $ la video au meilleur tarif**. Avec 10 € par mois : **environ 25 videos**. Le quota est de 25 par personne et par JOUR, pour 635 membres. **L'arithmetique ne ferme pas.**
+
+La sonde a ete supprimee apres mesure et son absence verifiee en production (404) : on ne laisse pas derriere soi un relais ouvert, meme restreint aux hotes googlevideo.
+
 **Ce que ca implique**, sans detour : servir YouTube demande une adresse de sortie que YouTube accepte. Le plan gratuit de Cloudflare n'en fournit pas. Les trois autres plateformes sont indifferentes au probleme parce qu'elles autorisent notre origine et sont donc telechargees EN DIRECT par le navigateur.
 
 **Livre au passage, utile quoi qu'il arrive** — le message d'echec de telechargement nomme desormais la piste, la tranche et la position en octets, et distingue une coupure reseau d'un refus :
