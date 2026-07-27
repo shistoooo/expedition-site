@@ -1,4 +1,30 @@
 ---
+### [2026-07-27 14:15] — Le canonical pointait sur un 404, et pourquoi le domaine principal ignore /tubeforge
+
+**Quoi :** En cherchant si la page etait atteignable, decouverte de trois choses. Une seule etait un vrai defaut, mais elle rendait la page inindexable.
+
+**🚨 Le canonical designait une URL qui renvoie 404.** Il valait `https://expeditionlauncher.store/tubeforge/telecharger`. Dire a Google « la version de reference est la-bas » quand la-bas est vide, c'est garantir que la page ne soit jamais indexee.
+
+**Pourquoi cette URL est vide — l'explication complete.** Tous les deploiements du projet sont marques **Preview**, aucun n'est Production (consequence directe de la regle « jamais `vercel --prod` »). `expeditionlauncher.store` etant le domaine de PRODUCTION, il sert donc le dernier deploiement Production, anterieur a **toute** la section `/tubeforge` — la page produit y renvoie 404 elle aussi, pas seulement le telechargeur. `tubeforge.explauncheur.space` est un alias manuel repointe a chaque deploiement : c'est la que tout vit.
+
+**Le supprimer ne suffisait pas, et je l'ai verifie apres coup au lieu de le supposer.** Sans declaration, la page herite du canonical du segment parent, soit `.../tubeforge` : elle se declarait alors doublon de la page produit. Un autre mensonge, et vers un 404 lui aussi. Il faut donc le poser EXPLICITEMENT — auto-referent est le defaut sur. Verifie : le canonical servi repond maintenant 200.
+
+**Fausse alerte que je dois consigner.** J'ai d'abord annonce que `expedition.so` servait la page sans aucun correctif du jour, en la presentant comme la decouverte la plus importante de la session. **C'etait faux.** `expedition.so` renvoie 200 sur N'IMPORTE QUEL chemin, avec 114 octets et sans titre : c'est une page parquee, hors Vercel (IP AWS), sans rapport avec le site. J'avais lu un code 200 sans regarder le corps. **Sixieme artefact de mesure de la session, et le seul qui ait produit une alarme injustifiee. Regle : un 200 ne prouve pas qu'une page existe — comparer avec un chemin absurde.**
+
+**Deux manques assumes, pas corriges, qui attendent une decision :**
+- la page n'est **au sitemap d'aucun domaine** ;
+- **aucun lien du site n'y mene** (verifie : zero occurrence hors du dossier de la page).
+
+Ce n'est pas grave tant que le lien se transmet a la main, mais ca veut dire zero visiteur venu d'un moteur. A regler en meme temps que le choix du domaine public — les trois valeurs par defaut du code se contredisent aujourd'hui (`sitemap.ts` et `layout.tsx` designent `expeditionlauncher.store`, `robots.ts` designe `expedition.so`, qui est parque).
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/layout.tsx` — canonical explicite vers l'URL qui sert la page
+
+**Comment annuler :** `git revert`. **Ne pas revenir a l'ancienne valeur** : elle pointe sur un 404.
+
+**Effets de bord possibles :** si la page est un jour publiee sur le domaine principal, ce canonical devra changer en meme temps, sinon deux URLs se declareront reference. La contradiction `robots.ts` / `sitemap.ts` est site-wide et pre-existante : signalee, pas touchee.
+
+---
 ### [2026-07-27 13:20] — « YouTube nous a pris pour un robot » : rendre le refus diagnosticable
 
 **Quoi :** Un membre (deuxieme compte Discord a passer la porte, donc la connexion fonctionne bien pour d'autres que le proprietaire) est tombe sur ce refus avec une video musicale. Le message etait juste, mais MUET sur la seule chose qui compte pour reparer.

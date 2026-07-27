@@ -24,7 +24,26 @@ export const metadata: Metadata = {
   title: "Télécharger une vidéo pour Premiere Pro ou DaVinci",
   description:
     "Colle un lien YouTube, TikTok, X ou Twitch et récupère le fichier en 1080p, sans publicité ni recompression. Outil gratuit pour les membres du Discord Expédition.",
-  alternates: { canonical: "https://expeditionlauncher.store/tubeforge/telecharger" },
+  /**
+   * Canonical pointe sur l'URL qui sert REELLEMENT cette page.
+   *
+   * Il valait `https://expeditionlauncher.store/tubeforge/telecharger` — une URL
+   * qui renvoie 404. Constate le 27/07/2026 : `expeditionlauncher.store` est le
+   * domaine de PRODUCTION, mais le projet n'a plus de deploiement marque
+   * Production (regle « jamais vercel --prod »), donc il sert un build anterieur
+   * a toute la section `/tubeforge`. Un canonical vers un 404 dit a Google
+   * « la vraie version est la-bas », et la-bas il n'y a rien.
+   *
+   * Le SUPPRIMER ne suffit pas : la page herite alors du canonical du segment
+   * parent, `.../tubeforge`, et se declare donc doublon de la page produit — un
+   * autre mensonge, verifie apres coup sur la page servie. Il faut donc le poser
+   * explicitement, et auto-referent est le defaut sur.
+   *
+   * ⚠️ A METTRE A JOUR le jour ou le domaine public est arrete, en meme temps que
+   * l'entree au sitemap qui manque pour la meme raison. Tant que rien ne pointe
+   * vers cette page, elle reste de toute facon introuvable par un moteur.
+   */
+  alternates: { canonical: "https://tubeforge.explauncheur.space/tubeforge/telecharger" },
   openGraph: {
     title: "Télécharger une vidéo pour ton montage, sans publicité",
     description:
