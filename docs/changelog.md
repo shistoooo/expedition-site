@@ -1,4 +1,35 @@
 ---
+### [2026-07-27 19:30] — Le 1080p fonctionne. Ma conclusion inverse etait fausse.
+
+**Quoi :** J'ai annonce cet apres-midi que googlevideo refusait les octets a toute IP de datacenter, et donc que le 1080p etait impossible sans un relais residentiel a 1 320 $/mois. **C'etait faux.** Remesure le soir meme, a froid : le relais fonctionne, le 1080p aussi.
+
+**Les mesures qui corrigent :**
+- Worker Cloudflare vers googlevideo : **6 essais sur 6 en HTTP 206**, 500 001 octets chacun, 244 a 1 182 ms.
+- **Chemin de production complet** (le Worker resout ET relaie) : **9 tranches sur 9**, dont une lue a 424 Mo d'offset sur une video 1080p de 427 Mo.
+- **Bout en bout dans un vrai navigateur** : fichier de **84 354 215 octets**, `video/mp4`, boite `ftyp`/`isom` valide, image et son fusionnes, mention « Fichier enregistre », aucune erreur.
+
+**La cause de l'erreur.** J'avais passe la journee a marteler YouTube depuis le meme Worker — dizaines de resolutions, canari, plus une mauvaise idee qui ajoutait deux clients par video et doublait les appels. L'IP de sortie etait grillee. **Une mesure repetee treize fois d'affilee sur une ressource partagee ne mesure plus la ressource : elle mesure l'effet de la mesure.**
+
+Deux signaux auraient du m'arreter, et je les ai ignores : la memoire projet du 26/07 disait « googlevideo vers Cloudflare = 22 a 63 Mo/s, verifie », et un telechargement de 441 Mo avait abouti par ce meme relais le matin meme. J'ai conclu l'inverse sans jamais expliquer pourquoi la mesure de la veille aurait ete fausse. **Quand une nouvelle mesure contredit une mesure anterieure documentee, la charge de la preuve est sur la NOUVELLE.**
+
+Ce sont les agents d'une enquete parallele qui ont trouve la contradiction, en mesurant 3 tranches sur 3 en 206 depuis un edge Cloudflare pendant que j'affirmais l'inverse.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — le 1080p (relais + fusion) redevient le chemin principal ; le lien direct 360p passe en secours (`result.lienDirect && !result.video`), et son commentaire porte desormais le recit de l'erreur pour qu'on ne la refasse pas.
+
+**Ce qui reste vrai du dossier de cet apres-midi :**
+- googlevideo n'accorde CORS qu'aux origines youtube.com : le relais reste **obligatoire** pour YouTube — mais il fonctionne.
+- Le VPS Hetzner de ReviewForge est refuse **des la resolution** (LOGIN_REQUIRED x9). Ne rien y demenager.
+- Le lien direct 360p (`&title=` -> `content-disposition: attachment` sur les URLs sans `gir`) reste en place comme secours.
+- L'enquete concurrentielle tient : SaveFrom sert du 360p en lien direct et des pistes 1080p **muettes** (classe CSS `no-audio`), y2mate.gs ne fait que du 360p, yt5s ment depuis 20 mois, cobalt a **retire YouTube**, y2mate.com et yt1s.com ont ete saisis (Cour federale du Canada, juin 2026). **Notre 1080p sonore et gratuit est au-dessus de tout ce que fait le marche.**
+
+**Comment annuler :** `git revert`. Ne pas revenir a la version qui privilegie le 360p : elle repose sur une mesure fausse.
+
+**Effets de bord possibles :** le relais consomme des requetes Worker (~76 pour une video de 441 Mo). Le plafond `MAX_DAILY_RESOLVES = 1200` calibre pour le plan gratuit reste donc necessaire et correctement dimensionne.
+
+**Piege de dispositif, huitieme de la journee :** un `cd` reste dans le dossier du worker a fait deployer le mauvais projet sur Vercel, et l'alias `tubeforge.explauncheur.space` a pointe sur le worker pendant une minute. Repare immediatement. **Toujours verifier `pwd` avant un deploiement.**
+
+---
 ### [2026-07-27 17:00] — 1080p automatique dans le navigateur : recherche exhaustive, resultat negatif
 
 **Quoi :** Exploration systematique (4 balayages paralleles + refutation adversariale de chaque piste positive, 8 agents, 207 appels d'outils) pour trouver un chemin vers le 1080p automatique depuis le navigateur, sans relais et sans cout au gigaoctet. **Aucun n'existe.** Le document sert a ne JAMAIS refaire ces tests.

@@ -1053,6 +1053,64 @@ export default function TelechargerPage() {
                     <p className="inline-flex items-center gap-2 text-sm text-green-300/90">
                       <Check className="w-4 h-4" /> Fichier enregistré dans tes téléchargements.
                     </p>
+                  ) : result.lienDirect && !result.video ? (
+                    /**
+                     * YouTube : LIEN DIRECT, sans passer par nos serveurs.
+                     *
+                     * SECOURS uniquement, quand aucun flux adaptatif n'est
+                     * disponible. Le chemin normal reste le 1080p par le relais
+                     * puis fusion dans le navigateur.
+                     *
+                     * ⚠️ Ce bloc a failli devenir le chemin principal sur une
+                     * conclusion FAUSSE. Le 27/07 j'ai mesure 13 refus sur 13 du
+                     * relais et j'en ai deduit que googlevideo refusait les
+                     * octets a toute adresse de datacenter. C'etait mon propre
+                     * volume de tests qui avait grille l'IP de sortie : remesure
+                     * quelques heures plus tard, le meme relais sert 9 tranches
+                     * sur 9, dont une a 424 Mo d'offset sur une video de 427 Mo.
+                     * Une mesure repetee treize fois d'affilee sur une ressource
+                     * partagee ne mesure plus la ressource, elle mesure l'effet
+                     * de la mesure.
+                     *
+                     * Ce que ce chemin garde d'utile : les octets passent par la
+                     * connexion du visiteur, donc il fonctionne meme si le relais
+                     * venait a etre refuse. Son prix est la qualite — 360p au
+                     * mieux, aucun client YouTube ne servant de fichier unique
+                     * au-dela (verifie sur 23 clients).
+                     */
+                    <div>
+                      <a
+                        href={result.lienDirect.url}
+                        {...(result.lienDirect.forceTelechargement
+                          ? { download: "" }
+                          : { target: "_blank", rel: "noopener noreferrer" })}
+                        className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-black font-bold transition-transform duration-200 hover:translate-y-[-1px]"
+                      >
+                        <Download className="w-4 h-4" />
+                        {result.lienDirect.forceTelechargement
+                          ? `Télécharger en ${result.lienDirect.height}p`
+                          : `Ouvrir la vidéo en ${result.lienDirect.height}p`}
+                      </a>
+                      {/* Cas `gir=yes` : le serveur de YouTube n'envoie pas
+                          d'en-tete d'attachement, donc le navigateur LIT la video
+                          au lieu de l'enregistrer. On ne peut pas le forcer — on
+                          le dit, plutot que de laisser la personne devant un
+                          onglet qu'elle n'attendait pas. */}
+                      {!result.lienDirect.forceTelechargement && (
+                        <p className="text-[13px] text-white/50 leading-relaxed mt-3">
+                          Sur cette vidéo, YouTube l&apos;ouvre dans un onglet au lieu de
+                          l&apos;enregistrer. Fais un clic droit dessus puis
+                          «&nbsp;Enregistrer la vidéo sous…&nbsp;».
+                        </p>
+                      )}
+                      <p className="text-[13px] text-white/50 leading-relaxed mt-3">
+                        {result.lienDirect.height}p, c&apos;est le maximum qu&apos;un navigateur peut
+                        récupérer sur YouTube sans rien installer : au-delà, YouTube sépare
+                        l&apos;image et le son et refuse de nous les laisser réunir.
+                        <span className="text-white/70"> TubeForge télécharge depuis ta connexion</span>,
+                        donc il n&apos;a pas cette limite — jusqu&apos;à la 4K, image et son réunis.
+                      </p>
+                    </div>
                   ) : (
                     <button
                       onClick={onDownload}
