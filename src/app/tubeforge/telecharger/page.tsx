@@ -492,6 +492,9 @@ export default function TelechargerPage() {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Resolved | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Verdict du secours anti-robot, joint au refus. Discret mais present : c'est
+  // la seule information qui distingue trois causes de refus identiques a l'ecran.
+  const [detailTechnique, setDetailTechnique] = useState<string | null>(null);
   // Quand le refus vient d'un quota, le Worker joint de quoi expliquer ce que
   // TubeForge fait differemment. C'est le seul moment ou la personne a une
   // raison concrete de s'y interesser : elle vient de buter sur une limite.
@@ -546,13 +549,18 @@ export default function TelechargerPage() {
   }, [refreshMe]);
 
   const onResolve = async () => {
-    setError(null); setUpsell(null); setResult(null); setDone(false); setProgress(null);
+    setError(null); setDetailTechnique(null); setUpsell(null); setResult(null); setDone(false); setProgress(null);
     if (!url.trim()) return;
     setBusy(true);
     try {
       const r = await resolve(url.trim());
       if (!r.ok) {
         setError(r.err);
+        // Verdict du secours anti-robot. Sans lui, « YouTube nous a pris pour un
+        // robot » ne dit pas si le secours a ete tente, s'il a echoue, ou s'il a
+        // reussi et que YouTube refuse quand meme — trois causes qui appellent
+        // trois corrections differentes.
+        setDetailTechnique(r.attestation ?? null);
         setUpsell(r.upsell ?? null);
         if (r.needAuth) clearToken();
         await refreshMe();
@@ -935,6 +943,11 @@ export default function TelechargerPage() {
             {error && (
               <div className="mt-4 rounded-xl border border-red-500/25 bg-red-500/[0.07] px-5 py-4 text-sm text-red-200/90 leading-relaxed">
                 {error}
+                {detailTechnique && (
+                  <p className="mt-2.5 pt-2.5 border-t border-red-500/20 text-[12px] font-mono text-red-200/60">
+                    {detailTechnique}
+                  </p>
+                )}
               </div>
             )}
 

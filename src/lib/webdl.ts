@@ -168,6 +168,8 @@ export type ResolveFailure = {
   ok: false;
   err: string;
   kind?: string;
+  /** Verdict du secours anti-robot, affiche sous le message d'erreur. */
+  attestation?: string;
   needAuth?: boolean;
   quotaReached?: boolean;
   upsell?: Upsell;
@@ -199,12 +201,36 @@ export async function resolve(url: string): Promise<ResolveResult> {
   if (visitorData) params.vd = visitorData;
 
   const first = await api<ResolveResult>("/api/resolve", params);
-  if (first.ok || !yt || !visitorData) return first;
-  if (!("kind" in first) || first.kind !== "bot") return first;
+  if (first.ok) return first;
+
+  /**
+   * Secours anti-robot, et surtout : RENDRE COMPTE de ce qu'il a fait.
+   *
+   * Le probleme n'etait pas que ce secours manque, c'est qu'il etait muet. Face
+   * a « YouTube nous a pris pour un robot », impossible de distinguer trois
+   * situations tres differentes : le secours n'a pas ete tente, il a ete tente
+   * et BotGuard a echoue, ou il a reussi et YouTube a refuse quand meme. Les
+   * trois demandent des corrections opposees, et un rapport de bug se resumait a
+   * « ca ne marche pas ». `window.__tfdlAttestation` existait deja mais vivait
+   * dans la console, que personne ne pense a copier.
+   *
+   * On joint donc le verdict au refus, en clair, dans `attestation`.
+   */
+  const echec = first as ResolveFailure;
+  if (!yt || echec.kind !== "bot") return first;
+  if (!visitorData) return { ...echec, attestation: "session YouTube indisponible, secours impossible" };
 
   const poToken = await getPoToken(visitorData);
-  if (!poToken) return first;
-  return api<ResolveResult>("/api/resolve", { ...params, pot: poToken });
+  if (!poToken) {
+    const d = typeof window !== "undefined" ? window.__tfdlAttestation : undefined;
+    return { ...echec, attestation: "attestation impossible sur ce navigateur" + (d?.err ? " (" + d.err + ")" : "") };
+  }
+
+  const second = await api<ResolveResult>("/api/resolve", { ...params, pot: poToken });
+  if (second.ok) return second;
+  // Le jeton a bien ete frappe et YouTube refuse quand meme : c'est le cas le
+  // plus interessant, et le seul qui indique un blocage cote adresse IP.
+  return { ...(second as ResolveFailure), attestation: "attestation fournie, YouTube refuse quand même" };
 }
 
 /* ── Telechargement ────────────────────────────────────────────────── */

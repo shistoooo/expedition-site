@@ -1,6 +1,23 @@
 import type { NextConfig } from "next";
 
 /**
+ * Worker local, autorise UNIQUEMENT en developpement.
+ *
+ * Pourquoi c'est necessaire : la porte Discord etant fermee en production, la
+ * seule facon d'exercer le vrai chemin du navigateur (resolution, secours
+ * BotGuard, telechargement) est de viser un worker local — que `connect-src`
+ * refusait, ce qui rendait tout diagnostic impossible et m'a deja fait conclure
+ * a tort a une panne reseau.
+ *
+ * La chaine est vide quand `NODE_ENV` vaut `production` : la CSP servie aux
+ * visiteurs est donc identique, au caractere pres.
+ */
+const CSP_CONNECT_DEV =
+  process.env.NODE_ENV === "production"
+    ? ""
+    : " http://127.0.0.1:8802 http://127.0.0.1:8813 http://127.0.0.1:8814 http://127.0.0.1:8815 http://127.0.0.1:8816 http://127.0.0.1:8817 http://localhost:8787";
+
+/**
  * Directives CSP communes. `script-src` est ajoute a part, parce qu'UNE seule
  * page a besoin d'un cran de plus (voir CSP_SCRIPT_SRC_DOWNLOADER).
  */
@@ -12,11 +29,12 @@ const CSP_BASE = [
   // Les 3 dernieres entrees servent le telechargeur web (/tubeforge/telecharger) :
   // le Worker resout les liens, les CDN de X et Twitch sont appeles EN DIRECT par
   // le navigateur (ils autorisent notre origine), et jnn-pa est l'API BotGuard.
-  "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://tubeforge-webdl.expedition-studio.workers.dev https://jnn-pa.googleapis.com https://video.twimg.com https://*.cloudfront.net",
+  "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://tubeforge-webdl.expedition-studio.workers.dev https://jnn-pa.googleapis.com https://video.twimg.com https://*.cloudfront.net" + CSP_CONNECT_DEV,
   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube-nocookie.com https://www.youtube.com",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
 ];
+
 
 const CSP_SCRIPT_SRC =
   "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.clarity.ms https://scripts.clarity.ms https://www.youtube.com https://s.ytimg.com";

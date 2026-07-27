@@ -1,4 +1,34 @@
 ---
+### [2026-07-27 13:20] — « YouTube nous a pris pour un robot » : rendre le refus diagnosticable
+
+**Quoi :** Un membre (deuxieme compte Discord a passer la porte, donc la connexion fonctionne bien pour d'autres que le proprietaire) est tombe sur ce refus avec une video musicale. Le message etait juste, mais MUET sur la seule chose qui compte pour reparer.
+
+**Ce que la mesure dit vraiment.** Sur `lxnyzw3f8Qc` (une video musicale, liste `RD…`) :
+- depuis MA machine, avec le meme visitorData que le Worker : les trois clients mobiles repondent `OK` avec 7 pistes ;
+- depuis le Worker : `LOGIN_REQUIRED` / « Connectez-vous pour confirmer que vous n'etes pas un robot », sur les trois clients, trois fois de suite.
+
+Donc la classification est **correcte** — c'est bien de la detection anti-robot — et la cause est **l'adresse IP partagee de Cloudflare**, pas le client ni le visitorData. D'autres videos passent depuis ce meme Worker (canari vert, 6/6 en test), donc YouTube applique une surveillance PAR VIDEO, plus stricte sur le contenu musical.
+
+**Le vrai defaut n'etait pas l'absence de secours, c'etait son silence.** Face a « YouTube nous a pris pour un robot », impossible de distinguer trois situations qui appellent trois corrections opposees : le secours BotGuard n'a pas ete tente, il a ete tente et a echoue, ou il a reussi et YouTube refuse quand meme (= blocage IP confirme). `window.__tfdlAttestation` existait deja, mais vivait dans la console — que personne ne pense a copier. Un rapport de bug se resumait donc a « ca ne marche pas ».
+
+Le verdict est desormais joint au refus et affiche sous le message, en petit : « attestation impossible sur ce navigateur (raison) », « attestation fournie, YouTube refuse quand meme », ou « session YouTube indisponible, secours impossible ».
+
+**CSP : le worker local est autorise en DEVELOPPEMENT seulement.** La porte etant fermee en production, la seule facon d'exercer le vrai chemin du navigateur est de viser un worker local — que `connect-src` refusait, ce qui rendait tout diagnostic impossible et m'avait deja fait conclure a tort a une panne reseau. `CSP_CONNECT_DEV` vaut la chaine vide quand `NODE_ENV` est `production`. **Verifie sur la production apres deploiement : aucune occurrence de `localhost`, `127.0.0.1`, ni des ports de dev dans l'en-tete servi.**
+
+**Ce que je n'ai PAS pu etablir :** si le secours a effectivement tourne chez ce membre. Mon harnais de navigateur n'arrivait pas a remplir le champ (remplissage direct du DOM sans evenement React, donc bouton reste desactive ; puis deux `ref` renvoyant les memes coordonnees). Plutot que d'insister sur un outil defaillant, j'ai rendu la reponse observable — le prochain rapport la donnera directement.
+
+**Fichiers touches :**
+- `src/lib/webdl.ts` — `resolve()` rend compte du secours dans `attestation` ; type `ResolveFailure` etendu
+- `src/app/tubeforge/telecharger/page.tsx` — etat `detailTechnique`, affiche sous le message d'erreur
+- `next.config.ts` — `CSP_CONNECT_DEV`, vide en production
+
+**Comment annuler :** `git revert` du commit. Retirer `CSP_CONNECT_DEV` reste possible seul, au prix de la capacite a diagnostiquer en local.
+
+**Effets de bord possibles :** une ligne technique en plus sous certains messages d'erreur. Volontairement discrete (12 px, mono, opacite reduite) : elle sert au diagnostic, pas a la comprehension — le message principal reste autonome. Elle n'apparait que sur les refus anti-robot YouTube.
+
+**Ce qui reste ouvert :** si l'attestation remonte « fournie, YouTube refuse quand meme », alors le PoToken ne suffit pas et le seul levier restant est de ne plus sortir par l'IP de Cloudflare. C'est exactement l'argument de TubeForge, que le message d'erreur avance deja.
+
+---
 ### [2026-07-27 12:35] — Dire qu'il faut REJOINDRE, pas seulement se connecter
 
 **Quoi :** Le bouton disait « Se connecter avec Discord », ce qui suppose qu'on a deja acces. Quelqu'un qui n'est pas encore sur le serveur autorisait Discord, revenait, et decouvrait SEULEMENT LA qu'il fallait d'abord rejoindre. Un aller-retour inutile, au pire moment — juste apres avoir accorde une autorisation.
