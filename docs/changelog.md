@@ -1,4 +1,28 @@
 ---
+### [2026-07-27 12:35] — Dire qu'il faut REJOINDRE, pas seulement se connecter
+
+**Quoi :** Le bouton disait « Se connecter avec Discord », ce qui suppose qu'on a deja acces. Quelqu'un qui n'est pas encore sur le serveur autorisait Discord, revenait, et decouvrait SEULEMENT LA qu'il fallait d'abord rejoindre. Un aller-retour inutile, au pire moment — juste apres avoir accorde une autorisation.
+
+**Le correctif.** La sequence complete est annoncee avant le premier clic : « Deux etapes : rejoindre le serveur, puis se connecter ici pour qu'on verifie. » Puis deux boutons numerotes, **1 Rejoindre le Discord** (lien d'invitation, nouvel onglet) et **2 Se connecter**, suivis de « Deja sur le serveur ? L'etape 2 suffit. »
+
+**Un seul bouton plein**, conformement a la doctrine : la connexion est la seule etape que TOUT LE MONDE fait — un membre saute la premiere — donc c'est elle qui porte le poids visuel. Le bouton « Rejoindre » reste en contour.
+
+**Mesure apres coup**, sur un vrai 375x812 : carte a 996 px, **les deux boutons entierement au-dessus du pli** (le second finit a 776 px pour un pli a 812), 0 debordement horizontal.
+
+**Question posee : pourquoi pas UN SEUL lien qui joint et connecte ?** C'est techniquement faisable. Le scope Discord `guilds.join` permet a une application d'ajouter quelqu'un a un serveur, via un bot present dessus. Un clic suffirait alors. Non retenu pour l'instant, pour deux raisons :
+1. **Ca detruit l'argument de confiance qu'on vient d'ecrire.** L'ecran d'autorisation afficherait « Rejoindre des serveurs pour toi », alors que la page promet noir sur blanc « on ne peut pas te faire rejoindre quoi que ce soit ». Sur une page dont le probleme central est de ne pas ressembler a une arnaque, c'est un mauvais echange contre un clic economise.
+2. **Le but n'est pas de franchir la porte, c'est d'entrer dans la communaute.** Une adhesion silencieuse produit un membre qui n'ouvre jamais le serveur. Rejoindre a la main, c'est voir le serveur.
+
+Si on change d'avis : il faut un bot dans le serveur, son jeton en secret, le scope `guilds.join`, et **reecrire le bloc de levee de doute** — pas seulement ajouter le scope.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — deux etapes annoncees, deux boutons numerotes
+
+**Comment annuler :** `git revert` du commit.
+
+**Effets de bord possibles :** deux boutons cote a cote, c'est deux fois plus de choix a l'instant du clic. Le numerotage et la ligne « Deja sur le serveur ? L'etape 2 suffit » sont la pour que le choix ne demande pas de reflechir. A surveiller : si les gens cliquent massivement « Se connecter » en premier sans etre membres, la branche « Tu n'es pas encore sur le serveur » les rattrape deja, avec son propre bouton pour rejoindre.
+
+---
 ### [2026-07-27 12:05] — Expliquer ce qu'est Expedition, et remonter le bouton au-dessus du pli
 
 **Quoi :** La page exigeait de rejoindre un Discord sans jamais dire ce qu'on y trouve. « Reserve aux membres du Discord » se lisait donc comme un peage, pas comme une porte. Ajout d'un bloc « Expedition, c'est quoi », et reorganisation de la carte.

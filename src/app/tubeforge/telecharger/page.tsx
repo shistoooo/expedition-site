@@ -737,24 +737,56 @@ export default function TelechargerPage() {
 
               {gated && !connected && (
                 <div className="text-center">
-                  <p className="text-white/70 mb-1">Le téléchargeur est réservé aux membres du Discord.</p>
-                  <p className="text-sm text-white/50 mb-7">Rejoindre prend dix secondes et ne coûte rien.</p>
+                  {/* Les DEUX etapes, dites avant le clic.
+                      Manque corrige : le bouton disait « se connecter », ce qui
+                      suppose qu'on a deja acces. Quelqu'un qui n'est pas encore
+                      sur le serveur autorisait donc Discord, revenait, et
+                      decouvrait SEULEMENT LA qu'il fallait d'abord rejoindre —
+                      un aller-retour inutile, au pire moment. On annonce la
+                      sequence complete des le depart. */}
+                  <p className="text-white/80 mb-1.5">
+                    Le téléchargeur est réservé aux membres du Discord Expédition.
+                  </p>
+                  <p className="text-sm text-white/50 mb-6">
+                    Deux étapes : rejoindre le serveur, puis se connecter ici pour qu’on vérifie.
+                    C’est gratuit et ça prend dix secondes.
+                  </p>
 
-                  {/* ORDRE : le bouton D'ABORD, les explications ensuite.
-                      Mesure qui a impose ce choix : en placant la presentation
-                      d'Expedition avant le bouton, la carte montait a 1062 px
-                      (131 % de l'ecran) et le bouton tombait a 948 px, donc SOUS
-                      LE PLI a 812 px. On enterrait l'action principale derriere
-                      un mur de texte. Qui connait deja Expedition clique tout de
-                      suite ; qui ne connait pas lit juste en dessous. */}
-                  <a
-                    href={authHref}
-                    className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white transition-transform duration-200 hover:translate-y-[-1px]"
-                    style={{ background: "#5865F2" }}
-                  >
-                    <DiscordMark className="w-5 h-4" />
-                    Se connecter avec Discord
-                  </a>
+                  {/* Deux actions reellement differentes, donc deux boutons —
+                      mais UN SEUL plein. La connexion est la seule etape que tout
+                      le monde fait (un membre saute la premiere), c'est donc elle
+                      qui porte le poids visuel. */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-center gap-3 mb-3">
+                    <a
+                      href={me?.invite || "https://discord.com/invite/QuV3bYDEYT"}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-semibold text-white/85 bg-white/[0.06] border border-white/15 hover:bg-white/[0.1] transition-colors"
+                    >
+                      <span className="font-mono text-xs text-white/45">1</span>
+                      Rejoindre le Discord
+                    </a>
+
+                    {/* ORDRE : les deux boutons D'ABORD, les explications ensuite.
+                        Mesure qui a impose ce choix : en placant la presentation
+                        d'Expedition avant eux, la carte montait a 1062 px (131 %
+                        de l'ecran) et le bouton tombait a 948 px, donc SOUS LE PLI
+                        a 812 px. On enterrait l'action principale derriere un mur
+                        de texte. Qui connait deja Expedition agit tout de suite ;
+                        qui ne connait pas lit juste en dessous. */}
+                    <a
+                      href={authHref}
+                      className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white transition-transform duration-200 hover:translate-y-[-1px]"
+                      style={{ background: "#5865F2" }}
+                    >
+                      <span className="font-mono text-xs text-white/60">2</span>
+                      <DiscordMark className="w-5 h-4" />
+                      Se connecter
+                    </a>
+                  </div>
+
+                  <p className="text-[13px] text-white/50 mb-1">
+                    Déjà sur le serveur ? L’étape 2 suffit.
+                  </p>
 
                   {/* Ce qu'on demande de rejoindre.
                       Trou d'entonnoir corrige : la page exigeait l'adhesion a un
