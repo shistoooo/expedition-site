@@ -1,4 +1,36 @@
 ---
+### [2026-07-27 17:00] — 1080p automatique dans le navigateur : recherche exhaustive, resultat negatif
+
+**Quoi :** Exploration systematique (4 balayages paralleles + refutation adversariale de chaque piste positive, 8 agents, 207 appels d'outils) pour trouver un chemin vers le 1080p automatique depuis le navigateur, sans relais et sans cout au gigaoctet. **Aucun n'existe.** Le document sert a ne JAMAIS refaire ces tests.
+
+**⛔ TUE PAR LA MESURE — ne jamais re-tester :**
+- **Format fusionne (image+son) au-dela de 360p** : 0 sur 46 points de mesure (23 clients x 2 videos). Aucun itag 22/37/59/78 nulle part. L'itag 18 (360p) est le plafond absolu.
+- **URL 1080p sans `gir=yes`** : 0 sur 50 formats inventories ; 22 formats adaptatifs sur 22, provenant de 10 videos, portent `gir=yes`.
+- **`gir` depend de la VIDEO, pas du client** : identique entre ANDROID et ANDROID_VR sur une meme video, different entre videos. Changer de client ne sert a rien.
+- **Retirer / vider / contredire / doubler `gir`** : 403. Il est dans `sparams`, donc signe. Idem `clen`, `mime`, `rqh`, `itag`.
+- **45 variantes de parametres et d'en-tetes** pour arracher un `content-disposition` sur une URL `gir=yes` (`filename`, `response-content-disposition`, `dl=1`, `download=1`, `range`, `rn`, `rbuf`, `cpn`, `ump`, `pot`, `sq`, `keepalive`, `ratebypass`, Sec-Fetch-* simules, `Accept: octet-stream`…) : **zero**.
+- **Reecriture d'hote vers `www.youtube.com/videoplayback`** : sert bien les octets (6/6) mais comportement strictement identique. Gain 0/6, et 0/4 sur les itag 137. Ajoute des redirections pour rien.
+- **Suivre les 302 a la main pour « laver » gir** : recopie a chaque saut, 6 sauts, aucun effet.
+- **`alr=yes`** : renvoie l'URL en texte brut, mais toujours aucun en-tete CORS.
+- **`dashManifestUrl`** : jamais present, sur 11 videos x 12 clients.
+- **Service Worker + reponse opaque** : ferme par la specification, DOUBLE verrou. (1) `respondWith` interdit une reponse opaque quand le mode n'est pas `no-cors`, or une navigation est en mode `navigate`. (2) Meme sans (1), une reponse opaque a **`body` null** : il n'y a aucun octet a ecrire. Meme impasse pour StreamSaver.js et `showSaveFilePicker()`.
+- **`<a download>` cross-origin** : ignore depuis Chrome 65. Le `content-disposition` cote serveur est le SEUL levier — et notre production est deja dessus.
+- **PoToken / attestation BotGuard comme cle du manifeste HLS** : hypothese la plus serieuse du dossier, testee avec un vrai jeton frappe dans le navigateur (220 caracteres, 1,7 s). Resultat : **HLS present 0 fois sur 8 AVEC attestation, 0 sur 9 sans**. Le jeton ne change rien. Piste morte.
+- **Cobalt.tools (etat de l'art)** : relaie les octets par ses propres serveurs (`itunnel`). S'il existait une voie navigateur-sans-relais, il l'utiliserait.
+
+**✅ CE QUI MARCHE, ET C'EST TOUT :** le 360p fusionne en un clic, via `&title=` qui declenche `content-disposition: attachment`. **Tient sur ~70 % des videos** (7/10 mesure) : celles dont l'URL ne porte pas `gir`. Le lien `gir=yes` -> pas d'attachment est confirme sur **34 URLs sur 34**.
+
+**Predicteur sans requete HTTP :** `gir=yes` ⇔ `clen` dans l'URL ⇔ `contentLength` present dans `streamingData.formats[itag 18]`. Notre code detecte deja `gir` dans l'URL — meme resultat, zero appel supplementaire. L'hypothese « ce sont les videos longues » a ete **refutee** : kJQP7kiw5Fk (282 s) porte gir, aqz-KE-bpKQ (635 s) non.
+
+**Une piste 1080p reelle mais inexploitable :** le parametre `govp/slices` des segments HLS n'est pas signe ; etendu a `0-(clen-1)`, il ramene la piste video 1080p entiere en une requete, en `application/octet-stream` + `nosniff` (donc enregistree, pas lue). Verifie de bout en bout : 83 210 680 octets, ffmpeg confirme 213 s, h264 High 1920x1080, zero erreur de decodage, fusion locale valide. **Mais il exige un `hlsManifestUrl`, present sur 1 video sur 27** — et l'attestation ne le debloque pas (mesure ci-dessus). Sans generalite, ce n'est pas un produit.
+
+**Arithmetique du relais residentiel**, pour 100 videos/jour de 440 Mo (1 320 Go/mois) : DataImpulse 1 320 $, IPRoyal 2 310 $, Decodo 2 904 $, Bright Data 3 960 a 11 088 $. Soit 0,44 a 3,70 $ par telechargement gratuit. **Aucun modele economique.** Le seul levier qui casse cette arithmetique n'est pas le prix du proxy mais le NOMBRE D'OCTETS : ne servir que 30 s (~15 Mo) fait tomber a 45-100 $/mois, un facteur 29.
+
+**Fichiers touches :** aucun. Ce chantier est une mesure, pas un changement.
+
+**Ce qui reste a tester, et c'est tout ce qui reste :** une IP **ISP statique** (ni residentielle ni datacenter, vendue au forfait par IP avec trafic illimite) est-elle acceptee par googlevideo ? ~0,30 $ et vingt minutes. Si oui, le relais 1 320 Go passe de 2 310 $ a environ 40 $/mois. C'est le seul pari qui reste ouvert.
+
+---
 ### [2026-07-27 15:30] — YouTube : googlevideo refuse les IP de Cloudflare. Diagnostic complet, et ce qui marche vraiment
 
 **Quoi :** Premier parcours COMPLET depuis un vrai navigateur, jusqu'au fichier verifie aux octets. Trois plateformes sur quatre fonctionnent. YouTube est bloque, et la cause est desormais isolee.
