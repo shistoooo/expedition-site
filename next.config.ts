@@ -15,7 +15,11 @@ import type { NextConfig } from "next";
 const CSP_CONNECT_DEV =
   process.env.NODE_ENV === "production"
     ? ""
-    : " http://127.0.0.1:8802 http://127.0.0.1:8813 http://127.0.0.1:8814 http://127.0.0.1:8815 http://127.0.0.1:8816 http://127.0.0.1:8817 http://localhost:8787";
+    // Joker de port plutot qu'une liste : j'ai deja perdu deux fois du temps
+    // parce que le worker de test tournait sur un port absent de la liste, et
+    // le symptome (« Impossible de joindre le service ») ressemble a une panne
+    // reelle. La CSP accepte `:*` pour le port.
+    : " http://127.0.0.1:* http://localhost:*";
 
 /**
  * Directives CSP communes. `script-src` est ajoute a part, parce qu'UNE seule

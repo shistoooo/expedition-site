@@ -1,4 +1,52 @@
 ---
+### [2026-07-27 15:30] — YouTube : googlevideo refuse les IP de Cloudflare. Diagnostic complet, et ce qui marche vraiment
+
+**Quoi :** Premier parcours COMPLET depuis un vrai navigateur, jusqu'au fichier verifie aux octets. Trois plateformes sur quatre fonctionnent. YouTube est bloque, et la cause est desormais isolee.
+
+**✅ Prouve de bout en bout** (fichier produit, en-tete lu, pas seulement « pas d'erreur ») :
+- **X / Twitter** — 20,2 Mo, `video/mp4`
+- **Twitch** — 44,4 Mo, boite `ftyp` presente, marque `isom`
+- **TikTok** — 11,3 Mo, boite `ftyp` presente, marque `isom`
+
+C'est la premiere fois de la session qu'un telechargement complet est verifie. Jusque-la on ne prouvait que la RESOLUTION, ce qui ne dit rien du telechargement — et c'est precisement la que ca cassait.
+
+**Deux mecanismes valides au passage, par accident :** en testant j'ai epuise le quota de 25, et l'encart « Tu as utilise tes 25 telechargements du jour » plus la proposition TubeForge se sont affiches correctement. Jamais vu en conditions reelles avant.
+
+**❌ YouTube : googlevideo refuse de livrer les octets aux IP de Cloudflare.**
+
+Mesure : **0 succes sur 6** via le relais, contre **206 + fichier complet** depuis une connexion residentielle, avec **la meme URL**. Puis un relevé automatique toutes les 3 minutes pendant 45 minutes : **13 essais, 403 a chaque fois, aucune decroissance**. A comparer au blocage de la RESOLUTION, qui retombait en 9 minutes — ce sont deux phenomenes differents.
+
+**Hypotheses eliminees une par une, par mesure et pas par raisonnement :**
+- *User-Agent* — les trois variantes (tronque du relais, complet du client, `curl` brut) donnent 206 depuis chez moi ;
+- *en-tete Range* — le relais prend 403 avec ET sans (`start`/`end` absents), donc ce n'est pas la redirection 302 qui perd le Range ;
+- *expiration des URLs* — elles vivent 5,9 h pour un cache de 1,5 h ;
+- *visitorData* — un tout neuf ne change rien ;
+- *PoToken* — frappe avec succes (220 caracteres, 912 ms) et refuse quand meme.
+
+Il ne reste que l'adresse de sortie.
+
+**🚨 Et la sortie de secours est fermee.** Faire recuperer les octets par le navigateur du visiteur — son IP residentielle, exactement l'avantage de TubeForge — est **impossible** : `googlevideo` n'envoie **aucun en-tete CORS**, meme apres avoir suivi ses redirections (verifie : 302 puis 206, sans jamais d'`access-control-allow-origin`). Le navigateur refuse de lire une reponse sans ces en-tetes. **Le relais n'est donc pas un choix d'architecture, c'est une obligation.** Et l'appel a `youtubei/v1/player` depuis le navigateur est refuse pareil (403, sans en-tete CORS).
+
+**Ce que ca implique**, sans detour : servir YouTube demande une adresse de sortie que YouTube accepte. Le plan gratuit de Cloudflare n'en fournit pas. Les trois autres plateformes sont indifferentes au probleme parce qu'elles autorisent notre origine et sont donc telechargees EN DIRECT par le navigateur.
+
+**Livre au passage, utile quoi qu'il arrive** — le message d'echec de telechargement nomme desormais la piste, la tranche et la position en octets, et distingue une coupure reseau d'un refus :
+> « Le telechargement a echoue (**video, tranche 1 sur 1 (octets 0,0–0,4 Mo), code 403**) »
+
+C'est ce message qui a permis de trouver la cause en dix minutes. Avant, il disait « tranche 2 sur 2, code 403 » sans dire quelle piste ni ou, et laissait passer un « Failed to fetch » brut quand la requete n'aboutissait pas du tout.
+
+**Fichiers touches :**
+- `src/lib/webdl.ts` — parametre `piste`, detection de la panne reseau distincte du refus, message construit selon ce qui a reellement echoue
+- `next.config.ts` — la CSP de developpement passe a un joker de port (`http://127.0.0.1:*`) : deux fois j'ai perdu du temps parce que le worker de test tournait sur un port absent de la liste, et le symptome ressemble a une panne reelle
+
+**Comment annuler :** `git revert`. Ne pas revenir a l'ancien message : il confondait trois causes.
+
+**Effets de bord possibles :** aucun sur le comportement, seulement sur ce qui est dit.
+
+**Deux pieges de dispositif de test, notes pour ne pas les repayer :**
+- `tubeforge-webdl/.dev.vars` contient `PUBLIC_ORIGIN="http://127.0.0.1:8803"`, un port mort d'une session ancienne. Les URLs du relais pointaient donc dans le vide et produisaient « Failed to fetch » — j'ai cru a une panne produit. **Toujours passer `--var PUBLIC_ORIGIN:<port courant>` a `wrangler dev`.**
+- Remplir un champ React en affectant `.value` ne met PAS l'etat a jour, donc le bouton reste desactive et rien ne part. Il faut le setter natif puis un evenement `input`. J'ai conclu deux fois a tort que « la page ne fait rien ».
+
+---
 ### [2026-07-27 14:15] — Le canonical pointait sur un 404, et pourquoi le domaine principal ignore /tubeforge
 
 **Quoi :** En cherchant si la page etait atteignable, decouverte de trois choses. Une seule etait un vrai defaut, mais elle rendait la page inindexable.

@@ -245,6 +245,8 @@ async function fetchChunked(
   size: number,
   onBytes: (n: number) => void,
   signal: AbortSignal,
+  /** « vidéo », « audio » ou « fichier » : nomme ce qui a échoué dans le message. */
+  piste = "fichier",
   concurrency = 6,
   chunkSize = 6_000_000
 ): Promise<ArrayBuffer> {
@@ -277,6 +279,12 @@ async function fetchChunked(
        */
       let buf: Uint8Array | null = null;
       let lastStatus = 0;
+      // Panne RESEAU, distincte d'un refus : une requete qui n'atteint meme pas
+      // le serveur ne renvoie aucun code, et le navigateur se contente d'un
+      // « Failed to fetch » que l'interface affichait tel quel. Vu de l'autre
+      // cote, c'est indechiffrable — et c'est le message que les utilisateurs
+      // rapportent comme « ca marche pas ». On le retient pour le traduire.
+      let panneReseau = false;
       for (let attempt = 0; attempt < 4 && !buf; attempt++) {
         if (signal.aborted) throw new Error("Téléchargement annulé.");
         if (attempt > 0) {
@@ -296,13 +304,33 @@ async function fetchChunked(
           // Annulation demandee par la personne : on sort tout de suite. Une
           // echeance depassee, elle, vaut un nouvel essai.
           if (signal.aborted) throw new Error("Téléchargement annulé.");
-          if (!estDelaiDepasse(e2)) throw e2;
+          if (estDelaiDepasse(e2)) continue;
+          // `TypeError: Failed to fetch` : la requete n'a pas abouti du tout.
+          // Reseau coupe, blocage par une extension, ou service inaccessible.
+          // On reessaie — mais on retient la nature de la panne pour le dire.
+          if (e2 instanceof TypeError) { panneReseau = true; continue; }
+          throw e2;
         }
       }
       if (!buf) {
+        /**
+         * Message construit selon ce qui a REELLEMENT echoue.
+         *
+         * Un « code 403 » et une absence totale de reponse demandent deux
+         * reactions opposees, et l'ancien message les confondait — quand il ne
+         * laissait pas passer un « Failed to fetch » brut. On nomme donc la
+         * piste concernee et la position dans le fichier : sur un refus par
+         * plage d'octets, savoir que ca casse toujours au meme endroit vaut
+         * tous les commentaires.
+         */
+        const ou = `${piste}, tranche ${k + 1} sur ${ranges.length}` +
+          ` (octets ${(s / 1048576).toFixed(1)}–${(e / 1048576).toFixed(1)} Mo)`;
         throw new Error(
-          `Le téléchargement a échoué (tranche ${k + 1} sur ${ranges.length}, code ${lastStatus}). ` +
-          "Réessaie : YouTube refuse parfois des morceaux au hasard."
+          panneReseau && !lastStatus
+            ? `La connexion au service a été coupée pendant le téléchargement (${ou}). ` +
+              "Vérifie ta connexion, désactive un éventuel bloqueur, puis réessaie."
+            : `Le téléchargement a échoué (${ou}, code ${lastStatus}). ` +
+              "Réessaie : YouTube refuse parfois des morceaux au hasard."
         );
       }
       out.set(buf, s);
@@ -456,7 +484,7 @@ export async function download(
     // cote (mesure du 26/07).
     const grab = (u: string) =>
       r.file!.size
-        ? fetchChunked(u, r.file!.size, bump, signal)
+        ? fetchChunked(u, r.file!.size, bump, signal, "fichier")
         : fetchWhole(u, bump, signal);
 
     let buf: ArrayBuffer;
@@ -475,8 +503,8 @@ export async function download(
   if (!r.video || !r.audio) throw new Error("Format introuvable pour cette vidéo.");
 
   const [vb, ab] = await Promise.all([
-    fetchChunked(r.video.url, r.video.size, bump, signal),
-    fetchChunked(r.audio.url, r.audio.size, bump, signal),
+    fetchChunked(r.video.url, r.video.size, bump, signal, "vidéo"),
+    fetchChunked(r.audio.url, r.audio.size, bump, signal, "audio"),
   ]);
 
   onProgress({ phase: "merge", pct: 100, label: "Assemblage image + son" });
