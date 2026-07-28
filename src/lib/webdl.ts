@@ -19,6 +19,49 @@ const TOKEN_KEY = "tfdl_token";
 /** Au-dela, le navigateur risque de manquer de memoire : c'est le terrain de TubeForge. */
 export const MAX_BYTES = 500 * 1024 * 1024;
 
+/**
+ * Budget d'octets adapte a la MACHINE du visiteur.
+ *
+ * Mesure du 28/07/2026, sur une video 1080p de 441 Mo assemblee dans l'onglet :
+ * le pic de tas JavaScript monte a **1 425 Mo**, soit **3,23 fois** la taille du
+ * fichier. C'est logique — le navigateur tient en meme temps la piste video, la
+ * piste audio et le fichier assemble.
+ *
+ * Sur un poste de bureau, le plafond de tas est de 4 Go : aucun probleme. Sur un
+ * telephone, il tourne souvent autour du gigaoctet, et un budget de 500 Mo
+ * viserait un pic de 1,6 Go — l'onglet meurt, sans message, au bout de plusieurs
+ * minutes d'attente. C'est exactement le genre de panne qu'on ne voit jamais en
+ * testant sur sa propre machine.
+ *
+ * On mesure donc ce qu'on peut et on retombe prudemment sinon : `performance.memory`
+ * n'existe que sur Chromium, `navigator.deviceMemory` pas sur Firefox ni Safari.
+ * Quand on ne sait pas, on se fie a l'agent utilisateur, et dans le doute on
+ * choisit le budget le plus bas — une video en qualite reduite vaut mieux qu'un
+ * onglet qui disparait.
+ */
+const RATIO_PIC_MEMOIRE = 3.5; // 3,23 mesure, arrondi vers le haut par prudence
+
+export function budgetOctets(): number {
+  if (typeof window === "undefined") return MAX_BYTES;
+
+  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+  // Chromium : le plafond de tas est expose, c'est la mesure la plus fiable.
+  const perf = performance as Performance & { memory?: { jsHeapSizeLimit: number } };
+  const plafond = perf.memory?.jsHeapSizeLimit;
+  if (plafond) return Math.min(MAX_BYTES, Math.floor(plafond / RATIO_PIC_MEMOIRE));
+
+  // Sinon la memoire de l'appareil, arrondie par le navigateur et plafonnee a 8.
+  // On n'en prend qu'un quart : le reste de l'appareil vit aussi.
+  const ram = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+  if (ram) {
+    return Math.min(MAX_BYTES, Math.floor((ram * 1024 * 1024 * 1024 * 0.25) / RATIO_PIC_MEMOIRE));
+  }
+
+  // Firefox et Safari n'exposent rien : on se rabat sur le type d'appareil.
+  return mobile ? 150 * 1024 * 1024 : MAX_BYTES;
+}
+
 export type Me = {
   /** true si le Worker exige d'etre membre du Discord (constante cote Worker). */
   gate?: boolean;
@@ -51,6 +94,23 @@ export type Resolved = {
   video?: { url: string; size: number; height: number; codec: string; container: string };
   audio?: { url: string; size: number; codec: string };
   file?: { url: string; relayUrl?: string; size: number | null; label: string; container: string };
+  /**
+   * YouTube seulement : lien a cliquer, hors relais. Les octets passent par la
+   * connexion du visiteur — seule voie possible depuis un navigateur, puisque
+   * googlevideo refuse les IP de datacenter et n'accorde CORS qu'aux origines
+   * youtube.com. `forceTelechargement` est faux quand l'URL porte `gir=yes` :
+   * YouTube n'envoie alors pas d'en-tete d'attachement et le navigateur lit la
+   * video au lieu de l'enregistrer (mesure : 4 videos sur 6 declenchent bien un
+   * telechargement).
+   */
+  lienDirect?: {
+    url: string;
+    size: number | null;
+    height: number | null;
+    container: string;
+    forceTelechargement: boolean;
+  } | null;
+
   quota: { used: number; limit: number };
   serveur?: { used: number; limit: number };
 };
@@ -195,7 +255,9 @@ export async function warmSession() {
  * panne de cette page ne peut donc pas priver l'extraction de sa session.
  */
 export async function resolve(url: string): Promise<ResolveResult> {
-  const params: Record<string, string> = { url };
+  // Le Worker choisit la qualite en fonction de ce budget : c'est la machine du
+  // visiteur qui decide, pas une constante ecrite sur la mienne.
+  const params: Record<string, string> = { url, max: String(budgetOctets()) };
   const yt = isYouTube(url);
   const visitorData = yt ? await getVisitorData(WORKER) : null;
   if (visitorData) params.vd = visitorData;

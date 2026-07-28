@@ -1,4 +1,39 @@
 ---
+### [2026-07-28 09:40] — La qualite s'adapte a la memoire de la machine du visiteur
+
+**Quoi :** Un telechargement 1080p de 441 Mo fait monter le tas JavaScript a **1 425 Mo**, soit **3,23 fois la taille du fichier** — le navigateur tient en meme temps la piste video, la piste audio et le fichier assemble. Sur un poste de bureau le plafond est de 4 Go, donc invisible. Sur un telephone il tourne autour du gigaoctet : l'onglet meurt, sans message, apres plusieurs minutes d'attente.
+
+**C'est exactement le type de panne qu'on ne voit jamais en testant sur sa propre machine**, et la question posee etait « assure-toi que ca marchera chez les autres ».
+
+**Mesures :** video 1080p de 441 Mo, 42 s de bout en bout, pic de tas 1 425 Mo, retour a 22 Mo apres (la memoire est bien liberee), fichier de 461 940 707 octets avec boite `ftyp`/`isom` valide.
+
+**Le correctif.** La page calcule un budget d'octets a partir de ce qu'elle peut reellement mesurer, et le transmet au Worker qui choisit la qualite en consequence :
+- `performance.memory.jsHeapSizeLimit` quand il existe (Chromium) — la mesure la plus fiable ;
+- sinon `navigator.deviceMemory`, dont on ne prend qu'un quart : le reste de l'appareil vit aussi ;
+- sinon, ni Firefox ni Safari n'exposant quoi que ce soit, on se rabat sur l'agent utilisateur, et **dans le doute on choisit le budget le plus bas**.
+
+Le Worker borne la valeur recue entre 50 et 500 Mo : c'est un parametre d'URL, donc il ne merite aucune confiance — trop bas il refuserait tout, trop haut il ferait mourir l'onglet. Un client ancien qui n'envoie rien garde l'ancien comportement.
+
+**Verifie en simulant trois machines :**
+
+| budget declare | qualite servie |
+|---|---|
+| 500 Mo (poste de bureau) | 1080p, 441 Mo |
+| 150 Mo (portable modeste) | 720p, 105 Mo, degrade |
+| 80 Mo (telephone) | 480p, 67 Mo, degrade |
+| aucun (client ancien) | 1080p, 441 Mo |
+
+Le message honnete existait deja et devient enfin exact sur mobile : « Qualite reduite volontairement : en pleine resolution, cette video depasserait ce qu'un navigateur peut assembler en memoire. »
+
+**Fichiers touches :**
+- `src/lib/webdl.ts` — `budgetOctets()` et transmission du parametre `max` a la resolution
+- (hors repo) `tubeforge-webdl/src/index.js` — le budget client borne entre dans le calcul de `pickPair`
+
+**Comment annuler :** `git revert` cote site suffit — sans le parametre `max`, le Worker retombe sur l'ancien comportement.
+
+**Effets de bord possibles :** un visiteur sur telephone recevra du 480p la ou il voyait « 1080p » avant — mais avant, il ne recevait rien du tout, l'onglet mourait. Le ratio de 3,23 est mesure sur un seul fichier et sur Chromium ; il peut differer ailleurs, d'ou la marge a 3,5.
+
+---
 ### [2026-07-27 19:30] — Le 1080p fonctionne. Ma conclusion inverse etait fausse.
 
 **Quoi :** J'ai annonce cet apres-midi que googlevideo refusait les octets a toute IP de datacenter, et donc que le 1080p etait impossible sans un relais residentiel a 1 320 $/mois. **C'etait faux.** Remesure le soir meme, a froid : le relais fonctionne, le 1080p aussi.
