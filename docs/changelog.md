@@ -1,4 +1,40 @@
 ---
+### [2026-07-28 13:05] — Porte Discord mise de cote : on telecharge sans se connecter
+
+**Quoi :** Le telechargeur s'affiche directement. Plus d'etape de connexion, plus de verification d'appartenance au serveur : on arrive, on colle un lien, on recupere le fichier.
+
+**Pourquoi :** Demande explicite. La porte coutait deux allers-retours (rejoindre le serveur, autoriser Discord) avant le premier telechargement, sur un outil qui sert justement de produit d'appel — l'obstacle etait place avant la demonstration de valeur, pas apres.
+
+**RIEN N'A ETE SUPPRIME.** Les routes `/auth/start` et `/auth/callback`, la verification d'appartenance, la carte de confiance, le bouton : tout reste cable et fonctionnel. Une seule variable decide, et elle est prevue pour ca depuis le depart (`gateActive`).
+
+**Fichiers touches :**
+- `tubeforge-webdl/wrangler.toml` — `REQUIRE_DISCORD` passe de `"true"` a `"false"`. Le commentaire dit desormais la consequence sur le quota.
+- `tubeforge-webdl/src/index.js` — message du plafond global : « Les membres du Discord ont epuise le quota » nommait un groupe auquel le visiteur n'appartient plus. Devenu « Le telechargeur a epuise sa reserve ».
+- `src/app/tubeforge/telecharger/layout.tsx` — la description de recherche promettait « Outil gratuit pour les membres du Discord Expedition », devenu faux. Remplace par « Gratuit, sans compte et sans installation ».
+- `src/app/tubeforge/telecharger/page.tsx` — meme correction sur le repli « quota partage » (`epuise`).
+
+**Aucun changement de logique cote page :** elle lisait deja `me.gate` et savait afficher les deux etats. C'est ce qui rend l'aller-retour gratuit.
+
+**⚠️ CE QUI CHANGE VRAIMENT, ET QU'IL FAUT SAVOIR — le quota ne suit plus un compte.**
+`quotaSubject` bascule sur `CF-Connecting-IP` : 25 telechargements par ADRESSE IP et par jour. Une IP partagee (fac, entreprise, operateur mobile en CGNAT) compte donc pour une seule personne, et un utilisateur seul peut se donner un quota neuf en changeant de reseau. C'est assume : le garde-fou de la FACTURE n'a jamais ete le quota individuel mais `MAX_DAILY_RESOLVES` (1200/jour), qui lui ne bouge pas et reste sous le plafond dur de 100 000 requetes/jour du plan gratuit Cloudflare.
+
+Consequence secondaire : `/api/resolve` n'est plus protege que par `originAllowed`, qui lit un en-tete Origin — falsifiable en une ligne de commande. Ce n'etait deja qu'un garde-barriere, pas une securite ; il le reste, simplement il est maintenant seul.
+
+**Verifie en production, sans aucun jeton :**
+- `/api/me` renvoie `gate: false`.
+- Resolution en ligne de commande : 1080p, 245,7 Mo de video + 29,3 Mo d'audio, client `android_vr`, non degradee.
+- Dans un vrai navigateur sur `tubeforge.explauncheur.space` : le champ de saisie est present au chargement, zero mention de Discord dans le DOM, un lien colle donne « Big Buck Bunny — 1080p — 275 Mo » et le bouton « Telecharger en 1080p ».
+- Relais d'octets depuis l'origine du site : **HTTP 206, 1 048 576 octets exactement, `video/mp4`, 902 ms**, `localStorage` vide de tout jeton.
+
+**Non conclu volontairement :** une premiere video (`jNQXAC9IVRw`) a ete refusee pour motif anti-robot pendant ces essais, alors qu'une autre passait deux minutes plus tot depuis le meme worker. C'est la fragilite YouTube connue, sans rapport avec la porte, et un seul essai ne suffit pas a en dire quoi que ce soit — cf. [[webdl-googlevideo-refuse-cloudflare]].
+
+**Comment annuler :**
+Remettre `REQUIRE_DISCORD = "true"` dans `tubeforge-webdl/wrangler.toml`, puis `npx wrangler deploy`. La porte se referme au premier `/api/me` suivant, sans toucher au site. Les quatre corrections de formulation ci-dessus peuvent rester : elles sont vraies dans les deux etats.
+
+**Effets de bord possibles :**
+Le trafic peut monter, puisqu'il n'y a plus rien a franchir. Surveiller `serveur.used` sur `/api/me` : s'il approche 1200 en journee, c'est le plan Cloudflare payant qui se pose (et alors `MAX_DAILY_RESOLVES` monte a ~4385). Le canari, lui, ne depend pas de la porte.
+
+---
 ### [2026-07-28 11:20] — Redondance des extracteurs : une seule des trois plateformes gagne un vrai secours
 
 **Quoi :** Question posee — « si un extracteur tombe, on a des solutions ? ». Reponse mesuree, par une construction et une refutation systematiques sur les quatre plateformes.

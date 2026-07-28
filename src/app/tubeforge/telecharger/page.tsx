@@ -623,9 +623,12 @@ export default function TelechargerPage() {
       : srvLeft === 0
         ? {
             titre: "Ne plus dépendre d’un quota partagé",
+            // « tous les membres » nommait le Discord, dont la porte est ouverte
+            // depuis le 28/07/2026 : le message tombait sur des gens qui n'en
+            // font pas partie et ne comprenaient pas de quels membres on parle.
             texte:
-              "Le serveur a épuisé sa réserve du jour. L’outil est gratuit, donc tous les membres " +
-              "se partagent la même réserve. TubeForge n’a ni compteur ni file d’attente.",
+              "Le téléchargeur a épuisé sa réserve du jour. Il est gratuit, donc tout le monde " +
+              "se partage la même réserve. TubeForge n’a ni compteur ni file d’attente.",
           }
         : null;
 

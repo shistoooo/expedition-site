@@ -9,10 +9,11 @@ import type { Metadata } from "next";
  *
  * INTENTION DE RECHERCHE VISEE, et celle qu'on evite.
  *
- * On ne cherche PAS a se placer sur « telecharger video youtube gratuit ». Deux
- * raisons : le trafic arriverait sur une porte Discord et repartirait aussitot,
- * et cette requete est un marecage de sites publicitaires ou l'on ne gagne rien
- * a etre confondu avec eux.
+ * On ne cherche PAS a se placer sur « telecharger video youtube gratuit ».
+ * Cette requete est un marecage de sites publicitaires ou l'on ne gagne rien a
+ * etre confondu avec eux, et le visiteur qu'elle amene ne devient jamais client.
+ * (Une deuxieme raison a disparu le 28/07/2026 avec l'ouverture de la porte
+ * Discord : le trafic ne tombe plus sur un mur de connexion.)
  *
  * On vise le probleme du monteur : recuperer un extrait pour Premiere Pro ou
  * DaVinci Resolve. Ces requetes amenent des gens pour qui TubeForge a un sens,
@@ -22,8 +23,13 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   // 50 caracteres : tient dans un resultat de recherche sans etre tronque.
   title: "Télécharger une vidéo pour Premiere Pro ou DaVinci",
+  // ⚠️ Ne plus promettre ce que la page ne demande plus. Cette phrase se
+  // terminait par « Outil gratuit pour les membres du Discord Expédition »,
+  // devenu faux le 28/07/2026 : il n'y a plus de connexion a faire. Sur la page
+  // qui vend l'honnetete comme argument principal, un resultat de recherche qui
+  // annonce une condition inexistante coute plus qu'il ne rapporte.
   description:
-    "Colle un lien YouTube, TikTok, X ou Twitch et récupère le fichier en 1080p, sans publicité ni recompression. Outil gratuit pour les membres du Discord Expédition.",
+    "Colle un lien YouTube, TikTok, X ou Twitch et récupère le fichier en 1080p, sans publicité ni recompression. Gratuit, sans compte et sans installation.",
   /**
    * Canonical pointe sur l'URL qui sert REELLEMENT cette page.
    *
