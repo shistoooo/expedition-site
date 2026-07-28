@@ -1,4 +1,36 @@
 ---
+### [2026-07-28 11:20] — Redondance des extracteurs : une seule des trois plateformes gagne un vrai secours
+
+**Quoi :** Question posee — « si un extracteur tombe, on a des solutions ? ». Reponse mesuree, par une construction et une refutation systematiques sur les quatre plateformes.
+
+**🚨 LE CONSTAT LE PLUS IMPORTANT : la redondance YouTube est COSMETIQUE.**
+Les trois clients de la chaine (ANDROID_VR, ANDROID, IOS) tapent tous le **meme** point d'entree `/youtubei/v1/player`. Ce ne sont pas trois voies, ce sont **cinq facades du meme endpoint**. Recherche d'une voie qui n'en depende pas : **7 videos x 7 voies = 49 tentatives, ZERO octet servi**. Ont ete essayes et ont echoue : la page `watch` et son `ytInitialPlayerResponse`, `get_video_info`, la page `/embed/<id>`, `/youtubei/v1/next`. **Le jour ou ce point d'entree change de forme, YouTube tombe entierement et il n'y a rien derriere.** C'est le risque numero un du telechargeur, et il etait invisible parce que « trois clients » donnait une fausse impression de solidite.
+
+**✅ TIKTOK gagne une vraie seconde voie — la seule validee, et elle est deployee.**
+Elle lit une **application differente** de TikTok : celle qui sert les integrations (`/embed/v2/<id>`), dont l'etat s'appelle `__FRONTITY_CONNECT_STATE__` et non `__UNIVERSAL_DATA_FOR_REHYDRATION__`, avec un autre CDN, un autre identifiant d'application et un autre modele d'authentification.
+
+Verifie par un agent adverse sur un jeu de test entierement different : **8 contenus sur 8**, 14 URLs sur 14 servant des octets, **14 sur 14 avec audio decode**. Puis verifie par moi **depuis l'edge Cloudflare** — la porte de ship que les agents avaient signalee, toutes leurs mesures venant d'une IP residentielle : **4 resolutions sur 4** en 400 a 600 ms, et **3 sur 3 servent leurs octets SANS AUCUN COOKIE**. Le secours est donc plus robuste que la voie principale sur ce point precis, puisque celle-ci doit rejouer `ttwid`.
+
+**Portee honnete de cette independance : deux classes de panne sur trois.** Couvertes : changement de schema JSON, durcissement des cookies. **Non couverte** : un blocage a l'edge — les deux routes ressortent par le meme edge Akamai et le meme repartiteur ByteDance, et tomberaient ensemble.
+
+**❌ CE QUI N'A PAS ETE RETENU, et pourquoi :**
+- **X / Twitter** — la methode GraphQL avec jeton invite fonctionne (5/5 sur contenus neufs, 28/28 en elargi, audio confirme), mais le code livre porte **3 defauts bloquants**, et surtout l'independance est **partielle** : la livraison reste strictement commune (`video.twimg.com` est l'unique CDN video de X) et `api.x.com` / `api.twitter.com` partagent les memes IP et **le meme compteur de quota**. La « double facade » annoncee n'existe pas.
+- **Twitch, clips** — la voie proposee rappelle `gql.twitch.tv` pour la signature, et le jeton contient deja `clip_uri` : la page SSR n'apporte aucune information. Gain nul, et deux modes de panne en plus.
+- **Twitch, VOD** — c'est une **fonctionnalite neuve**, pas une redondance (la methode actuelle refuse les VOD par construction). Mais 3 succes sur 6 en refutation, et **1 sur 7 sur les VOD de moins de 48 h** : le porteur unique est la miniature `og:image`, qui se desynchronise du media pendant deux jours. Six defauts bloquants. Pas mur.
+
+**Fichiers touches :**
+- (hors repo) `tubeforge-webdl/src/tiktok_embed.js` (nouveau) — seconde voie, avec sonde `Range: bytes=0-0` pour connaitre la taille reelle, classification des pannes pour le canari, et delai maximal
+- (hors repo) `tubeforge-webdl/src/index.js` — la branche TikTok essaie la voie principale puis le secours ; le secours ne remplace que s'il fait mieux, sinon on garde le message d'origine, plus precis sur la cause
+
+**Non-regression verifiee** avant deploiement : YouTube 1080p, TikTok, X, Twitch — **4 sur 4**.
+
+**Comment annuler :** retirer l'import et remettre `await resolveTikTok(target)` seul. Le fichier `tiktok_embed.js` peut rester, il est inerte sans son appel.
+
+**Effets de bord possibles :** un echec TikTok coute desormais un aller-retour de plus avant de rendre la main. C'est l'echange voulu. Et le message d'erreur reste celui de la voie principale quand les deux echouent — volontaire, il est plus precis sur la cause.
+
+**Au moment du deploiement, le canari rapporte YouTube KO (LOGIN_REQUIRED).** C'est ma propre limite de debit, declenchee par les tests de la journee : le meme worker resolvait du 1080p deux minutes plus tot. **Je le note sans en conclure quoi que ce soit** — c'est exactement l'erreur commise hier, ou treize refus d'affilee m'avaient fait annoncer a tort que googlevideo bloquait Cloudflare.
+
+---
 ### [2026-07-28 09:40] — La qualite s'adapte a la memoire de la machine du visiteur
 
 **Quoi :** Un telechargement 1080p de 441 Mo fait monter le tas JavaScript a **1 425 Mo**, soit **3,23 fois la taille du fichier** — le navigateur tient en meme temps la piste video, la piste audio et le fichier assemble. Sur un poste de bureau le plafond est de 4 Go, donc invisible. Sur un telephone il tourne autour du gigaoctet : l'onglet meurt, sans message, apres plusieurs minutes d'attente.
