@@ -1,4 +1,40 @@
 ---
+### [2026-07-30 09:40] — Recousage cote Worker : possible sur le plan GRATUIT, mais 3x plus lent
+
+**Quoi :** Verification demandee d'une affirmation que j'avais faite sans la mesurer — « l'architecture compte plus que l'argent : gratuit avec recousage (12 000 tel./jour) ecrase payant sans toucher au code (1 260/jour) ». Route de mesure temporaire deployee sur le worker de production, puis retiree.
+
+**Pourquoi :** L'affirmation reposait sur une hypothese non testee. Le plan gratuit n'accorde que **10 ms de CPU par invocation**. La documentation Cloudflare garantit que RENVOYER un flux tel quel ne coute pas de CPU, mais pas que le RECOUDRE soit gratuit, et un rapport de la communaute signale l'inverse. Si recoudre coutait du CPU proportionnel aux octets, le plan gratuit ne pouvait pas le faire du tout et ma conclusion s'inversait.
+
+**✅ CE QUI EST PROUVE : le plan gratuit sait recoudre.**
+20 sous-requetes de 12 Mo lancees en parallele (fenetre glissante de 4) et recousues en un seul flux sortant via `IdentityTransformStream` : **251 658 240 octets recus, exactement le compte annonce, HTTP 200, aucun depassement CPU**. `IdentityTransformStream` et `FixedLengthStream` sont tous deux presents dans le runtime. Le `pipeTo` natif sequentiel ne fait pas passer les octets par du JavaScript, et c'est ce qui sauve le budget CPU.
+
+Regles Cloudflare confirmees dans la documentation : les **sous-requetes ne sont pas facturees** et ne comptent pas dans les 100 000/jour du plan gratuit (seules les requetes ENTRANTES comptent) ; 50 sous-requetes externes par invocation sur le gratuit, 10 000 sur le payant depuis fevrier 2026 ; aucune limite de taille de reponse ni de duree tant que le client reste connecte.
+
+**⚠️ CE QUE JE N'AVAIS PAS MESURE, ET QUI CORRIGE MON AFFIRMATION : c'est plus lent.**
+Mesures appariees, meme video, meme connexion, 240 Mo a chaque fois :
+| dispositif | debit |
+|---|---|
+| recousage, 1 connexion cliente, fenetre interne 4 | 2,05 Mo/s |
+| recousage, 1 connexion cliente, fenetre interne 8 | 2,69 Mo/s |
+| 4 recousages en parallele | 3,87 Mo/s agrege |
+| 20 tranches de 12 Mo, 6 connexions clientes (l'actuel) | **8,00 Mo/s** |
+
+Le goulot n'est PAS googlevideo : c'est la connexion cliente unique.
+
+**🧠 LE PRINCIPE QUE J'AVAIS CONFONDU :** le **debit** vient du NOMBRE de connexions clientes ; l'**economie de requetes** vient de la TAILLE des tranches. Deux reglages independants. Je vendais le recousage comme s'il faisait les deux metiers, alors qu'il n'ameliore que le second et degrade le premier.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` — route `/api/test-recousage` ajoutee puis **entierement supprimee** (corps du code retire, pas neutralise par `if (false)`). Ne reste qu'un bloc de commentaire portant les mesures, au-dessus de la section OAuth.
+
+**Verifie apres nettoyage :** `/api/test-recousage` renvoie « Route inconnue » sur 8 requetes fraiches consecutives ; `/health` et `/api/me` repondent normalement. ⚠️ Les 3 premieres verifications donnaient de faux positifs — une reponse mise en cache a l'edge, puis des points de presence encore sur l'ancienne version. **Toujours busted le cache avec un parametre aleatoire ET repeter, avant d'affirmer qu'une route est retiree.**
+
+**Conclusion pratique, inchangee sur le fond :** le gain sur lequel batir reste l'ecriture sur disque + des tranches plus grandes + les 6 connexions paralleles conservees. Le recousage devient une option **prouvee possible** mais pas prouvee a debit egal : il exigerait plusieurs flux recousus en parallele, et je n'ai teste que 4 flux courts.
+
+**Comment annuler :** rien a annuler, l'etat deploye est identique a celui d'avant la mesure (version 820f9e61). Pour rejouer l'experience, le code de la route est dans l'historique de cette entree.
+
+**Effets de bord possibles :** aucun sur la production. La mesure a consomme ~750 Mo d'egress googlevideo et 3 unites de quota.
+
+---
 ### [2026-07-28 13:05] — Porte Discord mise de cote : on telecharge sans se connecter
 
 **Quoi :** Le telechargeur s'affiche directement. Plus d'etape de connexion, plus de verification d'appartenance au serveur : on arrive, on colle un lien, on recupere le fichier.
