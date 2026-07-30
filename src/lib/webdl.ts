@@ -9,7 +9,9 @@
  *    contre plusieurs secondes de CPU facture cote serveur.
  */
 
-import { getPoToken, getVisitorData } from "./potoken";
+// `getPoToken` n'est plus importe : la frappe BotGuard produisait un jeton de
+// la mauvaise famille, qui faisait repondre HTTP 400 a YouTube (cf. `resolve`).
+import { getVisitorData } from "./potoken";
 
 const WORKER =
   process.env.NEXT_PUBLIC_WEBDL_URL || "https://tubeforge-webdl.expedition-studio.workers.dev";
@@ -485,21 +487,30 @@ export async function resolve(url: string): Promise<ResolveResult> {
    *
    * On joint donc le verdict au refus, en clair, dans `attestation`.
    */
-  const echec = first as ResolveFailure;
-  if (!yt || echec.kind !== "bot") return first;
-  if (!visitorData) return { ...echec, attestation: "session YouTube indisponible, secours impossible" };
-
-  const poToken = await getPoToken(visitorData);
-  if (!poToken) {
-    const d = typeof window !== "undefined" ? window.__tfdlAttestation : undefined;
-    return { ...echec, attestation: "attestation impossible sur ce navigateur" + (d?.err ? " (" + d.err + ")" : "") };
-  }
-
-  const second = await api<ResolveResult>("/api/resolve", { ...params, pot: poToken });
-  if (second.ok) return second;
-  // Le jeton a bien ete frappe et YouTube refuse quand meme : c'est le cas le
-  // plus interessant, et le seul qui indique un blocage cote adresse IP.
-  return { ...(second as ResolveFailure), attestation: "attestation fournie, YouTube refuse quand même" };
+  /**
+   * ⛔ LE SECOURS PoToken EST SUPPRIME. Il ne servait a rien et il NUISAIT.
+   *
+   * Un PoToken est lie a une plateforme d'attestation : BotGuard pour la
+   * famille Web, DroidGuard pour Android, iOSGuard pour iOS. Un jeton d'une
+   * famille est refuse par les autres. `bgutils-js` frappe du BotGuard, donc du
+   * **Web** — et nos clients sont ANDROID_VR, ANDROID et IOS.
+   *
+   * MESURE DU 31/07/2026, une variable a la fois, meme session, meme instant :
+   *   requete du worker SANS le jeton ... OK, 26 formats jusqu'a 2160p
+   *   requete du worker AVEC le jeton ... **HTTP 400**
+   *
+   * Le jeton n'etait donc pas inerte : il transformait un echec RECUPERABLE en
+   * echec DEFINITIF. Et comme il n'etait frappe qu'en secours, apres un premier
+   * refus, il achevait exactement les cas qu'il devait sauver.
+   *
+   * Ce qu'on gagne en le retirant, au-dela de la correction :
+   *   - 1 a 2 secondes de calcul BotGuard sur le chemin d'echec ;
+   *   - le besoin de `'unsafe-eval'` dans la politique de securite de la page,
+   *     qui n'existait QUE pour faire tourner la machine virtuelle de Google.
+   *
+   * NE PAS LE REMETTRE sans changer d'abord de famille de clients.
+   */
+  return first;
 }
 
 /* ── Telechargement ────────────────────────────────────────────────── */

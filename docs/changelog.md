@@ -1,4 +1,48 @@
 ---
+### [2026-07-31 07:30] — 🔑 NOTRE PoToken NE SERVAIT À RIEN ET CASSAIT LA REQUÊTE
+
+**Le fait, mesuré une variable à la fois, même session, même instant, même vidéo :**
+| requête | résultat |
+|---|---|
+| session seule | **OK, 26 formats** |
+| session + `hl/gl` | OK, 26 formats |
+| session + `playbackContext` | OK, 26 formats |
+| **session + jeton de mauvaise famille** | **HTTP 400** |
+| **exactement comme le worker (avec jeton)** | **HTTP 400** |
+| **exactement comme le worker, SANS le jeton** | **OK, 26 formats** |
+
+**Le mécanisme :** un PoToken est lié à une plateforme d'attestation — BotGuard pour la famille Web, DroidGuard pour Android, iOSGuard pour iOS. Un jeton d'une famille est REFUSÉ par les autres. `bgutils-js` frappe du BotGuard, donc du **Web**. Nos clients sont ANDROID_VR, ANDROID et IOS. On envoyait un jeton Web à des clients Android.
+
+**Ce n'était pas inerte : ça transformait un échec RÉCUPÉRABLE en échec DÉFINITIF.** Et comme le jeton n'était frappé qu'en SECOURS, après un premier refus, il achevait exactement les cas qu'il devait sauver. D'où le message que voyaient les utilisateurs : « attestation fournie, YouTube refuse quand même ».
+
+**⚠️ D'OÙ VENAIT LA CROYANCE INVERSE :** une mesure du 26/07 disait « android_vr passe de LOGIN_REQUIRED à 23 formats grâce au jeton ». C'était une CORRÉLATION mal lue — le jeton était toujours envoyé AVEC un visitorData frais. La mesure du 30/07 avait déjà isolé la variable et conclu que c'est la session qui débloque, **sans qu'on en tire la conséquence sur le corps de la requête**. La bonne conclusion était là depuis un jour et demi ; il manquait de la relier au code.
+
+**Résultat après correctif, sur les vidéos qui échouaient :**
+| | avant | après |
+|---|---|---|
+| Short Fx-3 | refusé | **1080p, `android_vr`, non dégradé** |
+| Short WebM | refusé | **1080p, `android_vr`** |
+| Short du délai | refusé | **1080p, `android_vr`** |
+| Short 403 | refusé | **1080p, `android_vr`** |
+| contrôle | 240p `android` | **1080p, `android_vr`, 80 Mo** |
+
+**4 résolutions sur 5 passent désormais par `android_vr`** — le seul client sans plafond d'octets. Avant, on retombait sur `android`, plafonné à **la première minute de vidéo** (mesure du jour : le plafond n'est pas en octets mais en durée, ~7,2 % du fichier quelle que soit sa taille). C'est de là que venaient tous les 240p.
+
+**Ce que la suppression gagne en plus :**
+- 1 à 2 secondes de calcul BotGuard sur le chemin d'échec ;
+- le besoin de `'unsafe-eval'` dans la politique de sécurité de la page, qui n'existait QUE pour faire tourner la machine virtuelle de Google.
+
+**CE QUI RESTE, et ce n'est pas la requête :** deux vidéos sur sept refusent encore. La MÊME requête, depuis une connexion résidentielle propre, passe : **OK, 26 formats jusqu'à 2160p**. C'est donc la réputation de notre adresse de sortie — **abîmée par mes propres centaines d'appels de la journée**, pas par un défaut de code.
+
+**Fichiers touchés :**
+- `tubeforge-webdl/src/youtube.js` — `serviceIntegrityDimensions` retiré du corps de la requête player.
+- `expedition-site-prod/src/lib/webdl.ts` — secours PoToken supprimé, import nettoyé.
+
+**Comment annuler :** remettre `...(auth?.poToken ? { serviceIntegrityDimensions: ... } : {})`. ⚠️ Ne le faire QUE si l'on bascule vers la famille de clients WEB/MWEB/TVHTML5 — sinon on réintroduit le HTTP 400.
+
+**À faire ensuite :** `'unsafe-eval'` peut sortir de la CSP (plus aucune VM Google à exécuter), et `potoken.ts` ne sert plus qu'à `getVisitorData` — la moitié BotGuard du fichier est morte.
+
+---
 ### [2026-07-31 06:00] — On proposait 240p par le relais alors qu'un 360p direct existait
 
 **Le defaut :** le lien direct ne s'affichait QUE si aucun flux adaptatif n'existait. Or quand YouTube nous rabat sur un client plafonne a 25 Mo (`android`, `ios`), le chemin dit « principal » tombe a 240p — pendant que le lien direct offre **360p ET ne passe pas par notre relais**.
