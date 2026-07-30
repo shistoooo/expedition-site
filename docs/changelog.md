@@ -1,4 +1,35 @@
 ---
+### [2026-07-31 00:30] — Quand le relais refuse, on propose le chemin qui ne passe pas par nous
+
+**Quoi :** Un echec de telechargement sur refus d'octets affiche desormais un bouton « Recuperer en 360p a la place ». Le lien existait ; il n'apparaissait QUE si aucun flux haute qualite n'etait disponible.
+
+**Pourquoi :** La cause de l'echec chez le contact du user n'est PAS etablie — deux hypotheses nommees, deux ecartees par la mesure. Mais ce chemin-la n'a pas besoin qu'on connaisse la cause : **les octets vont de YouTube directement a la machine du visiteur, sans passer par nos serveurs.** Il contourne donc par construction tout ce qui bloque notre relais — adresse de sortie signalee, filtrage, vague de refus.
+
+Consequence vecue : une personne voyait un echec total alors qu'un chemin fonctionnel etait a cote, invisible.
+
+**Ordre delibere : le secours AVANT la demande de diagnostic.** La personne veut sa video, pas nous aider. On lui donne d'abord ce qui marche, on demande ensuite. Verifie a l'ecran (`secoursAvantDiagnostic: true`).
+
+**Verifie en production, refus de relais simule :**
+```
+Le téléchargement a échoué (vidéo, tranche 2 sur 14, code 403).
+Il reste un chemin qui ne passe pas par nos serveurs, donc que ce blocage n'atteint pas.
+La qualité est plus basse, mais tu repars avec la vidéo.
+[ Récupérer en 360p à la place ]
+Ça nous aiderait beaucoup : lance ce test maintenant…
+```
+
+**Et le lien de secours livre vraiment :** HTTP 206, 2 097 152 octets recus, `content-disposition: attachment` avec le nom du fichier, `video/mp4`, **boite `ftyp` valide**. Ce n'est pas un lien decoratif.
+
+**Disponibilite mesuree :** le secours 360p existe sur 4 videos testees sur 4. Sur deux d'entre elles YouTube n'envoie pas d'en-tete d'attachement (`gir=yes`) : la video s'ouvre alors dans un onglet, et le message le dit explicitement au lieu de laisser la personne devant une surprise.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — bloc de secours dans l'encart d'erreur, conditionne a `echecTelechargement && result.lienDirect`.
+
+**Comment annuler :** retirer le bloc `echecTelechargement && result?.lienDirect` de l'encart d'erreur. Le chemin principal n'est pas touche.
+
+**Effets de bord possibles :** aucun sur le chemin normal — ce bloc n'existe que dans un encart d'erreur. Le secours plafonne a 360p, et c'est dit.
+
+---
 ### [2026-07-30 23:55] — L'echec se signale tout seul, au lieu de dependre du bon timing d'un tiers
 
 **Quoi :** Un echec de telechargement pose desormais un marqueur Clarity portant sa NATURE, et propose de lancer le diagnostic dans la seconde qui suit, dans le meme navigateur.

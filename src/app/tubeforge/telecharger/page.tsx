@@ -1084,6 +1084,55 @@ export default function TelechargerPage() {
                     {detailTechnique}
                   </p>
                 )}
+                {/**
+                  * SECOURS : le lien direct, quand le relais a refuse les octets.
+                  *
+                  * Ce lien ne passe PAS par nos serveurs — les octets vont de
+                  * YouTube a la machine du visiteur. Il contourne donc par
+                  * construction tout ce qui bloque notre relais, quelle que soit
+                  * la cause : adresse de sortie signalee, filtrage, vague de
+                  * refus. On n'a pas besoin de connaitre le probleme pour que ce
+                  * chemin fonctionne.
+                  *
+                  * Il existait deja mais n'apparaissait QUE si aucun flux haute
+                  * qualite n'etait disponible. Consequence vecue le 30/07/2026 :
+                  * une personne voyait un echec total alors qu'un chemin
+                  * fonctionnel etait a cote, invisible.
+                  *
+                  * Place AVANT la demande de diagnostic, deliberement : la
+                  * personne veut sa video, pas nous aider. On lui donne d'abord
+                  * ce qui marche.
+                  */}
+                {echecTelechargement && result?.lienDirect && (
+                  <div className="mt-3.5 pt-3.5 border-t border-red-500/20">
+                    <p className="text-[13px] text-red-100/80 leading-relaxed mb-3">
+                      Il reste un chemin qui ne passe pas par nos serveurs, donc que ce blocage
+                      n’atteint pas. La qualité est plus basse, mais tu repars avec la vidéo.
+                    </p>
+                    <a
+                      href={result.lienDirect.url}
+                      {...(result.lienDirect.forceTelechargement
+                        ? { download: "" }
+                        : { target: "_blank", rel: "noopener noreferrer" })}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-black font-bold text-sm transition-transform duration-200 hover:translate-y-[-1px]"
+                    >
+                      <Download className="w-4 h-4" />
+                      {result.lienDirect.forceTelechargement
+                        ? `Récupérer en ${result.lienDirect.height}p à la place`
+                        : `Ouvrir en ${result.lienDirect.height}p à la place`}
+                    </a>
+                    {/* Meme piege que sur le chemin principal : sans en-tete
+                        d'attachement, le navigateur LIT la video au lieu de
+                        l'enregistrer. On ne peut pas le forcer, on le dit. */}
+                    {!result.lienDirect.forceTelechargement && (
+                      <p className="text-[12px] text-red-200/55 leading-relaxed mt-2.5">
+                        YouTube l’ouvrira dans un onglet. Clic droit dessus puis
+                        «&nbsp;Enregistrer la vidéo sous…&nbsp;».
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 {/* Le diagnostic ne vaut quelque chose que lance PENDANT la panne.
                     Le proposer ici, dans la seconde qui suit l'echec, est le seul
                     moment ou la personne a une raison de le faire — et ou le
