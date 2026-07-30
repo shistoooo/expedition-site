@@ -1,4 +1,37 @@
 ---
+### [2026-07-30 22:10] — « Code 403 » sur une video : ce n'est pas un bug, c'est une restriction geographique — et on le dit maintenant AVANT
+
+**Quoi :** Le Worker verifie desormais que YouTube accepte de LIVRER la video, avant de promettre quoi que ce soit. Nouveau refus `geo-bloquee`, rendu a la resolution.
+
+**Pourquoi :** Signalement du user sur `OskI6bDrZVM` (TheKAIRI78) — « Le telechargement a echoue (audio, tranche 1 sur 2, code 403). Reessaie ». Le conseil etait faux : aucun nouvel essai ne pouvait passer.
+
+**Ce que la mesure a etabli, etape par etape :**
+1. La resolution REUSSIT, les liens sont valides 6 heures.
+2. Les octets repondent **403 depuis notre relais, depuis une connexion residentielle ET depuis un VPS finlandais**. Donc ni notre code, ni notre reseau.
+3. Comparaison des parametres SIGNES avec une video qui marche : une seule difference, **`gcr`** — *geo country restriction*, valeur `us`.
+4. Confirmation : **8 refus sur 8** sur huit essais espaces. Ce n'est pas sporadique.
+5. Et une sonde d'**UN SEUL OCTET** le detecte : 403 sur celle-ci, 206 sur une video normale.
+
+**⚠️ Piege de mesure evite de justesse :** le premier essai apres deploiement annoncait « livrable ». C'etait un point de presence Cloudflare pas encore a jour — la propagation progressive, deja rencontree quatre fois aujourd'hui. Sans les huit essais suivants j'aurais conclu que c'etait intermittent, et ecrit un message faux dans l'autre sens.
+
+**Le refus, et son argumentaire :**
+> « YouTube bloque cette video en dehors de certains pays, et refuse de nous la livrer. Ce n'est pas un probleme passager : reessayer ne changera rien. »
+> *TubeForge n'a pas cette limite — il telecharge depuis TA connexion et TA session : si la video est visible chez toi, il la recupere.*
+
+C'est le seul cas de la journee ou l'argumentaire TubeForge est litteralement vrai plutot que commercial : notre worker sort par une IP geolocalisee ailleurs, l'application de la personne sort par la sienne.
+
+**⚡ Sonde CIBLEE, et c'est important :** systematique, elle ajoutait ~400 ms a CHAQUE resolution (777-943 ms contre 449-511 ms). Elle ne se declenche donc que si l'URL porte `gcr` dans ses parametres signes — un test de chaine, gratuit. Mesure apres ciblage : videos normales **539 a 787 ms** (vitesse retrouvee), video geo-bloquee refusee en **302 a 687 ms**.
+
+**Verifie :** 6 videos normales sur 6 passent, **0 faux positif** — un seul aurait rendu la sonde inacceptable. La geo-bloquee refusee 3 fois sur 3 apres ciblage, 8 sur 8 avant.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` — `marqueeGeo` (detection `gcr` dans `sparams`), sonde `bytes=0-0` conditionnelle, refus `geo-bloquee` / `livraison-refusee` avec argumentaire.
+
+**Comment annuler :** supprimer le bloc `marqueeGeo` / `livrable` et le `if (livrable !== null)` qui suit. Le symptome d'origine reviendra : echec en cours de telechargement avec un conseil inutile.
+
+**Effets de bord possibles :** une sous-requete de plus sur les seules videos marquees `gcr` (non facturee, et le plan payant en autorise 10 000 par invocation). Si un refus de livraison apparait un jour SANS `gcr`, il repassera par l'ancien symptome — il faudra elargir la sonde plutot que deviner. La branche generique `livraison-refusee` est en place pour ce jour-la.
+
+---
 ### [2026-07-30 21:00] — La barre de progression bondissait de 1 a 16 a 80 a 127 Mo
 
 **Quoi :** Les octets sont desormais comptes A LEUR ARRIVEE, plus a la fin d'une tranche. Et l'affichage est borne a dix rafraichissements par seconde.
