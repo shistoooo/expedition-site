@@ -1,4 +1,26 @@
 ---
+### [2026-07-30 15:45] — Les deux plafonds ont ete DECLENCHES pour de vrai
+
+**Quoi :** Verification empirique des deux refus, en production, en abaissant temporairement les bornes.
+
+**Pourquoi :** Les deux branches de refus n'avaient JAMAIS ete executees. Un plafond qu'on n'a pas vu fonctionner n'est pas un plafond, c'est une intention — et sur une question d'argent, l'intention ne suffit pas.
+
+**Protocole :** plafond journalier abaisse a la consommation exacte du jour (864 unites), une resolution tentee. Puis `PLAN = "payant"` avec `MAX_MONTHLY_UNITS = "1"`, deux resolutions tentees. Config restauree et compteur d'essai purge apres.
+
+**Resultats :**
+| plafond | statut | motif | message |
+|---|---|---|---|
+| journalier | **HTTP 429** | `plafond-global` | « Le telechargeur a epuise sa reserve du jour… Elle repart demain matin. » |
+| mensuel | **HTTP 429** | `plafond-mensuel` | « …a atteint sa reserve du mois… Elle repart le 1er du mois. » |
+Dans les deux cas le compteur et l'argumentaire TubeForge sont joints a la reponse.
+
+Le mensuel a demande DEUX appels pour se declencher, et c'est correct : le premier trouve le compteur a 0, passe, puis debite 16 unites ; le second refuse. Le plafond borne donc le DEPART d'un telechargement, pas son achevement — un telechargement en cours n'est jamais coupe au milieu.
+
+**Etat restaure et verifie :** `plan: gratuit`, perso 80/1000, jour 880/88 000, `mois: null`, resolution HTTP 200 en 1080p. Cle `m:2026-07` (valeur d'essai 16) supprimee.
+
+**⚠️ NUANCE QUI COMPTE, et que je n'avais pas dite clairement : sur le plan gratuit il n'y a AUCUNE facture a proteger.** Cloudflare gratuit ne facture pas de depassement, il COUPE a 100 000 requetes par jour. Le plafond journalier protege donc la DISPONIBILITE du service, pas l'argent. La protection financiere ne devient reelle que le jour de l'abonnement, et c'est a ce moment que le plafond mensuel s'active tout seul via `PLAN = "payant"`.
+
+---
 ### [2026-07-30 15:10] — Plafond de depense : un seul interrupteur, et un plafond MENSUEL
 
 **Quoi :** Les bornes (jour, mois, quota par personne) viennent desormais d'un `REGIMES` unique cote code, choisi par la variable `PLAN` (`gratuit` | `payant`). Ajout d'un plafond **mensuel** sur le plan payant.
