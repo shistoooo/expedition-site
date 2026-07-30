@@ -1,4 +1,33 @@
 ---
+### [2026-07-30 21:00] — La barre de progression bondissait de 1 a 16 a 80 a 127 Mo
+
+**Quoi :** Les octets sont desormais comptes A LEUR ARRIVEE, plus a la fin d'une tranche. Et l'affichage est borne a dix rafraichissements par seconde.
+
+**Pourquoi :** Signalement du user — « au debut t'as l'impression que c'est tres lent et que ca deconne ». La cause exacte : `onBytes` n'etait appele qu'une fois la tranche de 6 Mo ENTIEREMENT recue (`await r.arrayBuffer()`). Comme douze tranches se telechargent en parallele et se partagent la ligne, elles s'achevaient presque ensemble : le compteur restait immobile, puis bondissait. Rien n'etait lent — c'etait l'affichage qui mentait.
+
+**Mesure du meme telechargement (275 Mo), avant / apres :**
+| | avant | apres |
+|---|---|---|
+| valeurs affichees | ~4 | **122** |
+| ecart median entre deux valeurs | ~40 Mo | **2 Mo** |
+| ecart maximal | ~64 Mo | **5 Mo** |
+| debut de la suite | 1 · 16 · 80 · 127 | **0 · 1 · 4 · 5 · 7 · 8 · 12 · 13 · 16 · 18…** |
+Fichier final identique : **288 320 525 octets**, comme avant le changement.
+
+**⚠️ Le revers, traite dans la meme passe :** compter a l'arrivee fait appeler `onBytes` pour chaque morceau recu, soit quelques dizaines de kilo-octets — des centaines de fois par seconde. Rafraichir React a ce rythme fait ramer l'onglet et RALENTIT le telechargement : on aurait echange un defaut d'affichage contre un vrai defaut de vitesse. D'ou `compteurProgression()` : il COMPTE tout, il n'AFFICHE qu'au plus dix fois par seconde.
+
+**Piege de comptage traite :** si le flux casse EN COURS de lecture, les octets deja annonces n'existent plus. Sans un `onBytes(-recu)` avant de rejouer la tranche, le nouvel essai les compterait une seconde fois et la barre afficherait plus de megaoctets que le fichier n'en contient.
+
+**La vitesse ne change pas d'un octet.** C'est un defaut de PERCEPTION qui est corrige, et il faut le dire clairement : la personne voit du mouvement des la premiere seconde au lieu d'attendre dix secondes devant un compteur fige.
+
+**Fichiers touches :**
+- `src/lib/webdl.ts` — lecture du corps en flux dans la boucle de reprise ; `compteurProgression()` remplace les deux `bump` locaux ; `reinitialiser()` pour le repli vers le relais ; suppression du `onBytes` apres depot (il aurait double la progression).
+
+**Comment annuler :** revenir a `buf = new Uint8Array(await r.arrayBuffer())` et remettre `onBytes(buf.byteLength)` apres `deposer`.
+
+**Effets de bord possibles :** aucun sur le fichier produit (verifie octet par octet). Le seul risque etait la cadence de rafraichissement, borne explicitement.
+
+---
 ### [2026-07-30 20:00] — 🚨 L'HYPOTHESE « L'ALGERIE BLOQUE CLOUDFLARE » EST FAUSSE
 
 **Le fait :** le contact algerien a lance la page de diagnostic. **Les trois sondes repondent.**

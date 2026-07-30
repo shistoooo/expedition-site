@@ -604,8 +604,47 @@ async function fetchTranches(
             signal: echeance(delaiTranche(chunkSize), signal),
             referrerPolicy: "no-referrer",
           });
-          if (r.ok) buf = new Uint8Array(await r.arrayBuffer());
-          else lastStatus = r.status;
+          if (!r.ok) { lastStatus = r.status; continue; }
+
+          /**
+           * ON COMPTE LES OCTETS A LEUR ARRIVEE, pas a la fin de la tranche.
+           *
+           * Avant : `await r.arrayBuffer()` puis un seul `onBytes(6 Mo)`. Comme
+           * douze tranches se telechargent en parallele et se partagent la ligne,
+           * elles s'achevaient presque ensemble : le compteur restait immobile
+           * puis bondissait de 1 a 16, 80, 127 Mo. Vu de l'utilisateur, ca donne
+           * « c'est tres lent » au demarrage, puis « ca deconne ».
+           *
+           * La vitesse reelle ne change pas d'un octet. Ce qui change, c'est
+           * qu'on la MONTRE : du mouvement des la premiere seconde.
+           */
+          if (!r.body) { buf = new Uint8Array(await r.arrayBuffer()); onBytes(buf.byteLength); break; }
+
+          const parties: Uint8Array[] = [];
+          let recu = 0;
+          try {
+            const lecteur = r.body.getReader();
+            for (;;) {
+              const { done, value } = await lecteur.read();
+              if (done) break;
+              parties.push(value);
+              recu += value.byteLength;
+              onBytes(value.byteLength);
+            }
+          } catch (eFlux) {
+            /**
+             * Coupure EN COURS de lecture. Les octets deja annonces n'existent
+             * plus : sans ce retrait, un nouvel essai les compterait une seconde
+             * fois et la barre depasserait 100 % — ou pire, afficherait plus de
+             * megaoctets que le fichier n'en contient.
+             */
+            onBytes(-recu);
+            throw eFlux;
+          }
+          const assemble = new Uint8Array(recu);
+          let pos = 0;
+          for (const part of parties) { assemble.set(part, pos); pos += part.byteLength; }
+          buf = assemble;
         } catch (e2) {
           // Annulation demandee par la personne : on sort tout de suite. Une
           // echeance depassee, elle, vaut un nouvel essai.
@@ -639,8 +678,9 @@ async function fetchTranches(
               "Réessaie : YouTube refuse parfois des morceaux au hasard."
         );
       }
+      // Plus de `onBytes` ici : les octets ont deja ete comptes a leur arrivee,
+      // pendant la lecture du flux. Les recompter doublerait la progression.
       await deposer(s, buf);
-      onBytes(buf.byteLength);
     }
   };
 
@@ -950,6 +990,43 @@ function saveBlob(blob: Blob, filename: string) {
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
+/**
+ * Compteur de progression a cadence BORNEE.
+ *
+ * Depuis qu'on compte les octets a leur arrivee, `onBytes` est appele pour chaque
+ * morceau recu — soit quelques dizaines de kilo-octets, donc des centaines de
+ * fois par seconde. Rafraichir React a ce rythme fait ramer l'onglet et RALENTIT
+ * le telechargement : on aurait echange un defaut d'affichage contre un vrai
+ * defaut de vitesse.
+ *
+ * On compte donc tout, et on n'AFFICHE qu'au plus dix fois par seconde. L'oeil ne
+ * distingue pas mieux, et le processeur reste libre pour ce qui compte.
+ */
+function compteurProgression(totalKnown: number, onProgress: (p: Progress) => void) {
+  let got = 0;
+  let dernierAffichage = 0;
+  const afficher = () => {
+    onProgress({
+      phase: "download",
+      pct: totalKnown ? Math.min(99, (got / totalKnown) * 100) : 0,
+      label: totalKnown
+        ? `${(got / 1048576).toFixed(0)} Mo sur ${(totalKnown / 1048576).toFixed(0)}`
+        : `${(got / 1048576).toFixed(0)} Mo`,
+    });
+  };
+  return {
+    bump(n: number) {
+      got += n;
+      const maintenant = Date.now();
+      if (maintenant - dernierAffichage < 100) return;
+      dernierAffichage = maintenant;
+      afficher();
+    },
+    /** Remet le compteur a zero quand on recommence un fichier sur le relais. */
+    reinitialiser() { got = 0; afficher(); },
+  };
+}
+
 export async function download(
   r: Resolved,
   onProgress: (p: Progress) => void,
@@ -978,17 +1055,8 @@ export async function download(
     );
   }
 
-  let got = 0;
-  const bump = (n: number) => {
-    got += n;
-    onProgress({
-      phase: "download",
-      pct: totalKnown ? Math.min(99, (got / totalKnown) * 100) : 0,
-      label: totalKnown
-        ? `${(got / 1048576).toFixed(0)} Mo sur ${(totalKnown / 1048576).toFixed(0)}`
-        : `${(got / 1048576).toFixed(0)} Mo`,
-    });
-  };
+  const compteur = compteurProgression(totalKnown, onProgress);
+  const bump = (n: number) => compteur.bump(n);
 
   if (r.muxed && r.file) {
     // Fichier deja complet cote plateforme : rien a fusionner.
@@ -1007,7 +1075,7 @@ export async function download(
       buf = await grab(r.file.url);
     } catch (e) {
       if (!r.file.relayUrl || r.file.relayUrl === r.file.url || signal.aborted) throw e;
-      got = 0; // le compteur repart : on recommence le fichier
+      compteur.reinitialiser(); // le compteur repart : on recommence le fichier
       buf = await grab(r.file.relayUrl);
     }
     onProgress({ phase: "save", pct: 100, label: "Enregistrement" });
@@ -1061,17 +1129,8 @@ async function telechargerSurDisque(
   /** true des que la fusion a eu lieu : c'est elle qui ferme le flux de sortie. */
   let parMediabunny = false;
 
-  let got = 0;
-  const bump = (n: number) => {
-    got += n;
-    onProgress({
-      phase: "download",
-      pct: totalKnown ? Math.min(99, (got / totalKnown) * 100) : 0,
-      label: totalKnown
-        ? `${(got / 1048576).toFixed(0)} Mo sur ${(totalKnown / 1048576).toFixed(0)}`
-        : `${(got / 1048576).toFixed(0)} Mo`,
-    });
-  };
+  const compteur = compteurProgression(totalKnown, onProgress);
+  const bump = (n: number) => compteur.bump(n);
 
   try {
     if (r.muxed && r.file) {
@@ -1102,7 +1161,7 @@ async function telechargerSurDisque(
         await verser(r.file.url);
       } catch (e) {
         if (!r.file.relayUrl || r.file.relayUrl === r.file.url || signal.aborted) throw e;
-        got = 0;
+        compteur.reinitialiser();
         await verser(r.file.relayUrl);
       }
     } else {
