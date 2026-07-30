@@ -1,4 +1,35 @@
 ---
+### [2026-07-30 14:20] — Contrer l'anti-robot : 3,7x moins d'appels a YouTube, et un secours au lieu d'un echec
+
+**Quoi :** Le cache des resolutions suit desormais la duree de vie REELLE des URLs au lieu d'une constante devinee, et une resolution refusee ressort l'entree en cache plutot que d'echouer.
+
+**Pourquoi :** Ce qui declenche le blocage anti-robot de YouTube, c'est le VOLUME d'appels a `/youtubei/v1/player` depuis une meme adresse. On ne peut pas deplacer ces appels chez l'utilisateur (CORS ferme, verifie le 26/07), donc le seul levier est d'en faire moins.
+
+**🔑 MESURE QUI DEBLOQUE TOUT :** une URL googlevideo porte `expire=<horodatage>` et vit **6 heures (21 600 s)**. Le cache expirait au bout de **90 minutes** — une valeur posee a la main. On jetait donc les trois quarts de la validite et on rappelait YouTube quatre fois plus souvent que necessaire.
+
+Le TTL est maintenant calcule depuis `expire`, avec une marge de confort de 30 minutes avant l'expiration (de quoi telecharger 1,8 Go sur une connexion a 1 Mo/s sans que les URLs meurent en route).
+
+**Verifie en production, meme video, trois appels d'affilee :**
+- resolution fraiche : **9 937 ms** (ces dix secondes SONT la limite a l'oeuvre sur mon adresse, apres une journee de tests)
+- depuis le cache : **449 ms** puis **511 ms**, sans aucun appel a YouTube
+- validite restante servie : 5 h 59 → le cache tient encore ~5 h 29
+- **3,7x moins d'appels** pour une video redemandee
+
+**SECOURS SUR ECHEC :** quand la resolution est refusee, on ressort l'entree jugee « trop juste » si ses URLs vivent encore plus de 2 minutes, au lieu de rendre une erreur. Echouer alors qu'on a de quoi repondre serait absurde — et c'est exactement le cas qui compte, celui ou YouTube nous bloque.
+
+**🧭 LE FAIT STRUCTUREL QUI RASSURE, et que je croyais defavorable :** la requete sortante d'un Worker part du **centre de donnees le plus proche du VISITEUR** (Anycast a l'entree, unicast a la sortie — documentation Cloudflare). La limite anti-robot n'est donc PAS sur une adresse unique et partagee : il y en a une par region. Un visiteur allemand et un visiteur americain n'usent pas la meme. **Mes propres tests passaient tous par Lisbonne**, ce qui explique que je l'aie grillee a repetition alors qu'un usage reparti ne le ferait pas.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` — `expirationDesUrls()` lit `expire` dans les URLs ; `MARGE_CONFORT_S = 1800` ; TTL du cache borne entre 5 min et 6 h ; branche de secours sur echec de resolution.
+
+**Comment annuler :** remettre `expirationTtl: 5400` en dur et supprimer la branche `perime`.
+
+**Effets de bord possibles :**
+Les entrees ecrites avant ce changement n'ont pas de champ `expire` : elles sont considerees comme non confortables et re-resolues une fois, puis le nouveau regime s'applique. Auto-cicatrisant, aucune purge a faire.
+
+**PAS FAIT, et ca reste le levier suivant :** deux personnes qui collent la MEME video au meme instant declenchent deux resolutions. Un verrou de coalescence les ramenerait a une seule. KV n'etant pas atomique, ce serait imparfait — et au trafic actuel, marginal.
+
+---
 ### [2026-07-30 13:45] — Le poids de la video en gigaoctets, et ce qu'il reste apres
 
 **Quoi :** La fiche d'une video resolue affiche son poids en Go des qu'il depasse le gigaoctet (« 1.8 Go » au lieu de « 1821 Mo »), suivi de ce que ca laisse du quota du jour : « Il te reste 1.1 Go aujourd'hui. »
