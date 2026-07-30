@@ -585,6 +585,18 @@ export default function TelechargerPage() {
    * Enveloppe quand meme : Clarity est lui-meme bloque par certains bloqueurs, et
    * un outil de mesure ne doit jamais casser ce qu'il mesure.
    */
+  /** Vrai quand le dernier telechargement a echoue sur un refus d'octets : c'est
+   *  le seul cas ou lancer le diagnostic tout de suite apporte quelque chose. */
+  const [echecTelechargement, setEchecTelechargement] = useState(false);
+
+  /** Meme mecanique que `marquerEtat`, mais pour n'importe quelle cle. Enveloppe
+   *  pour la meme raison : un outil de mesure ne doit jamais casser ce qu'il mesure. */
+  const marquerEtat2 = useCallback((cle: string, valeur: string) => {
+    try {
+      (window as Window & { clarity?: (...a: unknown[]) => void }).clarity?.("set", cle, valeur);
+    } catch { /* mesure absente : sans consequence */ }
+  }, []);
+
   const marquerEtat = useCallback((etat: "joignable" | "injoignable" | "erreur") => {
     try {
       (window as Window & { clarity?: (...a: unknown[]) => void }).clarity?.("set", "webdl_worker", etat);
@@ -657,7 +669,7 @@ export default function TelechargerPage() {
 
   const onDownload = async () => {
     if (!result) return;
-    setError(null); setDone(false);
+    setError(null); setDone(false); setEchecTelechargement(false);
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     setProgress({ phase: "download", pct: 0, label: "Démarrage" });
@@ -665,7 +677,32 @@ export default function TelechargerPage() {
       await download(result, setProgress, ctrl.signal);
       setDone(true);
     } catch (e) {
-      if (!ctrl.signal.aborted) setError(e instanceof Error ? e.message : "Le téléchargement a échoué.");
+      if (!ctrl.signal.aborted) {
+        const msg = e instanceof Error ? e.message : "Le téléchargement a échoué.";
+        setError(msg);
+        /**
+         * L'ECHEC SE SIGNALE TOUT SEUL.
+         *
+         * Jusqu'ici je dependais d'une personne pour lancer une page de
+         * diagnostic AU MOMENT ou ca casse. Vecu le 30/07/2026 : deux
+         * diagnostics recus, tous les deux verts — parce qu'ils ont ete lances
+         * quand ca marchait, et l'un dans un autre navigateur que celui qui
+         * echouait. Une mesure qui depend du bon timing d'un tiers n'est pas
+         * une mesure.
+         *
+         * Le marqueur Clarity porte la NATURE de l'echec, et Clarity fournit
+         * deja le pays et le navigateur. Le taux et sa geographie se liront donc
+         * sans que personne n'ait rien a faire.
+         */
+        const nature = /code 403/.test(msg) ? "octets-403"
+          : /coupée pendant le téléchargement/.test(msg) ? "coupure-reseau"
+          : /mémoire|4 Go|500 Mo/.test(msg) ? "trop-lourd"
+          : "autre";
+        marquerEtat2("webdl_dl_echec", nature);
+        // Ce drapeau fait apparaitre l'invitation a lancer le diagnostic
+        // MAINTENANT, pendant que la panne est encore la.
+        setEchecTelechargement(nature === "octets-403");
+      }
     } finally {
       setProgress(null);
       abortRef.current = null;
@@ -1045,6 +1082,22 @@ export default function TelechargerPage() {
                 {detailTechnique && (
                   <p className="mt-2.5 pt-2.5 border-t border-red-500/20 text-[12px] font-mono text-red-200/60">
                     {detailTechnique}
+                  </p>
+                )}
+                {/* Le diagnostic ne vaut quelque chose que lance PENDANT la panne.
+                    Le proposer ici, dans la seconde qui suit l'echec, est le seul
+                    moment ou la personne a une raison de le faire — et ou le
+                    resultat sera exploitable. */}
+                {echecTelechargement && (
+                  <p className="mt-2.5 pt-2.5 border-t border-red-500/20 text-[13px] text-red-200/70 leading-relaxed">
+                    Ça nous aiderait beaucoup :{" "}
+                    <Link
+                      href="/tubeforge/telecharger/diagnostic"
+                      className="underline decoration-red-300/40 hover:decoration-red-300"
+                    >
+                      lance ce test maintenant
+                    </Link>{" "}
+                    — dans le même navigateur, pendant que la panne est là — et envoie-nous le résultat.
                   </p>
                 )}
               </div>

@@ -1,4 +1,33 @@
 ---
+### [2026-07-30 23:55] — L'echec se signale tout seul, au lieu de dependre du bon timing d'un tiers
+
+**Quoi :** Un echec de telechargement pose desormais un marqueur Clarity portant sa NATURE, et propose de lancer le diagnostic dans la seconde qui suit, dans le meme navigateur.
+
+**Pourquoi — erreur de METHODE de ma part :** j'ai recu deux diagnostics, tous les deux entierement verts, octets compris. Ils ne prouvaient rien : lances quand ca marchait, et l'un dans **Chrome** alors que le premier rapport d'echec venait de **Firefox**. **Une mesure qui depend du bon timing et du bon navigateur d'un tiers n'est pas une mesure.**
+
+**Ce qui change :**
+- `webdl_dl_echec` = `octets-403` | `coupure-reseau` | `trop-lourd` | `autre`. Clarity fournissant deja le pays ET le navigateur, le taux et sa repartition se liront sans que personne n'ait rien a faire.
+- Sur un refus d'octets — le seul cas ou le diagnostic apporte quelque chose — l'encart d'erreur invite a le lancer **maintenant**, dans le meme navigateur.
+
+**Verifie en production, refus d'octets simule :**
+```
+Le téléchargement a échoué (audio, tranche 1 sur 1, code 403). Réessaie : YouTube refuse parfois
+des morceaux au hasard.
+Ça nous aiderait beaucoup : lance ce test maintenant — dans le même navigateur, pendant que la
+panne est là — et envoie-nous le résultat.
+```
+Marqueur pose : `set webdl_dl_echec octets-403`. Lien present.
+
+**⚠️ Decouvert pendant le test, et ca vaut d'etre note :** mon premier essai est reste bloque sans rien afficher. Cause — **Chrome a ouvert le selecteur de fichier natif et attendait un humain**. C'est la premiere fois que ce chemin s'exerce sous mes yeux, et ca confirme qu'il s'engage bien. Il reste non valide de bout en bout : le selecteur exige un clic que je ne peux pas donner.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — `marquerEtat2()` generique, `echecTelechargement`, classification de la nature de l'echec, invitation sous l'encart d'erreur.
+
+**Comment annuler :** retirer l'appel a `marquerEtat2` dans le `catch` de `onDownload` et le bloc `echecTelechargement` de l'encart.
+
+**Ce qui reste ouvert, et honnetement :** la cause de l'echec chez son contact n'est PAS etablie. Deux hypotheses nommees, deux ecartees par la mesure (`gcr`, puis l'adresse signee). Ce dispositif ne devine plus — il attend la prochaine panne pour la decrire.
+
+---
 ### [2026-07-30 23:20] — 🚨 MON DIAGNOSTIC GEO NE TENAIT PAS, et le diagnostic avait un trou beant
 
 **Le fait qui m'a corrige :** le user signale une video qui marche parfaitement chez lui et echoue chez quelqu'un d'autre — **et cette personne n'est pas en Algerie**. Puis une seconde video, `NcD7oeBtrvI`.
