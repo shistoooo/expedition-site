@@ -1,4 +1,29 @@
 ---
+### [2026-07-30 17:10] — « Impossible de verifier ton acces » accusait l'utilisateur d'un probleme de reseau
+
+**Quoi :** L'ecran d'echec de `/api/me` nomme desormais la cause reelle et affiche l'hote concerne. « Impossible de verifier ton acces » devient « Le telechargeur est injoignable ».
+
+**Pourquoi :** Signalement de visiteurs en ALGERIE : la page se charge (puces des plateformes visibles, squelette affiche) mais l'appel au worker echoue. Le mot « acces » designe des DROITS : il envoyait chercher un probleme de compte, alors qu'il s'agit d'un domaine injoignable. Et « verifie ta connexion » accusait l'utilisateur d'une connexion qui fonctionne — la page vient de se charger par cette meme connexion.
+
+**Ce que le diagnostic reseau etablit deja :**
+- `tubeforge.explauncheur.space` → **64.29.17.x, Vercel** → joignable depuis l'Algerie (la page s'affiche).
+- `tubeforge-webdl.expedition-studio.workers.dev` → **188.114.96.5 / 188.114.97.5, CLOUDFLARENET-EU** → c'est cet appel qui echoue.
+- Rapports publics concordants : des IP Cloudflare injoignables depuis Ooredoo et Djezzy.
+- ⚠️ **Aucun des deux domaines n'est chez Cloudflare** : `explauncheur.space` est sur `ns*.vercel-dns.com`, `expeditionlauncher.store` chez IONOS. Donner un domaine propre au worker exigerait de deplacer les serveurs de noms d'une zone entiere.
+
+**Ce qui reste a trancher, et que le nouvel ecran permet :** un blocage par NOM (`workers.dev` est massivement sur liste noire, c'est un vecteur de hameconnage connu) se repare par un domaine propre. Un blocage par IP de Cloudflare ne se repare pas comme ca. Le detail technique affiche donne de quoi le savoir depuis une seule capture d'ecran sur place.
+
+**Fichiers touches :**
+- `src/lib/webdl.ts` — classe `EchecReseau` portant un `detail` affichable ; `hoteWorker()` ; messages distinguant delai depasse et requete bloquee avant d'atteindre le serveur.
+- `src/app/tubeforge/telecharger/page.tsx` — etat `causeEchec` ; l'ecran affiche le message reel et le detail technique en petit.
+
+**Verifie en production en SIMULANT la panne** (script injecte avant le chargement, rejetant tout appel vers `workers.dev`) : « Le telechargeur est injoignable. » + « requete bloquee avant d'atteindre tubeforge-webdl.expedition-studio.workers.dev (TypeError) ». L'ancien texte « verifier ton acces » a bien disparu.
+
+**Comment annuler :** revenir aux deux `throw new Error(...)` dans `api()` et retirer l'etat `causeEchec`.
+
+**Effets de bord possibles :** aucun en fonctionnement normal — cet ecran n'apparait que si `/api/me` echoue.
+
+---
 ### [2026-07-30 16:20] — Plan PAYANT confirme et active : 20 Go par personne, facture bornee a 5 $
 
 **Quoi :** Bascule `PLAN = "payant"`. Quota par personne 5,6 → **19,6 Go/jour**, reserve du jour 492 Go → **1,75 To**, et le plafond MENSUEL s'active.

@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CompatBadge from "@/components/shared/CompatBadge";
 import {
-  clearToken, download, fetchMe, getToken, loginUrl, readHashResult, resolve, warmSession,
+  clearToken, download, EchecReseau, fetchMe, getToken, loginUrl, readHashResult, resolve, warmSession,
   type Me, type Progress, type Resolved, type Upsell,
 } from "@/lib/webdl";
 
@@ -532,6 +532,10 @@ export default function TelechargerPage() {
   // Distinct de `me === null` : « pas encore lu » et « impossible de lire » ne
   // meritent pas le meme ecran, et surtout pas la meme hypothese sur la porte.
   const [echecMe, setEchecMe] = useState(false);
+  /** Ce qui a REELLEMENT echoue en lisant /api/me. Sans ca, l'ecran d'echec
+   *  disait « Impossible de vérifier ton accès » — un probleme de droits, alors
+   *  qu'il s'agit d'un domaine injoignable. */
+  const [causeEchec, setCauseEchec] = useState<{ message: string; detail: string | null } | null>(null);
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Resolved | null>(null);
@@ -572,9 +576,13 @@ export default function TelechargerPage() {
       const r = await fetchMe();
       setMe(r);
       setEchecMe(false);
-    } catch {
+    } catch (e) {
       setMe(null);
       setEchecMe(true);
+      setCauseEchec({
+        message: e instanceof Error ? e.message : "Le téléchargeur n’a pas pu être joint.",
+        detail: e instanceof EchecReseau ? e.detail : null,
+      });
     }
   }, []);
 
@@ -784,16 +792,28 @@ export default function TelechargerPage() {
                   il ne servirait qu'a produire un refus incomprehensible. */}
               {echecMe && (
                 <div className="text-center">
-                  <p className="text-white/80 mb-1">Impossible de vérifier ton accès.</p>
-                  <p className="text-sm text-white/40 mb-6">
-                    Le service n’a pas répondu. Ça vient de nous, pas de toi.
+                  {/* Ne dit plus « ton accès » : ce mot designe des droits, et
+                      envoyait chercher un probleme de compte alors que le
+                      domaine du service est simplement injoignable. */}
+                  <p className="text-white/80 mb-1">Le téléchargeur est injoignable.</p>
+                  <p className="text-[14px] md:text-[13px] text-white/45 mb-6 max-w-md mx-auto leading-relaxed">
+                    {causeEchec?.message ??
+                      "Ta connexion fonctionne — c’est notre service qui n’est pas accessible depuis ton réseau."}
                   </p>
                   <button
-                    onClick={() => { setEchecMe(false); refreshMe(); }}
+                    onClick={() => { setEchecMe(false); setCauseEchec(null); refreshMe(); }}
                     className="px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white/80 font-semibold hover:bg-white/10 transition-colors"
                   >
                     Réessayer
                   </button>
+                  {/* Le detail technique, discret mais present : c'est la seule
+                      chose qui permet de trancher a distance entre « notre
+                      service est tombé » et « ce réseau bloque ce domaine ». */}
+                  {causeEchec?.detail && (
+                    <p className="mt-5 pt-4 border-t border-white/[0.07] text-[12px] font-mono text-white/30 max-w-md mx-auto break-words">
+                      {causeEchec.detail}
+                    </p>
+                  )}
                 </div>
               )}
 

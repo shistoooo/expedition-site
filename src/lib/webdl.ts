@@ -342,6 +342,28 @@ function delaiTranche(chunkSize: number): number {
   return Math.max(DELAI_TRANCHE_MS, Math.ceil(chunkSize / 150_000) * 1000);
 }
 
+/**
+ * Erreur portant un DETAIL TECHNIQUE affichable.
+ *
+ * Sans lui, un blocage reseau et une panne de notre service donnent le meme
+ * ecran, et un rapport de bug se resume a « ca marche pas ». Le detail nomme
+ * l'hote concerne : c'est ce qui permet de trancher a distance entre « notre
+ * service est tombe » et « ce reseau bloque ce domaine ».
+ */
+export class EchecReseau extends Error {
+  detail: string;
+  constructor(message: string, detail: string) {
+    super(message);
+    this.name = "EchecReseau";
+    this.detail = detail;
+  }
+}
+
+/** L'hote du worker, pour le nommer dans les diagnostics. */
+function hoteWorker(): string {
+  try { return new URL(WORKER).host; } catch { return WORKER; }
+}
+
 async function api<T>(path: string, params?: Record<string, string>): Promise<T> {
   const qs = params ? "?" + new URLSearchParams(params).toString() : "";
   const token = getToken();
@@ -353,11 +375,30 @@ async function api<T>(path: string, params?: Record<string, string>): Promise<T>
     });
   } catch (e) {
     if (estDelaiDepasse(e)) {
-      throw new Error(
-        "Le service n’a pas répondu au bout de 45 secondes. Réessaie — si ça se reproduit, c’est de notre côté."
+      throw new EchecReseau(
+        "Le service n’a pas répondu au bout de 45 secondes. Réessaie — si ça se reproduit, c’est de notre côté.",
+        "délai dépassé (45 s) sur " + hoteWorker()
       );
     }
-    throw new Error("Impossible de joindre le service. Vérifie ta connexion.");
+    /**
+     * `TypeError: Failed to fetch` sur un appel qui n'atteint meme pas le
+     * serveur. C'est le SEUL symptome que produit un filtrage reseau — par un
+     * fournisseur d'acces, un pare-feu d'entreprise, une extension, ou un DNS
+     * qui refuse de repondre. Le message d'origine disait « vérifie ta
+     * connexion », ce qui accuse l'utilisateur alors que sa connexion marche
+     * (la page vient de se charger).
+     *
+     * Vecu le 30/07/2026 : des visiteurs en Algerie voyaient « Impossible de
+     * verifier ton acces » alors que la page s'affichait. Le mot « acces »
+     * envoyait chercher un probleme de droits, quand il s'agit d'un domaine
+     * injoignable. Sans le detail technique, impossible de trancher a distance.
+     */
+    throw new EchecReseau(
+      "Le téléchargeur n’a pas pu être joint. Ta connexion fonctionne — c’est notre service qui n’est " +
+      "pas accessible depuis ton réseau. Certains fournisseurs d’accès et pare-feux bloquent le domaine " +
+      "qu’il utilise.",
+      "requête bloquée avant d’atteindre " + hoteWorker() + " (" + (e instanceof Error ? e.name : "erreur") + ")"
+    );
   }
   const data = await r.json();
   if (!r.ok && !data?.err) throw new Error("Le service est momentanément indisponible.");
