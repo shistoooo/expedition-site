@@ -1,4 +1,46 @@
 ---
+### [2026-07-31 04:20] — Deux defauts sur les Shorts : un plantage, et un fichier que Premiere n'ouvre pas
+
+Deux signalements sur des Shorts. Le premier etait un plantage franc, le second un defaut plus grave parce qu'il ne se voyait pas.
+
+## 1. « Codec 'aac' cannot be contained within WebM » — l'erreur brute affichee a l'utilisateur
+
+**Le defaut :** `pickPair` appariait un conteneur avec un son qu'il ne peut pas contenir. Deux versions du meme bug :
+- pour un conteneur `webm`, il prenait TOUS les sons disponibles, AAC compris — or WebM n'accepte que Opus et Vorbis ;
+- et meme en `mp4`, `(compat.length ? compat : auds)` retombait **silencieusement** sur un son incompatible quand aucun ne convenait.
+
+**Corrige :** une table explicite (`mp4` → AAC, `webm` → Opus/Vorbis) et, surtout, **plus aucun repli incompatible** — sans son valide pour ce conteneur, on passe au candidat video suivant. Une qualite plus basse mais un fichier QUI S'OUVRE.
+
+**Verifie : 6 paires conteneur/son valides sur 6.**
+
+**Filet pose en plus :** aucune erreur de la bibliotheque de fusion ne doit atteindre l'utilisateur telle quelle. Ce message etait en anglais, ecrit pour un developpeur qui choisit un format (« Switching to MKV will grant support for this codec »). Il est desormais enveloppe dans une phrase francaise — en conservant le detail brut en fin de ligne, parce que c'est exactement ce detail qui a permis de trouver le defaut en une lecture.
+
+## 2. Le vrai probleme : on livrait du WebM a des monteurs
+
+**Ce que la mesure a montre sur `V1r0GsuIakc` :** la video existe en **H.264 jusqu'en 1080p** — le seul format que Premiere Pro ouvre sans greffon. On servait du **VP9 dans un conteneur WebM**, que Premiere n'ouvre pas. Sur une page dont la promesse est « pose tes extraits sur ta timeline Premiere Pro ou DaVinci ».
+
+**La racine :** le plafond de qualite s'appliquait a la HAUTEUR. Pour une video verticale, la hauteur vaut 1920 — donc tous les bons formats etaient elimines, et il ne restait que du VP9 en 1080. **La largeur n'etait meme pas extraite.**
+
+**Corrige :** on plafonne et on classe desormais sur la **petite dimension**, au sens ou tout le monde entend « 1080p » — un 1920x1080 horizontal et un 1080x1920 vertical sont tous les deux du 1080p. Un seul changement repare les deux problemes : a definition egale le classement preferait deja `avc1`, donc le H.264 redevient atteignable et gagne.
+
+Effet secondaire bienvenu : l'etiquette affiche « 1080p » au lieu de « 1920p », qui ne voulait rien dire.
+
+**Verifie apres purge du cache :**
+| | avant | apres |
+|---|---|---|
+| Short vertical | WebM / VP9 (Premiere refuse) | **1080p MP4 / avc1 + AAC, 14,7 Mo** |
+| horizontaux (2 controles) | MP4 / avc1 | inchange |
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/youtube.js` — `width` extraite ; `definition()` = petite dimension, utilisee pour le plafond ET le classement ; table `SONS_ACCEPTES` ; suppression du repli incompatible.
+- `tubeforge-webdl/src/index.js` — la page recoit `definition` comme hauteur affichee.
+- `expedition-site-prod/src/lib/webdl.ts` — `muxAvecFilet()`.
+
+**Comment annuler :** revenir a `(f.height || 0)` dans le filtre et le score de `pickPair`, et a l'ancien `pickAudio`.
+
+**⚠️ Non verifie de bout en bout :** deux des trois Shorts ont ete refuses par l'anti-robot pendant le controle final — encore mon propre volume d'appels. Le troisieme confirme le correctif, mais je n'ai pas vu les trois passer ensemble.
+
+---
 ### [2026-07-31 03:10] — 🔑 Une session YouTube grillee restait en cache SIX HEURES
 
 **Le fait, decouvert en testant un Short :** apres une serie de refus anti-robot (0 succes sur 2 essais consecutifs, sur deux formats d'URL differents), la simple **purge de `vd:current`** a debloque la resolution **immediatement**.

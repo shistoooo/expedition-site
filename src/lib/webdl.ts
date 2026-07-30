@@ -1098,6 +1098,28 @@ export async function download(
 }
 
 /**
+ * Enveloppe la fusion pour qu'aucune erreur technique ne sorte en anglais.
+ * Voir le commentaire a l'appel : le detail brut est conserve en fin de phrase.
+ */
+async function muxAvecFilet(
+  fVideo: Blob,
+  fAudio: Blob,
+  container: string,
+  destination: FluxDisque,
+  onAvance: (octets: number) => void
+): Promise<void> {
+  try {
+    await muxVersFlux(fVideo, fAudio, container, destination, onAvance);
+  } catch (e) {
+    const brut = e instanceof Error ? e.message : String(e);
+    throw new Error(
+      "L’image et le son n’ont pas pu être réunis. C’est un problème de notre côté, " +
+      "pas de la vidéo : signale-le-nous avec la ligne ci-dessous. — " + brut
+    );
+  }
+}
+
+/**
  * Le chemin qui ne tient jamais le fichier en memoire.
  *
  * Sequence : on demande D'ABORD ou ecrire (le selecteur exige l'activation
@@ -1187,7 +1209,25 @@ async function telechargerSurDisque(
       onProgress({ phase: "merge", pct: 0, label: "Assemblage image + son" });
       const attendu = totalKnown || 1;
       parMediabunny = true;
-      await muxVersFlux(
+      /**
+       * ⛔ AUCUNE ERREUR DE LA BIBLIOTHEQUE NE DOIT ATTEINDRE L'UTILISATEUR TELLE QUELLE.
+       *
+       * Vecu le 31/07/2026 : la page affichait, en anglais et sans contexte,
+       * « Codec 'aac' cannot be contained within WebM. Supported audio codecs
+       * are: 'opus', 'vorbis'. Switching to MKV will grant support for this
+       * codec. » — un message ecrit pour un developpeur qui choisit un format,
+       * pas pour quelqu'un qui veut sa video.
+       *
+       * La CAUSE de ce cas precis est corrigee cote Worker (on n'apparie plus un
+       * conteneur avec un son qu'il ne peut pas contenir). Ce filet couvre tout
+       * le reste : la bibliotheque peut echouer pour dix autres raisons, et
+       * aucune ne doit sortir en anglais.
+       *
+       * Le detail brut est CONSERVE en fin de message : sans lui, un rapport de
+       * bug se resume a « l'assemblage a echoue », et c'est exactement ce detail
+       * qui a permis de trouver le defaut en une lecture.
+       */
+      await muxAvecFilet(
         await bv.poignee.getFile(),
         await ba.poignee.getFile(),
         container,
