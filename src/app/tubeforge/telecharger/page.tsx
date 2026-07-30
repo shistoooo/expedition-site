@@ -42,10 +42,22 @@ const AMBER = "#ff6a1f";
  * la consommation, pas comme une reserve. D'ou le mot « restants » ecrit en
  * clair, et une barre qui se VIDE en descendant, comme une jauge de carburant.
  *
- * Montrer la reserve collective n'est pas cosmetique : sans elle, un blocage
- * ressemble a une panne ; avec elle, on comprend qu'on partage un outil gratuit
- * avec des centaines de personnes.
+ * ⚠️ LA RESERVE COLLECTIVE NE S'AFFICHE PLUS QUAND ELLE VA BIEN.
+ *
+ * Elle etait rendue en permanence, en jauge, avec son chiffre : « 491 Go
+ * restants sur 492 ». Ca ne veut rien dire pour la personne qui vient
+ * telecharger une video — c'est un indicateur d'exploitation, et le mettre a cote
+ * de son propre quota donne l'impression d'un tableau de bord interne laisse
+ * ouvert par erreur.
+ *
+ * La raison de l'afficher tenait pourtant : sans elle, un refus ressemble a une
+ * panne, alors qu'il s'agit d'une reserve partagee. Mais cette raison ne vaut
+ * QU'AU MOMENT OU la reserve baisse. On la garde donc, en phrase et sans
+ * gigaoctets, et seulement sous le seuil.
  */
+/** Sous ce reste, la reserve partagee devient une information utile. Au-dessus,
+ *  c'est du bruit. */
+const SEUIL_RESERVE = 0.25;
 function Compteurs({
   perso, total, serveur, octetsParUnite,
 }: {
@@ -98,18 +110,21 @@ function Compteurs({
   };
 
   return (
-    /* Cote a cote des 360 px, empilees en dessous.
-       Mesure a 320 px : le libelle le plus long fait 136 px et les chiffres
-       « 1194 restants sur 1200 » 133 px, pour une colonne de 120 px seulement —
-       et comme les deux sont en `whitespace-nowrap`, ca ne se replie pas, ca
-       DEBORDE la carte. Le defaut ne se voit qu'une fois connecte, donc jamais
-       pendant les tests porte fermee. Empilees, chaque jauge dispose des 272 px
-       de la carte. Le point de bascule est calcule, pas choisi : a 360 px la
-       colonne fait 144 px, soit la premiere largeur ou le libelle tient. */
-    <div className="flex flex-col gap-5 min-[360px]:flex-row min-[360px]:items-start min-[360px]:gap-6 sm:gap-12">
-      <Jauge reste={perso} sur={total} libelle="Tes téléchargements" />
-      {srvLeft !== null && serveur && (
-        <Jauge reste={srvLeft} sur={serveur.limit} libelle="Réserve du serveur" />
+    /* Une seule jauge desormais : la mise en page a deux colonnes qui debordait a
+       320 px n'a plus de raison d'exister. Elle avait ete calculee pour deux
+       libelles en `whitespace-nowrap` cote a cote — a supprimer proprement plutot
+       qu'a garder « au cas ou ». */
+    <div>
+      <Jauge reste={perso} sur={total} libelle="Ton quota du jour" />
+      {/* Une phrase, pas une jauge, et seulement quand ca compte. Le chiffre
+          exact n'aiderait personne : ce qui aide, c'est de savoir que ca vient
+          d'un partage et que ca repart demain. */}
+      {srvLeft !== null && serveur && serveur.limit > 0 && srvLeft / serveur.limit <= SEUIL_RESERVE && (
+        <p className="text-[13px] md:text-[12px] text-white/45 leading-relaxed mt-3.5">
+          {srvLeft === 0
+            ? "La réserve partagée du jour est épuisée. Elle repart demain matin."
+            : "La réserve partagée par tout le monde touche à sa fin aujourd’hui. Elle repart demain matin."}
+        </p>
       )}
     </div>
   );

@@ -1,4 +1,23 @@
 ---
+### [2026-07-30 13:15] — La reserve du serveur quitte l'ecran (sauf quand elle baisse)
+
+**Quoi :** La jauge « Reserve du serveur — 491 Go restants sur 492 » ne s'affiche plus. Elle est remplacee par une phrase, sans chiffre, et seulement sous 25 % de reserve restante. Le quota personnel devient « Ton quota du jour — 2,9 Go restants sur 5,6 ».
+
+**Pourquoi :** Retour du user, et il est juste : « 491 Go restants sur 492 » est un indicateur d'exploitation. Pose a cote du quota personnel, ca donne l'impression d'un tableau de bord interne laisse ouvert par erreur. Un visiteur qui vient telecharger une video n'a aucun usage de ce nombre.
+
+La raison d'origine de l'afficher tenait pourtant — sans elle, un refus ressemble a une panne alors qu'il s'agit d'une reserve partagee. Mais cette raison ne vaut QU'AU MOMENT OU la reserve baisse. On la garde donc pour ce moment-la, en francais et sans gigaoctets.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — `Compteurs` : seuil `SEUIL_RESERVE = 0.25` ; la reserve devient une phrase conditionnelle ; libelle du quota personnel passe a « Ton quota du jour » ; la mise en page a deux colonnes (calculee pour deux jauges cote a cote a 320 px) est supprimee plutot que gardee « au cas ou ».
+
+**Verifie en production :** une seule mention de gigaoctets sur la page, « 2.9 Go restants sur 5.6 ». Plus aucune trace de « Reserve du serveur ».
+⚠️ **La branche « reserve basse » n'a PAS ete exercee visuellement** : elle demande que le serveur soit reellement sous 25 %, ce que je ne peux pas provoquer. C'est une condition simple, mais elle n'est pas vue.
+
+**Comment annuler :** remettre la seconde `<Jauge>` dans le retour de `Compteurs` et supprimer `SEUIL_RESERVE`.
+
+**Effets de bord possibles :** aucun sur le fonctionnement. Le Worker continue de renvoyer `serveur` dans ses reponses ; c'est l'affichage seul qui change.
+
+---
 ### [2026-07-30 12:40] — Ecriture sur disque : le plafond de 500 Mo tombe, le 1080p revient
 
 **Quoi :** Le telechargeur n'assemble plus les videos en memoire. Les octets vont directement dans un fichier, et la fusion relit ce fichier a la demande. Le plafond passe de 500 Mo a 4 Go, et le quota est desormais debite au cout reel.
