@@ -1,4 +1,40 @@
 ---
+### [2026-07-30 18:30] — Page de diagnostic reseau : trancher a distance au lieu de supposer
+
+**Quoi :** Nouvelle page `/tubeforge/telecharger/diagnostic`. On l'envoie a quelqu'un dont le telechargeur ne marche pas ; elle teste trois adresses depuis SA connexion, conclut elle-meme, et produit un rapport copiable.
+
+**Pourquoi :** Des visiteurs en Algerie voyaient la page se charger mais tout appel au worker echouer. Deux causes possibles, deux reparations OPPOSEES : un filtrage de notre adresse technique (reparable en donnant un nom propre au worker) ou un blocage de tout l'hebergeur (bien plus lourd). Impossible de trancher sans quelqu'un sur place, et « ouvre ces deux liens et dis-moi » ne produit pas une reponse exploitable.
+
+**Le mecanisme qui rend la mesure possible :** un `fetch` en mode `no-cors` **resout** si la requete a atteint le serveur (reponse opaque, illisible, mais existante) et **rejette** avec un TypeError si elle a ete bloquee avant. On peut donc sonder n'importe quel hote tiers sans son autorisation CORS.
+
+**Les trois sondes, et ce qu'elles etablissent :**
+| sonde | ce qu'elle prouve |
+|---|---|
+| notre worker (`188.114.96/97`) | le point de depart : est-ce lui qui casse |
+| `cloudflare.com` (`104.16.x`) | l'hebergeur passe-t-il, oui ou non — **c'est la sonde decisive** |
+| notre propre site (Vercel) | temoin : il doit forcement passer |
+
+**Verifie en production, LES DEUX BRANCHES :**
+- normal → `OK`, trois sondes joignables (142 / 46 / 334 ms).
+- worker bloque par simulation → `NOTRE-ADRESSE`, « C'est notre adresse technique qui est filtree, pas l'hebergeur. »
+
+**🐛 TROIS DEFAUTS, tous trouves par l'essai reel, aucun par la relecture :**
+1. **Une sonde mal etiquetee.** Le libelle annoncait « le meme nom de domaine » et l'URL pointait ailleurs. Elle mesurait autre chose que ce qu'elle disait.
+2. **La CSP faisait echouer les temoins en 0 a 1 ms**, ce que la page lisait comme un blocage par le fournisseur d'acces : elle aurait annonce « ton reseau bloque tout l'hebergeur » a **absolument tout le monde**. ⚠️ **Un refus en une milliseconde ne peut PAS venir du reseau** — c'est la signature d'un refus local, et c'est ce qui a trahi le defaut. `workers.dev` et `cloudflare.com` ajoutes a `connect-src`.
+3. **`redirect: "manual"` est interdit en mode `no-cors`** par la specification Fetch : les trois sondes sont passees a « bloque » en 0 ms, y compris notre worker qui fonctionnait. Meme famille de verrou que les reponses opaques. Consequence acceptee : **on ne peut pas sonder un hote qui repond par une redirection**, donc le temoin sur `workers.dev` (qui redirige) a ete SUPPRIME au lieu d'etre bricole.
+4. **Une cle de sonde renommee mais pas sa lecture** : `autre` valait toujours `undefined` et le verdict tombait dans la mauvaise branche. Un diagnostic faux, sans le moindre plantage pour le signaler.
+
+**Simplification assumee :** trois sondes au lieu de quatre. La question a trancher est unique — l'hebergeur passe-t-il ? — et une sonde de plus n'ajoutait que des modes de panne.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/diagnostic/page.tsx` — nouvelle page, entierement cote navigateur (aucune route serveur : le site est deja a 12 fonctions, le plafond du plan).
+- `next.config.ts` — `connect-src` accepte les deux temoins.
+
+**Comment annuler :** supprimer le dossier `diagnostic/` et retirer les deux hotes de `connect-src`.
+
+**Effets de bord possibles :** la page est publique et non liee depuis le site. Elle n'expose que des temps de reponse vers des hotes publics, aucune donnee de l'utilisateur.
+
+---
 ### [2026-07-30 17:45] — Mesurer combien de visiteurs n'arrivent pas a joindre le worker
 
 **Quoi :** Chaque visite pose un marqueur Clarity `webdl_worker` = `joignable` | `injoignable` | `erreur`.

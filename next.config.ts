@@ -33,7 +33,7 @@ const CSP_BASE = [
   // Les 3 dernieres entrees servent le telechargeur web (/tubeforge/telecharger) :
   // le Worker resout les liens, les CDN de X et Twitch sont appeles EN DIRECT par
   // le navigateur (ils autorisent notre origine), et jnn-pa est l'API BotGuard.
-  "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://tubeforge-webdl.expedition-studio.workers.dev https://jnn-pa.googleapis.com https://video.twimg.com https://*.cloudfront.net" + CSP_CONNECT_DEV,
+  "connect-src 'self' blob: https://*.stripe.com https://api.clipapp.uk https://stream.clipapp.uk https://expedition-licensing.expedition-studio.workers.dev https://download-proxy.expedition-studio.workers.dev https://*.r2.dev https://discord.com https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://tubeforge-webdl.expedition-studio.workers.dev https://jnn-pa.googleapis.com https://video.twimg.com https://*.cloudfront.net https://workers.dev https://cloudflare.com" + CSP_CONNECT_DEV,
   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube-nocookie.com https://www.youtube.com",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
