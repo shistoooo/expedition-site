@@ -1,4 +1,27 @@
 ---
+### [2026-07-30 17:45] — Mesurer combien de visiteurs n'arrivent pas a joindre le worker
+
+**Quoi :** Chaque visite pose un marqueur Clarity `webdl_worker` = `joignable` | `injoignable` | `erreur`.
+
+**Pourquoi :** Question posee — « ca posera probleme a beaucoup de monde ou a certains ? ». Je n'en sais rien, et une estimation ne vaut rien face a une mesure. Clarity est deja installe sur le site et fournit la repartition par PAYS : le taux et sa geographie seront lisibles en quelques jours.
+
+**Pourquoi Clarity et pas une route a nous :** deux raisons. Le site est deja a **12 fonctions serverless**, soit le plafond du plan Vercel. Et surtout une route a nous ne dirait rien du pays, alors que c'est precisement la dimension qui compte ici — le blocage se concentre par reseau et par pays, il n'est pas reparti au hasard.
+
+**Trois valeurs et pas deux :** `injoignable` (requete bloquee avant d'atteindre le serveur — filtrage reseau) est distingue de `erreur` (le serveur a repondu quelque chose de faux — panne de notre cote). Les confondre rendrait la mesure inutile, puisque les deux appellent des reparations opposees.
+
+**Verifie en production, LES DEUX BRANCHES :**
+- normal → `set webdl_worker joignable`
+- avec un filtrage simule sur `workers.dev` → `set webdl_worker injoignable`, et l'ecran « Le telechargeur est injoignable » s'affiche.
+
+⚠️ **Le premier essai n'avait rien capte, et c'etait mon instrument :** le script de Clarity se charge en differe et **remplace** `window.clarity`, ce qui effacait mon espion. Il a fallu intercepter l'AFFECTATION (`Object.defineProperty` avec un setter) pour voir les appels. Verification prealable indispensable : la chaine `webdl_worker` est bien presente dans le bundle livre (chunk `5b1b8ee6ca5d0be8.js`). **Une mesure qui ne se declenche pas est pire que pas de mesure — on lirait l'absence de pannes comme une absence de probleme.**
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — `marquerEtat()`, appele dans les deux issues de `refreshMe`.
+
+**Effets de bord possibles :**
+Le marqueur est pose deux fois par visite (l'effet de montage s'execute deux fois). Sans consequence : `clarity('set', ...)` ecrase la valeur, elle est identique. Clarity est lui-meme bloque par certains bloqueurs de publicite — les visiteurs concernes seront donc absents de la mesure, ce qui la rend probablement OPTIMISTE. A garder en tete en lisant le taux.
+
+---
 ### [2026-07-30 17:10] — « Impossible de verifier ton acces » accusait l'utilisateur d'un probleme de reseau
 
 **Quoi :** L'ecran d'echec de `/api/me` nomme desormais la cause reelle et affiche l'hote concerne. « Impossible de verifier ton acces » devient « Le telechargeur est injoignable ».

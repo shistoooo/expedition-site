@@ -571,11 +571,32 @@ export default function TelechargerPage() {
    * La porte est une decision du serveur. Quand on n'a pas pu la lire, on ne
    * DEVINE pas qu'elle est ouverte : on le dit et on propose de reessayer.
    */
+  /**
+   * Marque la visite dans Clarity selon que le telechargeur repond ou non.
+   *
+   * Objectif : remplacer « ca casse peut-etre chez certains » par un TAUX, avec
+   * la repartition par pays que Clarity fournit deja. On passe par Clarity plutot
+   * que par une route a nous pour deux raisons : le site est a 12 fonctions
+   * serverless, soit le plafond du plan Vercel, et surtout une route a nous ne
+   * dirait rien du pays.
+   *
+   * Le fragment Clarity du layout definit `window.clarity` de facon SYNCHRONE (il
+   * empile les appels en attendant le script), donc appeler tot est sans risque.
+   * Enveloppe quand meme : Clarity est lui-meme bloque par certains bloqueurs, et
+   * un outil de mesure ne doit jamais casser ce qu'il mesure.
+   */
+  const marquerEtat = useCallback((etat: "joignable" | "injoignable" | "erreur") => {
+    try {
+      (window as Window & { clarity?: (...a: unknown[]) => void }).clarity?.("set", "webdl_worker", etat);
+    } catch { /* mesure absente : sans consequence */ }
+  }, []);
+
   const refreshMe = useCallback(async () => {
     try {
       const r = await fetchMe();
       setMe(r);
       setEchecMe(false);
+      marquerEtat("joignable");
     } catch (e) {
       setMe(null);
       setEchecMe(true);
@@ -583,8 +604,12 @@ export default function TelechargerPage() {
         message: e instanceof Error ? e.message : "Le téléchargeur n’a pas pu être joint.",
         detail: e instanceof EchecReseau ? e.detail : null,
       });
+      // On distingue « bloque avant d'atteindre le serveur » (filtrage reseau) de
+      // « le serveur a repondu quelque chose de faux » : deux causes, deux
+      // reparations, et les confondre dans la mesure la rendrait inutile.
+      marquerEtat(e instanceof EchecReseau ? "injoignable" : "erreur");
     }
-  }, []);
+  }, [marquerEtat]);
 
   useEffect(() => {
     setAuthHref(loginUrl());
