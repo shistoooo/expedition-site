@@ -1,4 +1,32 @@
 ---
+### [2026-07-31 06:00] — On proposait 240p par le relais alors qu'un 360p direct existait
+
+**Le defaut :** le lien direct ne s'affichait QUE si aucun flux adaptatif n'existait. Or quand YouTube nous rabat sur un client plafonne a 25 Mo (`android`, `ios`), le chemin dit « principal » tombe a 240p — pendant que le lien direct offre **360p ET ne passe pas par notre relais**.
+
+**Mesure sur `BYHkFkWxebg` (Seth Curl, 13:58) :**
+| chemin | qualite | passe par le relais |
+|---|---|---|
+| « principal » | **240p**, 23 Mo, client `android`, motif `plafond-youtube` | oui — et il echouait en 403 |
+| direct | **360p**, 37,1 Mo | **non** |
+
+On proposait donc le pire des deux, et il echouait. L'utilisateur voyait « Télécharger en 240p », cliquait, et se prenait « code 403, tranche 2 sur 3 ».
+
+**Regle desormais :** des que le lien direct fait MIEUX que le chemin adaptatif, c'est lui le chemin principal. Une condition, un vrai gain.
+
+**Verifie en production :** l'action affichee est « **Ouvrir la vidéo en 360p** », avec l'explication « YouTube limite en ce moment ce qu'il nous laisse relayer — il ne nous laisserait passer que du 240p. Ce lien-ci te donne mieux, et il ne passe pas par nos serveurs : c'est aussi le plus fiable des deux en ce moment. »
+
+⚠️ **Premier controle trompeur : « aucune action visible ».** C'etait le build precedent encore en cache dans le navigateur. Un rechargement en ignorant le cache a montre le bon resultat. **Toujours recharger sans cache avant de conclure qu'un deploiement n'a pas pris.**
+
+**LE CONSTAT QUI COMPTE, et il n'est pas dans ce correctif :** tous les symptomes de la journee ont UNE seule cause. `android_vr` — le seul client sans plafond d'octets — est bloque par l'anti-robot. On retombe sur les clients plafonnes, d'ou le 240p ; et le relais est refuse, d'ou le 403. Message anti-robot, delai de 45 s, 240p, 403 sur les octets : quatre symptomes, une cause.
+
+Tout ce que j'ai livre depuis ce matin traite des SYMPTOMES. C'est utile — un utilisateur repart maintenant avec un fichier au lieu d'une erreur — mais ca ne soigne rien. La cause est instruite par une recherche en cours (six pistes : type de PoToken, chaine de clients 2026, pool de sessions, sortie reseau, pratiques des projets qui tiennent, et l'hypothese qu'il faille cesser d'en dependre).
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — condition d'affichage du lien direct, et explication propre au cas « le direct fait mieux ».
+
+**Comment annuler :** revenir a `result.lienDirect && !result.video`.
+
+---
 ### [2026-07-31 05:00] — « Le service n'a pas répondu au bout de 45 secondes » : une regression que j'avais introduite le soir meme
 
 **Le defaut :** le code distinguait deux causes d'echec dans son COMMENTAIRE, et les traitait pareil dans son CODE.

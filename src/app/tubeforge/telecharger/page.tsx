@@ -1277,7 +1277,23 @@ export default function TelechargerPage() {
                     <p className="inline-flex items-center gap-2 text-sm text-green-300/90">
                       <Check className="w-4 h-4" /> Fichier enregistré dans tes téléchargements.
                     </p>
-                  ) : result.lienDirect && !result.video ? (
+                  ) : result.lienDirect && (!result.video || (result.lienDirect.height ?? 0) > result.video.height) ? (
+                    /**
+                     * ⛔ NE PAS PROPOSER LE PIRE DES DEUX CHEMINS.
+                     *
+                     * Ce bloc ne s'affichait QUE si aucun flux adaptatif n'existait.
+                     * Or quand YouTube nous rabat sur un client plafonne a 25 Mo,
+                     * le chemin « principal » tombe a 240p — pendant que le lien
+                     * direct offre 360p ET ne passe pas par notre relais.
+                     *
+                     * Vecu le 31/07/2026 sur `BYHkFkWxebg` : on proposait 240p par
+                     * le relais, puis le telechargement echouait en 403 sur la
+                     * deuxieme tranche. Le 360p direct etait la, meilleur et plus
+                     * fiable, et on ne le montrait pas.
+                     *
+                     * Regle : des que le lien direct fait MIEUX que le chemin
+                     * adaptatif, c'est lui le chemin principal.
+                     */
                     /**
                      * YouTube : LIEN DIRECT, sans passer par nos serveurs.
                      *
@@ -1325,6 +1341,16 @@ export default function TelechargerPage() {
                           Sur cette vidéo, YouTube l&apos;ouvre dans un onglet au lieu de
                           l&apos;enregistrer. Fais un clic droit dessus puis
                           «&nbsp;Enregistrer la vidéo sous…&nbsp;».
+                        </p>
+                      )}
+                      {/* Deux situations tres differentes menent ici, et elles
+                          n'appellent pas la meme explication. */}
+                      {result.video && (
+                        <p className="text-[13px] text-white/50 leading-relaxed mt-3">
+                          YouTube limite en ce moment ce qu&apos;il nous laisse relayer — il ne nous
+                          laisserait passer que du {result.video.height}p. Ce lien-ci te donne mieux,
+                          et il ne passe pas par nos serveurs : c&apos;est aussi le plus fiable des
+                          deux en ce moment.
                         </p>
                       )}
                       <p className="text-[13px] text-white/50 leading-relaxed mt-3">
