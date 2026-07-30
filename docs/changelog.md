@@ -1,4 +1,38 @@
 ---
+### [2026-07-30 23:20] — 🚨 MON DIAGNOSTIC GEO NE TENAIT PAS, et le diagnostic avait un trou beant
+
+**Le fait qui m'a corrige :** le user signale une video qui marche parfaitement chez lui et echoue chez quelqu'un d'autre — **et cette personne n'est pas en Algerie**. Puis une seconde video, `NcD7oeBtrvI`.
+
+**Ce que la mesure a etabli sur cette seconde video :**
+- **Aucun `gcr`.** Ma theorie de la restriction geographique ne l'explique pas.
+- `ip` EST dans les parametres signes, mais les octets passent quand meme depuis une adresse totalement differente → l'URL **n'est pas** verrouillee sur l'adresse. Confirme dans les deux sens, comme la memoire du projet le disait deja.
+- Par le RELAIS : **206 sur les quatre tranches testees**, octets exacts. En direct : 206 aussi.
+
+Donc la video est parfaitement livrable depuis au moins deux reseaux, au moment meme ou elle echoue chez quelqu'un d'autre. **L'echec est specifique a SA requete**, et aucune des deux causes que j'avais nommees ne l'explique.
+
+**🕳️ LE TROU DANS MON DIAGNOSTIC, et c'est le plus important :** les trois sondes verifiaient qu'un hote REPOND. Aucune ne verifiait que les OCTETS CIRCULENT. D'ou l'absurdite vecue : la page annoncait « tout repond depuis ton reseau » pendant que le telechargement echouait des la premiere tranche avec un 403. **Repondre n'est pas livrer.**
+
+**Quatrieme sonde ajoutee — la seule qui reproduit ce qui echoue vraiment :** une resolution reelle sur une video de 19 secondes (1 Mo), puis UN octet demande par le relais. Elle coute une unite de quota a qui la lance ; c'est le prix d'un diagnostic qui ne mente pas.
+
+**Nouveau verdict `OCTETS-REFUSES`, place AVANT « tout repond » :**
+> « Notre serveur repond, mais YouTube refuse de lui livrer la video. C'est le cas le plus vicieux : tout a l'air normal, et le telechargement echoue quand meme. YouTube refuse de servir les fichiers a notre serveur depuis ton point d'acces a Internet — pas depuis d'autres. Ca arrive par vagues et ca se debloque souvent tout seul. Ce n'est ni ta connexion, ni ton ordinateur. »
+
+**Verifie en production, LES DEUX BRANCHES :**
+- normal → `OK`, quatre sondes vertes dont « Le telechargement lui-meme : OK (octets recus, 834 ms) ».
+- octets refuses par simulation → `OCTETS-REFUSES`, avec le bon texte.
+
+**HYPOTHESE, et je la marque comme telle :** l'adresse de sortie du point de presence Cloudflare qui sert cette personne est refusee par googlevideo — un signalement par volume, deja documente dans ce projet (« le declencheur = le VOLUME d'appels depuis une meme IP »). Ca expliquerait tout : meme video, meme instant, un point de presence passe et l'autre non. **Non prouve.** La nouvelle sonde est precisement ce qui permettra de le prouver ou de l'ecarter, depuis chez la personne concernee.
+
+**Si l'hypothese se confirme, la reparation est deja identifiee et mesuree :** relayer les octets par le VPS Hetzner (10,9 a 19,2 Mo/s, 3-6x plus rapide que Cloudflare, cf. entree du jour). Non pas pour un pays, mais pour la DIVERSITE DES ADRESSES DE SORTIE. Le VPS revient donc dans le tableau, pour une raison differente de celle que j'avais imaginee.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/diagnostic/page.tsx` — `sonderOctets()`, quatrieme sonde, verdict `OCTETS-REFUSES` en tete de la chaine de decision.
+
+**Comment annuler :** retirer l'entree `octets` de `SONDES`, la fonction `sonderOctets` et la premiere branche du verdict.
+
+**Lecon, la deuxieme de la journee sur le meme theme :** j'ai nomme deux causes (`gcr`, puis l'adresse signee) et les deux etaient fausses pour ce cas. Ce qui a fini par avancer, ce n'est pas une hypothese de plus — c'est d'avoir rendu l'instrument capable de mesurer ce qui casse REELLEMENT, au lieu d'un proxy commode.
+
+---
 ### [2026-07-30 22:35] — Dire QUI bloque, en premiere phrase
 
 **Quoi :** Le refus geographique commence desormais par nommer la cause : « C'est YouTube qui bloque cette video, **pas le telechargeur**. »

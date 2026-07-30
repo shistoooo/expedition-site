@@ -57,6 +57,13 @@ const SONDES: Sonde[] = [
     url: "/tubeforge/telecharger",
     role: "Témoin : il doit forcément passer, puisque cette page s’affiche.",
   },
+  {
+    cle: "octets",
+    libelle: "Le téléchargement lui-même",
+    // URL vide : cette sonde a sa propre fonction, elle ne passe pas par `sonder`.
+    url: "",
+    role: "Le seul test qui reproduit ce qui échoue vraiment. Il analyse une vidéo de 19 secondes et demande un octet.",
+  },
 ];
 
 /**
@@ -100,6 +107,57 @@ async function sonder(url: string): Promise<{ etat: Etat; ms: number; detail: st
   }
 }
 
+/**
+ * LA SONDE QUI MANQUAIT : les octets circulent-ils VRAIMENT ?
+ *
+ * Les trois sondes ci-dessus verifient qu'un hote REPOND. C'est insuffisant, et
+ * ca s'est vu le 30/07/2026 : le diagnostic annoncait « OK » sur trois sondes
+ * pendant qu'un utilisateur echouait avec « code 403 » des la premiere tranche.
+ * Le worker repondait, et YouTube refusait de livrer les octets a NOTRE serveur
+ * pour cette personne-la.
+ *
+ * Celle-ci fait donc le chemin complet : une resolution reelle sur une video
+ * minuscule (19 secondes, 1 Mo — la premiere video de YouTube), puis UN octet
+ * demande par le relais. Si cette sonde passe et que les telechargements
+ * echouent quand meme, la cause est ailleurs. Si elle echoue, on a la preuve.
+ *
+ * Elle coute une unite de quota a la personne qui la lance. C'est le prix d'un
+ * diagnostic qui ne mente pas.
+ */
+const WORKER_DIAG = "https://tubeforge-webdl.expedition-studio.workers.dev";
+const VIDEO_TEMOIN = "https://www.youtube.com/watch?v=jNQXAC9IVRw";
+
+async function sonderOctets(): Promise<{ etat: Etat; ms: number; detail: string }> {
+  const t0 = performance.now();
+  const ms = () => Math.round(performance.now() - t0);
+  try {
+    const r = await fetch(
+      `${WORKER_DIAG}/api/resolve?url=${encodeURIComponent(VIDEO_TEMOIN)}&max=524288000`,
+      { signal: AbortSignal.timeout(45_000) }
+    );
+    const d = await r.json();
+    if (!d?.ok) return { etat: "bloque", ms: ms(), detail: "analyse refusée : " + String(d?.kind || r.status) };
+    const cible = d.audio?.url || d.video?.url || d.file?.url;
+    if (!cible) return { etat: "bloque", ms: ms(), detail: "aucune piste à tester" };
+
+    const o = await fetch(`${cible}&start=0&end=0`, {
+      referrerPolicy: "no-referrer",
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!o.ok && o.status !== 206) {
+      return { etat: "bloque", ms: ms(), detail: `YouTube a refusé les octets (code ${o.status})` };
+    }
+    return { etat: "joignable", ms: ms(), detail: "octets reçus" };
+  } catch (e) {
+    const nom = e instanceof Error ? e.name : "erreur";
+    return {
+      etat: "bloque",
+      ms: ms(),
+      detail: nom === "TimeoutError" ? "aucune réponse à temps" : "requête bloquée (" + nom + ")",
+    };
+  }
+}
+
 export default function DiagnosticPage() {
   const [resultats, setResultats] = useState<Record<string, { etat: Etat; ms: number; detail: string }>>({});
   const [enCours, setEnCours] = useState(false);
@@ -112,7 +170,7 @@ export default function DiagnosticPage() {
     // En serie, pas en parallele : sur une connexion filtree, plusieurs sondes
     // simultanees se genent et produisent de faux delais depasses.
     for (const s of SONDES) {
-      const r = await sonder(s.url);
+      const r = s.cle === "octets" ? await sonderOctets() : await sonder(s.url);
       setResultats((p) => ({ ...p, [s.cle]: r }));
     }
     setEnCours(false);
@@ -148,14 +206,33 @@ export default function DiagnosticPage() {
    * interpretation obligerait a nous renvoyer une capture et attendre. La page
    * doit conclure elle-meme.
    */
+  const octets = resultats["octets"]?.etat;
+
   let verdict: { titre: string; texte: string; code: string } | null = null;
   if (fini) {
-    if (notre === "joignable") {
+    /**
+     * ORDRE IMPORTANT : la sonde des octets passe AVANT « tout repond ».
+     *
+     * Sans ca, le diagnostic annoncait « tout repond » sur trois sondes vertes
+     * pendant que le telechargement echouait a la premiere tranche — exactement
+     * ce qui est arrive le 30/07/2026. Repondre n'est pas livrer.
+     */
+    if (notre === "joignable" && octets === "bloque") {
       verdict = {
-        titre: "Tout répond depuis ton réseau.",
+        titre: "Notre serveur répond, mais YouTube refuse de lui livrer la vidéo.",
         texte:
-          "Le téléchargeur est joignable en ce moment. Si tu avais une erreur, elle était passagère : " +
-          "retourne sur la page et réessaie.",
+          "C’est le cas le plus vicieux : tout a l’air normal, et le téléchargement échoue quand même. " +
+          "YouTube refuse de servir les fichiers à notre serveur depuis ton point d’accès à Internet — " +
+          "pas depuis d’autres. Ça arrive par vagues et ça se débloque souvent tout seul. " +
+          "Ce n’est ni ta connexion, ni ton ordinateur : on a besoin de ce résultat pour le corriger.",
+        code: "OCTETS-REFUSES",
+      };
+    } else if (notre === "joignable") {
+      verdict = {
+        titre: "Tout répond depuis ton réseau, téléchargement compris.",
+        texte:
+          "Le téléchargeur est joignable et les octets circulent. Si tu avais une erreur, elle était " +
+          "passagère : retourne sur la page et réessaie.",
         code: "OK",
       };
     } else if (refusLocal) {
