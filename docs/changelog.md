@@ -1,4 +1,28 @@
 ---
+### [2026-07-30 22:35] — Dire QUI bloque, en premiere phrase
+
+**Quoi :** Le refus geographique commence desormais par nommer la cause : « C'est YouTube qui bloque cette video, **pas le telechargeur**. »
+
+**Pourquoi :** Retour du user, et il a raison. Le message precedent nommait YouTube mais laissait le doute — lu vite, « refuse de nous la livrer » se lit encore comme une panne de l'outil. Or c'est le seul cas de la journee ou nous n'avons rien casse, et laisser l'outil porter le chapeau pour une decision de YouTube est faux et couteux : sur un produit d'appel, l'utilisateur qui croit l'outil casse ne revient pas.
+
+**Avant / apres :**
+| | |
+|---|---|
+| avant | « YouTube bloque cette video en dehors de certains pays, et refuse de nous la livrer. Ce n'est pas un probleme passager : reessayer ne changera rien. » |
+| apres | « **C'est YouTube qui bloque cette video, pas le telechargeur.** Elle est reservee a certains pays, et YouTube refuse de nous livrer le fichier. **Rien a corriger de notre cote**, et reessayer ne changera rien. » |
+
+La variante generique `livraison-refusee` suit la meme regle : « C'est YouTube qui refuse, pas le telechargeur. »
+
+**Verifie en production, 3 essais sur 3** apres attente de propagation (piege rencontre quatre fois aujourd'hui) : message identique et stable, argumentaire TubeForge joint.
+
+**Point deja verifie et qui tient :** ce refus ne debite **aucune** unite de quota — mesure avant/apres, 828 unites personnelles et 1654 serveur, inchangees. Le refus survient avant le debit dans `/api/resolve`.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` — formulation des deux branches de refus.
+
+**Comment annuler :** revenir aux deux chaines precedentes.
+
+---
 ### [2026-07-30 22:10] — « Code 403 » sur une video : ce n'est pas un bug, c'est une restriction geographique — et on le dit maintenant AVANT
 
 **Quoi :** Le Worker verifie desormais que YouTube accepte de LIVRER la video, avant de promettre quoi que ce soit. Nouveau refus `geo-bloquee`, rendu a la resolution.
