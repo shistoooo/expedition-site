@@ -1,4 +1,33 @@
 ---
+### [2026-07-30 19:15] — Le VPS SERT les octets, 3 a 6 fois plus vite que Cloudflare
+
+**Quoi :** Mesure, pas modification. Le VPS Hetzner de ReviewForge (`204.168.158.84`, AS24940, Helsinki) relaie parfaitement les octets googlevideo.
+
+**Pourquoi c'etait a tester :** la memoire du projet disait « le VPS Hetzner est refuse MEME A L'ETAPE RESOLUTION (LOGIN_REQUIRED 9/9), ne pas y demenager quoi que ce soit ». C'est vrai pour la RESOLUTION. Ca n'avait **jamais** ete teste pour le RELAIS D'OCTETS — et les deux etapes n'ont rien a voir : l'anti-robot vit sur `/youtubei/v1/player`, pas sur googlevideo.
+
+**Mesures, une seule requete par plage :**
+| plage d'octets | resultat |
+|---|---|
+| 0 – 6,2 Mo | 206, 6 291 456 octets exacts, **19,2 Mo/s** |
+| 20 – 26 Mo | 206, exact, **12,7 Mo/s** |
+| 50 – 56 Mo | 206, exact, **10,9 Mo/s** |
+| *Cloudflare, meme URL, meme instant* | *206, exact, **3,07 Mo/s*** |
+
+⚠️ **`curl -L` est indispensable** : googlevideo repond d'abord 302. Le premier essai sans suivre la redirection donnait « http=302, 0 octet », qu'on lirait comme un refus.
+
+**Ce que ca ouvre :** separer les deux metiers du worker PAR RESEAU. Resolution sur Cloudflare (le VPS y est refuse), relais d'octets sur le VPS — plus rapide, 20 To/mois inclus, et surtout **hors AS13335**, ce qui en fait la piste la plus credible pour l'Algerie. Effet de bord favorable : le budget de requetes Cloudflare cesse d'etre la contrainte, seules les resolutions y passent.
+
+Chemin sans achat ni migration DNS : un enregistrement A `relais.explauncheur.space` vers l'IP du VPS chez Vercel DNS (qui accepte les A), plus Caddy pour le certificat automatique. Le domaine de marque est conserve, aucune zone Cloudflare a creer.
+
+**NON MESURE, et c'est le point qui decide :** la joignabilite du VPS depuis l'Algerie. Reseau totalement different, donc a priori favorable, mais aucune preuve. La page de diagnostic devra recevoir une quatrieme sonde vers le VPS.
+
+**Ecarte fermement :** faire passer les octets par Vercel. Sa politique d'usage interdit explicitement de relayer ou d'heberger du media pour du lien direct, et une suspension emporterait tout `expedition-site` — paiement Stripe, comptes, licences. On ne met pas le revenu du site en gage pour une fonctionnalite gratuite.
+
+**Ecarte pour cause de prix :** « subdomain zone » chez Cloudflare = Enterprise seulement ; Partial/CNAME setup = Business, 200 $/mois par zone.
+
+**Aucun fichier touche.** Rien n'est deploye : le VPS heberge ReviewForge, y ajouter du trafic video est une decision a prendre, pas un detail technique.
+
+---
 ### [2026-07-30 18:30] — Page de diagnostic reseau : trancher a distance au lieu de supposer
 
 **Quoi :** Nouvelle page `/tubeforge/telecharger/diagnostic`. On l'envoie a quelqu'un dont le telechargeur ne marche pas ; elle teste trois adresses depuis SA connexion, conclut elle-meme, et produit un rapport copiable.
