@@ -1,4 +1,41 @@
 ---
+### [2026-07-30 12:40] — Ecriture sur disque : le plafond de 500 Mo tombe, le 1080p revient
+
+**Quoi :** Le telechargeur n'assemble plus les videos en memoire. Les octets vont directement dans un fichier, et la fusion relit ce fichier a la demande. Le plafond passe de 500 Mo a 4 Go, et le quota est desormais debite au cout reel.
+
+**Pourquoi :** Une video d'une heure sortait en 480p. Pas par choix : le code tenait TROIS copies completes en memoire (piste video + piste audio + fichier assemble), soit un pic mesure a 3,23 fois la taille du fichier. Le plafond de 500 Mo etait la borne de securite de cette architecture, pas une limite de YouTube.
+
+**✅ VALIDE PAR MESURE, en production puis sur preversion :**
+| fichier | pic de tas | ancien pic attendu (x3,23) |
+|---|---|---|
+| 84 Mo (Rick Astley 1080p) | **81 a 86 Mo** | ~272 Mo |
+| 275 Mo (Big Buck Bunny 1080p) | **155 Mo** | ~890 Mo |
+Fichiers verifies octet par octet : 84 354 223 et 288 320 525 octets, en-tete `ftyp/isom` valide dans les deux cas. 12 s et 39 s bout en bout.
+
+Le cas de la capture d'ecran du user : **Mario Odyssey, 52 minutes — 480p/290 Mo avant, 1080p/1821 Mo apres**, sans degradation. Compare au meme instant depuis le meme cache.
+
+**⚠️ RESIDU HONNETE :** le pic n'est pas CONSTANT, il croit encore un peu (70 Mo de surcout a 84 Mo de fichier, 140 Mo a 275 Mo). Ce n'est plus proportionnel a la TAILLE mais probablement au NOMBRE DE PAQUETS, donc a la duree — mediabunny tient un index. L'extrapolation a 1,8 Go **n'est pas mesuree** : je n'ai pas teste le Mario en telechargement complet.
+
+**Fichiers touches :**
+- `src/lib/webdl.ts` — `disqueUtilisable()` sonde la capacite (ecrit un octet, le supprime) plutot que de renifler le navigateur ; `fetchTranches` separe le tranchage de la DESTINATION (memoire ou disque) pour que la logique de reprise n'existe qu'une fois ; `muxVersFlux` lit par `BlobSource` et ecrit par `StreamTarget` ; `ouvrirDestination` utilise le selecteur de fichier quand il existe, sinon un brouillon remis a la fin ; `telechargerSurDisque` orchestre et nettoie.
+- `tubeforge-webdl/src/index.js` — `disque=1` fait passer le plafond a 4 Go ; quota debite en UNITES DE RELAIS (`unitesPour`) ; **le cache garde desormais les formats BRUTS** ; garde-fou contre une entree de cache a l'ancienne forme.
+- `tubeforge-webdl/wrangler.toml` — `DAILY_LIMIT` 25 → 1000 unites (~5,6 Go/jour) ; `MAX_DAILY_RESOLVES` 1200 → 88 000 unites.
+- `src/app/tubeforge/telecharger/page.tsx` — compteurs en gigaoctets.
+
+**🐛 CINQ DEFAUTS TROUVES PAR LE TEST REEL, aucun par la relecture :**
+1. **« Cannot close a locked stream »** — mediabunny ferme lui-meme le flux de sortie (verifie dans `target.js` : `finalize()` appelle `streamWriter.close()` et ne relache jamais le verrou). Ma fermeture supplementaire echouait, et le fichier n'etait jamais remis. → `finaliser(dejaFerme)`.
+2. **Tranches de 16 Mo : quatre minutes de barre figee, puis echec.** googlevideo bride CHAQUE connexion a ~0,7 Mo/s, donc une tranche de 16 Mo demande ~23 s contre 9 s pour 6 Mo — et l'echeance de 60 s n'avait pas bouge. Mesure appariee : 1 Mo de la piste audio arrive en 1,5 s, 16 Mo n'arrivent jamais. **REVENU A 6 Mo**, et l'echeance est desormais CALCULEE depuis la taille (`delaiTranche`) pour que la desynchronisation ne puisse plus se reproduire.
+3. **Cache empoisonne** — la cle ne contenait que l'identifiant de la video, et la valeur contenait la qualite DEJA CHOISIE. Le premier visiteur figeait son budget pour tous pendant 90 minutes : un telephone condamnait les ordinateurs au 480p. Invisible tant que tout le monde avait le meme budget.
+4. **Unite de facturation desynchronisee** — `OCTETS_PAR_UNITE` valait 16 Mo apres le retour a 6 Mo : le compteur aurait sous-estime le cout de 2,67x, donc le plafond dur de Cloudflare serait tombe AVANT notre garde-fou.
+5. **Course sur le fichier de sortie** — nom fixe + suppression differee de 5 min : deux telechargements rapproches et le minuteur du premier supprimait le fichier du second en cours d'ecriture. → noms uniques + balayage des residus au demarrage.
+
+**Comment annuler :**
+Le chemin memoire est intact et sert de repli. Pour revenir dessus partout, faire retourner `false` a `disqueUtilisable()` dans `src/lib/webdl.ts` et redeployer le site — le Worker suit tout seul (sans `disque=1`, le plafond reste a 500 Mo). Pour le quota, remettre `DAILY_LIMIT = "25"` et `MAX_DAILY_RESOLVES = "1200"` dans `wrangler.toml` **et** `OCTETS_PAR_UNITE` sans effet (le debit redeviendrait faux) — plus simple : remettre `unites` a 1 dans `/api/resolve`.
+
+**Effets de bord possibles :**
+Des fichiers temporaires de la taille de la video apparaissent dans le stockage du navigateur pendant un telechargement. Ils sont supprimes en fin de course ET balayes au demarrage du suivant. Sur Safari, la capacite d'ecriture n'a PAS ete verifiee : la sonde la detectera et le repli memoire s'appliquera. Le selecteur de fichier (Chrome, Edge) n'a pas ete teste automatiquement — il ouvre une fenetre native impossible a piloter ; c'est le seul chemin qui reste a valider a la main.
+
+---
 ### [2026-07-30 09:40] — Recousage cote Worker : possible sur le plan GRATUIT, mais 3x plus lent
 
 **Quoi :** Verification demandee d'une affirmation que j'avais faite sans la mesurer — « l'architecture compte plus que l'argent : gratuit avec recousage (12 000 tel./jour) ecrase payant sans toucher au code (1 260/jour) ». Route de mesure temporaire deployee sur le worker de production, puis retiree.

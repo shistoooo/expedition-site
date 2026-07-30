@@ -47,14 +47,30 @@ const AMBER = "#ff6a1f";
  * avec des centaines de personnes.
  */
 function Compteurs({
-  perso, total, serveur,
+  perso, total, serveur, octetsParUnite,
 }: {
   perso: number | null;
   total: number | null;
   serveur: { used: number; limit: number } | null;
+  /** Taille d'une unite de relais, fournie par le Worker. Absent tant que
+   *  /api/me n'a pas repondu : on retombe sur la valeur de reference. */
+  octetsParUnite?: number;
 }) {
   if (perso === null || total === null) return null;
   const srvLeft = serveur ? Math.max(0, serveur.limit - serveur.used) : null;
+
+  /**
+   * Les compteurs sont en UNITES DE RELAIS cote Worker (~16 Mo chacune) depuis le
+   * 30/07/2026. Personne ne sait ce qu'est une unite : on affiche des gigaoctets.
+   *
+   * C'est aussi plus honnete que l'ancien « 25 telechargements » : ce chiffre
+   * etait le meme pour un TikTok de 3 Mo et un film de 500 Mo, donc il mentait
+   * dans les deux sens.
+   */
+  const enGo = (unites: number) => {
+    const go = (unites * (octetsParUnite ?? 16_000_000)) / 1073741824;
+    return go >= 10 ? go.toFixed(0) : go.toFixed(1);
+  };
 
   const Jauge = ({ reste, sur, libelle }: { reste: number; sur: number; libelle: string }) => {
     const p = sur > 0 ? Math.min(100, Math.max(0, (reste / sur) * 100)) : 0;
@@ -67,9 +83,9 @@ function Compteurs({
         </p>
         <p className="text-[13px] mb-2 whitespace-nowrap">
           <span className="font-mono tabular-nums font-semibold" style={{ color: vide ? RED : bas ? AMBER : "#fff" }}>
-            {reste}
+            {enGo(reste)}&nbsp;Go
           </span>
-          <span className="text-white/40"> {vide ? "restant" : reste === 1 ? "restant" : "restants"} sur {sur}</span>
+          <span className="text-white/40"> {vide ? "restant" : "restants"} sur {enGo(sur)}</span>
         </p>
         <div className="h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
           <div
@@ -617,7 +633,7 @@ export default function TelechargerPage() {
       ? {
           titre: "Tu télécharges assez pour que ça vaille le coup",
           texte:
-            "Tu as utilisé tes " + (me?.quota?.limit ?? 25) + " téléchargements du jour. TubeForge n’a pas de compteur : " +
+            "Tu as utilisé ton quota du jour. TubeForge n’a pas de compteur : " +
             "autant de vidéos que tu veux, en 4K, déposées dans ton chutier Premiere ou DaVinci.",
         }
       : srvLeft === 0
@@ -918,7 +934,7 @@ export default function TelechargerPage() {
                   )}
 
                   <div className="mb-5 pb-5 border-b border-white/10">
-                    <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} />
+                    <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} octetsParUnite={me?.quota?.octetsParUnite} />
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2.5">

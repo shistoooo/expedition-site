@@ -20,6 +20,133 @@ const TOKEN_KEY = "tfdl_token";
 export const MAX_BYTES = 500 * 1024 * 1024;
 
 /**
+ * Plafond quand le fichier ne passe plus par la memoire.
+ *
+ * 4 Go : ce n'est plus la memoire qui borne mais le disque et la patience. On
+ * garde un plafond parce qu'un `Number` venu d'une URL ne merite aucune
+ * confiance cote Worker, et parce qu'au-dela le temps de telechargement devient
+ * de toute facon deraisonnable dans un onglet.
+ */
+export const MAX_BYTES_DISQUE = 4 * 1024 * 1024 * 1024;
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * ECRITURE SUR DISQUE — ce qui decroche le pic memoire de la taille du fichier
+ *
+ * Le code d'origine tenait TROIS copies completes en meme temps : la piste
+ * video, la piste audio, et le fichier assemble. D'ou le pic mesure a 3,23 fois
+ * la taille du fichier, d'ou le plafond a 500 Mo, et d'ou la degradation en
+ * 480p sur une video d'une heure.
+ *
+ * Mesure du 2026-07-30, page fraiche, 69 Mo telecharges en 4 connexions vers un
+ * fichier du navigateur : **pic de tas 52 Mo, soit 34 Mo au-dessus du repos**.
+ * Ces 34 Mo sont exactement les quatre tranches en vol. Le pic ne depend donc
+ * plus que du PARALLELISME, plus du tout de la taille du fichier.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * On s'appuie sur les types natifs (`FileSystemDirectoryHandle` &co) plutot que
+ * d'en redeclarer : les redeclarer les faisait entrer en conflit avec ceux du
+ * DOM, et TypeScript refusait l'affectation sur dix lignes d'erreur.
+ *
+ * `getDirectory` reste teste a l'execution : le type existe dans la
+ * bibliotheque, la methode pas dans tous les navigateurs.
+ */
+type FluxDisque = FileSystemWritableFileStream;
+
+/** Un tampon dont on sait que le support est un vrai `ArrayBuffer` : c'est ce
+ *  qu'exige l'ecriture de fichier, et un `Uint8Array` venu d'un flux ne le
+ *  garantit pas au type. */
+type Tampon = Uint8Array<ArrayBuffer>;
+
+function opfs(): Promise<FileSystemDirectoryHandle> | null {
+  const s = navigator.storage as StorageManager & { getDirectory?: () => Promise<FileSystemDirectoryHandle> };
+  return typeof s?.getDirectory === "function" ? s.getDirectory() : null;
+}
+
+/**
+ * Le chemin disque est-il utilisable ?
+ *
+ * On exige le stockage du navigateur ET la capacite d'y ouvrir un flux
+ * d'ecriture. Safari a longtemps eu le premier sans le second, et le detecter
+ * par le nom du navigateur serait faux dans six mois : on teste la capacite.
+ */
+export async function disqueUtilisable(): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  try {
+    const racine = await opfs();
+    if (!racine) return false;
+    const sonde = await racine.getFileHandle("tfdl-sonde", { create: true });
+    if (typeof sonde.createWritable !== "function") return false;
+    const f = await sonde.createWritable();
+    await f.write(new Uint8Array([0]));
+    await f.close();
+    await racine.removeEntry("tfdl-sonde");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Un flux d'ecriture n'accepte PAS d'ecritures concurrentes. On telecharge donc
+ * les tranches en parallele (c'est ce qui debride googlevideo) mais on serialise
+ * les depots, chacun attendant le precedent.
+ */
+function depotSerialise(flux: FluxDisque) {
+  let chaine: Promise<void> = Promise.resolve();
+  return (position: number, data: Tampon) => {
+    chaine = chaine.then(() => flux.write({ type: "write", position, data }));
+    return chaine;
+  };
+}
+
+/**
+ * Brouillon jetable dans le stockage du navigateur.
+ *
+ * ⚠️ LE NOM DOIT ETRE UNIQUE PAR TELECHARGEMENT. Il valait `tfdl-sortie.part`,
+ * fixe, et la suppression du fichier de sortie est DIFFEREE de cinq minutes (le
+ * navigateur le lit encore pendant qu'il le remet a la personne). Deux
+ * telechargements a moins de cinq minutes d'intervalle partageaient donc le meme
+ * nom : le minuteur du premier supprimait le fichier que le second etait en train
+ * d'ecrire. Defaut trouve en inspectant le stockage apres un essai reel, pas par
+ * un plantage — il aurait produit un fichier tronque, sans message.
+ *
+ * Le prefixe `tfdl-` reste commun pour que le balayage ci-dessous reconnaisse
+ * nos residus sans toucher a ceux d'un autre code.
+ */
+let compteurBrouillon = 0;
+async function ouvrirBrouillon(piste: string) {
+  const racine = await opfs();
+  if (!racine) throw new Error("Stockage du navigateur indisponible.");
+  const nom = `tfdl-${piste}-${Date.now().toString(36)}-${compteurBrouillon++}.part`;
+  const poignee = await racine.getFileHandle(nom, { create: true });
+  return { racine, nom, poignee };
+}
+
+/**
+ * Balayage des residus au DEBUT d'un telechargement.
+ *
+ * Si l'onglet est ferme avant que le minuteur de suppression se declenche, un
+ * fichier de la taille d'une video reste sur le disque de la personne pour
+ * toujours. Personne ne le verra jamais, et c'est precisement pour ca qu'il faut
+ * le ramasser. On ne touche qu'a nos propres fichiers, et on n'echoue jamais
+ * dessus : un residu non supprime ne doit pas empecher un telechargement.
+ */
+async function balayerResidus(saufCes: Set<string>) {
+  try {
+    const racine = await opfs();
+    if (!racine) return;
+    const aJeter: string[] = [];
+    for await (const nom of (racine as unknown as { keys: () => AsyncIterable<string> }).keys()) {
+      if (nom.startsWith("tfdl-") && !saufCes.has(nom)) aJeter.push(nom);
+    }
+    for (const nom of aJeter) {
+      try { await racine.removeEntry(nom); } catch { /* verrouille par une autre operation */ }
+    }
+  } catch { /* le balayage est un confort, jamais une condition */ }
+}
+
+/**
  * Budget d'octets adapte a la MACHINE du visiteur.
  *
  * Mesure du 28/07/2026, sur une video 1080p de 441 Mo assemblee dans l'onglet :
@@ -41,8 +168,14 @@ export const MAX_BYTES = 500 * 1024 * 1024;
  */
 const RATIO_PIC_MEMOIRE = 3.5; // 3,23 mesure, arrondi vers le haut par prudence
 
-export function budgetOctets(): number {
+/**
+ * @param surDisque quand le fichier ne passe plus par la memoire, tout ce
+ * raisonnement devient sans objet : le pic ne vaut plus que les tranches en vol.
+ * On rend alors un plafond qui ne parle plus de memoire du tout.
+ */
+export function budgetOctets(surDisque = false): number {
   if (typeof window === "undefined") return MAX_BYTES;
+  if (surDisque) return MAX_BYTES_DISQUE;
 
   const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
@@ -68,7 +201,9 @@ export type Me = {
   auth: boolean;
   member?: boolean;
   user?: { name: string; avatar: string | null; email?: string | null };
-  quota?: { used: number; limit: number };
+  /** En UNITES DE RELAIS (~16 Mo), plus en telechargements, depuis le 30/07/2026.
+   *  `octetsParUnite` sert a l'afficher en gigaoctets cote page. */
+  quota?: { used: number; limit: number; octetsParUnite?: number };
   /** Reserve COLLECTIVE du jour : ce que tout le serveur a consomme. */
   serveur?: { used: number; limit: number };
   invite?: string;
@@ -111,7 +246,7 @@ export type Resolved = {
     forceTelechargement: boolean;
   } | null;
 
-  quota: { used: number; limit: number };
+  quota: { used: number; limit: number; octetsParUnite?: number };
   serveur?: { used: number; limit: number };
 };
 
@@ -195,6 +330,18 @@ const DELAI_API_MS = 45_000;
  */
 const DELAI_TRANCHE_MS = 60_000;
 
+/**
+ * Echeance PROPORTIONNELLE a la taille de la tranche.
+ *
+ * Le defaut du 30/07 tient entierement dans une constante restee fixe pendant
+ * que la taille des tranches triplait. Calculee, elle ne peut plus se
+ * desynchroniser. Base : 150 Ko/s, soit le quart du bridage mesure (~0,7 Mo/s),
+ * pour ne pas punir une connexion lente.
+ */
+function delaiTranche(chunkSize: number): number {
+  return Math.max(DELAI_TRANCHE_MS, Math.ceil(chunkSize / 150_000) * 1000);
+}
+
 async function api<T>(path: string, params?: Record<string, string>): Promise<T> {
   const qs = params ? "?" + new URLSearchParams(params).toString() : "";
   const token = getToken();
@@ -254,10 +401,29 @@ export async function warmSession() {
  * Si le Worker ne recoit pas de `vd`, il s'en procure un de son cote : une
  * panne de cette page ne peut donc pas priver l'extraction de sa session.
  */
+/**
+ * Capacite disque, calculee UNE fois et memorisee.
+ *
+ * La sonde ecrit puis supprime un octet dans le stockage du navigateur : la
+ * refaire a chaque resolution serait du gaspillage, et surtout le resultat ne
+ * change pas au cours d'une visite.
+ */
+let capaciteDisque: Promise<boolean> | null = null;
+export function disquePret(): Promise<boolean> {
+  if (!capaciteDisque) capaciteDisque = disqueUtilisable();
+  return capaciteDisque;
+}
+
 export async function resolve(url: string): Promise<ResolveResult> {
   // Le Worker choisit la qualite en fonction de ce budget : c'est la machine du
   // visiteur qui decide, pas une constante ecrite sur la mienne.
-  const params: Record<string, string> = { url, max: String(budgetOctets()) };
+  //
+  // `disque=1` n'est pas cosmetique : il dit au Worker que ce navigateur peut
+  // ecrire le fichier sans le tenir en memoire, donc qu'il a le droit de servir
+  // du 1080p sur une video d'une heure au lieu de descendre en 480p.
+  const surDisque = await disquePret();
+  const params: Record<string, string> = { url, max: String(budgetOctets(surDisque)) };
+  if (surDisque) params.disque = "1";
   const yt = isYouTube(url);
   const visitorData = yt ? await getVisitorData(WORKER) : null;
   if (visitorData) params.vd = visitorData;
@@ -302,20 +468,55 @@ export async function resolve(url: string): Promise<ResolveResult> {
  * en une seule requete YouTube plafonne a ~0,7 Mo/s, en tranches on mesure
  * 7 a 9 Mo/s, soit la vitesse de la ligne.
  */
-async function fetchChunked(
+/**
+ * Ou deposer une tranche recue. C'est le seul point qui change entre « tout en
+ * memoire » et « droit sur le disque » : la logique de tranchage, de
+ * parallelisme et de reprise ne doit exister qu'une fois.
+ */
+type Depot = (position: number, data: Tampon) => void | Promise<void>;
+
+/**
+ * Taille des tranches. **6 Mo, et j'ai essaye 16 : ca casse.**
+ *
+ * Le raisonnement qui m'a fait grossir les tranches etait juste sur la facture —
+ * moins de tranches, moins de requetes payees chez Cloudflare, et le gaspillage
+ * des reprises reste proportionnel a la taille du fichier, pas a celle des
+ * tranches. Sur le chemin disque, la memoire ne s'y oppose plus.
+ *
+ * ⛔ CE QUI M'A ECHAPPE, ET QUI A ETE MESURE LE 2026-07-30 : googlevideo bride
+ * CHAQUE connexion a ~0,7 Mo/s. Le temps d'une tranche est donc proportionnel a
+ * sa taille, et l'echeance de 60 s ne bougeait pas :
+ *   -  6 Mo → ~9 s, soit 6,7x de marge sous l'echeance ;
+ *   - 16 Mo → ~23 s au mieux, soit 2,6x — et en pratique la piste AUDIO de Big
+ *     Buck Bunny (29 Mo, donc deux tranches de 16) a depasse les 60 s QUATRE
+ *     fois de suite. Mesure appariee, meme page, meme instant : 1 Mo de cette
+ *     piste arrive en 1,5 s, 16 Mo n'arrivent jamais.
+ * Resultat vu de l'utilisateur : quatre minutes de barre figee a « 246 Mo sur
+ * 275 », puis un echec. Pire que le probleme que je voulais resoudre.
+ *
+ * 🧠 LA LECON : le debit vient du NOMBRE de connexions, jamais de la taille des
+ * tranches. Grossir les tranches n'achete que de l'economie de requetes, et le
+ * prix est du temps par tranche. Pour reduire les requetes SANS allonger chaque
+ * tranche, il faut monter le parallelisme en meme temps — et remesurer.
+ */
+function tailleTranche(): number {
+  return 6_000_000;
+}
+
+async function fetchTranches(
   url: string,
   size: number,
   onBytes: (n: number) => void,
   signal: AbortSignal,
   /** « vidéo », « audio » ou « fichier » : nomme ce qui a échoué dans le message. */
-  piste = "fichier",
+  piste: string,
+  deposer: Depot,
   concurrency = 6,
   chunkSize = 6_000_000
-): Promise<ArrayBuffer> {
+): Promise<void> {
   const ranges: Array<[number, number]> = [];
   for (let s = 0; s < size; s += chunkSize) ranges.push([s, Math.min(s + chunkSize, size) - 1]);
 
-  const out = new Uint8Array(size);
   let next = 0;
 
   const worker = async () => {
@@ -339,7 +540,9 @@ async function fetchChunked(
        * sans Referer 200, avec Referer 403, meme URL), et le navigateur en
        * envoie un par defaut.
        */
-      let buf: Uint8Array | null = null;
+      // `Tampon` et non `Uint8Array` : l'ecriture de fichier exige un support
+      // ArrayBuffer, et `Uint8Array` seul autorise aussi SharedArrayBuffer.
+      let buf: Tampon | null = null;
       let lastStatus = 0;
       // Panne RESEAU, distincte d'un refus : une requete qui n'atteint meme pas
       // le serveur ne renvoie aucun code, et le navigateur se contente d'un
@@ -357,7 +560,7 @@ async function fetchChunked(
           // progression aussi surement qu'un blocage a la resolution, mais sans
           // jamais rien afficher. Bornee, elle devient un simple nouvel essai.
           const r = await fetch(`${url}${sep}start=${s}&end=${e}`, {
-            signal: echeance(DELAI_TRANCHE_MS, signal),
+            signal: echeance(delaiTranche(chunkSize), signal),
             referrerPolicy: "no-referrer",
           });
           if (r.ok) buf = new Uint8Array(await r.arrayBuffer());
@@ -395,13 +598,45 @@ async function fetchChunked(
               "Réessaie : YouTube refuse parfois des morceaux au hasard."
         );
       }
-      out.set(buf, s);
+      await deposer(s, buf);
       onBytes(buf.byteLength);
     }
   };
 
   await Promise.all(Array.from({ length: Math.min(concurrency, ranges.length) }, worker));
+}
+
+/** Ancien comportement : tout en memoire. Conserve pour les navigateurs sans
+ *  stockage utilisable, et pour les petits fichiers ou ca ne coute rien. */
+async function fetchChunked(
+  url: string,
+  size: number,
+  onBytes: (n: number) => void,
+  signal: AbortSignal,
+  piste = "fichier"
+): Promise<ArrayBuffer> {
+  const out = new Uint8Array(size);
+  await fetchTranches(url, size, onBytes, signal, piste, (pos, buf) => { out.set(buf, pos); });
   return out.buffer;
+}
+
+/** Nouveau comportement : les octets ne touchent jamais un tampon de la taille
+ *  du fichier. Ils vont dans `flux` et quittent le tas aussitot. */
+async function fetchVersFlux(
+  url: string,
+  size: number,
+  onBytes: (n: number) => void,
+  signal: AbortSignal,
+  piste: string,
+  flux: FluxDisque,
+  decalage = 0
+): Promise<void> {
+  const deposer = depotSerialise(flux);
+  await fetchTranches(
+    url, size, onBytes, signal, piste,
+    (pos, buf) => deposer(decalage + pos, buf),
+    6, tailleTranche()
+  );
 }
 
 async function fetchWhole(
@@ -494,6 +729,170 @@ async function mux(
   return new Blob([out.target.buffer!], { type: isWebm ? "video/webm" : "video/mp4" });
 }
 
+/**
+ * Fusion SANS jamais tenir un fichier entier.
+ *
+ * Deux differences avec `mux`, et elles portent tout le gain :
+ *  - l'entree est un `BlobSource` adosse a un fichier du disque : mediabunny lit
+ *    a la demande les octets dont il a besoin, au lieu qu'on lui tende deux
+ *    tampons de 1,5 Go ;
+ *  - la sortie est un `StreamTarget` branche sur le flux d'ecriture du fichier
+ *    de destination. mediabunny annonce lui-meme cette compatibilite, et le
+ *    format de ses ecritures (`{type:'write', data, position}`) est exactement
+ *    celui qu'attend un flux de fichier du navigateur — il peut donc revenir en
+ *    arriere pour poser l'index, sans qu'on ait a bricoler un index en fin de
+ *    fichier.
+ */
+async function muxVersFlux(
+  fVideo: Blob,
+  fAudio: Blob,
+  container: string,
+  destination: FluxDisque,
+  onAvance: (octets: number) => void
+): Promise<void> {
+  const {
+    Input, ALL_FORMATS, BlobSource, EncodedPacketSink,
+    Output, Mp4OutputFormat, WebMOutputFormat, StreamTarget,
+    EncodedVideoPacketSource, EncodedAudioPacketSource,
+  } = await import("mediabunny");
+
+  // Deux fonctions distinctes, comme dans `mux` — et pour la raison que le
+  // commentaire d'origine annoncait : les configurations de decodeur video et
+  // audio n'ont pas les memes champs, et les fusionner en une seule fonction
+  // generique produit un type union que `add()` refuse. Je l'ai fusionne, j'ai
+  // eu l'erreur, je les resepare.
+  const ouvrirVideo = async (b: Blob) => {
+    const input = new Input({ source: new BlobSource(b), formats: ALL_FORMATS });
+    const track = await input.getPrimaryVideoTrack();
+    if (!track) throw new Error("Piste vidéo illisible.");
+    return { cfg: await track.getDecoderConfig(), codec: await track.getCodec(), sink: new EncodedPacketSink(track) };
+  };
+  const ouvrirAudio = async (b: Blob) => {
+    const input = new Input({ source: new BlobSource(b), formats: ALL_FORMATS });
+    const track = await input.getPrimaryAudioTrack();
+    if (!track) throw new Error("Piste audio illisible.");
+    return { cfg: await track.getDecoderConfig(), codec: await track.getCodec(), sink: new EncodedPacketSink(track) };
+  };
+
+  const v = await ouvrirVideo(fVideo);
+  const a = await ouvrirAudio(fAudio);
+  const isWebm = container === "webm";
+
+  const out = new Output({
+    format: isWebm ? new WebMOutputFormat() : new Mp4OutputFormat(),
+    // Le flux de fichier du navigateur EST un WritableStream, et son puits
+    // accepte les commandes d'ecriture positionnees de mediabunny. TypeScript
+    // ne connait pas ce croisement de types, d'ou la conversion.
+    target: new StreamTarget(destination as unknown as WritableStream<{ type: "write"; data: Uint8Array<ArrayBuffer>; position: number }>),
+  });
+  // La progression de l'assemblage n'etait pas affichee du tout : sur un fichier
+  // d'un gigaoctet, cette etape dure et la barre restait figee a 100 %.
+  out.target.on("write", ({ end }) => onAvance(end));
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- codec vient de la piste lue, pas d'un litteral typable
+  const vs = new EncodedVideoPacketSource(v.codec as any);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- idem
+  const as = new EncodedAudioPacketSource(a.codec as any);
+  out.addVideoTrack(vs);
+  out.addAudioTrack(as);
+  await out.start();
+
+  let first = true;
+  for await (const p of v.sink.packets()) {
+    await vs.add(p, first ? { decoderConfig: v.cfg! } : undefined);
+    first = false;
+  }
+  await vs.close();
+  first = true;
+  for await (const p of a.sink.packets()) {
+    await as.add(p, first ? { decoderConfig: a.cfg! } : undefined);
+    first = false;
+  }
+  await as.close();
+  await out.finalize();
+}
+
+type Destination = {
+  flux: FluxDisque;
+  /**
+   * Termine et, si besoin, remet le fichier a la personne.
+   *
+   * @param dejaFerme true quand mediabunny a deja ferme le flux. VERIFIE dans sa
+   * source (`target.js`) : `finalize()` appelle `streamWriter.close()` et ne
+   * relache JAMAIS le verrou. Fermer une seconde fois ne donne donc pas « deja
+   * ferme » mais **« Cannot close a locked stream »**, et le fichier n'etait
+   * jamais remis. C'est le defaut qu'a trouve le premier essai reel.
+   */
+  finaliser: (dejaFerme?: boolean) => Promise<void>;
+  /** Nettoie en cas d'echec. Ne doit jamais jeter. */
+  jeter: () => Promise<void>;
+  /** true si la personne a choisi l'emplacement : rien de temporaire a nettoyer. */
+  choisie: boolean;
+};
+
+/**
+ * Ou ecrire le fichier final.
+ *
+ * ⚠️ `showSaveFilePicker` EXIGE un geste de l'utilisateur. Cette fonction doit
+ * donc etre appelee AVANT toute attente reseau dans le gestionnaire du clic,
+ * sinon le navigateur refuse d'ouvrir le selecteur. C'est aussi une meilleure
+ * experience : la personne choisit d'abord, puis le fichier s'ecrit directement
+ * chez elle, sans copie temporaire.
+ *
+ * Firefox et Safari n'ont pas ce selecteur. On passe alors par un brouillon dans
+ * le stockage du navigateur, remis a la fin comme un telechargement ordinaire.
+ * Le fichier rendu est adosse au disque, pas au tas.
+ */
+async function ouvrirDestination(nomFichier: string, mime: string): Promise<Destination> {
+  const w = window as Window & {
+    showSaveFilePicker?: (o: {
+      suggestedName?: string;
+      types?: Array<{ description: string; accept: Record<string, string[]> }>;
+    }) => Promise<FileSystemFileHandle>;
+  };
+  const ext = "." + (nomFichier.split(".").pop() || "mp4");
+
+  if (typeof w.showSaveFilePicker === "function") {
+    try {
+      const poignee = await w.showSaveFilePicker({
+        suggestedName: nomFichier,
+        types: [{ description: "Vidéo", accept: { [mime]: [ext] } }],
+      });
+      const flux = (await poignee.createWritable()) as FluxDisque;
+      return {
+        flux, choisie: true,
+        finaliser: async (dejaFerme = false) => { if (!dejaFerme) await flux.close(); },
+        jeter: async () => { try { await flux.abort(); } catch { /* deja ferme */ } },
+      };
+    } catch (e) {
+      // Annulation du selecteur : ce n'est pas une panne, mais on ne peut pas
+      // continuer sans destination. Le message doit le dire sans alarmer.
+      if (e instanceof Error && e.name === "AbortError") {
+        throw new Error("Enregistrement annulé.");
+      }
+      throw e;
+    }
+  }
+
+  const { racine, nom, poignee } = await ouvrirBrouillon("sortie");
+  const flux = (await poignee.createWritable()) as FluxDisque;
+  return {
+    flux, choisie: false,
+    finaliser: async (dejaFerme = false) => {
+      if (!dejaFerme) await flux.close();
+      // `getFile()` rend un objet adosse au disque : le navigateur le lit au fil
+      // du telechargement, il ne le charge pas en memoire.
+      saveBlob(await poignee.getFile(), nomFichier);
+      // On ne supprime PAS tout de suite : le navigateur lit encore le fichier.
+      setTimeout(() => { racine.removeEntry(nom).catch(() => {}); }, 5 * 60_000);
+    },
+    jeter: async () => {
+      try { await flux.abort(); } catch { /* deja ferme */ }
+      try { await racine.removeEntry(nom); } catch { /* rien a nettoyer */ }
+    },
+  };
+}
+
 function safeName(title: string, ext: string) {
   const base = title.replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
   return (base || "video") + "." + ext;
@@ -518,6 +917,19 @@ export async function download(
   const totalKnown = r.muxed
     ? r.file?.size ?? 0
     : (r.video?.size ?? 0) + (r.audio?.size ?? 0);
+
+  // Chemin disque : le fichier ne passe pas par la memoire, donc l'ancien
+  // plafond de 500 Mo n'a plus de raison d'etre. `disquePret()` est deja resolu
+  // depuis la resolution, donc cette attente ne consomme pas l'activation
+  // utilisateur dont le selecteur de fichier a besoin.
+  if (await disquePret()) {
+    if (totalKnown > MAX_BYTES_DISQUE) {
+      throw new Error(
+        "Cette vidéo dépasse 4 Go. À cette taille, un onglet n’est plus le bon outil : TubeForge le fait sans limite, et pose l’extrait dans ton chutier."
+      );
+    }
+    return telechargerSurDisque(r, onProgress, signal, totalKnown);
+  }
 
   if (totalKnown > MAX_BYTES) {
     throw new Error(
@@ -574,4 +986,136 @@ export async function download(
 
   onProgress({ phase: "save", pct: 100, label: "Enregistrement" });
   saveBlob(blob, safeName(r.meta.title, r.video.container));
+}
+
+/**
+ * Le chemin qui ne tient jamais le fichier en memoire.
+ *
+ * Sequence : on demande D'ABORD ou ecrire (le selecteur exige l'activation
+ * utilisateur, donc avant tout appel reseau), puis les octets vont directement
+ * dans des brouillons du disque, puis l'assemblage relit ces brouillons a la
+ * demande en ecrivant dans la destination.
+ *
+ * Le pic de tas ne vaut plus que les tranches en vol : six fois 16 Mo sur un
+ * ordinateur. Il ne depend plus de la taille du fichier, et c'est toute la
+ * raison de ce code.
+ */
+async function telechargerSurDisque(
+  r: Resolved,
+  onProgress: (p: Progress) => void,
+  signal: AbortSignal,
+  totalKnown: number
+): Promise<void> {
+  const container = r.muxed ? r.file?.container ?? "mp4" : r.video?.container ?? "mp4";
+  const nom = safeName(r.meta.title, container);
+  const mime = container === "webm" ? "video/webm" : "video/mp4";
+
+  // Avant toute ouverture : on ramasse les residus d'une session precedente
+  // interrompue. Rien de ce qui suit ne doit dependre de la reussite du balayage.
+  await balayerResidus(new Set());
+
+  const dest = await ouvrirDestination(nom, mime);
+  const brouillons: Array<{ racine: FileSystemDirectoryHandle; nom: string }> = [];
+  let echoue = false;
+  /** true des que la fusion a eu lieu : c'est elle qui ferme le flux de sortie. */
+  let parMediabunny = false;
+
+  let got = 0;
+  const bump = (n: number) => {
+    got += n;
+    onProgress({
+      phase: "download",
+      pct: totalKnown ? Math.min(99, (got / totalKnown) * 100) : 0,
+      label: totalKnown
+        ? `${(got / 1048576).toFixed(0)} Mo sur ${(totalKnown / 1048576).toFixed(0)}`
+        : `${(got / 1048576).toFixed(0)} Mo`,
+    });
+  };
+
+  try {
+    if (r.muxed && r.file) {
+      // Fichier deja complet cote plateforme : aucune fusion, les octets vont
+      // droit dans la destination. Meme repli direct → relais que sur l'autre
+      // chemin, pour la meme raison (cache CORS de CloudFront chez Twitch).
+      const verser = (u: string) =>
+        r.file!.size
+          ? fetchVersFlux(u, r.file!.size, bump, signal, "fichier", dest.flux)
+          : (async () => {
+              // Taille inconnue : on ne peut pas trancher, on recopie le flux.
+              const rep = await fetch(u, { signal: echeance(5 * 60_000, signal), referrerPolicy: "no-referrer" });
+              if (!rep.ok || !rep.body) throw new Error("Le téléchargement a échoué (" + rep.status + ").");
+              const lecteur = rep.body.getReader();
+              let pos = 0;
+              for (;;) {
+                const { done, value } = await lecteur.read();
+                if (done) break;
+                // Le type du flux ne garantit pas que le support soit un vrai
+                // ArrayBuffer ; a l'execution il l'est toujours pour un corps HTTP.
+                await dest.flux.write({ type: "write", position: pos, data: value as Tampon });
+                pos += value.byteLength;
+                bump(value.byteLength);
+              }
+            })();
+
+      try {
+        await verser(r.file.url);
+      } catch (e) {
+        if (!r.file.relayUrl || r.file.relayUrl === r.file.url || signal.aborted) throw e;
+        got = 0;
+        await verser(r.file.relayUrl);
+      }
+    } else {
+      if (!r.video || !r.audio) throw new Error("Format introuvable pour cette vidéo.");
+
+      const bv = await ouvrirBrouillon("video");
+      const ba = await ouvrirBrouillon("audio");
+      brouillons.push({ racine: bv.racine, nom: bv.nom }, { racine: ba.racine, nom: ba.nom });
+
+      const fv = (await bv.poignee.createWritable()) as FluxDisque;
+      const fa = (await ba.poignee.createWritable()) as FluxDisque;
+      try {
+        await Promise.all([
+          fetchVersFlux(r.video.url, r.video.size, bump, signal, "vidéo", fv),
+          fetchVersFlux(r.audio.url, r.audio.size, bump, signal, "audio", fa),
+        ]);
+      } finally {
+        // Les flux doivent etre fermes avant que `getFile()` voie les octets.
+        await fv.close().catch(() => {});
+        await fa.close().catch(() => {});
+      }
+
+      onProgress({ phase: "merge", pct: 0, label: "Assemblage image + son" });
+      const attendu = totalKnown || 1;
+      parMediabunny = true;
+      await muxVersFlux(
+        await bv.poignee.getFile(),
+        await ba.poignee.getFile(),
+        container,
+        dest.flux,
+        (ecrits) => onProgress({
+          phase: "merge",
+          pct: Math.min(99, (ecrits / attendu) * 100),
+          label: `Assemblage — ${(ecrits / 1048576).toFixed(0)} Mo écrits`,
+        })
+      );
+    }
+
+    onProgress({ phase: "save", pct: 100, label: dest.choisie ? "Terminé" : "Enregistrement" });
+    // Seul le chemin a deux pistes passe par mediabunny, qui ferme le flux
+    // lui-meme. Le chemin « fichier deja complet » ecrit en direct, donc c'est a
+    // nous de fermer.
+    await dest.finaliser(parMediabunny);
+  } catch (e) {
+    echoue = true;
+    await dest.jeter();
+    throw e;
+  } finally {
+    // ⚠️ Les brouillons occupent la taille des deux pistes sur le disque de la
+    // personne. Ne pas les supprimer, c'est lui remplir son disque en silence —
+    // y compris quand tout s'est bien passe.
+    for (const b of brouillons) {
+      try { await b.racine.removeEntry(b.nom); } catch { /* deja parti */ }
+    }
+    if (echoue) onProgress({ phase: "save", pct: 0, label: "Annulé" });
+  }
 }
