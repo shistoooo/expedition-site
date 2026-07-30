@@ -1,4 +1,33 @@
 ---
+### [2026-07-31 08:30] — 🚨 JE ME SUIS TROMPÉ TROIS FOIS : ce n'est PAS le volume, c'est la CLASSE DE L'ADRESSE
+
+**Le user a poussé, et il avait raison.** J'ai expliqué trois fois dans la journée que « mes centaines d'appels ont grillé l'IP ». Son objection : quelques centaines d'appels étalés sur huit heures, ça fait 300 par heure — soit **dans** le budget documenté (~300 vidéos/h, ~1000 requêtes/h). Ça n'aurait pas dû nous tuer.
+
+**Variable isolée, même code, même seconde, session fraîche mintée localement, 8 vidéos différentes d'affilée :**
+| origine | avant le premier refus |
+|---|---|
+| connexion résidentielle | **8 sur 8** |
+| VPS Hetzner (datacenter) | **1 seul** |
+
+Une IP de datacenter n'a pas un budget « entamé ». Elle a un budget de **un ou deux appels**. Toutes mes explications par le volume étaient fausses.
+
+**⚠️ Ça invalide aussi une « vérité » du projet :** « le VPS Hetzner est refusé 9/9 à la résolution » avait été mesuré **sans session**. Sans session, `android_vr` répond `LOGIN_REQUIRED` **depuis n'importe où, y compris une connexion résidentielle** — la mesure ne disait donc rien du VPS. Troisième fait établi de ce projet à tomber en 24 h, tous pour la même raison : une variable non isolée.
+
+**LA CONSÉQUENCE D'ARCHITECTURE, et elle est nette :**
+- La **RÉSOLUTION** doit sortir par une IP **résidentielle**. C'est le seul appel qui discrimine sur la classe d'adresse.
+- Le **RELAIS D'OCTETS** marche parfaitement depuis n'importe où — Cloudflare 22-63 Mo/s, Hetzner 10-19 Mo/s. googlevideo ne regarde pas la classe d'IP ; seul `/youtubei/v1/player` le fait.
+
+**Le volume à couvrir est dérisoire :** 5 000 téléchargements/jour = **3,2 Go/mois** de JSON. Moins que la commande minimale de n'importe quel fournisseur.
+
+**Voie chiffrée :** IP résidentielles **statiques**, ~6 $/mois pour 20 adresses (Webshare), ou 1,80 $/proxy chez IPRoyal. ⚠️ **PAS de résidentiel rotatif facturé au Go** : 5 à 7 $/Go sur les petits paliers, pour un besoin de 3 Go — on paierait une rotation inutile.
+
+**⚠️ Et le plan Workers payant à 5 $ n'y change RIEN.** Il achète du calcul et des requêtes, pas une adresse. L'egress dédié chez Cloudflare est réservé à Enterprise. C'était une question directe du user, la réponse est non.
+
+**Ce que ça remet en cause dans ce que j'ai livré ce soir :** le garde-fou de 200 appels/heure/colo reste utile (il empêche un emballement) mais il ne soigne PAS la cause — il rationne un budget qui n'existe presque pas. À conserver, sans lui prêter de vertu qu'il n'a pas.
+
+**Aucun fichier touché.** C'est une mesure et une correction de doctrine, pas un changement de code.
+
+---
 ### [2026-07-31 07:30] — 🔑 NOTRE PoToken NE SERVAIT À RIEN ET CASSAIT LA REQUÊTE
 
 **Le fait, mesuré une variable à la fois, même session, même instant, même vidéo :**
