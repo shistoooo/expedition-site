@@ -1,4 +1,34 @@
 ---
+### [2026-07-31 01:50] — « Réessaie dans une minute » était une promesse fausse
+
+**Quoi :** Le message anti-robot annonce desormais une dizaine de minutes, et dit explicitement que **la video n'a rien** — c'est notre serveur qui est momentanement mal vu.
+
+**Pourquoi :** Nouveau signalement, video `7obQlmThI58`. Cette fois le diagnostic du message etait JUSTE, et je l'ai verifie avant de toucher quoi que ce soit :
+- yt-dlp depuis une connexion ordinaire : `age_limit=0`, `availability=public`, resolue sans broncher.
+- Notre worker : **`LOGIN_REQUIRED` sur 8 tentatives sur 9**, motif explicite « Connectez-vous pour confirmer que vous n'êtes pas un robot », plus un `http403`. Sur les trois clients (`android_vr`, `android`, `ios`).
+
+Donc la video est parfaitement telechargeable et c'est bien notre adresse de sortie qui est signalee. Le seul defaut etait le DELAI annonce : « une minute », quand la limite retombe en une dizaine. Quelqu'un qui reessaie au bout d'une minute se fait refuser, conclut que l'outil est casse, et part.
+
+**Avant / apres :**
+| | |
+|---|---|
+| avant | « YouTube nous a pris pour un robot sur cette video. C'est temporaire… reessaie dans **une minute**. » |
+| apres | « YouTube prend **NOTRE serveur** pour un robot en ce moment — **la video elle-meme n'a rien**, elle est parfaitement telechargeable. Ca se debloque tout seul, mais compte **une dizaine de minutes** plutot qu'une. » |
+
+**Verifie apres deploiement :** la video se resout maintenant en 1080p (la limite est retombee pendant l'intervalle), et les trois autres videos de controle passent — le blocage etait bien temporaire et lie a l'adresse, pas a une video.
+
+**⚠️ CAUSE LA PLUS PROBABLE, et elle est de mon fait :** j'ai lance plusieurs centaines de resolutions depuis ce worker aujourd'hui, dont des boucles de huit essais. La memoire du projet le documente deja — « le declencheur = le VOLUME d'appels depuis une meme IP », et « une mesure repetee sur une ressource partagee ne mesure plus la ressource, elle mesure l'effet de la mesure ». **Troisieme fois de la journee que mes propres tests produisent le symptome que j'analyse.**
+
+Ce qui protege un vrai usage : le cache (5 h 29 par video), la repartition des visiteurs sur plusieurs points de presence, et l'etalement dans le temps. Un utilisateur reel ne martele pas.
+
+**Ce qui reste sans filet dans ce cas :** contrairement au refus d'octets, un echec de RESOLUTION ne laisse aucun secours — pas de resolution, donc pas de lien direct 360p a proposer. Le seul filet existant est le cache perime (servi si ses URLs vivent encore), inutile sur une video jamais demandee.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/youtube.js` — formulation du refus `bot`.
+
+**Comment annuler :** revenir a la chaine precedente.
+
+---
 ### [2026-07-31 01:15] — Le quota se debite quand on TELECHARGE, plus quand on regarde
 
 **Quoi :** La resolution ne debite plus qu'**une unite** — son cout reel. Le cout de la video est debite dans `/api/stream`, a la **premiere tranche** de chaque piste.
