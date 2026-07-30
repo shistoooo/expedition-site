@@ -507,6 +507,19 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
   );
 }
 
+/**
+ * Poids d'un fichier, dans l'unite qui se lit.
+ *
+ * « 1821 Mo » etait exact et illisible : personne ne convertit de tete, et
+ * surtout ca ne se comparait pas au quota, qui est en gigaoctets. Deux nombres
+ * cote a cote dans deux unites differentes, c'est le lecteur qui fait le calcul.
+ */
+function fmtPoids(octets: number): string {
+  const go = octets / 1073741824;
+  if (go >= 1) return (go >= 10 ? go.toFixed(0) : go.toFixed(1)) + " Go";
+  return (octets / 1048576).toFixed(0) + " Mo";
+}
+
 function fmtDuration(s: number | null) {
   if (!s) return null;
   const m = Math.floor(s / 60);
@@ -634,6 +647,13 @@ export default function TelechargerPage() {
   const gated = me?.gate === true;
   const toolOpen = me !== null && (gated ? member : true);
   const left = me?.quota ? Math.max(0, me.quota.limit - me.quota.used) : null;
+  /** Poids du fichier resolu, quelle que soit la plateforme. Calcule une fois :
+   *  l'expression etait dupliquee dans la fiche et dans l'argumentaire. */
+  const octetsResultat = result
+    ? result.video
+      ? (result.video.size ?? 0) + (result.audio?.size ?? 0)
+      : result.file?.size ?? 0
+    : 0;
   const srv = me?.serveur ?? null;
   const srvLeft = srv ? Math.max(0, srv.limit - srv.used) : null;
 
@@ -1044,13 +1064,22 @@ export default function TelechargerPage() {
                         result.meta.author,
                         fmtDuration(result.meta.durationSec),
                         result.video ? `${result.video.height}p` : result.file?.label,
-                        result.video
-                          ? `${(((result.video.size ?? 0) + (result.audio?.size ?? 0)) / 1048576).toFixed(0)} Mo`
-                          : result.file?.size
-                            ? `${(result.file.size / 1048576).toFixed(0)} Mo`
-                            : null,
+                        octetsResultat ? fmtPoids(octetsResultat) : null,
                       ].filter(Boolean).join("  ·  ")}
                     </p>
+                    {/* Ce que ce fichier laisse du quota du jour.
+                        Le poids seul ne repond pas a la question que la personne
+                        se pose vraiment — « est-ce que je peux, et apres ? ».
+                        Le quota est deja debite a la resolution cote Worker, donc
+                        `left` reflete l'etat APRES cette video : on l'annonce tel
+                        quel plutot que de refaire le calcul et risquer l'ecart. */}
+                    {octetsResultat > 0 && left !== null && me?.quota?.octetsParUnite && (
+                      <p className="text-[13px] md:text-[11px] text-white/40 mt-2">
+                        {left > 0
+                          ? `Il te reste ${fmtPoids(left * me.quota.octetsParUnite)} aujourd’hui.`
+                          : "C’était ton dernier téléchargement du jour."}
+                      </p>
+                    )}
                     {result.downgraded && (
                       <p className="text-[13px] md:text-[11px] text-white/50 mt-2 leading-relaxed">
                         {result.downgradeReason === "plafond-youtube"

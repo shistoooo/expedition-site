@@ -1,4 +1,20 @@
 ---
+### [2026-07-30 13:45] — Le poids de la video en gigaoctets, et ce qu'il reste apres
+
+**Quoi :** La fiche d'une video resolue affiche son poids en Go des qu'il depasse le gigaoctet (« 1.8 Go » au lieu de « 1821 Mo »), suivi de ce que ca laisse du quota du jour : « Il te reste 1.1 Go aujourd'hui. »
+
+**Pourquoi :** Depuis que le quota s'exprime en gigaoctets, la fiche restait en megaoctets. Deux nombres cote a cote dans deux unites differentes, et c'est le lecteur qui fait la conversion. Surtout, le poids seul ne repond pas a la question qu'on se pose vraiment — « est-ce que je peux, et apres ? ».
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — `fmtPoids()` (Go au-dela du gigaoctet, Mo en dessous) ; `octetsResultat` calcule une fois au lieu d'etre duplique ; ligne « il te reste » sous la fiche.
+
+**Verifie en production** sur le Mario de 52 minutes : « Siphano · 52:09 · 1080p · 1.8 Go | Il te reste 1.1 Go aujourd'hui. »
+
+**⚠️ CE QUE CETTE LIGNE REND VISIBLE, et qui est un vrai defaut de conception :** le quota est debite **a la RESOLUTION**, pas au telechargement. Quelqu'un qui regarde trois grosses videos sans en telecharger aucune a perdu sa journee. C'etait negligeable a 25 resolutions par jour ; ca ne l'est plus quand une resolution peut couter 1,8 Go. **A corriger** : debiter au telechargement (ou creer une reservation liberee si le telechargement n'a pas lieu). Non fait ici.
+
+**Comment annuler :** revenir a l'expression inline en `Mo` dans la fiche et supprimer le bloc « il te reste ».
+
+---
 ### [2026-07-30 13:15] — La reserve du serveur quitte l'ecran (sauf quand elle baisse)
 
 **Quoi :** La jauge « Reserve du serveur — 491 Go restants sur 492 » ne s'affiche plus. Elle est remplacee par une phrase, sans chiffre, et seulement sous 25 % de reserve restante. Le quota personnel devient « Ton quota du jour — 2,9 Go restants sur 5,6 ».
