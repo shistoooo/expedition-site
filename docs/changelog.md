@@ -1,4 +1,42 @@
 ---
+### [2026-07-31 01:15] — Le quota se debite quand on TELECHARGE, plus quand on regarde
+
+**Quoi :** La resolution ne debite plus qu'**une unite** — son cout reel. Le cout de la video est debite dans `/api/stream`, a la **premiere tranche** de chaque piste.
+
+**Pourquoi :** Defaut que j'avais signale sans le corriger. Le cout complet etait debite des la resolution : regarder trois grosses videos sans en telecharger une seule mangeait la journee. Negligeable quand une resolution valait 1 sur 25 ; plus du tout depuis qu'elle peut couter 311 unites.
+
+**Le nouveau partage :**
+| moment | ce qui est debite |
+|---|---|
+| resolution | **1 unite** — un appel a YouTube et quelques Ko |
+| 1re tranche d'une piste | le cout de la piste (`ceil(clen / 6 Mo)`) |
+| tranches suivantes | rien |
+
+**Le plafond garde son role protecteur :** la resolution VERIFIE toujours que le cout projete rentre — inutile de laisser demarrer un telechargement qui ne peut pas aboutir. Nouveau message quand ca ne rentre pas : « Cette video depasse ce qu'il te reste aujourd'hui (X Go). »
+
+**Pourquoi le debit est INESQUIVABLE :** `clen` (la taille de la piste) vit DANS L'URL SIGNEE — infalsifiable sans casser la signature, donc rien a ajouter au payload. Et les octets ne peuvent pas circuler sans passer par `/api/stream` : un fichier sans sa premiere tranche est inutilisable. Une reprise de la tranche 0 debite deux fois, c'est rare, et se tromper vers le HAUT est le bon sens de l'erreur.
+
+**En tache de fond (`waitUntil`)** : la livraison des octets n'attend pas trois ecritures dans la base cle-valeur.
+
+**Verifie en production, sur une video de 1 821 Mo :**
+| | mesure | attendu |
+|---|---|---|
+| resolution seule | **+1** | 1 |
+| 1re tranche video | **+311** | 311 |
+| tranche suivante | **+0** | 0 |
+
+Avant ce correctif, la seule resolution coutait **319 unites** — soit toute la video, sans avoir telecharge un octet.
+
+**⚠️ PIEGE DE MESURE, la enieme de la journee :** ma premiere serie donnait des deltas absurdes, dont un **-310**. Cause — la base cle-valeur est a coherence differee : je relisais le compteur 3 secondes apres l'ecriture. Un delta negatif est impossible, et c'est ce qui a trahi le dispositif. Il faut **25 secondes de repos entre chaque releve**, sinon on mesure la propagation et pas le comptage.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` — `debiterUnites()` (les trois compteurs, en tache de fond) ; verification du cout projete separee du debit dans `/api/resolve` ; debit sur `start === '0'` dans `/api/stream`.
+
+**Comment annuler :** remettre `const unites = coutProjete;` dans `/api/resolve` et supprimer le bloc de debit de `/api/stream`.
+
+**Effets de bord possibles :** une resolution sans telechargement ne coute presque rien, ce qui est le but — mais quelqu'un qui resout en boucle sans jamais telecharger consomme des appels a YouTube pour 1 unite chacun. Le cache (5 h 29 par video) et le plafond global couvrent ce cas. A surveiller si le compteur global monte sans que les octets suivent.
+
+---
 ### [2026-07-31 00:30] — Quand le relais refuse, on propose le chemin qui ne passe pas par nous
 
 **Quoi :** Un echec de telechargement sur refus d'octets affiche desormais un bouton « Recuperer en 360p a la place ». Le lien existait ; il n'apparaissait QUE si aucun flux haute qualite n'etait disponible.
