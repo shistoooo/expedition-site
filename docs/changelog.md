@@ -1,4 +1,35 @@
 ---
+### [2026-07-30 15:10] — Plafond de depense : un seul interrupteur, et un plafond MENSUEL
+
+**Quoi :** Les bornes (jour, mois, quota par personne) viennent desormais d'un `REGIMES` unique cote code, choisi par la variable `PLAN` (`gratuit` | `payant`). Ajout d'un plafond **mensuel** sur le plan payant.
+
+**Pourquoi :** Cloudflare ne propose aucun plafond de facturation. Le notre existait mais uniquement JOURNALIER — or la facturation Cloudflare est mensuelle, donc trente jours pleins pouvaient depasser le forfait sans qu'aucune borne ne s'y oppose. Et les bornes etaient eparpillees en constantes independantes, ce qui est le moyen le plus sur d'en monter une en oubliant les autres.
+
+**🐛 Le piege que j'avais moi-meme cree, et corrige dans la meme passe :** apres avoir ecrit les regimes, `wrangler.toml` contenait encore `DAILY_LIMIT` et `MAX_DAILY_RESOLVES` en dur. Ces variables **ECRASENT** le regime : passer `PLAN` a `payant` n'aurait rien change du tout. Vu dans la sortie du deploiement, pas dans le code. Les surcharges sont maintenant commentees, avec l'avertissement.
+
+**Les deux regimes :**
+| | jour | mois | par personne | ecritures cle-valeur |
+|---|---|---|---|---|
+| gratuit | 88 000 u (492 Go) | aucun | 1 000 u (5,6 Go) | **1 000/jour = le vrai mur** |
+| payant | 320 000 u | 9 500 000 u | 3 500 u (~20 Go) | illimitees |
+
+**⚠️ CE QUI BORNE LE PLAN GRATUIT N'EST PAS LA BANDE PASSANTE.** Ce sont les **1 000 ecritures/jour** de la base cle-valeur (documentation Cloudflare, verifie le 30/07). Chaque telechargement en consomme deux — compteur personnel + compteur global — trois si la video n'est pas en cache. Le plafond reel est donc de **330 a 500 telechargements par jour**, bien avant les 1 630 que permettrait le budget de requetes. Sur le plan payant elles deviennent illimitees : **c'est le vrai argument des 5 $, pas le nombre de requetes**, et j'avais donne le mauvais.
+
+**Pas de compteur mensuel sur le plan gratuit, et ce n'est pas un oubli :** il couterait une TROISIEME ecriture par telechargement, donc il ferait BAISSER le plafond reel de 500 a 330. Il protegerait moins qu'il ne coute.
+
+**Garantie apportee par le plafond mensuel :** le forfait payant inclut 10 M requetes ; on borne a 9,5 M. La facture **ne peut pas** depasser 5 $, sauf a lever la borne a la main.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` — `REGIMES` + `regime(env)` ; `moisCourant()` ; compteur `m:<AAAA-MM>` (TTL 40 jours pour survivre au changement de mois) ; refus `plafond-mensuel` ; `plan` et `mois` exposes sur `/api/me` pour etre observables sans ouvrir le tableau de bord Cloudflare ; suppression des constantes `DEFAULT_DAILY_LIMIT` et `MAX_DAILY_RESOLVES` devenues mortes.
+- `tubeforge-webdl/wrangler.toml` — `PLAN = "gratuit"` ; anciennes variables passees en surcharges commentees.
+
+**Verifie en production :** `/api/me` renvoie `plan: "gratuit"`, quota 5,6 Go/jour, reserve 492 Go/jour, `mois: null`.
+
+**Comment passer au payant :** souscrire Workers Paid dans le tableau de bord Cloudflare (Compute → Workers → Plans), puis `PLAN = "payant"` dans `wrangler.toml` et `npx wrangler deploy`. Rien d'autre.
+
+**Comment annuler :** remettre `PLAN = "gratuit"` et redeployer. Le compteur mensuel cesse d'etre lu et ecrit.
+
+---
 ### [2026-07-30 14:20] — Contrer l'anti-robot : 3,7x moins d'appels a YouTube, et un secours au lieu d'un echec
 
 **Quoi :** Le cache des resolutions suit desormais la duree de vie REELLE des URLs au lieu d'une constante devinee, et une resolution refusee ressort l'entree en cache plutot que d'echouer.
