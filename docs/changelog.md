@@ -1,4 +1,34 @@
 ---
+### [2026-07-30 16:20] — Plan PAYANT confirme et active : 20 Go par personne, facture bornee a 5 $
+
+**Quoi :** Bascule `PLAN = "payant"`. Quota par personne 5,6 → **19,6 Go/jour**, reserve du jour 492 Go → **1,75 To**, et le plafond MENSUEL s'active.
+
+**Comment le plan a ete verifie — sans identifiants et sans tableau de bord :**
+Le Chrome pilotable n'etait pas connecte a Cloudflare, et saisir un mot de passe est hors de question. J'ai donc mesure une PROPRIETE du plan : le gratuit plafonne a **50 requetes sortantes par invocation**, le payant a 10 000 (documentation, changement de fevrier 2026). Sonde temporaire deployee : **70 sortantes reussies, deux essais sur deux**, aucune rupture. Le gratuit aurait casse a la 51e. Sonde retiree ensuite.
+
+**Etat verifie en production :**
+| | valeur |
+|---|---|
+| plan | `payant` |
+| quota par personne | 3 500 u = **19,6 Go/jour** |
+| reserve du jour | 320 000 u = **1,75 To/jour** |
+| plafond du mois | **9 500 000 u sur les 10 M incluses** |
+Compteur mensuel teste sur une resolution reelle : 0 → 16 unites. Page : « 19 Go restants sur 20 ».
+
+**🔒 CE QUE GARANTIT LE PLAFOND MENSUEL :** le forfait inclut 10 M requetes, on borne a 9,5 M. **La facture ne peut pas depasser 5 $** sauf a lever la borne a la main. C'est la seule protection existante, Cloudflare n'en proposant aucune.
+
+**🐛 Defaut que j'ai introduit et corrige dans la meme passe :** en supprimant la sonde par un decoupage d'indices, j'ai coupe trop large et laisse un fragment orphelin (` env, req);`) — le Worker ne compilait plus. **`node --check` est passe quand meme** : il ne voit pas la meme chose qu'esbuild sur un module. C'est le deploiement qui a refuse. **Ne pas se fier a `node --check` seul pour valider une suppression de bloc ; c'est `wrangler deploy` qui tranche.**
+
+**Fichiers touches :**
+- `tubeforge-webdl/wrangler.toml` — `PLAN = "payant"`, avec la preuve empirique en commentaire.
+- `tubeforge-webdl/src/index.js` — sonde `/api/sonde-plan` ajoutee puis supprimee ; fragment orphelin repare.
+
+**Comment annuler :** `PLAN = "gratuit"` et redeployer. Toutes les bornes redescendent ensemble, le compteur mensuel cesse d'etre lu.
+
+**Effets de bord possibles :**
+Les ecritures cle-valeur etant desormais illimitees, le compteur mensuel coute une troisieme ecriture par telechargement sans consequence — ce qui etait justement la raison de ne pas l'activer sur le gratuit. Le plafond journalier (320 000) fois 30 depasse legerement le plafond mensuel : c'est voulu, c'est le mensuel qui doit trancher.
+
+---
 ### [2026-07-30 15:45] — Les deux plafonds ont ete DECLENCHES pour de vrai
 
 **Quoi :** Verification empirique des deux refus, en production, en abaissant temporairement les bornes.
