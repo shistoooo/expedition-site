@@ -1,4 +1,32 @@
 ---
+### [2026-07-31 02:30] — Etat complet apres la journee, et un defaut trouve par le test lui-meme
+
+**Quoi :** Verification de bout en bout du telechargeur. Plus une correction : le compteur affiche ne bougeait plus apres un telechargement.
+
+**Ce qui a ete verifie :**
+
+| | resultat |
+|---|---|
+| plan / porte / plafonds | payant, porte ouverte, 19,6 Go par personne, mois a 1 846 / 9 500 000 |
+| resolutions | **4 sur 5**, 525 a 1 529 ms — dont les deux videos qui avaient echoue chez des utilisateurs |
+| la geo-bloquee | refusee, comme voulu |
+| relais d'octets | **4 tranches sur 4**, 22,9 Mo, 1,0 a 5,6 Mo/s |
+| secours 360p | HTTP 206, conteneur `ftyp` valide |
+| telechargement complet | **40 999 534 octets**, `ftypisom`, 12 s |
+| pic memoire | **107 Mo** pour un fichier de 39 Mo |
+| barre de progression | 14 valeurs, bond maximal 5 Mo |
+| page de diagnostic | 4 sondes vertes, octets compris |
+
+**🐛 LE DEFAUT TROUVE PAR CE TEST :** le quota affichait « 8,9 Go restants » **avant ET apres** avoir telecharge. Effet de bord du deplacement du debit vers le relais — plus rien ne rafraichissait le chiffre a l'ecran, puisque la reponse de resolution ne le porte plus. Un compteur qui ne bouge jamais se lit comme un compteur decoratif.
+
+**Corrige :** relecture de `/api/me` vingt secondes apres la fin du telechargement. Le delai n'est pas une precaution vague — la base cle-valeur est a coherence differee, et relire tout de suite renverrait l'ancienne valeur. Mesure du jour : une vingtaine de secondes pour qu'une ecriture soit visible partout.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/page.tsx` — `setTimeout(refreshMe, 20_000)` apres un telechargement reussi.
+
+**Note sur les videos qui avaient echoue :** `NcD7oeBtrvI` (403 sur les octets) et `7obQlmThI58` (anti-robot) se resolvent et se telechargent toutes les deux maintenant. Les deux pannes etaient donc bien transitoires — ce qui renforce l'hypothese que mes propres campagnes de test en etaient la cause.
+
+---
 ### [2026-07-31 01:50] — « Réessaie dans une minute » était une promesse fausse
 
 **Quoi :** Le message anti-robot annonce desormais une dizaine de minutes, et dit explicitement que **la video n'a rien** — c'est notre serveur qui est momentanement mal vu.

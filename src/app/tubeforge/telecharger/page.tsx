@@ -676,6 +676,20 @@ export default function TelechargerPage() {
     try {
       await download(result, setProgress, ctrl.signal);
       setDone(true);
+      /**
+       * Le compteur affiche ne bougeait plus apres un telechargement.
+       *
+       * Effet de bord du deplacement du debit : il se fait maintenant dans le
+       * relais, pas dans la reponse de resolution — donc plus rien ne rafraichit
+       * le chiffre a l'ecran. On lisait « 8,9 Go restants » avant ET apres avoir
+       * telecharge, ce qui donne l'impression d'un compteur decoratif.
+       *
+       * Le delai n'est pas une precaution vague : la base cle-valeur est a
+       * coherence differee, et relire tout de suite renverrait l'ancienne valeur.
+       * Mesure du jour : il faut une vingtaine de secondes pour qu'une ecriture
+       * soit visible partout. On attend, puis on relit.
+       */
+      setTimeout(() => { refreshMe(); }, 20_000);
     } catch (e) {
       if (!ctrl.signal.aborted) {
         const msg = e instanceof Error ? e.message : "Le téléchargement a échoué.";
