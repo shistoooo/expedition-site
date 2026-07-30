@@ -1,4 +1,34 @@
 ---
+### [2026-07-31 05:00] — « Le service n'a pas répondu au bout de 45 secondes » : une regression que j'avais introduite le soir meme
+
+**Le defaut :** le code distinguait deux causes d'echec dans son COMMENTAIRE, et les traitait pareil dans son CODE.
+- une limite de **debit** (HTTP 403/429/5xx) : une pause la repare ;
+- un blocage **anti-robot** : une pause n'y change rien, c'est la SESSION qui est en cause, et la rejouer a l'identique ne sert a rien.
+
+`transitoire()` melangeait les deux, donc la chaine etait rejouee **quatre fois** dans les deux cas. Et le renouvellement de session ajoute quelques heures plus tot relancait une chaine complete par-dessus.
+
+**Resultat mesure :** jusqu'a **19 appels** pour une resolution qui ne pouvait pas aboutir, et une reponse au-dela des 45 secondes d'echeance. L'utilisateur voyait « Le service n'a pas repondu au bout de 45 secondes ».
+
+**Le pire : on produisait avec des appels condamnes exactement le volume qui aggrave le blocage.** Un cercle vicieux que j'avais construit moi-meme.
+
+**Corrige :** les reprises sont reservees a la limite de debit (`debitLimite()` exclut explicitement l'anti-robot). Sur un anti-robot on echoue vite, et l'appelant renouvelle la session — la seule chose qui marche.
+
+**Mesure apres correctif :**
+| | avant | apres |
+|---|---|---|
+| duree d'un echec anti-robot | **45 s** (echeance depassee) | **~700 ms** |
+| appels a YouTube par echec | jusqu'a 19 | **3 a 7** |
+
+**Ce qui n'est PAS repare :** le blocage lui-meme. Les Shorts sont toujours refuses, parce que j'ai passe la soiree a alimenter ce que je mesurais. **Aucun correctif ne peut compenser ca — la seule cure est d'arreter d'appeler.**
+
+⚠️ **Et mes mesures sont peut-etre pessimistes pour l'utilisateur :** mes tests sortent par le point de presence Cloudflare le plus proche de MOI. Son navigateur passe par le sien. Un « bot » chez moi ne prouve pas un « bot » chez lui.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/youtube.js` — `antiRobot()` et `debitLimite()` remplacent `transitoire()` dans les deux boucles de reprise.
+
+**Comment annuler :** remettre `transitoire()` dans les deux conditions de boucle.
+
+---
 ### [2026-07-31 04:20] — Deux defauts sur les Shorts : un plantage, et un fichier que Premiere n'ouvre pas
 
 Deux signalements sur des Shorts. Le premier etait un plantage franc, le second un defaut plus grave parce qu'il ne se voyait pas.
