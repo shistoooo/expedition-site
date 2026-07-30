@@ -1,4 +1,35 @@
 ---
+### [2026-07-31 03:10] — 🔑 Une session YouTube grillee restait en cache SIX HEURES
+
+**Le fait, decouvert en testant un Short :** apres une serie de refus anti-robot (0 succes sur 2 essais consecutifs, sur deux formats d'URL differents), la simple **purge de `vd:current`** a debloque la resolution **immediatement**.
+
+**Pourquoi c'est important :** le `visitorData` — l'identite de session anonyme avec laquelle on parle a YouTube — etait mis en cache six heures. Quand YouTube finit par associer cette session a un comportement de robot, elle **reste en place et empoisonne toutes les requetes suivantes pendant tout ce temps**. On rejouait une identite deja brulee, encore et encore.
+
+**Mesures :**
+| moment | resultat |
+|---|---|
+| avant purge | **0 / 2** (meme video, deux formats d'URL) |
+| apres purge manuelle | **2 / 4** sur des videos jamais demandees |
+| apres renouvellement automatique deploye | **3 / 4**, dont le Short qui avait echoue |
+
+Ce n'est **pas un remede complet** — le blocage reste partiel, et « Hello » refuse encore. Mais garder une session brulee six heures n'a aucun interet, et c'est desormais corrige.
+
+**Ce qui a ete deploye :** sur un refus de type `bot`, le Worker purge `vd:current`, en obtient une fraiche, et **retente une fois**.
+
+**⚠️ GARDE-FOU CONTRE LA RUEE, sans lequel le remede serait pire que le mal :** sous une vague de refus, chaque requete voudrait renouveler la session — et `/youtubei/v1/visitor_id` est LUI AUSSI limite en debit (11 succes sur 20 appels d'affilee, mesure du projet). Un marqueur `vd:renouvele` de deux minutes borne donc les renouvellements a **un seul, globalement**.
+
+**Au passage, deux choses verifiees et ecartees :**
+- **Les Shorts sont parfaitement geres.** `parseYouTubeId` reconnait `/shorts/`, et la meme video en `watch?v=` donnait exactement le meme refus. Le format n'y etait pour rien.
+- La video etait publique, 58 secondes, sans restriction d'age — yt-dlp la resout sans broncher depuis une connexion ordinaire.
+
+**Fichiers touches :**
+- `tubeforge-webdl/src/index.js` — renouvellement de session sur `kind === 'bot'`, borne par `vd:renouvele`.
+
+**Comment annuler :** supprimer le bloc `if (!r.ok && r.kind === 'bot')` et remettre `const r = await resolveYouTube(...)`.
+
+**Ce que ca ne resout pas :** le blocage lie a l'ADRESSE de sortie reste entier. La session n'etait qu'une des deux moities du probleme — et personne ne l'avait regardee jusqu'ici parce que la memoire du projet attribuait tout au volume d'appels par IP.
+
+---
 ### [2026-07-31 02:30] — Etat complet apres la journee, et un defaut trouve par le test lui-meme
 
 **Quoi :** Verification de bout en bout du telechargeur. Plus une correction : le compteur affiche ne bougeait plus apres un telechargement.
