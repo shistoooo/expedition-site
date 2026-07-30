@@ -1,4 +1,40 @@
 ---
+### [2026-07-30 20:00] — 🚨 L'HYPOTHESE « L'ALGERIE BLOQUE CLOUDFLARE » EST FAUSSE
+
+**Le fait :** le contact algerien a lance la page de diagnostic. **Les trois sondes repondent.**
+```
+DIAGNOSTIC TÉLÉCHARGEUR — OK
+- Notre téléchargeur : OK (réponse reçue, 266 ms)
+- Un gros site du même hébergeur : OK (réponse reçue, 178 ms)
+- Le site que tu es en train de lire : OK (réponse reçue, 217 ms)
+navigateur : Firefox 153 / Windows
+```
+
+**Consequence directe : NE PAS construire le relais sur le VPS.** Sa premisse n'existe pas. La mesure du VPS (10,9 a 19,2 Mo/s, cf. entree precedente) reste vraie et reste un gain de VITESSE interessant — mais elle ne repare pas un probleme de joignabilite qui n'est pas etabli.
+
+**Ce que j'ai construit sur une hypothese non verifiee, et ce que ca valait :**
+- Le message d'erreur honnete (« Le telechargeur est injoignable » au lieu de « Impossible de verifier ton acces ») → **a garder**, l'ancien accusait l'utilisateur d'un probleme de droits quelle que soit la cause.
+- La page de diagnostic → **a garder**, c'est elle qui vient de me contredire. Un instrument qui refute son auteur est exactement ce qu'on veut.
+- Le marqueur Clarity par pays → **a garder**, il donnera le taux reel sur plusieurs jours au lieu d'une anecdote.
+- Le relais VPS → **abandonne**, faute de premisse.
+
+**🐛 CE QUE LE RESULTAT REVELE DANS MON PROPRE DIAGNOSTIC :** il ne distinguait pas un blocage par le FOURNISSEUR D'ACCES d'un blocage par une EXTENSION ou un antivirus sur la machine. Or Firefox sur Windows rend le second tres plausible — les bloqueurs de publicite listent frequemment `workers.dev`, vecteur de hameconnage connu.
+
+**Corrige avec la lecon du jour, payee deux fois :** un refus en 0 a 1 ms ne peut PAS venir du reseau, il n'y a pas le temps d'un aller-retour. C'est la signature d'un refus LOCAL. Sous 15 ms, la page annonce desormais :
+> « Le blocage vient de ton ordinateur, pas de ton reseau. La demande a ete refusee en moins d'un centieme de seconde : c'est trop rapide pour venir d'Internet. Une extension, un antivirus ou un pare-feu intercepte l'adresse. Essaie en navigation privee. »
+
+**Verifie en production :** blocage simule a 1 ms → `BLOCAGE-LOCAL`, avec le bon texte. Les autres branches (`OK`, `NOTRE-ADRESSE`, `HEBERGEUR-ENTIER`) restent en place.
+
+**Cause probable de la panne d'origine, sans certitude :** soit une extension ou un antivirus sur sa machine, soit un incident passager. ⚠️ **A ne pas ecarter : j'ai redeploye le worker une douzaine de fois et le site une dizaine de fois pendant cette journee.** Un chargement tombe au mauvais moment est un candidat credible, et il est de mon fait.
+
+**Fichiers touches :**
+- `src/app/tubeforge/telecharger/diagnostic/page.tsx` — `refusLocal` (seuil 15 ms), branche `BLOCAGE-LOCAL` placee avant celles qui accusent le reseau.
+
+**Ce qu'il faut faire maintenant :** demander au contact de relancer le diagnostic **au moment ou ca casse**, pas quand ca marche. C'est le seul instant ou la mesure vaut quelque chose. Et lire le taux Clarity dans quelques jours.
+
+**Lecon pour la memoire :** j'ai bati un plan d'infrastructure — achat de domaine, zone Cloudflare, relais VPS — sur DEUX captures d'ecran et une recherche documentaire, sans jamais avoir mesure le cas reel. Le premier test a coute trente secondes et a tout invalide. **L'instrument de mesure aurait du etre la premiere chose construite, pas la cinquieme.**
+
+---
 ### [2026-07-30 19:15] — Le VPS SERT les octets, 3 a 6 fois plus vite que Cloudflare
 
 **Quoi :** Mesure, pas modification. Le VPS Hetzner de ReviewForge (`204.168.158.84`, AS24940, Helsinki) relaie parfaitement les octets googlevideo.

@@ -123,6 +123,23 @@ export default function DiagnosticPage() {
   const fini = SONDES.every((s) => resultats[s.cle]);
   const notre = resultats["notre-worker"]?.etat;
   const cf = resultats["cloudflare-normal"]?.etat;
+  /**
+   * Combien de temps le refus a-t-il pris. C'est LA mesure qui separe deux causes
+   * que rien d'autre ne distingue.
+   *
+   * Lecon du 30/07/2026, payee deux fois : un refus en 0 a 1 ms ne peut PAS venir
+   * du reseau — il n'y a pas le temps d'un aller-retour. C'est la signature d'un
+   * refus LOCAL : politique de securite de la page, extension de navigateur,
+   * antivirus, ou pare-feu de la machine. Un blocage par le fournisseur d'acces,
+   * lui, coute au moins quelques dizaines de millisecondes (resolution DNS
+   * refusee, connexion reinitialisee) ou finit en delai depasse.
+   *
+   * Sans cette distinction, la page accusait le fournisseur d'acces d'un blocage
+   * installe sur l'ordinateur — et envoyait chercher la reparation au mauvais
+   * endroit.
+   */
+  const msNotre = resultats["notre-worker"]?.ms ?? null;
+  const refusLocal = notre === "bloque" && msNotre !== null && msNotre < 15;
 
   /**
    * Le verdict, ecrit pour la personne qui lit — pas pour nous.
@@ -140,6 +157,16 @@ export default function DiagnosticPage() {
           "Le téléchargeur est joignable en ce moment. Si tu avais une erreur, elle était passagère : " +
           "retourne sur la page et réessaie.",
         code: "OK",
+      };
+    } else if (refusLocal) {
+      verdict = {
+        titre: "Le blocage vient de ton ordinateur, pas de ton réseau.",
+        texte:
+          "La demande a été refusée en moins d’un centième de seconde : c’est trop rapide pour venir " +
+          "d’Internet. Une extension de navigateur (bloqueur de publicité, extension de sécurité), un " +
+          "antivirus ou un pare-feu installé sur la machine intercepte l’adresse. Essaie en navigation " +
+          "privée, ou désactive tes extensions le temps d’un test.",
+        code: "BLOCAGE-LOCAL",
       };
     } else if (cf === "joignable") {
       /**
@@ -170,6 +197,8 @@ export default function DiagnosticPage() {
 
   const rapport = [
     "DIAGNOSTIC TÉLÉCHARGEUR — " + (verdict?.code ?? "incomplet"),
+    // Le temps de chaque sonde figure deja ligne par ligne ci-dessous : c'est
+    // volontaire, il permet de reconstituer le raisonnement a distance.
     ...SONDES.map((s) => {
       const r = resultats[s.cle];
       return "- " + s.libelle + " : " + (r ? (r.etat === "joignable" ? "OK" : "BLOQUÉ") + " (" + r.detail + ", " + r.ms + " ms)" : "…");
