@@ -1,4 +1,43 @@
 ---
+### [2026-07-31 09:45] — Résolveur hors Cloudflare : le tuyau est monté et prouvé, il manque la porte de sortie
+
+**Quoi :** Un service de résolution tourne sur le VPS, derrière HTTPS, et le Worker l'appelle en SECOURS quand YouTube le refuse.
+
+**Pourquoi :** `/youtubei/v1/player` discrimine sur la CLASSE de l'adresse (résidentielle 8/8, datacenter 1 seul appel — mesuré, variable isolée). Et **un Cloudflare Worker ne peut pas passer par un proxy** : son `fetch` n'expose aucune option, ni agent, ni configuration. Vérifié dans la documentation AVANT de construire — c'est ce qui aurait rendu inutile l'achat d'adresses résidentielles.
+
+```
+navigateur → Worker → VPS → (proxy) → YouTube      résolution, quelques Ko
+navigateur → Worker ───────────────→ googlevideo   les octets, inchangé
+```
+
+**Ce qui est en place :**
+- `dl-api.explauncheur.space` → A vers le VPS (Vercel DNS, une entrée ajoutée, le reste du domaine intact).
+- Certificat Let's Encrypt, renouvellement automatique posé par certbot.
+- Service Python sur `127.0.0.1:3002`, systemd, durci (`ProtectSystem=strict`, `NoNewPrivileges`, `PrivateTmp`).
+- nginx ne route QUE `/sante` et `/resolve` — le reste répond 404, pas de proxy ouvert.
+- Secret obligatoire : le service **refuse de démarrer** sans, et répond 403 sans l'en-tête.
+- Appelé en **SECOURS uniquement** : Cloudflare et le VPS ont chacun leur budget auprès de YouTube, les additionner vaut mieux que d'en gaspiller un.
+
+**Vérifié :** HTTPS depuis l'extérieur ✅ · sans secret → **403** ✅ · route inconnue → **404** ✅ · résolution directe → **`android_vr`, 27 formats, 2160p, 234 ms** ✅
+
+**🐛 ET UN FAUX POSITIF ATTRAPÉ, qui vaut le détour :** mon premier test du secours affichait « ✅ LE SECOURS FONCTIONNE — 1080p ». **C'était un succès du cache, pas du secours** — le VPS indiquait *zéro appel reçu*. Après purge du cache, le journal nginx montre la vérité : `172.68.102.18 GET /resolve?id=… 422` — une adresse Cloudflare a bien appelé le VPS, et le VPS a été **refusé par YouTube**.
+
+**C'est exactement le résultat attendu, et c'est une bonne nouvelle :** le tuyau Worker → VPS → YouTube fonctionne de bout en bout. Seule la porte de sortie du VPS est mal vue, ce qui était mesuré depuis le début. **Ajouter une adresse résidentielle ne demandera qu'une variable d'environnement sur le VPS** (`PROXY_URL`), aucun code.
+
+**Capacité de la machine, vérifiée avant d'y toucher :** 2 cœurs, 751 Mo de RAM utilisés sur 3820, 19 % du disque, charge moyenne **0,08**, 147 jours d'uptime. ReviewForge et cobalt-proxy tournent dessus et n'ont pas été touchés. La résolution pèse quelques Ko ; Hetzner inclut 20 To/mois. **Coût marginal : zéro.**
+
+**Fichiers touchés :**
+- VPS : `/opt/resolveur.py`, `/etc/systemd/system/resolveur.service`, `/etc/resolveur.env` (600), `/etc/nginx/sites-available/resolveur`.
+- `tubeforge-webdl/src/index.js` — `resoudreAilleurs()`, appelée après un refus de la chaîne locale.
+- `tubeforge-webdl/wrangler.toml` — `RESOLVEUR_URL`. Le secret est dans `wrangler secret`, jamais dans le dépôt.
+
+**Drapeau d'essai `&secours=1` :** ajouté pour forcer le chemin une fois, **retiré et vérifié inerte** après.
+
+**Comment annuler :** retirer `RESOLVEUR_URL` de `wrangler.toml` et redéployer — le secours devient silencieusement inactif, le reste ne bouge pas. Côté VPS : `systemctl disable --now resolveur`.
+
+**Ce qui reste, et c'est la dernière pièce :** brancher une adresse résidentielle sur `PROXY_URL`. ~6 $/mois pour des IP **statiques** (surtout pas du rotatif au Go : 5-7 $/Go pour un besoin de 3 Go/mois). ⚠️ **Hypothèse non testée** : que YouTube traite ces adresses comme du résidentiel et non comme un datacenter. Le test coûte 6 $ et dix minutes.
+
+---
 ### [2026-07-31 08:30] — 🚨 JE ME SUIS TROMPÉ TROIS FOIS : ce n'est PAS le volume, c'est la CLASSE DE L'ADRESSE
 
 **Le user a poussé, et il avait raison.** J'ai expliqué trois fois dans la journée que « mes centaines d'appels ont grillé l'IP ». Son objection : quelques centaines d'appels étalés sur huit heures, ça fait 300 par heure — soit **dans** le budget documenté (~300 vidéos/h, ~1000 requêtes/h). Ça n'aurait pas dû nous tuer.
