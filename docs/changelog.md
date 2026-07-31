@@ -1,4 +1,50 @@
 ---
+### [2026-07-31 07:40] — Le test de charge : deux vrais défauts, et trois explications fausses avant la bonne
+
+**Quoi :** Le test de charge — la seule dimension jamais mesurée — a trouvé deux défauts que la concurrence seule révèle. Les deux sont corrigés et vérifiés.
+
+**Calibrage, parce que c'est ce qui a rendu le test possible :** le relais d'octets n'appelle jamais YouTube, donc il ne touche ni le limiteur par colo ni le budget YouTube — on peut le marteler sans risquer de couper le service. Les résolutions ont été testées sur des vidéos **déjà en cache** (une réponse servie du cache ne touche pas YouTube), et les tranches demandées avaient toutes `start != 0` pour ne consommer le quota de personne.
+
+**🟢 LE RELAIS TIENT.** 100 tranches simultanées, 594 Mo transférés, débit agrégé 5 à 7 Mo/s — et surtout le témoin isolé reste à **800 ms** pendant tout le martèlement. **La charge ne dégrade personne d'autre.** C'est le chiffre qui compte pour la capacité.
+
+**🔴 DÉFAUT 1 — les HTTP 500 venaient de KV.** Capturé dans le journal du Worker, pas déduit :
+
+```
+Error: KV PUT failed: 429 Too Many Requests
+    at async quotaBump (index.js:1126)
+```
+
+Le magasin n'accepte qu'**une écriture par seconde et par clé**, et les compteurs global (`g:`) et mensuel (`m:`) sont **la même clé pour tout le monde**. Ça se déclenche à **cinq résolutions simultanées** — du trafic normal, pas un cas extrême. Sept écritures partagées étaient nues, dont `vd:current`, le cache de session, qui est une clé unique pour le service entier. Toutes passent maintenant par `ecrireSouple`.
+
+Le bug existait **avant** cette nuit : il sortait en page Cloudflare anglaise. Le filet général posé plus tôt ne l'a pas créé, il l'a rendu diagnosticable.
+
+**🔴 DÉFAUT 2 — les faux « réservée à certains pays » venaient du CACHE.** La mesure décisive, sur `kJQP7kiw5Fk`, **même entrée de cache, même seconde**, 30 requêtes concurrentes :
+
+| Point de présence | Résultat |
+|---|---|
+| **LIS** (Lisbonne) | 17 × succès |
+| **MRS** (Marseille) | 13 × refus |
+
+Corrélation parfaite avec le colo. `gcr` lie les URLs au **pays** de la sortie qui les a obtenues ; le cache les transportait ailleurs, où elles ne valent rien. On ne met donc plus en cache une résolution géo-marquée : chaque point de présence résout pour lui-même, et refuse honnêtement s'il ne peut pas livrer.
+
+**🐛 TROIS EXPLICATIONS, DONT DEUX FAUSSES — et c'est le vrai enseignement.**
+
+1. *« La sonde géo se trompe sous concurrence »* — **faux.** J'avais vu 7 échecs sur 35 et conclu à un effet de charge. En testant les cinq vidéos une par une : **une seule échouait, 3 fois sur 3, en appel isolé.** Une sur cinq = les 20 % que je prenais pour un effet de la concurrence. J'attribuais à la charge ce qui était constant.
+2. *« WARP empoisonne le cache »* — **faux aussi.** L'entrée fautive portait `via=local` : elle venait de Cloudflare, pas du VPS.
+3. La bonne explication n'est venue que d'une corrélation mesurée (le colo), jamais d'un raisonnement.
+
+**La sonde de livraison, elle, avait raison depuis le début.** Elle refusait honnêtement des URLs qui ne pouvaient pas livrer. C'est ce qu'on lui donnait à sonder qui était faux.
+
+**Fichiers touchés :**
+- `tubeforge-webdl/src/index.js` — `ecrireSouple()` sur les 7 écritures partagées ; `mettreEnCache()` refuse les résolutions géo-marquées ; `resoudreAilleurs()` rejette les résultats géo-marqués du VPS.
+
+**Vérifié après correction, sur les deux colos :** 10/10, 25/25, 38/40, 59/60. Plus aucun 500, plus aucun `geo-bloquee`. Les rares échecs restants sont des refus anti-robot de YouTube, annoncés comme tels.
+
+**Comment annuler :** `git revert` dans `tubeforge-webdl` puis `npx wrangler deploy`.
+
+**Effets de bord possibles :** les vidéos géo-restreintes ne sont plus mises en cache, donc chacune coûte un appel YouTube par visiteur et par colo. Elles sont rares ; si elles devenaient fréquentes, il faudrait une clé de cache incluant le colo plutôt que pas de cache du tout.
+
+---
 ### [2026-07-31 06:20] — L'échéance par tranche punissait la LENTEUR alors qu'elle visait l'ARRÊT
 
 **Quoi :** Le chronomètre par tranche est remplacé par une surveillance du silence. Une tranche lente va désormais au bout ; seule une tranche qui **cesse d'arriver** est interrompue.
