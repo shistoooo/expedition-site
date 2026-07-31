@@ -1,4 +1,52 @@
 ---
+### [2026-07-31 05:10] — Campagne de stress : le transport tenait, c'est le DIAGNOSTIC qui mentait
+
+**Quoi :** Correction de sept défauts trouvés par une campagne d'agression du téléchargeur web. Aucun ne concerne le transport des octets — tous concernent ce qu'on **raconte** à la personne, ou ce qu'on **facture**.
+
+**Pourquoi :** Le point de rupture n'était pas là où je le cherchais. Le transport n'a **aucune** limite dans la plage explorée (183 tranches sur 183, 7,96 Mo/s soutenus sur 900 Mo, une piste de 250 Mo intègre au bit près, 1,6 Go téléchargés de bout en bout avec un **pic mémoire figé à 44 Mo**). Ce qui casse, c'est la fonction qui traduit un refus de YouTube en phrase française — et ça casse **dès la première vidéo**, sans aucun seuil de volume.
+
+**🔴 Le pire, et il vendait le produit sur un mensonge :** un direct en cours affichait *« cette vidéo est trop lourde pour être assemblée dans un navigateur. C'est précisément ce que TubeForge fait sans limite. »* Reproduit **8 fois sur 8**, et **mis en cache**.
+
+Le mécanisme mérite d'être retenu : le code classait **correctement** le direct. Puis `index.js` basculait sur le VPS **sans regarder le motif**. Le VPS n'avait aucun garde, répondait `ok` avec vingt formats dont aucun n'a de taille (un direct n'en a pas), et écrasait le bon verdict. Le bon message était du **code mort tant que le VPS répondait**. Deux corrections plutôt qu'une : le Worker ne bascule plus sur un verdict définitif, ET le VPS a désormais le même garde — deux chaînes de clients qui divergent, c'est le bug qui attend son heure, et c'est celui qu'on vient de payer.
+
+**🔴 L'argent — le quota est la SEULE protection de la facture (Cloudflare n'offre aucun plafond) :**
+
+| Requête | HTTP | Octets livrés | Unités débitées |
+|---|---|---|---|
+| `start=0` | 206 | 6 000 000 | **163** |
+| `start=00` | 206 | 6 000 000 | **0** |
+
+Mêmes octets, deux prix. `'00' === '0'` est faux et googlevideo accepte `Range: bytes=00-`. Une chaîne suffisait à désactiver la protection. Corrigé par `Number(start) === 0`.
+
+Et l'inverse : chaque `start=0` refacturait la piste **entière**. Dix essais ratés sur une vidéo de 2 Go coûtaient **1 630 unités pour 60 Mo reçus**. Corrigé par un marqueur idempotent porté par la signature de l'URL.
+
+**🟠 Trois motifs français que la classification ne connaissait pas.** On demande les réponses en `hl: 'fr'`, mais les motifs étaient écrits en anglais :
+- Restriction d'âge → YouTube dit « Cette vidéo peut être **inappropriée** », jamais « âge ». La branche `kind: 'age'` était **structurellement inatteignable** ; son texte était déjà écrit et n'a jamais pu s'afficher.
+- Bloquée par l'auteur dans le pays → « **bloqu** » manquait, alors que le message de cette branche annonce déjà « ou bloquée dans ce pays ».
+- Direct programmé (`LIVE_STREAM_OFFLINE`) → aucune branche. YouTube disait « commencera dans **12 jours** », on répondait « Réessaie dans un instant ». On reprend maintenant sa phrase telle quelle.
+
+Ce qui a masqué le défaut : la détection anti-robot marche en français **parce que « robot » s'écrit pareil dans les deux langues**.
+
+**🟢 Un huitième bug trouvé par le test lui-même :** « Cette vidéo n'est **plus** disponible car le compte a été résilié » tombait en `unknown`. La regex ne connaissait que « non disponible ». Trouvé en écrivant les tests, pas en relisant le code.
+
+**Autres :** identifiant de plus de 11 caractères **tronqué en silence** et servant une AUTRE vidéo (`ok:true`, mauvais titre, mauvaise miniature) → borne de fin ajoutée. Un statut définitif ne relance plus toute la chaîne (9 appels et 11,8 s pour un verdict qui ne bougera pas). Filet général autour du routeur : plus aucune exception ne sort en page Cloudflare anglaise.
+
+**Fichiers touchés :**
+- `tubeforge-webdl/src/youtube.js` — `parseYouTubeId` borné, `classify` corrigée et exportée, `verdictDefinitif()`.
+- `tubeforge-webdl/src/index.js` — garde de bascule, `debiterUneFois`, comparaison numérique, branches `sans-taille`/`sans-audio`, filet général.
+- `tubeforge-webdl/test/` — **deux suites, 25 assertions**, nouvelles.
+- VPS `/opt/resolveur.py` — garde direct.
+- `src/app/tubeforge/telecharger/page.tsx` — le message de rétrogradation nomme enfin la définition perdue.
+
+**Comment annuler :** `git revert` sur ce commit puis `npx wrangler deploy` depuis `tubeforge-webdl/`. Côté VPS, retirer le bloc `det_live` de `/opt/resolveur.py` et `systemctl restart resolveur`.
+
+**Effets de bord possibles :** un identifiant de 12 caractères est désormais **refusé** au lieu d'être tronqué — c'est voulu, mais quelqu'un habitué à coller un lien malformé verra un refus là où il obtenait (la mauvaise) vidéo. Le marqueur de débit vit 2 h : un même fichier repris après ce délai sera refacturé.
+
+**⚠️ CE QUI N'A PAS ÉTÉ TESTÉ, et il faut le dire :** la **charge**. Les deux agents chargés de la concurrence et du martèlement ont été **bloqués par le garde-fou de sûreté** — 100 téléchargements simultanés contre un service de production que de vrais gens utilisent. Aucune mesure de concurrence n'existe. Non plus : les 4 écrans de plafond (jamais atteints), et le comportement sur une **ligne lente** — le calcul donne un plancher autour de **1,2 Mo/s** en dessous duquel chaque tranche dépasse son échéance.
+
+**🐛 Et le chiffre à retenir sur la méthode :** sur 10 ruptures soumises à un agent chargé de les **réfuter**, **4 sont tombées, dont 2 étaient des défauts de l'outil de test** — un `Origin` ajouté par l'agent lui-même, un guillemet zsh mal placé, un martèlement pris pour une limite du service. Moi-même j'ai failli signaler deux bugs inexistants (paramètres `max`/`disque` absents de mon appel ; `viewport 0x0` pris pour une page vide). **Le contrôle intercalé — une vidéo normale résolue avant, pendant et après chaque série — est ce qui a séparé « le service est cassé » de « mon outil est cassé ».**
+
+---
 ### [2026-07-31 03:30] — WARP : la sortie « propre » qu'on allait ACHETER est gratuite
 
 **Quoi :** Le résolveur du VPS sort désormais par Cloudflare WARP, dans un espace de noms réseau isolé. Il passe de **1 résolution sur 8** à **1000 sur 1000**.

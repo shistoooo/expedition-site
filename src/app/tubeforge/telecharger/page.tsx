@@ -1243,9 +1243,13 @@ export default function TelechargerPage() {
                     )}
                     {result.downgraded && (
                       <p className="text-[13px] md:text-[11px] text-white/50 mt-2 leading-relaxed">
+                        {/* Les deux branches nomment la définition perdue. Le cas
+                            « mémoire » ne le faisait pas : on annonçait une qualité
+                            réduite sans jamais dire réduite DEPUIS QUOI, ce qui rend
+                            l'information invérifiable pour la personne. */}
                         {result.downgradeReason === "plafond-youtube"
                           ? `Qualité réduite : YouTube limite en ce moment ce qu'il nous laisse récupérer${result.bestHeight ? ` (le ${result.bestHeight}p existe)` : ""}. Réessaie dans quelques minutes.`
-                          : "Qualité réduite volontairement : en pleine résolution, cette vidéo dépasserait ce qu'un navigateur peut assembler en mémoire."}
+                          : `Qualité réduite volontairement : ${result.bestHeight ? `en ${result.bestHeight}p, cette vidéo` : "en pleine résolution, cette vidéo"} dépasserait ce que ton navigateur peut assembler.`}
                       </p>
                     )}
                   </div>
