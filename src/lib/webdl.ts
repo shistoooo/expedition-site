@@ -325,23 +325,77 @@ function estDelaiDepasse(e: unknown): boolean {
  */
 const DELAI_API_MS = 45_000;
 
-/**
- * Echeance par tranche de 6 Mo. Genereuse : a 1 Mo/s une tranche prend 6 s, et
- * on ne veut pas punir une connexion lente. Au-dela, la tranche est rejouee —
- * le mecanisme d'essais existait deja, il ne servait qu'aux refus explicites.
+/*
+ * `DELAI_TRANCHE_MS` et `delaiTranche()` ont ete RETIRES le 31/07/2026.
+ *
+ * Ils bornaient la duree TOTALE d'une tranche, ce qui revient a exiger un debit
+ * minimum : 6 Mo en 60 s, soit 100 Ko/s par connexion, soit ~1,2 Mo/s une fois
+ * les douze connexions video+audio additionnees. Leur commentaire affirmait
+ * pourtant vouloir « ne pas punir une connexion lente ».
+ *
+ * Les laisser en place, meme inutilises, aurait fait croire au prochain lecteur
+ * que la politique de la maison est de chronometrer les tranches. Elle ne l'est
+ * plus : voir `surveilleProgression` ci-dessous.
  */
-const DELAI_TRANCHE_MS = 60_000;
 
 /**
- * Echeance PROPORTIONNELLE a la taille de la tranche.
+ * ⛔ SANCTIONNER L'ARRET, JAMAIS LA LENTEUR.
  *
- * Le defaut du 30/07 tient entierement dans une constante restee fixe pendant
- * que la taille des tranches triplait. Calculee, elle ne peut plus se
- * desynchroniser. Base : 150 Ko/s, soit le quart du bridage mesure (~0,7 Mo/s),
- * pour ne pas punir une connexion lente.
+ * L'echeance ci-dessus dit vouloir « ne pas punir une connexion lente ». Elle la
+ * punit. Le calcul est deterministe, pas une hypothese :
+ *
+ *   6 Mo par tranche / 60 s d'echeance = **100 Ko/s exiges par connexion**
+ *   6 connexions par piste, video + audio en parallele = 12 connexions
+ *   -> il faut environ **1,2 Mo/s (≈10 Mbit/s) rien que pour ne pas echouer**
+ *
+ * En dessous, CHAQUE tranche depasse son echeance, est rejouee quatre fois,
+ * puis le telechargement echoue franchement. Et les reprises retelechargent les
+ * memes 6 Mo sur une ligne deja saturee : le remede aggrave le mal. Une ligne a
+ * 5 Mbit/s — courante en mobile, et le cas des utilisateurs qui nous ont
+ * remonte des pannes — ne peut donc RIEN telecharger, quelle que soit sa
+ * patience.
+ *
+ * Le commentaire d'origine dit pourtant l'intention juste : l'echeance existe
+ * pour attraper une tranche SUSPENDUE, celle qui gelait la barre sans rien
+ * afficher. « Suspendue » et « lente » sont deux etats differents, et seule la
+ * premiere merite d'etre interrompue.
+ *
+ * On surveille donc le SILENCE : tant que des octets arrivent, la connexion vit
+ * et on la laisse travailler. Trente secondes sans un seul octet, c'est morte.
+ * Un plafond absolu reste en dernier recours, pour qu'aucune tranche ne puisse
+ * tourner sans fin — le defaut que l'echeance corrigeait a l'origine.
  */
-function delaiTranche(chunkSize: number): number {
-  return Math.max(DELAI_TRANCHE_MS, Math.ceil(chunkSize / 150_000) * 1000);
+const SILENCE_TRANCHE_MS = 30_000;
+const PLAFOND_TRANCHE_MS = 10 * 60_000;
+
+function surveilleProgression(signalAppelant: AbortSignal) {
+  const ctrl = new AbortController();
+  // `TimeoutError` et non `AbortError` : `estDelaiDepasse` distingue ainsi un
+  // depassement (qui vaut un nouvel essai) d'une annulation par la personne.
+  const stop = (raison: string) => ctrl.abort(new DOMException(raison, "TimeoutError"));
+
+  let silence = setTimeout(() => stop("silence"), SILENCE_TRANCHE_MS);
+  const plafond = setTimeout(() => stop("plafond"), PLAFOND_TRANCHE_MS);
+
+  const relais = () => ctrl.abort(signalAppelant.reason);
+  signalAppelant.addEventListener("abort", relais, { once: true });
+  if (signalAppelant.aborted) relais();
+
+  return {
+    signal: ctrl.signal,
+    /** Des octets sont arrives : la connexion vit, le compte a rebours repart. */
+    vu() {
+      clearTimeout(silence);
+      silence = setTimeout(() => stop("silence"), SILENCE_TRANCHE_MS);
+    },
+    /** A appeler dans un `finally` : sans ca, les minuteurs survivent a la
+     *  tranche et finissent par annuler une requete qui n'existe plus. */
+    fin() {
+      clearTimeout(silence);
+      clearTimeout(plafond);
+      signalAppelant.removeEventListener("abort", relais);
+    },
+  };
 }
 
 /**
@@ -607,12 +661,13 @@ async function fetchTranches(
         if (attempt > 0) {
           await new Promise((r) => setTimeout(r, 300 * attempt + Math.random() * 200));
         }
+        // Surveillance du SILENCE, et non chronometre de la tranche : une
+        // tranche suspendue gelait la barre sans rien afficher, mais une tranche
+        // simplement LENTE doit pouvoir aller au bout. Voir `surveilleProgression`.
+        const veille = surveilleProgression(signal);
         try {
-          // Echeance par tranche : une tranche suspendue gelait la barre de
-          // progression aussi surement qu'un blocage a la resolution, mais sans
-          // jamais rien afficher. Bornee, elle devient un simple nouvel essai.
           const r = await fetch(`${url}${sep}start=${s}&end=${e}`, {
-            signal: echeance(delaiTranche(chunkSize), signal),
+            signal: veille.signal,
             referrerPolicy: "no-referrer",
           });
           if (!r.ok) { lastStatus = r.status; continue; }
@@ -638,6 +693,10 @@ async function fetchTranches(
             for (;;) {
               const { done, value } = await lecteur.read();
               if (done) break;
+              // Le seul endroit qui sait que la connexion vit encore. Sans cet
+              // appel, la surveillance couperait une tranche parfaitement saine
+              // au bout de trente secondes.
+              veille.vu();
               parties.push(value);
               recu += value.byteLength;
               onBytes(value.byteLength);
@@ -666,6 +725,10 @@ async function fetchTranches(
           // On reessaie — mais on retient la nature de la panne pour le dire.
           if (e2 instanceof TypeError) { panneReseau = true; continue; }
           throw e2;
+        } finally {
+          // Sans ca, les minuteurs de la tranche survivent a la tranche et
+          // finissent par annuler une requete qui ne les concerne plus.
+          veille.fin();
         }
       }
       if (!buf) {
@@ -737,28 +800,34 @@ async function fetchWhole(
   signal: AbortSignal
 ): Promise<ArrayBuffer> {
   // Fichier d'un seul bloc (TikTok, X, Twitch) : pas de decoupage possible, donc
-  // pas de nouvel essai par tranche. L'echeance est large mais existe, sinon un
-  // flux qui s'arrete de couler laisse la barre figee pour toujours.
-  const r = await fetch(url, {
-    signal: echeance(5 * 60_000, signal),
-    referrerPolicy: "no-referrer",
-  });
-  if (!r.ok) throw new Error("Le téléchargement a échoué (" + r.status + ").");
-  if (!r.body) return r.arrayBuffer();
-  const parts: Uint8Array[] = [];
-  const reader = r.body.getReader();
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    parts.push(value);
-    onBytes(value.byteLength);
+  // pas de nouvel essai par tranche. Meme surveillance qu'ailleurs — c'est
+  // l'ARRET du flux qu'on veut attraper, pas sa lenteur. Le plafond fixe de cinq
+  // minutes condamnait un gros fichier sur une ligne lente, alors qu'il arrivait
+  // parfaitement, juste plus tard.
+  const veille = surveilleProgression(signal);
+  try {
+    const r = await fetch(url, { signal: veille.signal, referrerPolicy: "no-referrer" });
+    if (!r.ok) throw new Error("Le téléchargement a échoué (" + r.status + ").");
+    if (!r.body) return r.arrayBuffer();
+    const parts: Uint8Array[] = [];
+    const reader = r.body.getReader();
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      veille.vu();
+      parts.push(value);
+      onBytes(value.byteLength);
+    }
+    const total = parts.reduce((n, p) => n + p.byteLength, 0);
+    const out = new Uint8Array(total);
+    let off = 0;
+    for (const p of parts) { out.set(p, off); off += p.byteLength; }
+    return out.buffer;
+  } finally {
+    veille.fin();
   }
-  const total = parts.reduce((n, p) => n + p.byteLength, 0);
-  const out = new Uint8Array(total);
-  let off = 0;
-  for (const p of parts) { out.set(p, off); off += p.byteLength; }
-  return out.buffer;
 }
+
 
 /** Fusion sans re-encodage : on recopie les paquets deja encodes tels quels. */
 async function mux(

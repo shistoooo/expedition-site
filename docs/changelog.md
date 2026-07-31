@@ -1,4 +1,35 @@
 ---
+### [2026-07-31 06:20] — L'échéance par tranche punissait la LENTEUR alors qu'elle visait l'ARRÊT
+
+**Quoi :** Le chronomètre par tranche est remplacé par une surveillance du silence. Une tranche lente va désormais au bout ; seule une tranche qui **cesse d'arriver** est interrompue.
+
+**Pourquoi :** C'était le dernier angle mort de la campagne de stress, et le calcul est déterministe — pas une hypothèse :
+
+```
+6 Mo par tranche ÷ 60 s d'échéance = 100 Ko/s exigés PAR CONNEXION
+6 connexions par piste × 2 pistes (vidéo + audio) = 12 connexions
+→ ~1,2 Mo/s (≈10 Mbit/s) requis rien que pour NE PAS ÉCHOUER
+```
+
+En dessous, **chaque** tranche dépasse son échéance, est rejouée quatre fois, puis le téléchargement échoue franchement. Et les reprises retéléchargent les mêmes 6 Mo sur une ligne déjà saturée : le remède aggrave le mal. Une ligne à 5 Mbit/s — courante en mobile, et c'est la piste n°1 sur les pannes remontées depuis l'Algérie — ne pouvait **rien** télécharger, quelle que soit la patience de la personne.
+
+**Ce qui rend le défaut instructif :** le commentaire du code disait déjà l'intention juste, deux fois. « Une tranche **suspendue** gelait la barre » et « on ne veut pas punir une connexion lente ». L'implémentation faisait exactement l'inverse de ce que son propre commentaire annonçait. Personne ne l'a vu parce que tout le monde teste depuis une bonne ligne.
+
+**Le remplacement :** `surveilleProgression()` arme un compte à rebours de 30 s remis à zéro **à chaque octet reçu**. Tant que ça coule, on laisse travailler. Un plafond absolu de 10 min reste en dernier recours — c'est lui qui remplit le rôle d'origine, empêcher une tranche de tourner sans fin.
+
+Couvre les trois chemins : disque et mémoire passent tous deux par `fetchTranches`, et `fetchWhole` (TikTok, X, Twitch) avait le même défaut sous la forme d'un plafond fixe de 5 minutes.
+
+**Fichiers touchés :**
+- `src/lib/webdl.ts` — `surveilleProgression()` ajoutée ; `fetchTranches` et `fetchWhole` l'utilisent ; `veille.vu()` appelé dans les deux boucles de lecture ; `veille.fin()` en `finally`.
+- `DELAI_TRANCHE_MS` et `delaiTranche()` **retirés**, avec un bloc de commentaire qui explique pourquoi. Les laisser inutilisés aurait fait croire au prochain lecteur que chronométrer les tranches est la politique de la maison.
+
+**Comment annuler :** `git revert` sur ce commit. L'ancien comportement revient tel quel — y compris son plancher de 1,2 Mo/s.
+
+**Effets de bord possibles :** un réseau qui livre les octets au compte-gouttes sans jamais s'arrêter tiendra désormais jusqu'à 10 minutes par tranche au lieu d'échouer en 60 s. C'est voulu — mais quelqu'un sur une ligne catastrophique verra une barre qui avance très lentement plutôt qu'un message d'échec. La barre bouge, donc l'information reste honnête.
+
+**⚠️ Ce qui reste non vérifié :** le bridage réseau n'a pas pu être simulé dans cet environnement. La mesure a été faite en exploitant la falaise de débit de googlevideo au-delà de 11 Mo par plage, ce qui produit un transfert réellement lent — mais ce n'est pas la même chose qu'une ligne lente de bout en bout. Le calcul du plancher, lui, se lit directement dans le code.
+
+---
 ### [2026-07-31 05:10] — Campagne de stress : le transport tenait, c'est le DIAGNOSTIC qui mentait
 
 **Quoi :** Correction de sept défauts trouvés par une campagne d'agression du téléchargeur web. Aucun ne concerne le transport des octets — tous concernent ce qu'on **raconte** à la personne, ou ce qu'on **facture**.
