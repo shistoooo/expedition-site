@@ -1,4 +1,36 @@
 ---
+### [2026-07-31 15:05] — CORS : le téléchargeur était injoignable sur le domaine de production, et la réserve du mois n'était annoncée nulle part
+
+**Quoi :** Deux corrections. `expeditionlauncher.store` est ajouté aux origines autorisées du Worker, et la réserve mensuelle est enfin annoncée avant d'être atteinte.
+
+**🔴 LE PLUS GRAVE — 100 % d'échecs sur le domaine de production.** Le Worker n'autorisait que `tubeforge.explauncheur.space`. La page est aussi servie depuis `expeditionlauncher.store`, qui **n'était pas dans la liste** : le navigateur bloquait chaque réponse avant qu'elle n'atteigne le code. Tout le monde, tout le temps.
+
+**Et le message accusait la victime.** La page affichait « Ta connexion fonctionne — c'est notre service qui n'est pas accessible **depuis ton réseau** », en suggérant un pare-feu ou un fournisseur d'accès. C'était nous, à 100 %. Un visiteur en aurait conclu que son réseau bloque, et serait parti.
+
+**🐛 POURQUOI AUCUN TEST NE L'A VU, et c'est la leçon de la journée : `curl` IGNORE LE CORS.**
+
+Toute la campagne de la nuit — 1 328 résolutions, 594 Mo sous charge, les tests de bout en bout, les agents adverses — s'est faite en `curl` ou en `urllib`. Le Worker répondait **200 à chaque appel** pendant que le navigateur, lui, bloquait tout. Le CORS est une règle que **seul un navigateur applique** : un test serveur ne peut structurellement pas le détecter.
+
+**Règle qui en découle : une vérification depuis le navigateur, à l'origine réelle de production, n'est pas optionnelle.** Elle a été faite après coup, et c'est elle qui confirme la correction — `/api/me` en 200, jauge « 15 Go restants sur 20 », résolution 1080p, message d'erreur disparu.
+
+**🟠 La réserve du MOIS n'existait pas visuellement.** La réserve du **jour** est annoncée dès qu'elle passe sous 25 % (« La réserve partagée par tout le monde touche à sa fin aujourd'hui »). Celle du **mois**, jamais — alors que c'est la seule qui ne repart pas le lendemain mais le 1er. Quelqu'un voyait sa jauge personnelle pleine, aucune alerte, puis un refus sec pendant des jours.
+
+Le Worker renvoyait déjà `mois` dans `/api/me` ; la page ne le lisait nulle part. Corrigé, au même seuil et dans la même forme que la réserve du jour.
+
+**Ce qui, à l'inverse, était déjà bien fait** — vérifié en lisant le code, pas supposé : les **quatre** limites (mois, jour, personnelle, rythme d'appels) ont chacune leur propre message en français, qui nomme la cause et dit quand ça repart, avec son encart TubeForge. Le cas « quota personnel restant mais réserve commune épuisée » est explicitement traité : « Il est gratuit, donc tout le monde se partage la même réserve. »
+
+**Fichiers touchés :**
+- `tubeforge-webdl/wrangler.toml` — `ALLOWED_ORIGINS` + commentaire expliquant le piège.
+- `src/lib/webdl.ts` — champ `mois` dans le type `Me`.
+- `src/app/tubeforge/telecharger/page.tsx` — `Compteurs` reçoit et annonce `mois`.
+
+**Comment annuler :** retirer `https://expeditionlauncher.store` de `ALLOWED_ORIGINS` et redéployer le Worker (mais le téléchargeur redevient inutilisable sur ce domaine) ; `git revert` pour la partie site.
+
+**Effets de bord possibles :** aucune origine étrangère n'est acceptée — vérifié, `https://mechant.example` reçoit toujours l'origine légitime en réponse, donc le navigateur la bloque. La sécurité n'a pas bougé.
+
+**⚠️ Reste à faire, et c'est une décision produit :** il n'existe **aucun sélecteur de qualité ni option audio seul**. Le service sert toujours le maximum. Mesuré sur une vidéo de 2h53 : 1080p = **776 Mo**, 720p = **213 Mo**, audio seul = **63 Mo**. Un sélecteur diviserait la consommation par 3 à 12 — et le moteur choisit déjà la qualité selon un budget d'octets, donc l'essentiel du travail est une interface. L'audio seul, lui, retirerait un argument au produit payant (les captures de cette page vendent TubeForge avec ses boutons MP3), et serait du `.m4a` et non du MP3 : produire un vrai MP3 imposerait de ré-encoder, ce que la page promet de ne jamais faire.
+
+---
 ### [2026-07-31 07:40] — Le test de charge : deux vrais défauts, et trois explications fausses avant la bonne
 
 **Quoi :** Le test de charge — la seule dimension jamais mesurée — a trouvé deux défauts que la concurrence seule révèle. Les deux sont corrigés et vérifiés.

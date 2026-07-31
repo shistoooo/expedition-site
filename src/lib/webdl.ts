@@ -208,6 +208,13 @@ export type Me = {
   quota?: { used: number; limit: number; octetsParUnite?: number };
   /** Reserve COLLECTIVE du jour : ce que tout le serveur a consomme. */
   serveur?: { used: number; limit: number };
+  /**
+   * Reserve COLLECTIVE du mois. Le Worker la renvoyait deja ; la page ne la
+   * lisait nulle part, donc le seul plafond sans aucun signal d'approche etait
+   * aussi le plus long a se recharger — jusqu'au 1er du mois suivant. Quelqu'un
+   * voyait sa jauge personnelle pleine, aucune alerte, puis un refus sec.
+   */
+  mois?: { used: number; limit: number };
   invite?: string;
 };
 

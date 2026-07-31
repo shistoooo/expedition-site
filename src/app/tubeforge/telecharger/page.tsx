@@ -59,17 +59,22 @@ const AMBER = "#ff6a1f";
  *  c'est du bruit. */
 const SEUIL_RESERVE = 0.25;
 function Compteurs({
-  perso, total, serveur, octetsParUnite,
+  perso, total, serveur, mois, octetsParUnite,
 }: {
   perso: number | null;
   total: number | null;
   serveur: { used: number; limit: number } | null;
+  /** Reserve collective du MOIS. Même traitement que celle du jour — mais elle
+   *  n'avait aucun signal d'approche, alors que c'est la plus longue à se
+   *  recharger : jusqu'au 1er du mois suivant. */
+  mois: { used: number; limit: number } | null;
   /** Taille d'une unite de relais, fournie par le Worker. Absent tant que
    *  /api/me n'a pas repondu : on retombe sur la valeur de reference. */
   octetsParUnite?: number;
 }) {
   if (perso === null || total === null) return null;
   const srvLeft = serveur ? Math.max(0, serveur.limit - serveur.used) : null;
+  const moisLeft = mois ? Math.max(0, mois.limit - mois.used) : null;
 
   /**
    * Les compteurs sont en UNITES DE RELAIS cote Worker (~16 Mo chacune) depuis le
@@ -124,6 +129,17 @@ function Compteurs({
           {srvLeft === 0
             ? "La réserve partagée du jour est épuisée. Elle repart demain matin."
             : "La réserve partagée par tout le monde touche à sa fin aujourd’hui. Elle repart demain matin."}
+        </p>
+      )}
+      {/* La réserve du MOIS, au même seuil et dans la même forme. Elle n'était
+          annoncée nulle part alors que c'est la seule qui ne repart pas le
+          lendemain : sans ce mot, quelqu'un voyait sa jauge pleine puis se
+          faisait refuser jusqu'au 1er, sans jamais comprendre pourquoi. */}
+      {moisLeft !== null && mois && mois.limit > 0 && moisLeft / mois.limit <= SEUIL_RESERVE && (
+        <p className="text-[13px] md:text-[12px] text-white/45 leading-relaxed mt-2">
+          {moisLeft === 0
+            ? "La réserve du mois est épuisée. Elle repart le 1er."
+            : "La réserve partagée du mois touche à sa fin. Elle repart le 1er."}
         </p>
       )}
     </div>
@@ -1065,7 +1081,7 @@ export default function TelechargerPage() {
                   )}
 
                   <div className="mb-5 pb-5 border-b border-white/10">
-                    <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} octetsParUnite={me?.quota?.octetsParUnite} />
+                    <Compteurs perso={left} total={me?.quota?.limit ?? null} serveur={srv} mois={me?.mois ?? null} octetsParUnite={me?.quota?.octetsParUnite} />
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2.5">
