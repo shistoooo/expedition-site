@@ -27,6 +27,18 @@ Couvre les trois chemins : disque et mémoire passent tous deux par `fetchTranch
 
 **Effets de bord possibles :** un réseau qui livre les octets au compte-gouttes sans jamais s'arrêter tiendra désormais jusqu'à 10 minutes par tranche au lieu d'échouer en 60 s. C'est voulu — mais quelqu'un sur une ligne catastrophique verra une barre qui avance très lentement plutôt qu'un message d'échec. La barre bouge, donc l'information reste honnête.
 
+**Mesure faite après coup, sur un transfert réellement lent** (plage de 14 Mo, au-delà de la falaise de bridage de googlevideo) :
+
+| | |
+|---|---|
+| Débit | **0,251 Mo/s** — un trentième d'un débit normal |
+| Durée | 55,8 s pour 14 Mo |
+| **Pire silence entre deux octets** | **0,3 s** |
+
+C'est le chiffre qui valide le choix : même à 0,25 Mo/s, les octets arrivent **en continu**. L'écart maximal est de 0,3 s contre un seuil de 30 s, soit cent fois de marge. Une ligne lente n'est pas une ligne muette — et c'est précisément ce que l'ancienne échéance confondait.
+
+**Ce que cette mesure ne prouve PAS :** elle ne reproduit pas le cas d'échec. À ce débit, une tranche de 6 Mo passait déjà en 24 s sous l'ancienne politique. Elle établit que le discriminateur retenu — le silence — est le bon, pas que l'ancien cassait. Ça, c'est le calcul des constantes qui l'établit.
+
 **⚠️ Ce qui reste non vérifié :** le bridage réseau n'a pas pu être simulé dans cet environnement. La mesure a été faite en exploitant la falaise de débit de googlevideo au-delà de 11 Mo par plage, ce qui produit un transfert réellement lent — mais ce n'est pas la même chose qu'une ligne lente de bout en bout. Le calcul du plancher, lui, se lit directement dans le code.
 
 ---
