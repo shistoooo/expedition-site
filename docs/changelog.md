@@ -1,4 +1,42 @@
 ---
+### [2026-07-31 03:30] — WARP : la sortie « propre » qu'on allait ACHETER est gratuite
+
+**Quoi :** Le résolveur du VPS sort désormais par Cloudflare WARP, dans un espace de noms réseau isolé. Il passe de **1 résolution sur 8** à **1000 sur 1000**.
+
+**Pourquoi :** J'allais recommander d'acheter des adresses résidentielles (~6 $/mois) sur une hypothèse **non testée** — que YouTube les traiterait comme du résidentiel. Une recherche a signalé WARP. C'est gratuit, et surtout **testable tout de suite** au lieu de payer pour voir.
+
+**La mesure, une seule variable changée — l'adresse de sortie :**
+
+| Sortie | Résultat |
+|---|---|
+| Adresse propre du VPS (204.168.158.84) | **1 / 8** |
+| WARP (104.28.222.16), même code, même minute | **8 / 8** |
+| WARP, 200 d'affilée sans pause | **200 / 200** |
+| WARP, 1000 d'affilée | **1000 / 1000** en 3 min 32 (4,7/s) |
+| WARP, 120 vidéos **toutes distinctes** | **120 / 120** |
+
+**Le dernier test est le plus important :** les 1000 faisaient tourner 8 identifiants en boucle. Sans le contrôle sur vidéos distinctes, « 1000/1000 » aurait pu n'être qu'un dédoublonnage côté YouTube. **Total : 1 328 résolutions, zéro refus.** Le plafond n'a jamais été atteint — le wiki yt-dlp documente ~300 vidéos/heure pour une session invitée ; on a tenu **17 000/heure** en rythme instantané.
+
+**🚨 wg0 = ReviewForge, EN PRODUCTION.** 13 pairs, poignées de main de quelques secondes, 3,7 Go transférés. Un `wg-quick` avec `AllowedIPs = 0.0.0.0/0` aurait détourné **tout** le sortant du VPS — nginx, docker, ReviewForge — et cassé le service d'un client. D'où l'espace de noms : table de routage séparée. Vérifié après coup : hôte toujours sur 204.168.158.84, route par défaut toujours via eth0, 13 pairs intacts.
+
+**🐛 LE PIÈGE QUI M'A COÛTÉ LE PLUS :** après le câblage, **422 sur toutes les vidéos** — alors que le même code lancé à la main par `ip netns exec` marchait. Cause : **`ip netns exec` monte `/etc/netns/<ns>/resolv.conf` par-dessus `/etc/resolv.conf` ; le `NetworkNamespacePath=` de systemd ne le fait PAS.** Le service héritait du `nameserver 127.0.0.53` de l'hôte — le relais systemd-resolved, qui n'écoute pas dans l'espace isolé. Plus aucune résolution DNS. Corrigé par `BindReadOnlyPaths=/etc/netns/warp/resolv.conf:/etc/resolv.conf`.
+
+**🐛 Deuxième piège, silencieux celui-là :** `NetworkNamespacePath` capture l'espace **au démarrage**. Relancer `warp.service` détruit et recrée l'espace — le résolveur serait resté attaché à un espace orphelin, sans sortie, **sans rien dire**. Corrigé par `PartOf=warp.service`. Testé : espace relancé → nouvelle adresse de sortie → résolveur suivi → 5/5.
+
+**Sentinelle :** sonde toutes les 10 min. Elle interroge **YouTube**, pas seulement « ai-je une adresse » — un tunnel monté dont l'adresse s'est fait bannir doit aussi déclencher le remontage. Testé pour de vrai : `ip link set warp0 down` → sonde en échec → remontage → 5/5. Écrite en Python après qu'une version curl, passée par trois couches de shell, ait renvoyé un faux code HTTP (`400000000000`).
+
+**Secours prouvé abouti, pas seulement câblé :** drapeau temporaire, vidéo jamais résolue (donc hors cache), et la preuve côté VPS — `172.68.234.104 GET /resolve?id=6hCo4S_1Fhw 200 31455`. Une adresse Cloudflare, un **200**, 31 Ko de formats. Drapeau retiré et vérifié inerte.
+
+**Fichiers touchés :**
+- VPS : `/opt/warp-up.sh`, `/opt/warp-sonde.py`, `/opt/warp-sentinelle.sh`, `/etc/warp.conf` (600), unités `warp.service`, `warp-sentinelle.{service,timer}`, `resolveur.service`, vhost nginx.
+- `/opt/resolveur.py` — adresse d'écoute configurable (`BIND`), défaut inchangé.
+- Sauvegardes : `resolveur.service.avant-warp`, `resolveur.avant-warp` (nginx).
+
+**Comment annuler :** `systemctl disable --now warp.service warp-sentinelle.timer`, restaurer les deux `.avant-warp`, `daemon-reload`, relancer resolveur + nginx. Le résolveur repart sur l'adresse du VPS (donc 1/8, mais fonctionnel).
+
+**Effets de bord possibles :** l'adresse WARP est **partagée** avec d'autres utilisateurs WARP. C'est ce qui la rend crédible, et c'est aussi un risque : un abus par un tiers pourrait la faire bannir. La sentinelle couvre ce cas — un bannissement fait échouer la sonde, donc remonter le tunnel, donc obtenir une autre adresse (vérifié : 104.28.254.16 → 104.28.222.16 → 104.28.222.15 entre trois montages).
+
+---
 ### [2026-07-31 09:45] — Résolveur hors Cloudflare : le tuyau est monté et prouvé, il manque la porte de sortie
 
 **Quoi :** Un service de résolution tourne sur le VPS, derrière HTTPS, et le Worker l'appelle en SECOURS quand YouTube le refuse.
