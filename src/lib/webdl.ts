@@ -257,6 +257,14 @@ export type Resolved = {
 
   quota: { used: number; limit: number; octetsParUnite?: number };
   serveur?: { used: number; limit: number };
+  /**
+   * Les définitions servables, avec le poids réel de chacune (vidéo + son).
+   * Calculées côté Worker par le même sélecteur que celui qui livre : ce qui est
+   * proposé ici sera honoré à l'identique.
+   */
+  definitions?: Array<{ definition: number; container: string; size: number }>;
+  /** Celle effectivement retenue, pour savoir laquelle cocher. */
+  definitionChoisie?: number | null;
 };
 
 export type Progress = { phase: "download" | "merge" | "save"; pct: number; label: string };
@@ -518,7 +526,12 @@ export function disquePret(): Promise<boolean> {
   return capaciteDisque;
 }
 
-export async function resolve(url: string): Promise<ResolveResult> {
+/**
+ * @param definition quand la personne a CHOISI une définition. Absent au premier
+ * appel : on sert le meilleur que sa machine peut assembler, et c'est seulement
+ * après, chiffres sous les yeux, qu'elle peut demander plus léger.
+ */
+export async function resolve(url: string, definition?: number): Promise<ResolveResult> {
   // Le Worker choisit la qualite en fonction de ce budget : c'est la machine du
   // visiteur qui decide, pas une constante ecrite sur la mienne.
   //
@@ -528,6 +541,10 @@ export async function resolve(url: string): Promise<ResolveResult> {
   const surDisque = await disquePret();
   const params: Record<string, string> = { url, max: String(budgetOctets(surDisque)) };
   if (surDisque) params.disque = "1";
+  // Le budget reste envoyé même avec un choix explicite : il borne toujours ce
+  // que cette machine peut assembler. Le choix ne peut que descendre, jamais
+  // forcer un fichier que le navigateur ne tiendrait pas.
+  if (definition) params.h = String(definition);
   const yt = isYouTube(url);
   const visitorData = yt ? await getVisitorData(WORKER) : null;
   if (visitorData) params.vd = visitorData;

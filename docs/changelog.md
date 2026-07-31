@@ -1,4 +1,43 @@
 ---
+### [2026-07-31 16:40] — Sélecteur de définition : la personne choisit, avec le poids sous les yeux
+
+**Quoi :** Après l'analyse, la carte propose chaque définition servable avec son poids réel. Un clic recalcule et le fichier suit.
+
+**Pourquoi :** Le service prenait toujours le maximum. Quelqu'un qui voulait juste écouter un podcast téléchargeait **902 Mo au lieu de 190**. C'était aussi la vraie réponse à « 20 Go par personne, ça semble beaucoup » : le plafond devait couvrir le plus gros fichier possible, faute de choix.
+
+**Le choix arrive APRÈS l'analyse, pas avant.** Choisir avant, c'est choisir à l'aveugle — on ne sait ni quelles définitions existent, ni ce qu'elles pèsent. Le geste courant reste donc à un clic, et l'option n'apparaît qu'une fois les chiffres connus.
+
+**Ce que ça donne, mesuré sur un podcast de 2h53 :**
+
+| | Poids | |
+|---|---|---|
+| 1080p | 902 Mo | servi par défaut |
+| 720p | 364 Mo | **2,5× moins** |
+| 480p | 298 Mo | |
+| 144p | 190 Mo | 4,7× moins |
+
+Le détail que seuls les chiffres révèlent : sur cette vidéo l'audio pèse ~170 Mo à lui seul, donc **descendre sous 480p ne rapporte presque plus rien**. Des étiquettes sans poids auraient laissé croire l'inverse. C'est l'argument central pour afficher les tailles réelles.
+
+**Comment les options sont calculées — et pourquoi elles ne peuvent pas mentir :** `definitionsDisponibles()` ne réimplémente aucune règle. Pour chaque définition candidate elle rappelle `pickPair`, le sélecteur qui livre. La compatibilité conteneur/son, la préférence H.264, le traitement des verticales sont donc identiques par construction. **Il est impossible de proposer une option qui ne serait pas honorée.** Vérifié en production : 8 définitions sur 2 vidéos, taille annoncée = taille servie à l'octet près, sur les deux points de présence.
+
+**🐛 Le piège évité :** un choix explicite met `downgraded` à `false`. Sans ça, quelqu'un qui vient de cliquer sur 720p aurait lu « Qualité réduite volontairement » — absurde, et cela décrédibiliserait ce message le jour où il est vraiment nécessaire.
+
+**🐛 Et un faux bug que j'ai failli signaler :** un premier contrôle donnait `h=144` → 1080p. Le test avait tourné **avant la fin de la propagation Cloudflare** ; la requête avait atterri sur un point de présence encore sur l'ancienne version. Après attente, 6 définitions sur 6 sont cohérentes. Piège déjà rencontré cinq fois cette nuit.
+
+**Fichiers touchés :**
+- `tubeforge-webdl/src/youtube.js` — `definition()` sorti de `pickPair` (une seule notion, pas deux) ; `definitionsDisponibles()` ajoutée.
+- `tubeforge-webdl/src/index.js` — paramètre `h`, borné par `MAX_HEIGHT` ; `definitions` et `definitionChoisie` dans la réponse.
+- `tubeforge-webdl/test/test_definitions.mjs` — **25 assertions**, dont la cohérence offre/livraison sur chaque définition, les verticales, et un catalogue sans son compatible.
+- `src/lib/webdl.ts` — `resolve(url, definition?)`.
+- `src/app/tubeforge/telecharger/page.tsx` — les puces et leur état.
+
+**Vérifié de bout en bout :** choix 360p → fichier réel de **15,7 Mo en 640×360 H.264 + AAC**, contre 111,9 Mo en 1080p pour la même vidéo. Durée conforme à 0,3 s.
+
+**Comment annuler :** `git revert` des deux côtés puis `npx wrangler deploy`. Sans le paramètre `h`, le comportement d'origine revient tel quel — le sélecteur est purement additif.
+
+**Effets de bord possibles :** changer de définition coûte une résolution, donc **1 unité de quota** (6 Mo) — négligeable, et sans appel à YouTube puisque le cache rend les formats bruts. L'audio seul reste absent : c'est une décision commerciale (les captures de cette page vendent TubeForge avec ses boutons MP3), et ce serait du `.m4a`, pas du MP3, puisque la page promet de ne jamais ré-encoder.
+
+---
 ### [2026-07-31 15:05] — CORS : le téléchargeur était injoignable sur le domaine de production, et la réserve du mois n'était annoncée nulle part
 
 **Quoi :** Deux corrections. `expeditionlauncher.store` est ajouté aux origines autorisées du Worker, et la réserve mensuelle est enfin annoncée avant d'être atteinte.

@@ -554,6 +554,9 @@ export default function TelechargerPage() {
   const [causeEchec, setCauseEchec] = useState<{ message: string; detail: string | null } | null>(null);
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState(false);
+  /** Définition en cours de changement, pour ne griser que la puce cliquée et
+   *  empêcher deux demandes simultanées. `null` = aucun changement en cours. */
+  const [changeDef, setChangeDef] = useState<number | null>(null);
   const [result, setResult] = useState<Resolved | null>(null);
   const [error, setError] = useState<string | null>(null);
   // Verdict du secours anti-robot, joint au refus. Discret mais present : c'est
@@ -652,6 +655,39 @@ export default function TelechargerPage() {
     // qu'en secours si YouTube nous refuse (cf. lib/potoken.ts).
     warmSession();
   }, [refreshMe]);
+
+  /**
+   * Changer de définition APRÈS l'analyse, pas avant.
+   *
+   * Choisir avant, c'est choisir à l'aveugle : on ne sait pas encore quelles
+   * définitions existent ni ce qu'elles pèsent. On sert donc d'abord le meilleur
+   * que la machine peut assembler — le geste courant reste à un clic — et c'est
+   * seulement ensuite, chiffres sous les yeux, qu'on peut demander plus léger.
+   *
+   * L'appel repart au Worker plutôt que d'être calculé ici : le cache lui rend
+   * les formats bruts, donc il ne rappelle pas YouTube, et surtout c'est LE MÊME
+   * sélecteur qui tranche. Choisir côté page, ce serait dupliquer les règles de
+   * compatibilité conteneur/son — et les voir diverger un jour.
+   */
+  const onChangerDefinition = async (definition: number) => {
+    if (!result || busy || changeDef !== null) return;
+    setChangeDef(definition);
+    try {
+      const r = await resolve(url.trim(), definition);
+      if (r.ok) {
+        setResult(r);
+        setMe((m) => (m ? { ...m, quota: r.quota, serveur: r.serveur ?? m.serveur } : m));
+        const octets = r.video ? (r.video.size ?? 0) + (r.audio?.size ?? 0) : 0;
+        if (octets > 0) setDernierPoidsMo(Math.round(octets / 1048576));
+      } else {
+        setError(r.err);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Une erreur est survenue.");
+    } finally {
+      setChangeDef(null);
+    }
+  };
 
   const onResolve = async () => {
     setError(null); setDetailTechnique(null); setUpsell(null); setResult(null); setDone(false); setProgress(null);
@@ -1267,6 +1303,51 @@ export default function TelechargerPage() {
                           ? `Qualité réduite : YouTube limite en ce moment ce qu'il nous laisse récupérer${result.bestHeight ? ` (le ${result.bestHeight}p existe)` : ""}. Réessaie dans quelques minutes.`
                           : `Qualité réduite volontairement : ${result.bestHeight ? `en ${result.bestHeight}p, cette vidéo` : "en pleine résolution, cette vidéo"} dépasserait ce que ton navigateur peut assembler.`}
                       </p>
+                    )}
+
+                    {/* CHOIX DE LA DÉFINITION — chaque option porte son poids réel.
+                        Des étiquettes seules (« 720p ») ne diraient pas ce qu'on
+                        gagne ; c'est le chiffre qui fait décider. Sur une vidéo
+                        longue, l'audio pèse parfois plus que l'image en basse
+                        définition — descendre ne rapporte alors rien, et la
+                        personne le voit d'un coup d'œil au lieu de le supposer.
+
+                        Rien ne s'affiche s'il n'y a qu'une option : un choix à
+                        une seule branche n'est pas un choix, c'est du bruit. */}
+                    {result.definitions && result.definitions.length > 1 && (
+                      <div className="mt-3">
+                        <p className="text-[11px] md:text-[10px] font-mono uppercase tracking-wider text-white/35 mb-1.5">
+                          Définition
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {result.definitions.map((d) => {
+                            const active = (result.definitionChoisie ?? result.video?.height) === d.definition;
+                            const enCours = changeDef === d.definition;
+                            return (
+                              <button
+                                key={d.definition}
+                                type="button"
+                                onClick={() => onChangerDefinition(d.definition)}
+                                disabled={active || busy || changeDef !== null}
+                                aria-pressed={active}
+                                className={[
+                                  "px-2.5 py-1 rounded-md text-[12px] font-mono tabular-nums transition-colors",
+                                  "border disabled:cursor-default",
+                                  active
+                                    ? "border-white/25 bg-white/[0.08] text-white"
+                                    : "border-white/[0.08] text-white/50 hover:text-white hover:border-white/20 hover:bg-white/[0.04]",
+                                  changeDef !== null && !enCours ? "opacity-40" : "",
+                                ].join(" ")}
+                              >
+                                {d.definition}p
+                                <span className={active ? "text-white/50" : "text-white/30"}>
+                                  {" · "}{enCours ? "…" : fmtPoids(d.size)}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
