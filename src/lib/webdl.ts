@@ -683,7 +683,29 @@ async function fetchTranches(
       for (let attempt = 0; attempt < 4 && !buf; attempt++) {
         if (signal.aborted) throw new Error("Téléchargement annulé.");
         if (attempt > 0) {
-          await new Promise((r) => setTimeout(r, 300 * attempt + Math.random() * 200));
+          /**
+           * ⏳ LE DÉLAI DOIT DÉPENDRE DE LA CAUSE — c'est ce qui manquait.
+           *
+           * Les quatre essais tenaient dans DEUX SECONDES (300, 600, 900 ms).
+           * Or le 403 de googlevideo n'est pas un refus définitif : c'est une
+           * limite de débit qui dure plusieurs secondes. Les quatre essais
+           * tombaient donc dans la même fenêtre et échouaient ensemble.
+           *
+           * Vécu par un vrai utilisateur le 31/07/2026 — « tranche 12 sur 75,
+           * code 403 » — sur une piste que la sonde traverse pourtant sans un
+           * seul refus, dans les deux sens et à six connexions. Relancer à la
+           * main suffisait : la preuve que le délai, et lui seul, était en cause.
+           *
+           * Mesure du projet : la même piste passe 14 fois sur 14 dès qu'on
+           * espace de cinq secondes. On étale donc jusqu'à ~13 s sur un refus de
+           * débit, et on garde le rythme court pour une coupure réseau, où
+           * réessayer vite est le bon réflexe.
+           */
+          const limiteDebit = lastStatus === 403 || lastStatus === 429;
+          const attente = limiteDebit
+            ? 1500 * Math.pow(2, attempt - 1) + Math.random() * 1000
+            : 300 * attempt + Math.random() * 200;
+          await new Promise((r) => setTimeout(r, attente));
         }
         // Surveillance du SILENCE, et non chronometre de la tranche : une
         // tranche suspendue gelait la barre sans rien afficher, mais une tranche

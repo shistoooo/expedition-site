@@ -1,4 +1,38 @@
 ---
+### [2026-07-31 18:20] — Test en conditions réelles : la ligne lente est réglée, et le 403 d'un vrai utilisateur avait une cause précise
+
+**Quoi :** Deux mesures en conditions réelles, sur le domaine de production, dans un vrai Chrome. Et une correction du délai de reprise.
+
+**🟢 LA LIGNE LENTE EST RÉGLÉE, et c'est mesuré, plus déduit.** Chrome bridé en **Slow 3G** (~48 Ko/s réels), sur `expeditionlauncher.store`, une tranche de 6 Mo :
+
+| | |
+|---|---|
+| Durée | **122 secondes** |
+| Débit | 48 Ko/s |
+| **Pire silence entre deux octets** | **0,1 seconde** sur 4 000 lectures |
+| Ancienne politique | **AURAIT ÉCHOUÉ** — la tranche dépasse les 60 s |
+| Nouvelle politique | **PASSE** |
+
+À 60 secondes exactement, 2,89 Mo sur 6 étaient reçus : l'ancien code coupait là, à 48 % du transfert, puis échouait quatre fois de suite. La résolution, elle, tient en 9,2 s sous 3G lente, loin de son échéance de 45 s.
+
+**🔴 UN VRAI UTILISATEUR A ÉCHOUÉ** — « tranche 12 sur 75 (octets 62,9–68,7 Mo), code 403 ». Il a relancé, ça a marché.
+
+**Ce n'était ni l'offset ni la piste.** Sonde systématique sur les 130 tranches d'une piste de 777 Mo, dans l'ordre **puis à l'envers** : zéro refus. Puis 30 tranches à **six connexions parallèles**, comme le vrai client : 180 Mo, zéro refus. Le 403 est bien sporadique — le code le documentait déjà (1 refus sur 6 à 12 requêtes).
+
+**La vraie cause est le DÉLAI DE REPRISE.** Les quatre essais tenaient dans **deux secondes** (300, 600, 900 ms). Or le 403 de googlevideo est une limite de débit qui dure plusieurs secondes : les quatre tombaient dans la même fenêtre de refus et échouaient ensemble. Que relancer à la main suffise le prouve — seul le délai était en cause.
+
+Mesure du projet : la même piste passe **14 fois sur 14 dès qu'on espace de cinq secondes**. Le délai dépend désormais de la cause : ~13 s étalés sur un refus de débit (403/429), rythme court conservé pour une coupure réseau, où réessayer vite est le bon réflexe.
+
+**Fichiers touchés :**
+- `src/lib/webdl.ts` — délai de reprise indexé sur le code HTTP.
+
+**Comment annuler :** `git revert`. L'ancien délai revient — avec sa fenêtre de deux secondes.
+
+**Effets de bord possibles :** une tranche qui se fait refuser met désormais jusqu'à 13 s à abandonner au lieu de 2. Les cinq autres connexions continuent pendant ce temps, donc la barre avance ; c'est une attente, pas un blocage. Le compromis est franc : quelques secondes de plus contre un téléchargement qui aboutit.
+
+**⚠️ Ce qui reste non vérifié :** le clic humain sur « Télécharger ». `showSaveFilePicker` exige une activation utilisateur transitoire qu'aucun clic synthétique ne fournit — c'est une garantie du navigateur, pas une limite de l'outillage. Toute la chaîne en amont est validée, et des fichiers complets ont été produits par une chaîne équivalente, mais ce dernier geste n'appartient qu'à un humain.
+
+---
 ### [2026-07-31 16:40] — Sélecteur de définition : la personne choisit, avec le poids sous les yeux
 
 **Quoi :** Après l'analyse, la carte propose chaque définition servable avec son poids réel. Un clic recalcule et le fichier suit.
