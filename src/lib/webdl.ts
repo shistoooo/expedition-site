@@ -492,6 +492,16 @@ export type ResolveFailure = {
   needAuth?: boolean;
   quotaReached?: boolean;
   upsell?: Upsell;
+  /**
+   * L'échelon GRATUIT proposé à un visiteur anonyme qui vient d'épuiser ses
+   * 10 Go : se connecter avec Discord double son quota, sans rien payer.
+   *
+   * Le Worker n'envoie jamais `discord` et `upsell` en même temps — l'un
+   * s'adresse à qui n'a pas encore pris le palier gratuit, l'autre à qui l'a
+   * déjà pris. Proposer les deux, c'est demander d'arbitrer entre gratuit et
+   * payant au pire moment.
+   */
+  discord?: Upsell;
 };
 
 type ResolveResult = Resolved | ResolveFailure;
@@ -1030,11 +1040,40 @@ type Destination = {
    * ferme » mais **« Cannot close a locked stream »**, et le fichier n'etait
    * jamais remis. C'est le defaut qu'a trouve le premier essai reel.
    */
-  finaliser: (dejaFerme?: boolean) => Promise<void>;
+  finaliser: (dejaFerme?: boolean) => Promise<Livraison>;
   /** Nettoie en cas d'echec. Ne doit jamais jeter. */
   jeter: () => Promise<void>;
   /** true si la personne a choisi l'emplacement : rien de temporaire a nettoyer. */
   choisie: boolean;
+};
+
+/**
+ * CE QU'ON SAIT DE LA REMISE DU FICHIER — ET RIEN DE PLUS.
+ *
+ * ⚠️ Le web n'expose AUCUN signal « le telechargement a demarre » pour un
+ * `<a download>`. `a.click()` rend la main immediatement, que le navigateur
+ * honore le clic ou qu'il le refuse en silence (blocage des telechargements
+ * automatiques, boite « ou enregistrer » fermee, antivirus). La pile ne voit
+ * rien : aucune exception, aucune valeur de retour.
+ *
+ * Rapport utilisateur du 01/08/2026 : « ca me met il est dans le fichier
+ * telechargement mais y'a eu aucun dl ». La page affirmait « Fichier enregistre
+ * dans tes telechargements » alors que RIEN ne le lui avait dit — c'etait une
+ * affirmation sur une etape que le code ne peut pas observer.
+ *
+ * On arrete donc d'affirmer. On rend ce qu'on sait vraiment :
+ *  - `choisie` : la personne a choisi l'emplacement (la, le fichier EXISTE,
+ *    c'est le systeme qui l'a cree) ;
+ *  - `urlSecours` : sinon, la prise pour reessayer PAR UN VRAI CLIC HUMAIN,
+ *    que jamais aucun navigateur ne bloque. C'est la seule reparation possible.
+ */
+export type Livraison = {
+  /** true : emplacement choisi par la personne. false : remise au navigateur. */
+  choisie: boolean;
+  /** Nom du fichier — la seule prise dont la personne dispose pour le chercher. */
+  nom: string;
+  /** Lien de secours, vivant ~5 min. Absent quand la personne a choisi l'emplacement. */
+  urlSecours?: string;
 };
 
 /**
@@ -1068,7 +1107,12 @@ async function ouvrirDestination(nomFichier: string, mime: string): Promise<Dest
       const flux = (await poignee.createWritable()) as FluxDisque;
       return {
         flux, choisie: true,
-        finaliser: async (dejaFerme = false) => { if (!dejaFerme) await flux.close(); },
+        finaliser: async (dejaFerme = false) => {
+          if (!dejaFerme) await flux.close();
+          // Ici le fichier existe pour de bon : c'est le systeme qui l'a cree au
+          // moment du choix. Aucune incertitude a signaler.
+          return { choisie: true, nom: nomFichier };
+        },
         jeter: async () => { try { await flux.abort(); } catch { /* deja ferme */ } },
       };
     } catch (e) {
@@ -1089,9 +1133,13 @@ async function ouvrirDestination(nomFichier: string, mime: string): Promise<Dest
       if (!dejaFerme) await flux.close();
       // `getFile()` rend un objet adosse au disque : le navigateur le lit au fil
       // du telechargement, il ne le charge pas en memoire.
-      saveBlob(await poignee.getFile(), nomFichier);
+      const url = saveBlob(await poignee.getFile(), nomFichier);
       // On ne supprime PAS tout de suite : le navigateur lit encore le fichier.
+      // ⚠️ Ce delai borne AUSSI la duree de vie du lien de secours : le fichier
+      // rendu est adosse a cette entree OPFS, la supprimer casse le lien. Les
+      // deux minuteurs doivent donc rester d'accord (cf. `saveBlob`).
       setTimeout(() => { racine.removeEntry(nom).catch(() => {}); }, 5 * 60_000);
+      return { choisie: false, nom: nomFichier, urlSecours: url };
     },
     jeter: async () => {
       try { await flux.abort(); } catch { /* deja ferme */ }
@@ -1105,7 +1153,19 @@ function safeName(title: string, ext: string) {
   return (base || "video") + "." + ext;
 }
 
-function saveBlob(blob: Blob, filename: string) {
+/**
+ * Demande au navigateur d'enregistrer le fichier — SANS pouvoir verifier qu'il
+ * l'a fait. Rend l'URL de l'objet pour que la page puisse offrir un vrai clic
+ * humain en secours (voir `Livraison`).
+ *
+ * ⚠️ La revocation est passee de 60 s a 5 MINUTES, alignee sur la suppression du
+ * brouillon OPFS dans `ouvrirDestination`. A 60 s, le seul recours possible
+ * mourait avant que la personne ait constate qu'il ne s'etait rien passe —
+ * on detruisait la reparation avant qu'elle serve. Ce n'est PAS une fuite : le
+ * fichier est adosse au disque, pas au tas, et l'entree OPFS est supprimee au
+ * meme instant, comme avant.
+ */
+function saveBlob(blob: Blob, filename: string): string {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -1113,7 +1173,8 @@ function saveBlob(blob: Blob, filename: string) {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  setTimeout(() => URL.revokeObjectURL(url), 5 * 60_000);
+  return url;
 }
 
 /**
@@ -1157,7 +1218,7 @@ export async function download(
   r: Resolved,
   onProgress: (p: Progress) => void,
   signal: AbortSignal
-): Promise<void> {
+): Promise<Livraison> {
   const totalKnown = r.muxed
     ? r.file?.size ?? 0
     : (r.video?.size ?? 0) + (r.audio?.size ?? 0);
@@ -1205,8 +1266,8 @@ export async function download(
       buf = await grab(r.file.relayUrl);
     }
     onProgress({ phase: "save", pct: 100, label: "Enregistrement" });
-    saveBlob(new Blob([buf], { type: "video/mp4" }), safeName(r.meta.title, r.file.container));
-    return;
+    const nomMuxe = safeName(r.meta.title, r.file.container);
+    return { choisie: false, nom: nomMuxe, urlSecours: saveBlob(new Blob([buf], { type: "video/mp4" }), nomMuxe) };
   }
 
   if (!r.video || !r.audio) throw new Error("Format introuvable pour cette vidéo.");
@@ -1220,7 +1281,8 @@ export async function download(
   const blob = await mux(vb, ab, r.video.container);
 
   onProgress({ phase: "save", pct: 100, label: "Enregistrement" });
-  saveBlob(blob, safeName(r.meta.title, r.video.container));
+  const nomFusion = safeName(r.meta.title, r.video.container);
+  return { choisie: false, nom: nomFusion, urlSecours: saveBlob(blob, nomFusion) };
 }
 
 /**
@@ -1262,7 +1324,7 @@ async function telechargerSurDisque(
   onProgress: (p: Progress) => void,
   signal: AbortSignal,
   totalKnown: number
-): Promise<void> {
+): Promise<Livraison> {
   const container = r.muxed ? r.file?.container ?? "mp4" : r.video?.container ?? "mp4";
   const nom = safeName(r.meta.title, container);
   const mime = container === "webm" ? "video/webm" : "video/mp4";
@@ -1370,7 +1432,7 @@ async function telechargerSurDisque(
     // Seul le chemin a deux pistes passe par mediabunny, qui ferme le flux
     // lui-meme. Le chemin « fichier deja complet » ecrit en direct, donc c'est a
     // nous de fermer.
-    await dest.finaliser(parMediabunny);
+    return await dest.finaliser(parMediabunny);
   } catch (e) {
     echoue = true;
     await dest.jeter();

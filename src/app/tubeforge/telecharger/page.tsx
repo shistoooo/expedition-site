@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import CompatBadge from "@/components/shared/CompatBadge";
 import {
   clearToken, download, EchecReseau, fetchMe, getToken, loginUrl, readHashResult, resolve, warmSession,
-  type Me, type Progress, type Resolved, type Upsell,
+  type Livraison, type Me, type Progress, type Resolved, type Upsell,
 } from "@/lib/webdl";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -17,9 +17,58 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const PLATFORMS = [
   { key: "youtube", label: "YouTube" },
   { key: "tiktok", label: "TikTok" },
-  { key: "twitter", label: "X" },
-  { key: "twitch", label: "Twitch" },
+  { key: "twitter", label: "X / Twitter" },
+  { key: "twitch", label: "Twitch · clips" },
 ];
+
+/**
+ * Miroir CLIENT de la liste du Worker (tubeforge-webdl/src/platforms.js).
+ *
+ * Deux usages : dire immédiatement si le lien collé est pris en charge, sans
+ * aller-retour réseau, et surtout expliquer les refus connus (Instagram…)
+ * AVANT le clic — un refus après coup ressemble à une panne, le même refus
+ * annoncé avant ressemble à une règle. En cas de désaccord, le serveur reste
+ * l'autorité : ceci n'est qu'un affichage.
+ */
+const HOTES_ACCEPTES: Array<{ re: RegExp; label: string }> = [
+  { re: /(^|\.)youtube\.com$|(^|\.)youtu\.be$|(^|\.)youtube-nocookie\.com$/, label: "YouTube" },
+  { re: /(^|\.)tiktok\.com$/, label: "TikTok" },
+  { re: /(^|\.)(twitter|x|fxtwitter|vxtwitter)\.com$/, label: "X / Twitter" },
+  { re: /(^|\.)twitch\.tv$/, label: "Twitch" },
+];
+const HOTES_REFUSES: Array<{ re: RegExp; message: string }> = [
+  { re: /(^|\.)instagram\.com$/, message: "Instagram exige un compte connecté, même pour ses vidéos publiques — une page web ne peut pas emprunter ta session. L'application TubeForge, elle, le peut." },
+  { re: /(^|\.)facebook\.com$|(^|\.)fb\.watch$/, message: "Facebook exige un compte connecté — impossible depuis une page web. L'application TubeForge le gère." },
+  { re: /(^|\.)vimeo\.com$|(^|\.)dailymotion\.com$/, message: "Ce site ne passe pas par la version web — l'application TubeForge le gère." },
+];
+
+type IndicePlateforme =
+  | { type: "ok"; label: string }
+  | { type: "avertit"; message: string }
+  | { type: "refus"; message: string }
+  | { type: "inconnu" }
+  | null;
+
+function indicePlateforme(brut: string): IndicePlateforme {
+  let host: string;
+  try {
+    host = new URL(brut.trim()).hostname.toLowerCase().replace(/^www\./, "");
+  } catch {
+    return null; // pas encore une URL : on laisse la ligne d'aide par défaut
+  }
+  for (const h of HOTES_ACCEPTES) {
+    if (!h.re.test(host)) continue;
+    // Twitch n'accepte que les clips : le dire au collage, pas après l'analyse.
+    if (h.label === "Twitch" && !/\/clip\/|clips\.twitch\.tv/.test(brut)) {
+      return { type: "avertit", message: "Twitch : seuls les clips passent ici — pas les VOD ni les directs." };
+    }
+    return { type: "ok", label: h.label };
+  }
+  for (const h of HOTES_REFUSES) {
+    if (h.re.test(host)) return { type: "refus", message: h.message };
+  }
+  return { type: "inconnu" };
+}
 
 function DiscordMark({ className }: { className?: string }) {
   return (
@@ -566,8 +615,11 @@ export default function TelechargerPage() {
   // TubeForge fait differemment. C'est le seul moment ou la personne a une
   // raison concrete de s'y interesser : elle vient de buter sur une limite.
   const [upsell, setUpsell] = useState<Upsell | null>(null);
+  /** L'échelon GRATUIT — se connecter avec Discord double le quota. Distinct de
+   *  `upsell`, qui est l'offre payante : le Worker n'envoie jamais les deux. */
+  const [discord, setDiscord] = useState<Upsell | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<Livraison | null>(null);
   // L'URL de connexion depend de window.location : la calculer au rendu
   // provoquerait un ecart entre le HTML du serveur et celui du client.
   const [authHref, setAuthHref] = useState("");
@@ -690,7 +742,7 @@ export default function TelechargerPage() {
   };
 
   const onResolve = async () => {
-    setError(null); setDetailTechnique(null); setUpsell(null); setResult(null); setDone(false); setProgress(null);
+    setError(null); setDetailTechnique(null); setUpsell(null); setDiscord(null); setResult(null); setDone(null); setProgress(null);
     if (!url.trim()) return;
     setBusy(true);
     try {
@@ -703,6 +755,7 @@ export default function TelechargerPage() {
         // trois corrections differentes.
         setDetailTechnique(r.attestation ?? null);
         setUpsell(r.upsell ?? null);
+        setDiscord(r.discord ?? null);
         if (r.needAuth) clearToken();
         await refreshMe();
       } else {
@@ -721,13 +774,12 @@ export default function TelechargerPage() {
 
   const onDownload = async () => {
     if (!result) return;
-    setError(null); setDone(false); setEchecTelechargement(false);
+    setError(null); setDone(null); setEchecTelechargement(false);
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     setProgress({ phase: "download", pct: 0, label: "Démarrage" });
     try {
-      await download(result, setProgress, ctrl.signal);
-      setDone(true);
+      setDone(await download(result, setProgress, ctrl.signal));
       /**
        * Le compteur affiche ne bougeait plus apres un telechargement.
        *
@@ -1138,6 +1190,38 @@ export default function TelechargerPage() {
                       {busy ? "Analyse" : "Récupérer"}
                     </button>
                   </div>
+
+                  {/* L'indice sous le champ : ce qu'on accepte quand il est vide,
+                      le verdict du lien collé dès qu'il y en a un. Les refus
+                      connus (Instagram…) sont expliqués ICI, avant le clic —
+                      après coup, le même message ressemble à une panne. */}
+                  {(() => {
+                    const ind = indicePlateforme(url);
+                    if (!ind) {
+                      return (
+                        <p className="mt-3 text-[12px] leading-relaxed text-white/35">
+                          Accepté ici&nbsp;: YouTube · TikTok · X/Twitter · clips Twitch.
+                          Instagram et Facebook exigent une session connectée&nbsp;— l&apos;application TubeForge les gère.
+                        </p>
+                      );
+                    }
+                    if (ind.type === "ok") {
+                      return (
+                        <p className="mt-3 text-[12px] leading-relaxed text-emerald-300/85 inline-flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5 shrink-0" />
+                          Lien {ind.label}&nbsp;— pris en charge.
+                        </p>
+                      );
+                    }
+                    if (ind.type === "avertit" || ind.type === "refus") {
+                      return <p className="mt-3 text-[12px] leading-relaxed text-amber-300/90">{ind.message}</p>;
+                    }
+                    return (
+                      <p className="mt-3 text-[12px] leading-relaxed text-amber-300/90">
+                        Ce site n&apos;est pas pris en charge par la version web&nbsp;— l&apos;application TubeForge accepte beaucoup plus de sites.
+                      </p>
+                    );
+                  })()}
                 </>
               )}
             </motion.div>
@@ -1218,7 +1302,41 @@ export default function TelechargerPage() {
               </div>
             )}
 
-            {(upsell || epuise) && (
+            {/* ── L'ÉCHELON GRATUIT, quand il existe ──────────────────────────
+                Il PASSE DEVANT l'offre payante et la remplace : proposer les
+                deux en même temps, c'est demander à quelqu'un qu'on vient de
+                bloquer d'arbitrer entre gratuit et payant. Le gratuit est
+                immédiat et ne coûte rien — c'est lui qui l'aide le plus, donc
+                c'est le seul qu'on montre.
+
+                Traitement visuel volontairement plus sobre que l'encart de
+                vente : ce n'est pas une offre commerciale, c'est un palier. */}
+            {discord && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: easeOutExpo }}
+                className="mt-3 rounded-2xl border border-white/[0.10] bg-white/[0.03] p-5 md:p-6"
+              >
+                <p className="font-bold text-white mb-1.5">{discord.titre}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{discord.texte}</p>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mt-5">
+                  <a
+                    data-track="webdl-quota-discord"
+                    href={authHref}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold transition-transform duration-200 hover:translate-y-[-1px]"
+                  >
+                    Me connecter avec Discord
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
+                <p className="text-[13px] md:text-[11px] text-white/50 mt-3 leading-relaxed">
+                  Gratuit, et ça reste gratuit. On ne demande ni carte ni adresse e-mail.
+                </p>
+              </motion.div>
+            )}
+
+            {!discord && (upsell || epuise) && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1375,9 +1493,54 @@ export default function TelechargerPage() {
                       </div>
                     </div>
                   ) : done ? (
-                    <p className="inline-flex items-center gap-2 text-sm text-green-300/90">
-                      <Check className="w-4 h-4" /> Fichier enregistré dans tes téléchargements.
-                    </p>
+                    /**
+                     * ⛔ NE JAMAIS AFFIRMER CE QU'ON NE PEUT PAS OBSERVER.
+                     *
+                     * Ici s'affichait « Fichier enregistré dans tes téléchargements. »
+                     * dès que `download()` résolvait. Or sur le chemin sans sélecteur,
+                     * la remise se fait par un clic programmatique sur un `<a download>`
+                     * — un signal consultatif : le navigateur peut le refuser en
+                     * silence (blocage des téléchargements automatiques, boîte « où
+                     * enregistrer » fermée, antivirus). Rien ne remonte au code.
+                     *
+                     * Rapport du 01/08/2026 : « ca me met il est dans le fichier
+                     * telechargement mais y'a eu aucun dl ». La phrase était fausse
+                     * DEUX fois : elle affirmait une remise invérifiable, et elle
+                     * nommait un dossier alors que l'autre chemin enregistre là où la
+                     * personne a choisi.
+                     *
+                     * On dit désormais ce qu'on sait, et on laisse une prise : un vrai
+                     * clic humain, qu'aucun navigateur ne bloque.
+                     */
+                    done.choisie ? (
+                      <p className="inline-flex items-center gap-2 text-sm text-green-300/90">
+                        <Check className="w-4 h-4 shrink-0" />
+                        Enregistré à l’emplacement que tu as choisi&nbsp;: <span className="font-mono">{done.nom}</span>
+                      </p>
+                    ) : (
+                      <div className="text-sm">
+                        <p className="inline-flex items-center gap-2 text-green-300/90">
+                          <Check className="w-4 h-4 shrink-0" />
+                          Fichier prêt&nbsp;: <span className="font-mono">{done.nom}</span>
+                        </p>
+                        <p className="mt-1.5 text-white/45 leading-relaxed">
+                          Il part dans le dossier de téléchargement de ton navigateur.
+                          {done.urlSecours && (
+                            <>
+                              {" "}Rien n’est arrivé&nbsp;?{" "}
+                              <a
+                                href={done.urlSecours}
+                                download={done.nom}
+                                className="underline underline-offset-2 text-white/75 hover:text-white transition-colors"
+                              >
+                                enregistre-le à la main
+                              </a>{" "}
+                              (le lien reste valable 5 minutes).
+                            </>
+                          )}
+                        </p>
+                      </div>
+                    )
                   ) : result.lienDirect && (!result.video || (result.lienDirect.height ?? 0) > result.video.height) ? (
                     /**
                      * ⛔ NE PAS PROPOSER LE PIRE DES DEUX CHEMINS.
