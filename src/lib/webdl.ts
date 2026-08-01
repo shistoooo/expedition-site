@@ -1374,6 +1374,24 @@ async function telechargerSurDisque(
   } catch (e) {
     echoue = true;
     await dest.jeter();
+    /**
+     * ⚠️ LE FICHIER EXISTE DÉJÀ SUR SON DISQUE, ET IL EST VIDE.
+     *
+     * `showSaveFilePicker` crée le fichier au moment où la personne choisit
+     * l'emplacement — donc AVANT le premier octet. `abort()` jette bien ce qui a
+     * été écrit, mais il ne peut pas défaire cette création : le navigateur ne
+     * nous en donne pas le droit.
+     *
+     * Rapport d'un utilisateur le 31/07/2026 : « le fichier s'est téléchargé sur
+     * mon pc mais jpp l'ouvrir vu qu'il manque des octets ». Il avait raison, et
+     * rien ne le lui disait — il a cherché la panne dans son lecteur vidéo.
+     *
+     * On ne peut pas supprimer ce fichier à sa place. On peut au moins ne pas le
+     * laisser croire qu'il tient quelque chose.
+     */
+    if (dest.choisie && e instanceof Error && !/annul/i.test(e.message)) {
+      e.message += " Le fichier créé à l’endroit que tu as choisi est vide : supprime-le, il ne contient rien.";
+    }
     throw e;
   } finally {
     // ⚠️ Les brouillons occupent la taille des deux pistes sur le disque de la
