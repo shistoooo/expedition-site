@@ -1,4 +1,32 @@
 ---
+### [2026-08-01 00:20] — La « cause racine » que j'ai annoncée trois fois était un artefact de MON test
+
+**Quoi :** Retrait de la proposition de relayer les octets par le VPS. Elle réglait un problème que la mesure contrôlée ne trouve pas.
+
+**Ce que j'affirmais :** une résolution obtenue par le VPS produit des URLs liées à l'adresse WARP ; les octets partant de Cloudflare, YouTube refuserait par intermittence. J'avançais **12 %, 25 %, 31 % de refus** selon les tirages.
+
+**Ce que la mesure contrôlée donne :**
+
+| URLs liées à | Refus |
+|---|---|
+| Cloudflare | **2 sur 60 — 3,3 %** |
+| WARP (le VPS) | **0 sur 60 — 0 %** |
+
+120 requêtes **entrelacées au hasard** entre les deux groupes, **bridées à 2/s**. L'inverse de ce que j'annonçais, et sans écart significatif.
+
+**🐛 D'OÙ VENAIT L'ERREUR — l'ORDRE de mon propre test.** Dans la comparaison qui m'a fait conclure, les vidéos liées à Cloudflare passaient **en premier**, sur un service reposé ; celles liées à WARP **après une centaine de requêtes** de martèlement. L'ordre explique le résultat aussi bien que mon hypothèse, donc il ne prouve rien. J'ai attribué à l'architecture ce que mon dispositif fabriquait.
+
+C'est la règle que ce projet m'avait déjà apprise — *ne jamais conclure au refus d'une ressource qu'on vient de marteler* — et je l'ai enfreinte en construisant une théorie architecturale dessus.
+
+**🐛 Et un second instrument cassé sur le test décisif :** les « 2 refus » côté WARP étaient des **302**, des redirections que `curl` ne suit pas sans `-L`. Piège déjà consigné sur ce projet. Après correction : **240 requêtes, zéro refus, par les deux chemins.**
+
+**Ce qui reste vrai, et qui suffit :** les refus existent, sporadiques, autour de **3 %**. Le code les documentait depuis le 26/07. Le correctif utile est le **délai de reprise** livré plus tôt — mesuré sur 6 téléchargements complets : **9 refus, 0 tranche perdue**. Le symptôme rapporté par l'utilisateur disparaît.
+
+**Ce que ça change concrètement :** rien à construire. Pas de point d'entrée de relais sur le VPS, pas de bande passante Hetzner engagée, pas de hop supplémentaire. **Le meilleur résultat d'une recherche, c'est parfois de ne pas écrire le code.**
+
+**Ce que la question du client a évité :** « tu as fait un niveau de recherche suffisant pour vraiment estimer cette option ? » — non. J'avais proposé trois fois une refonte sur une hypothèse jamais testée. Elle ne tient pas dix minutes de mesure honnête.
+
+---
 ### [2026-07-31 18:20] — Test en conditions réelles : la ligne lente est réglée, et le 403 d'un vrai utilisateur avait une cause précise
 
 **Quoi :** Deux mesures en conditions réelles, sur le domaine de production, dans un vrai Chrome. Et une correction du délai de reprise.
