@@ -1,4 +1,37 @@
 ---
+### [2026-08-01 02:10] — Parc d'utilisateurs simulés : Safari et Firefox enfin mesurés
+
+**Quoi :** Un banc d'essai qui ouvre la page de production dans les **vrais moteurs** — Chromium, Gecko (Firefox) et WebKit (celui de Safari) — chacun à froid, avec bridage réseau et profils d'appareil. 13 visiteurs.
+
+**Pourquoi :** Safari et Firefox étaient l'angle mort le plus ancien du projet. Falsifier un user-agent n'aurait rien prouvé : ce qui diffère entre moteurs, c'est **l'implémentation** du stockage disque, dont dépend toute la qualité servie sur les vidéos longues.
+
+**Résultat : 13 visiteurs sur 13, aucun incident.** Tous résolvent en 1080p mp4 avec les 6 définitions, tous récupèrent leurs octets.
+
+**Le chemin disque, enfin chiffré :**
+
+| Moteur | Stockage disque | Sélecteur de fichier |
+|---|---|---|
+| Chromium | **5/5** | oui |
+| **Firefox** | **4/4** | non — retombe sur un téléchargement classique |
+| **WebKit (Safari)** | **0/4** — `UnknownError` à l'écriture | non |
+
+**Ce que ça coûte à un visiteur Safari, mesuré :**
+
+| Vidéo | Chrome / Firefox | Safari |
+|---|---|---|
+| 4 min | 1080p mp4, 112 Mo | **identique** |
+| 17 min | 1080p mp4, 108 Mo | **identique** |
+| 2h53 | 1080p mp4, 945 Mo | 720p mp4, 382 Mo — `downgraded=true`, le message l'explique |
+
+**Conclusion : Safari fonctionne.** Dégradé uniquement sur les vidéos très longues, et annoncé. Et **mp4 dans tous les cas, jamais de WebM** — la crainte pour Premiere ne se matérialise pas sur les cas testés.
+
+**⚠️ CE QUE CE BANC NE PEUT PAS FAIRE, et c'est sa limite fondamentale :** tous les visiteurs partagent **une seule adresse IP**. Rien de ce qui dépend de l'adresse n'est reproduit — quota par IP, limite de débit par IP, géolocalisation. Cent visiteurs simulés sur une seule adresse ressemblent surtout à **un seul visiteur qui martèle**, et ce projet a déjà payé pour savoir ce que ça produit comme fausses conclusions. Le banc couvre la **plateforme et le réseau**, jamais la population.
+
+**⚠️ Seconde réserve :** le WebKit de Playwright n'est pas le Safari livré par Apple. Safari 17+ annonce le support du stockage disque ; le résultat ci-dessus est un signal fort, pas une preuve. Un vrai Safari reste à vérifier.
+
+**Fichiers touchés :** aucun code de production. Le banc vit dans le bloc-notes de session.
+
+---
 ### [2026-08-01 00:20] — La « cause racine » que j'ai annoncée trois fois était un artefact de MON test
 
 **Quoi :** Retrait de la proposition de relayer les octets par le VPS. Elle réglait un problème que la mesure contrôlée ne trouve pas.
