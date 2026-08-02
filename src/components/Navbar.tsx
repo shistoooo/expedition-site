@@ -68,7 +68,10 @@ export default function Navbar() {
             className="text-xl font-bold tracking-wider text-white group-hover:opacity-80 transition-opacity"
             whileHover={{ scale: 1.02 }}
           >
-            EXPÉDITION
+            {/* Sur son domaine, TubeForge n'est pas une section d'Expédition :
+                le logo doit porter le nom du produit qu'on vend, comme le fait
+                déjà le pied de page. */}
+            {isTubeForge ? "TUBEFORGE" : "EXPÉDITION"}
           </motion.span>
         </Link>
 
