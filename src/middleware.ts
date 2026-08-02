@@ -32,7 +32,16 @@ import { ACCUEIL_TUBEFORGE, cheminDeLaSuite, domaineTubeForge } from "@/lib/tube
 export const EN_TETE_TUBEFORGE = "x-tubeforge-seul";
 
 export function middleware(req: NextRequest) {
-  const hote = req.headers.get("host");
+  /**
+   * ⚠️ `host` N'EST PAS TOUJOURS L'HÔTE PUBLIC.
+   *
+   * Derrière un proxy ou un alias de plateforme, `host` peut porter le nom
+   * interne pendant que l'hôte demandé par le visiteur voyage dans
+   * `x-forwarded-host`. Ne lire que le premier fait échouer la comparaison en
+   * silence : le middleware laisse alors tout passer, et l'isolement du domaine
+   * n'existe plus — sans la moindre erreur pour le signaler.
+   */
+  const hote = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
   if (!domaineTubeForge(hote)) return NextResponse.next();
 
   const { pathname } = req.nextUrl;
