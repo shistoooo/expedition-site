@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import { domaineTubeForge } from "./tubeforgeOnly";
+import { useTubeForgeOnlyDuServeur } from "./TubeForgeOnlyProvider";
 
 /**
  * « Sommes-nous dans le monde TubeForge ? », côté navigateur.
@@ -31,6 +32,11 @@ const cotServeur = () => false;
 
 export function useTubeForgeOnly(): boolean {
   const pathname = usePathname();
+  const duServeur = useTubeForgeOnlyDuServeur();
   const surLeDomaine = useSyncExternalStore(neRienEcouter, domaineCourant, cotServeur);
+  // Le serveur a l'hôte AVANT de fabriquer le HTML : quand il s'est prononcé,
+  // c'est lui qui fait foi, et le premier rendu est déjà le bon. La détection
+  // navigateur reste en secours (rendu hors fournisseur, tests isolés).
+  if (duServeur !== null) return duServeur || !!pathname?.startsWith("/tubeforge");
   return surLeDomaine || !!pathname?.startsWith("/tubeforge");
 }

@@ -1,4 +1,34 @@
 ---
+### [2026-08-02 21:40] — Le mode « TubeForge seul » se décide côté serveur
+
+**Quoi :** Le middleware pose un en-tête `x-tubeforge-seul`, le layout le lit, et le PREMIER HTML est déjà celui du bon monde. Au passage, l'identité déclarée aux moteurs (JSON-LD) dépend du domaine.
+
+**Pourquoi :** Trois symptômes rapportés, **une seule cause**. `useTubeForgeOnly()` lisait `window.location.host`, qui n'existe pas au rendu serveur : le drapeau valait `false` au premier rendu et ne basculait qu'après hydratation. Mesuré sur `tubeforge.explauncheur.space/tubeforge/telecharger` : le HTML servi contenait `href="/monteurs"`, `/createurs`, `/pricing`, `/economie`, `/launcher`.
+
+Conséquences observées par l'utilisateur :
+1. cliquer un lien avant la fin de l'hydratation — sur téléphone, c'est la règle — le sortait du produit ;
+2. `/account` s'affichait en identité « Expédition · suite d'outils » ;
+3. sur `/account`, le bouton « 14 jours » pointait vers `/account?mode=register`, **la page où l'on était déjà** — d'où « il se passe rien ».
+
+Masquer plus vite n'était pas une option : tant que la décision se prend dans le navigateur, il existe un instant où le mauvais HTML est cliquable. Le middleware, lui, connaît l'hôte avant de fabriquer la page.
+
+**Fichiers touchés :**
+- `src/middleware.ts` — pose `x-tubeforge-seul` sur toute réponse du domaine, y compris les pages ni réécrites ni redirigées
+- `src/lib/TubeForgeOnlyProvider.tsx` *(nouveau)* — contexte ; rend `null` hors fournisseur, jamais `false`, pour ne pas confondre « on ne sait pas » et « non »
+- `src/lib/useTubeForgeOnly.ts` — la vérité du serveur prime, la détection navigateur reste en secours
+- `src/app/layout.tsx` — lit l'en-tête, fournit le contexte, choisit le JSON-LD
+
+**Comment annuler :**
+`git revert` du commit. Effet : retour du clignotement et des liens de la suite dans le HTML servi.
+
+**Effets de bord possibles :**
+Le layout devient `async` et lit `headers()` — les pages du domaine TubeForge ne sont donc plus statiquement prérendues. C'est le prix d'une décision prise avant le premier octet.
+
+**Vérifié :** contrôle dans les DEUX sens sur un build de production.
+- `Host: tubeforge.explauncheur.space` → `/tubeforge/telecharger` et `/account` : aucun lien vers la suite ; JSON-LD `SoftwareApplication · TubeForge` ; bouton d'essai → `/tubeforge/checkout`.
+- `Host: expeditionlauncher.store` → liens de la suite intacts ; JSON-LD `Organization · Expédition Studio` ; bouton d'essai → `/account?mode=register`.
+
+---
 ### [2026-08-02 20:15] — Une seule offre annoncée : 14 jours, carte demandée
 
 **Quoi :** Toutes les promesses « 3 jours gratuits · sans carte » du site et du launcher deviennent « 14 jours gratuits », alignées sur l'essai qui existe réellement. La page partenaire n'affiche plus aucun code.

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { TubeForgeOnlyProvider } from "@/lib/TubeForgeOnlyProvider";
+import { EN_TETE_TUBEFORGE } from "@/middleware";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import GlobalSpace from "@/components/GlobalSpace";
@@ -54,29 +57,57 @@ export const metadata: Metadata = {
   verification: { google: "oLXLGG98BZT1xUWic3Tg2exNujxy3tCgjOF1MCvJo5c" },
 };
 
-const jsonLd = {
+/**
+ * L'identité déclarée aux moteurs dépend du domaine servi.
+ *
+ * Sur le domaine TubeForge, annoncer « Suite d'outils : TubeForge, ClipForge,
+ * ReviewForge » revenait à présenter au visiteur un catalogue qu'on ne lui vend
+ * pas — jusque dans les résultats de recherche et les aperçus de partage.
+ * C'est la même règle que pour les liens : un produit, pas une section.
+ */
+const reseaux = [
+  process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT",
+].filter(Boolean);
+
+const jsonLdSuite = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Expédition Studio",
   url: siteUrl,
   description: "Suite d'outils pour créateurs de contenu : TubeForge, ClipForge, ReviewForge.",
   email: "contact@expeditionlauncher.store",
-  sameAs: [
-    process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.com/invite/QuV3bYDEYT",
-  ].filter(Boolean),
+  sameAs: reseaux,
 };
 
-export default function RootLayout({
+const jsonLdTubeForge = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "TubeForge",
+  applicationCategory: "MultimediaApplication",
+  operatingSystem: "macOS, Windows",
+  url: "https://tubeforge.explauncheur.space",
+  description:
+    "Télécharge tes sources et pose-les directement dans ton chutier Premiere Pro ou DaVinci Resolve, pendant que tu montes.",
+  email: "contact@expeditionlauncher.store",
+  sameAs: reseaux,
+};
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Décidé par le middleware, donc connu AVANT de fabriquer le HTML. Voir
+  // TubeForgeOnlyProvider : lire l'hôte dans le navigateur laissait un instant
+  // où les liens de la suite étaient cliquables sur le domaine TubeForge.
+  const seulTubeForge = (await headers()).get(EN_TETE_TUBEFORGE) === "1";
+
   return (
     <html lang="fr">
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(seulTubeForge ? jsonLdTubeForge : jsonLdSuite) }}
         />
       </head>
       <body
@@ -120,7 +151,7 @@ export default function RootLayout({
         <Script id="clarity" strategy="lazyOnload">
           {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "vyekj8t7md");`}
         </Script>
-        {children}
+        <TubeForgeOnlyProvider valeur={seulTubeForge}>{children}</TubeForgeOnlyProvider>
       </body>
     </html>
   );

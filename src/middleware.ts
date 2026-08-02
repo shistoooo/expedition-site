@@ -24,16 +24,29 @@ import { ACCUEIL_TUBEFORGE, cheminDeLaSuite, domaineTubeForge } from "@/lib/tube
  * client TubeForge a besoin de son compte, de ses factures et des mentions
  * légales — les couper ferait de l'isolement une prison.
  */
+/**
+ * En-tête transmis à la page. C'est lui qui permet au PREMIER HTML d'être déjà
+ * le bon — voir `TubeForgeOnlyProvider` pour ce que coûtait la décision prise
+ * dans le navigateur.
+ */
+export const EN_TETE_TUBEFORGE = "x-tubeforge-seul";
+
 export function middleware(req: NextRequest) {
   const hote = req.headers.get("host");
   if (!domaineTubeForge(hote)) return NextResponse.next();
 
   const { pathname } = req.nextUrl;
 
+  // Toute réponse servie sur ce domaine porte la marque, y compris les pages
+  // qu'on ne réécrit ni ne redirige (/account, /cgv, /tubeforge/*).
+  const entetes = new Headers(req.headers);
+  entetes.set(EN_TETE_TUBEFORGE, "1");
+  const suivant = () => NextResponse.next({ request: { headers: entetes } });
+
   if (pathname === "/") {
     const url = req.nextUrl.clone();
     url.pathname = ACCUEIL_TUBEFORGE;
-    return NextResponse.rewrite(url);
+    return NextResponse.rewrite(url, { request: { headers: entetes } });
   }
 
   if (cheminDeLaSuite(pathname)) {
@@ -43,7 +56,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url, 307);
   }
 
-  return NextResponse.next();
+  return suivant();
 }
 
 /**
