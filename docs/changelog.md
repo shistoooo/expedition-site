@@ -1,4 +1,35 @@
 ---
+### [2026-08-02 14:10] — La recharge est retirée du produit, partout
+
+**Quoi :** Plus aucun chemin du site ne permet d'acheter une recharge.
+
+**Pourquoi :** Décision produit. La recharge brouillait la grille — un troisième modèle à côté de l'abonnement et de l'accès à vie — et son dégressif créait un arbitrage absurde (12 recharges revenaient plus cher que l'annuel).
+
+**Ce qui a été retiré, et où :**
+
+| Endroit | Ce qu'il proposait |
+|---|---|
+| `account/page.tsx` | la carte « Recharge 1 mois — dès 6,75 € » et son appel `/portal/recharge` |
+| `tubeforge/checkout` | l'acceptation de `?plan=recharge` |
+| `tubeforge/checkout` | le sélecteur de durée de la recharge |
+| `TubeForgePricingSection` | `RechargeLifetimeCards`, bloc entier |
+| `tubeforge/merci` | le libellé « ta recharge » |
+
+**⛔ POURQUOI DÉCROCHER LES BOUTONS NE SUFFISAIT PAS.** Un lien `?plan=recharge` survit dans un historique, un favori, un message envoyé. Tant que le tunnel l'accepte, on peut encore en acheter une. La demande était « nulle part sur le site » : la décision se prend donc dans le tunnel, pas dans les composants. `?plan=recharge` retombe désormais sur l'abonnement — vérifié, il rend exactement la même page que `?plan=sub`.
+
+**🐛 UNE MINE DÉSAMORCÉE AU PASSAGE.** `RechargeLifetimeCards` n'était rendu par aucun mode actif — donc invisible, donc jamais relu. Il contenait **une recharge** et **un accès à vie affiché à 49,99 €** alors que le paiement en facture **89,99 €**. Basculer `PRICING_MODE` sur « both » aurait remis en vente une offre supprimée, à un prix faux. Supprimé plutôt que corrigé.
+
+**Ce qui n'a PAS été touché, et c'est délibéré :** le point d'entrée `/portal/recharge` du worker de licences. Des recharges déjà payées doivent rester honorées jusqu'à leur terme — on retire la vente, pas le service rendu. Plus aucune page ne l'appelle.
+
+**Vérifié après build, sur les pages réelles :** `/tubeforge` 0 occurrence, `/account` 0, `?plan=recharge` rend l'abonnement. La seule trace restante est le paramètre d'URL renvoyé dans les données de navigation de Next — pas un élément d'interface.
+
+**Lint :** 2 erreurs avant, 2 après sur les fichiers touchés — aucune introduite (vérifié en remisant les modifications).
+
+**Comment annuler :** `git revert`. La recharge redevient achetable, y compris par l'ancien lien.
+
+**⚠️ Une incohérence de prix repérée et NON corrigée :** l'accès à vie s'affiche à **149 €** sur la page compte, le paiement en facture **89,99 €** (mesuré sur l'API), et le code mort supprimé disait 49,99 €. Trois prix pour une même offre. Ce n'est pas dans le périmètre demandé, mais c'est un écart affiché/facturé — donc opposable.
+
+---
 ### [2026-08-02 12:55] — Les scripts de mesure pesaient plus lourd que tout notre code
 
 **Quoi :** Google Tag Manager et Microsoft Clarity sortent du `<head>` et du chemin critique.

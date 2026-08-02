@@ -31,7 +31,11 @@ function MerciContent() {
   const claimEndpoint = isSub ? "claim-subscription" : "claim-payment";
   const claimBody = (extra?: Record<string, string>) =>
     JSON.stringify(isSub ? { setup_intent: sessionId, ...extra } : { payment_intent: sessionId, ...extra });
-  const kindLabel = kind === "lifetime" ? "ton accès à vie" : isSub ? "ton essai de 14 jours" : "ta recharge";
+  // Le repli disait « ta recharge » — une offre retirée du produit le
+  // 02/08/2026. Seul un lien ancien peut encore atterrir ici, et lui nommer un
+  // produit qui n'existe plus serait déroutant. « Ton achat » reste vrai dans
+  // tous les cas, y compris ceux qu'on n'a pas prévus.
+  const kindLabel = kind === "lifetime" ? "ton accès à vie" : isSub ? "ton essai de 14 jours" : "ton achat";
 
   const [phase, setPhase] = useState<Phase>("loading");
   const [error, setError] = useState<string | null>(null);

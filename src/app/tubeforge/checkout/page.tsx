@@ -174,10 +174,21 @@ function PaymentForm({ plan, price }: { plan: OneTimePlan; price: string }) {
 
 function OneTimeCheckoutContent() {
   const searchParams = useSearchParams();
-  // Par défaut = abonnement (flow C). Recharge/lifetime restent accessibles
-  // par paramètre explicite (flows A/B, jamais supprimés).
+  /**
+   * Par défaut = abonnement. L'accès à vie reste accessible par paramètre.
+   *
+   * ⛔ LA RECHARGE EST RETIRÉE (02/08/2026) — et il ne suffit pas de la
+   * décrocher des pages : un lien `?plan=recharge` traîne dans un historique,
+   * un favori, un message. Tant que ce tunnel l'accepte, on peut encore en
+   * acheter une. La demande était « nulle part sur le site » : c'est donc ici
+   * que ça se décide, pas dans les composants.
+   *
+   * Un `plan=recharge` retombe silencieusement sur l'abonnement — c'est ce qui
+   * ressemble le plus à ce que la personne venait chercher, et ça vaut mieux
+   * qu'une page d'erreur pour quelqu'un qui voulait payer.
+   */
   const planParam = searchParams.get("plan");
-  const plan: PlanKind = planParam === "lifetime" ? "lifetime" : planParam === "recharge" ? "recharge" : "sub";
+  const plan: PlanKind = planParam === "lifetime" ? "lifetime" : "sub";
   const isLifetime = plan === "lifetime";
   const isSub = plan === "sub";
   // Offre « page cachée » — le worker revalide le code et recalcule le montant :
@@ -347,9 +358,11 @@ function OneTimeCheckoutContent() {
                     </button>
                   </form>
                 )
-              ) : !isLifetime ? (
-                <MonthSelector months={months} setMonths={setMonths} onContinue={() => createPI(months)} loading={creating} />
               ) : (
+                /* Le sélecteur de durée « recharge » vivait ici. Il est devenu
+                   inatteignable quand `plan` s'est réduit à « abonnement » ou
+                   « à vie » — mais du code mort qui affiche encore une recharge
+                   finit toujours par se rallumer. Retiré. */
                 <div className="p-10 rounded-2xl bg-[#0F0F12] border border-white/10 flex flex-col items-center justify-center gap-3">
                   <Loader2 className="w-6 h-6 animate-spin text-white/50" />
                   <p className="text-sm text-white/40">Préparation du paiement sécurisé…</p>

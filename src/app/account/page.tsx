@@ -552,31 +552,10 @@ export default function AccountPage() {
         }
     };
 
-    // Segment "recharge / lifetime" — en parallèle de l'abonnement classique
-    // ci-dessus, jamais un remplacement. Même pattern que handleBillingPortal :
-    // le worker crée une session Stripe one-time, on ouvre l'URL retournée.
-    const handleRecharge = async () => {
-        if (!accessToken) return;
-        setActionLoading(true);
-        setError(null);
-        try {
-            const res = await fetch(`${WORKER_URL}/portal/recharge`, {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${accessToken}` },
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error);
-            const redirectUrl = new URL(data.url);
-            if (!ALLOWED_REDIRECT_HOSTS.some(h => redirectUrl.hostname === h || redirectUrl.hostname.endsWith("." + h))) {
-                throw new Error("URL de redirection non autorisée");
-            }
-            window.open(data.url, "_blank");
-        } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : "Erreur lors du paiement");
-        } finally {
-            setActionLoading(false);
-        }
-    };
+    /* `handleRecharge` a été retiré le 02/08/2026 avec la recharge elle-même.
+       Le point d'entrée `/portal/recharge` existe toujours côté worker — on ne
+       le supprime pas : des recharges déjà payées doivent rester honorées. Mais
+       plus aucune page ne l'appelle. */
 
     const handleLifetime = async () => {
         if (!accessToken) return;
@@ -981,25 +960,14 @@ export default function AccountPage() {
                                     <div className="p-8 rounded-2xl bg-[#0F0F12] border border-orange-500/15 shadow-2xl shadow-orange-500/5">
                                         <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
                                             <Zap className="w-5 h-5 text-orange-400" />
-                                            TubeForge &mdash; Recharge &amp; Lifetime
+                                            TubeForge &mdash; Acc&egrave;s &agrave; vie
                                         </h2>
-                                        <div className="grid sm:grid-cols-2 gap-4">
-                                            <div className="p-5 rounded-xl bg-white/5 border border-white/10 flex flex-col">
-                                                <div className="flex items-center gap-2 mb-2 text-white/70">
-                                                    <Gift className="w-4 h-4" />
-                                                    <span className="font-semibold text-sm">Recharge 1 mois</span>
-                                                </div>
-                                                <p className="text-xs text-white/40 mb-4 flex-1">
-                                                    Acc&egrave;s illimit&eacute; 30 jours, sans engagement. Le prix baisse si tu recharges des mois cons&eacute;cutifs (-15% &agrave; 6 mois, -25% &agrave; 12 mois).
-                                                </p>
-                                                <button
-                                                    onClick={handleRecharge}
-                                                    disabled={actionLoading}
-                                                    className="w-full py-2.5 rounded-lg bg-orange-500/15 border border-orange-500/30 text-orange-300 font-semibold text-sm hover:bg-orange-500/25 transition-all disabled:opacity-50"
-                                                >
-                                                    Recharger &mdash; d&egrave;s 6,75&euro;
-                                                </button>
-                                            </div>
+                                        {/* La RECHARGE a été retirée du produit le 02/08/2026 : elle
+                                            n'est plus proposée nulle part, et le tunnel de paiement la
+                                            refuse. Une seule carte reste donc ici — la grille passe en
+                                            une colonne, sinon la carte restante flotterait sur une
+                                            moitié d'écran. */}
+                                        <div className="grid gap-4">
                                             <div className="p-5 rounded-xl bg-white/5 border border-white/10 flex flex-col">
                                                 <div className="flex items-center gap-2 mb-2 text-white/70">
                                                     <Sparkles className="w-4 h-4" />

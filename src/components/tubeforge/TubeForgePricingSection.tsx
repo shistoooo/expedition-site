@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Check, Star, Rocket, Gift, Sparkles, ArrowRight } from "lucide-react";
+import { Check, Star, Rocket, Sparkles, ArrowRight } from "lucide-react";
 import NumberTicker from "@/components/NumberTicker";
 import { SALES_OPEN, PRICING_MODE } from "@/lib/salesConfig";
 
@@ -192,101 +192,6 @@ function eurStatic(cents: number): string {
   return (cents / 100).toLocaleString("fr-FR", { minimumFractionDigits: cents % 100 === 0 ? 0 : 2, maximumFractionDigits: 2 }) + "€";
 }
 
-function RechargeLifetimeCards() {
-  return (
-    <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, ease: easeOutExpo }}
-        className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-8 flex flex-col"
-      >
-        <div className="flex items-center gap-2 mb-4" style={{ color: AMBER }}>
-          <Gift className="w-5 h-5" />
-          <span className="font-mono text-xs uppercase tracking-widest">Sans engagement</span>
-        </div>
-        <h3 className="font-bold text-xl text-white mb-1">Recharge 1 mois</h3>
-        <div className="flex items-baseline gap-1 mb-1">
-          <span className="font-black text-4xl text-white">14,99€</span>
-          <span className="text-sm text-white/40">/mois, à la demande</span>
-        </div>
-        <p className="text-xs text-white/35 mb-4">Dès 10,49€/mois en volume, jusqu&apos;à −30% à 12 mois.</p>
-        <p className="text-sm text-white/50 leading-relaxed mb-4 flex-1">
-          Accès illimité 30 jours, sans renouvellement automatique. <span className="text-white/80 font-semibold">Prends-en
-          plusieurs d&apos;un coup et le prix baisse.</span>
-        </p>
-        <div className="mb-6 min-h-[80px] flex items-center gap-2 p-3 rounded-xl" style={{ background: "rgba(255,106,31,0.07)", border: "1px solid rgba(255,106,31,0.2)" }}>
-          <Gift className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
-          <p className="text-xs text-white/70">
-            <span className="font-bold" style={{ color: AMBER }}>Bonus :</span> plus tu prends de mois, plus tu reçois de
-            <span className="font-semibold"> clés cadeau</span> (1 mois chacune) à offrir à tes potes.
-          </p>
-        </div>
-        <Link
-          href="/tubeforge/checkout?plan=recharge"
-          className="w-full py-3 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98] hover:bg-white/5"
-          style={{ borderColor: "rgba(255,106,31,0.35)", color: AMBER }}
-        >
-          Recharger maintenant <ArrowRight className="w-4 h-4" />
-        </Link>
-        {/* Pont vers l'abonnement : la recharge auto EST l'abonnement mensuel. */}
-        <Link
-          href={SALES_OPEN ? "/checkout?plan=monthly" : "/account?mode=register"}
-          className="mt-3 text-center text-xs text-white/40 hover:text-white/70 transition-colors"
-        >
-          Préfères l&apos;automatique ? <span className="text-white/70 font-semibold">Passe à l&apos;abonnement</span> →
-        </Link>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.1, ease: easeOutExpo }}
-        className="relative rounded-2xl overflow-hidden p-6 md:p-8 flex flex-col"
-        style={{ border: "1px solid rgba(255,106,31,0.4)", background: "linear-gradient(160deg, rgba(255,106,31,0.12) 0%, rgba(13,13,22,0.98) 50%)" }}
-      >
-        <div className="flex items-center gap-2 mb-4" style={{ color: AMBER }}>
-          <Sparkles className="w-5 h-5" />
-          <span className="font-mono text-xs uppercase tracking-widest">Paiement unique</span>
-        </div>
-        <h3 className="font-bold text-xl text-white mb-1">Paiement unique</h3>
-        <div className="flex items-baseline gap-1 mb-1">
-          <span className="font-black text-4xl text-white">49,99€</span>
-          <span className="text-sm text-white/40">une seule fois</span>
-        </div>
-        <p className="text-xs text-white/35 mb-4">≈ 3 recharges. Après, tu ne repaies plus jamais.</p>
-        <p className="text-sm text-white/50 leading-relaxed mb-4 flex-1">
-          Un seul paiement, puis accès illimité à TubeForge <span className="text-white/80 font-semibold">aussi longtemps
-          que le logiciel existe</span>, sans abonnement ni renouvellement, même si le prix augmente.
-        </p>
-        <div className="mb-6 min-h-[80px] flex items-center gap-2 p-3 rounded-xl" style={{ background: "rgba(255,106,31,0.1)", border: "1px solid rgba(255,106,31,0.28)" }}>
-          <Gift className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
-          <p className="text-xs text-white/75">
-            <span className="font-bold" style={{ color: AMBER }}>+ 10 clés boost</span> d&apos;1 mois à offrir, valables
-            le mois de ton achat.
-          </p>
-        </div>
-        <Link
-          href="/tubeforge/checkout?plan=lifetime"
-          className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
-          style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
-        >
-          Obtenir l&apos;accès à vie <ArrowRight className="w-4 h-4" />
-        </Link>
-        {/* Symétrie visuelle avec la carte recharge + transparence sur « à vie ». */}
-        <Link
-          href="/cgv"
-          className="mt-3 text-center text-xs text-white/40 hover:text-white/70 transition-colors"
-        >
-          Sans abonnement, jamais. <span className="text-white/70 font-semibold">Ce que « à vie » garantit</span> →
-        </Link>
-      </motion.div>
-    </div>
-  );
-}
-
 export default function TubeForgePricingSection() {
   return (
     <section className="pt-16 pb-16 md:pt-24 md:pb-24 relative">
@@ -322,17 +227,13 @@ export default function TubeForgePricingSection() {
 
         {PRICING_MODE === "classic" && <ClassicCard />}
         {PRICING_MODE === "recharge_lifetime" && <ThreePlansGrid />}
-        {PRICING_MODE === "both" && (
-          <div className="space-y-12">
-            <ClassicCard />
-            <div className="flex items-center gap-4 max-w-3xl mx-auto">
-              <div className="h-px flex-1 bg-white/10" />
-              <span className="text-xs font-mono uppercase tracking-widest text-white/30">Ou paiement unique</span>
-              <div className="h-px flex-1 bg-white/10" />
-            </div>
-            <RechargeLifetimeCards />
-          </div>
-        )}
+        {/* Le mode « both » affichait `RechargeLifetimeCards`, deux cartes dont
+            une RECHARGE — retirée du produit le 02/08/2026 — et un accès à vie
+            affiché à 49,99 € alors que le paiement en facture 89,99 €.
+            Ce bloc n'était rendu par aucun mode actif, donc invisible, donc
+            jamais corrigé : basculer `PRICING_MODE` sur « both » aurait remis
+            en vente une offre supprimée, à un prix faux. Supprimé. */}
+        {PRICING_MODE === "both" && <ClassicCard />}
       </div>
     </section>
   );
