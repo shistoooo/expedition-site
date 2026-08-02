@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { domaineTubeForge } from "./tubeforgeOnly";
 
 /**
@@ -12,24 +12,25 @@ import { domaineTubeForge } from "./tubeforgeOnly";
  *   - le CHEMIN `/tubeforge/*`, pour que le tunnel de conversion reste dédié
  *     même quand on l'atteint depuis le site de la suite.
  *
- * ⚠️ LE DOMAINE NE PEUT PAS ÊTRE CONNU AU PREMIER RENDU. Le HTML est fabriqué
- * sur le serveur, où `window` n'existe pas ; s'en servir directement produirait
- * un HTML différent de celui que React attend et une erreur d'hydratation.
- * D'où l'état initialisé à `false` puis corrigé dans un effet.
+ * ⚠️ LE DOMAINE NE PEUT PAS ÊTRE LU AU PREMIER RENDU. Le HTML est fabriqué sur
+ * le serveur, où `window` n'existe pas ; s'en servir directement produirait un
+ * HTML différent de celui que React attend, donc une erreur d'hydratation.
  *
- * Conséquence à connaître : sur `tubeforge.explauncheur.space/`, le tout premier
- * rendu ignore le domaine. Le chemin réécrit étant `/tubeforge`, la seconde
- * condition prend le relais et le résultat est correct dès le départ — mais
- * quelqu'un qui ajouterait une page hors `/tubeforge` sur ce domaine verrait un
- * bref clignotement. C'est le prix de l'absence d'erreur d'hydratation.
+ * `useSyncExternalStore` est fait exactement pour ça : il prend une valeur pour
+ * le serveur et une pour le navigateur, et React gère la transition lui-même.
+ * La première version posait un `useState` dans un `useEffect` — ça marchait,
+ * mais c'est le motif que la règle `react-hooks/set-state-in-effect` interdit,
+ * et à raison : il provoque un second rendu que celui-ci évite.
+ *
+ * `subscribe` ne fait rien, et ce n'est pas un oubli : le domaine d'une page ne
+ * change jamais de son vivant. Il n'y a donc rien à écouter.
  */
+const neRienEcouter = () => () => {};
+const domaineCourant = () => domaineTubeForge(window.location.host);
+const cotServeur = () => false;
+
 export function useTubeForgeOnly(): boolean {
   const pathname = usePathname();
-  const [surLeDomaine, setSurLeDomaine] = useState(false);
-
-  useEffect(() => {
-    setSurLeDomaine(domaineTubeForge(window.location.host));
-  }, []);
-
+  const surLeDomaine = useSyncExternalStore(neRienEcouter, domaineCourant, cotServeur);
   return surLeDomaine || !!pathname?.startsWith("/tubeforge");
 }
