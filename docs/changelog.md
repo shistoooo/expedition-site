@@ -1,4 +1,44 @@
 ---
+### [2026-08-02 04:30] — La page était deux fois trop lente sur mobile : un moteur 3D que les téléphones ne rendent jamais
+
+**Quoi :** Le décor 3D est désormais chargé **à la demande**. Les ordinateurs le gardent, les téléphones ne le téléchargent plus.
+
+**Pourquoi :** Une utilisatrice a signalé « ça galère un peu à charger » sur iPhone. Mesuré sur un profil iPhone 11 avec processeur bridé 4× :
+
+| Réseau | Avant | Après | Gain |
+|---|---|---|---|
+| fibre | 1 465 ms | 1 221 ms | −17 % |
+| **4G** | 3 860 ms | **1 899 ms** | **−51 %** |
+| **4G lente** | 8 020 ms | **3 785 ms** | **−53 %** |
+| **3G** | 15 486 ms | **7 445 ms** | **−52 %** |
+
+*(temps avant que le champ de saisie soit utilisable — pas le premier pixel affiché)*
+
+JavaScript transféré : **1 671 Ko → 724 Ko**. Total : 2,67 → 1,62 Mo.
+
+**🐛 LE DÉFAUT, ET IL EST INSTRUCTIF : le garde-fou mobile FONCTIONNAIT.** `GlobalSpace` testait déjà la largeur d'écran et rendait un simple dégradé sur téléphone — vérifié, 0 canvas rendu sur iPhone. Le problème n'était pas la condition, c'était **l'import** : `three`, `@react-three/fiber` et `drei` étaient importés en tête de fichier, donc empaquetés dans **chaque page**, pour **tous** les visiteurs.
+
+**Un `if` à l'exécution n'empêche rien** : le fichier est déjà téléchargé, décompressé et compilé quand la condition est évaluée. Seul un import dynamique le retire du paquet. C'est le genre de gaspillage qu'on ne voit jamais en testant sur sa propre machine — d'où la mesure sur profil bridé.
+
+**Vérifié après coup, les deux sens :**
+- ordinateur → 1 canvas, three.js chargé, décor intact
+- téléphone → 0 canvas, **0 fichier three.js**, fond dégradé
+
+**🐛 Et un faux positif attrapé en chemin :** ma première mesure annonçait « champ utilisable : jamais », ce qui ressemblait à une régression grave. C'était le port — j'avais lancé le serveur de production sur 3412, alors que `ALLOWED_ORIGINS` n'autorise que 3411. L'appel de quota était refusé et l'interface ne se montait pas. Mon dispositif, pas le code.
+
+**Fichiers touchés :**
+- `src/components/GlobalSpace3D.tsx` — nouveau : le décor seul, chargeable à la demande.
+- `src/components/GlobalSpace.tsx` — ne garde que la décision (quelle page, quel appareil) et le fond léger.
+
+**Comment annuler :** `git revert`. Le décor redevient un import statique — et repart dans le paquet de tout le monde.
+
+**Effets de bord possibles :** sur ordinateur, le décor arrive maintenant **après** le premier affichage au lieu d'être là d'emblée. Le fond dégradé est rendu pendant ce temps, donc pas d'écran noir — mais quelqu'un avec une connexion très lente verra le dégradé une seconde avant les étoiles.
+
+**⚠️ Ce que ça ne prouve PAS :** le plantage Safari (« un problème récurrent est survenu ») n'est **pas expliqué** par cette découverte. J'ai testé la page sur Chromium et WebKit, profils iPhone SE / 11 / 13, bridages 4× et 10× : **aucun plantage**, tas JavaScript à 11 Mo. La page est plus légère, ce qui ne peut pas nuire — mais je n'ai pas reproduit la panne et je ne présente pas ceci comme sa correction.
+
+**Ce qui pèse encore, et qui n'a pas été traité :** 452 Ko d'images JPEG et 167 Ko de polices. C'est le prochain gisement, plus gros désormais que le JavaScript restant.
+
+---
 ### [2026-08-01 02:10] — Parc d'utilisateurs simulés : Safari et Firefox enfin mesurés
 
 **Quoi :** Un banc d'essai qui ouvre la page de production dans les **vrais moteurs** — Chromium, Gecko (Firefox) et WebKit (celui de Safari) — chacun à froid, avec bridage réseau et profils d'appareil. 13 visiteurs.
