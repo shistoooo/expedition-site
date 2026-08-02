@@ -4,17 +4,20 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useFlightStore } from "@/stores/useFlightStore";
+import { useTubeForgeOnly } from "@/lib/useTubeForgeOnly";
+import { ACCUEIL_TUBEFORGE } from "@/lib/tubeforgeOnly";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
   // Sur la partie TubeForge, le CTA reste dans SON funnel (essai ember) au lieu
   // de renvoyer vers le flow générique violet — cohérence DA + parcours.
-  const isTubeForge = !!pathname?.startsWith("/tubeforge");
+  // Le DOMAINE compte autant que le chemin : sur tubeforge.explauncheur.space,
+  // toutes les pages sont en mode TubeForge, pas seulement /tubeforge/*.
+  const isTubeForge = useTubeForgeOnly();
   const trialHref = isTubeForge ? "/tubeforge/checkout?plan=sub&months=12" : "/account?mode=register";
   const trialLabel = isTubeForge ? "14 jours gratuits" : "3 jours gratuits";
   const setPhase = useFlightStore((state) => state.setPhase);
@@ -58,7 +61,7 @@ export default function Navbar() {
       }`}
     >
       <div className="container-main flex items-center justify-between relative">
-        <Link href="/" className="flex items-center gap-2 group z-10">
+        <Link href={isTubeForge ? ACCUEIL_TUBEFORGE : "/"} className="flex items-center gap-2 group z-10">
           <motion.span
             className="text-xl font-bold tracking-wider text-white group-hover:opacity-80 transition-opacity"
             whileHover={{ scale: 1.02 }}

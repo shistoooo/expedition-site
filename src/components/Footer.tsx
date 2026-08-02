@@ -3,8 +3,19 @@
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import Link from "next/link";
+import { useTubeForgeOnly } from "@/lib/useTubeForgeOnly";
 
 export default function Footer() {
+  /**
+   * Le pied de page etait la plus grosse fuite du dispositif : cinq liens vers
+   * les autres produits de la suite, presents sur TOUTES les pages TubeForge,
+   * y compris pendant le paiement. La Navbar les filtrait deja ; lui, non.
+   *
+   * En mode TubeForge on garde exactement deux choses : le compte (un client a
+   * besoin de ses factures) et les mentions legales (elles sont obligatoires).
+   * Tout le reste appartient a un catalogue qu'on ne vend pas ici.
+   */
+  const seulTubeForge = useTubeForgeOnly();
   return (
     <footer className="py-12 md:py-16 border-t border-white/5">
       <div className="container-main">
@@ -15,26 +26,34 @@ export default function Footer() {
             viewport={{ once: true }}
             className="text-center md:text-left"
           >
-            <span className="text-xl font-bold tracking-wider text-white">EXPÉDITION</span>
+            <span className="text-xl font-bold tracking-wider text-white">
+              {seulTubeForge ? "TUBEFORGE" : "EXPÉDITION"}
+            </span>
             <p className="text-white/50 text-sm mt-1">
-              Suite d&apos;outils pour cr&eacute;ateurs YouTube.
+              {seulTubeForge
+                ? "Tes sources créditées, du script au chutier."
+                : "Suite d'outils pour créateurs YouTube."}
             </p>
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 justify-center md:justify-start text-sm font-medium text-white/60">
-              <Link href="/monteurs" className="hover:text-purple-400 transition-colors">
-                Pour monteurs
-              </Link>
-              <Link href="/createurs" className="hover:text-cyan-400 transition-colors">
-                Pour cr&eacute;ateurs
-              </Link>
-              <Link href="/pricing" className="hover:text-purple-400 transition-colors">
-                Tarifs
-              </Link>
-              <Link href="/economie" className="hover:text-purple-400 transition-colors">
-                &Eacute;conomie
-              </Link>
-              <Link href="/launcher" className="hover:text-purple-400 transition-colors">
-                Launcher
-              </Link>
+              {!seulTubeForge && (
+                <>
+                  <Link href="/monteurs" className="hover:text-purple-400 transition-colors">
+                    Pour monteurs
+                  </Link>
+                  <Link href="/createurs" className="hover:text-cyan-400 transition-colors">
+                    Pour cr&eacute;ateurs
+                  </Link>
+                  <Link href="/pricing" className="hover:text-purple-400 transition-colors">
+                    Tarifs
+                  </Link>
+                  <Link href="/economie" className="hover:text-purple-400 transition-colors">
+                    &Eacute;conomie
+                  </Link>
+                  <Link href="/launcher" className="hover:text-purple-400 transition-colors">
+                    Launcher
+                  </Link>
+                </>
+              )}
               <Link href="/account" className="hover:text-purple-400 transition-colors">
                 Mon compte
               </Link>

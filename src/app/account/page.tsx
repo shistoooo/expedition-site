@@ -8,6 +8,8 @@ import {
     Users, TrendingUp, Banknote, Clock, Copy, Check, Gift, Share2, ExternalLink, UserPlus, Tag, Zap, Sparkles
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { useTubeForgeOnly } from "@/lib/useTubeForgeOnly";
+import { ACCUEIL_TUBEFORGE } from "@/lib/tubeforgeOnly";
 import Footer from "@/components/Footer";
 import PageBackground from "@/components/PageBackground";
 import WalletSection from "@/components/WalletSection";
@@ -205,6 +207,10 @@ function DownloadSection() {
 }
 
 export default function AccountPage() {
+    // Un client TubeForge ne doit pas etre renvoye vers le catalogue de la suite
+    // depuis son propre espace client. Le hook decide sur le DOMAINE autant que
+    // sur le chemin — /account est partage par les deux mondes.
+    const seulTubeForge = useTubeForgeOnly();
     const [step, setStep] = useState<AccountStep>("login");
     const [authMode, setAuthMode] = useState<"login" | "register">("login");
 
@@ -780,7 +786,7 @@ export default function AccountPage() {
             <Navbar />
 
             <main className="pt-32 pb-24 container-main relative z-10">
-                <Link href="/" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-8">
+                <Link href={seulTubeForge ? ACCUEIL_TUBEFORGE : "/"} className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-8">
                     <ChevronLeft className="w-4 h-4" />
                     Retour
                 </Link>
@@ -1585,7 +1591,7 @@ export default function AccountPage() {
                                             <div className="text-center">
                                                 <Link
                                                     href="/ambassador"
-                                                    className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 transition-colors mt-4"
+                                                    className={`inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 transition-colors mt-4 ${seulTubeForge ? "hidden" : ""}`}
                                                 >
                                                     En savoir plus <ExternalLink className="w-3.5 h-3.5" />
                                                 </Link>
