@@ -1,4 +1,49 @@
 ---
+### [2026-08-02 12:55] — Les scripts de mesure pesaient plus lourd que tout notre code
+
+**Quoi :** Google Tag Manager et Microsoft Clarity sortent du `<head>` et du chemin critique.
+
+**Pourquoi :** Trace Chrome DevTools sur la production, profil mobile, 4G lente, processeur bridé 4× :
+
+| Tiers | Poids | Processeur |
+|---|---|---|
+| Google Tag Manager | **586,9 Ko** | 106 ms |
+| Microsoft Clarity | 101,7 Ko | 78 ms |
+| | **688 Ko** | |
+
+**Plus lourd que tout notre propre JavaScript**, et téléchargé en priorité puisque injecté en balises brutes dans le `<head>`. Le LCP de la page est son titre H1 — un texte, rien à télécharger — et il mettait 1 440 ms à s'afficher alors que le serveur répondait en 60 ms.
+
+**Deux stratégies différentes, et c'est délibéré :**
+- `afterInteractive` pour l'analyse d'audience : elle mesure le tunnel de vente, on ne peut pas perdre les visites courtes.
+- `lazyOnload` pour l'enregistrement de session : il n'alimente aucune décision commerciale, il attend que le navigateur n'ait rien de mieux à faire.
+
+**État mesuré après coup, en production :**
+
+| | 4G lente / proc. 4× | 3G lente / proc. 6× |
+|---|---|---|
+| Premier pixel | **672 ms** | 2 108 ms |
+| Page chargée | 1 200 ms | 4 173 ms |
+| **Champ utilisable** | **1 315 ms** | **4 330 ms** |
+| LCP | 1 451 ms | — |
+
+LCP à 1 451 ms : dans la bande « bon » de Google (seuil 2 500 ms).
+
+**Gain propre à ce changement : modeste.** LCP 1 500 → 1 451 ms. L'essentiel du gain de la journée vient du retrait de three.js du paquet mobile (−950 Ko), livré plus tôt. Je le dis parce que l'inverse serait facile à laisser croire.
+
+**🐛 DEUX FAUX POSITIFS ATTRAPÉS, et ils auraient tous deux menti dans un sens différent :**
+
+1. **La mesure locale ne valait rien.** `NEXT_PUBLIC_GA_ID` n'est pas défini en local, donc Google Analytics ne s'y charge même pas — mon avant/après local comparait deux pages sans GA. Sans cette vérification, j'annonçais un faux échec.
+2. **« Champ utilisable : 12 330 ms »** — un chiffre alarmant, entièrement faux. Mon chronomètre démarrait APRÈS le chargement de la page, donc il mesurait le moment où mon script s'exécutait. Refait avec un observateur installé **avant** le chargement : 1 315 ms. Facteur 9 d'écart entre l'instrument et la réalité.
+
+**Fichiers touchés :** `src/app/layout.tsx` — les deux scripts passent par `next/script`.
+
+**Comment annuler :** `git revert`. Les scripts remontent dans le `<head>`.
+
+**Effets de bord possibles :** l'enregistrement de session Clarity démarre plus tard, donc une visite très courte peut ne pas être enregistrée. C'est le prix assumé — et c'est pour ça que l'analyse d'audience, elle, n'a pas été mise en `lazyOnload`.
+
+**⚠️ Ce qui reste, et n'a pas été traité :** le profileur signale trois fichiers CSS bloquants, dont un de **183 Ko**. En local il estimait 1 637 ms de gain ; **en production il estime 0 ms** — l'écart vient du HTTP/2 et du CDN. Avant de toucher au CSS, il faudra donc une mesure qui prouve qu'il y a quelque chose à gagner.
+
+---
 ### [2026-08-02 04:30] — La page était deux fois trop lente sur mobile : un moteur 3D que les téléphones ne rendent jamais
 
 **Quoi :** Le décor 3D est désormais chargé **à la demande**. Les ordinateurs le gardent, les téléphones ne le téléchargent plus.
