@@ -1,4 +1,31 @@
 ---
+### [2026-08-02 16:40] — Safari iPhone : le repli mémoire visait un pic de 525 Mo
+
+**Quoi :** Sur téléphone sans stockage utilisable, le budget de fichier passe de 150 Mo à **57 Mo** — c'est-à-dire un pic mémoire visé de 200 Mo au lieu de 525 Mo.
+
+**Pourquoi :** Un utilisateur rapportait « Un problème récurrent est survenu » sur iPhone, sur Safari uniquement. La cause est une incohérence dans `budgetOctets` :
+
+- les deux premières branches partent d'une **mémoire disponible** et la divisent par `RATIO_PIC_MEMOIRE` (3,5) pour en déduire une **taille de fichier** ;
+- la branche de repli rendait `150 Mo` **sans diviser** — donc une taille de fichier, impliquant un pic de 525 Mo.
+
+Cette branche est, en pratique, la branche Safari : Chromium expose `performance.memory`, Android Chrome expose `deviceMemory`, tous deux sortent avant. Seuls Safari et Firefox mobile l'atteignent. D'où un défaut « qu'on ne retrouve pas avec les autres navigateurs ». Aucun iPhone ne laisse un onglet monter à 525 Mo : il le tue, et Safari affiche ce message.
+
+**Qui est concerné, exactement :** `FileSystemFileHandle.createWritable` est arrivé dans **Safari 26.0** (iOS et macOS, sept. 2025 — Firefox 111, Chrome bien avant). Un iPhone en **iOS 26+** prend donc le chemin disque et n'a jamais eu le problème. Le défaut ne touche que les **iOS ≤ 18**.
+
+**Fichiers touchés :**
+- `src/lib/webdl.ts` — `budgetOctets` : la branche de repli part désormais d'un plafond de tas (`PLAFOND_TAS_TELEPHONE`) divisé par le ratio, comme les autres
+
+**Comment annuler :**
+`git revert` du commit. Effet : les iPhone iOS ≤ 18 redemandent 150 Mo et l'onglet meurt à nouveau sur les vidéos moyennes.
+
+**Effets de bord possibles :**
+Sur iPhone iOS ≤ 18, moins de définitions proposées — elles apparaissent barrées, avec l'explication ajoutée plus tôt dans la journée. C'est le compromis assumé : un 480p qui aboutit vaut mieux qu'un 1080p qui tue l'onglet. Aucun changement pour iOS 26+, Android, ni aucun ordinateur.
+
+**Limite connue :** `PLAFOND_TAS_TELEPHONE` (200 Mo) est **prudent, pas mesuré** — aucun simulateur iOS sur cette machine. À relever seulement après une mesure sur un vrai appareil. La vraie levée de contrainte pour iOS ≤ 18 serait le stockage via `createSyncAccessHandle` dans un Worker (Safari 15.2+), qui rendrait le chemin disque à ces appareils ; non fait, parce que non testable ici.
+
+**Vérifié :** trois profils simulés dans le navigateur contre le Worker de production — iPhone iOS 18 (aucune sonde mémoire, pas de stockage) demande bien 57 Mo, sert 480p, barre 1080p/720p avec l'explication ; iPhone iOS 26 garde 4 Go, `disque=1`, 1080p, rien de barré ; ordinateur inchangé.
+
+---
 ### [2026-08-02 15:05] — La qualité refusée s'explique, et le poids annoncé redevient vrai
 
 **Quoi :** Quand une définition ne peut pas être servie, la page le dit et nomme la cause (« le 1080p dépasse la mémoire de ton téléphone — sur ordinateur, aucun souci »), et les définitions hors de portée sont barrées avant le clic. Au passage, le poids affiché à côté de chaque définition décrivait un fichier qui n'était pas celui livré.

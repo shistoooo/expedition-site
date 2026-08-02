@@ -193,8 +193,33 @@ export function budgetOctets(surDisque = false): number {
     return Math.min(MAX_BYTES, Math.floor((ram * 1024 * 1024 * 1024 * 0.25) / RATIO_PIC_MEMOIRE));
   }
 
-  // Firefox et Safari n'exposent rien : on se rabat sur le type d'appareil.
-  return mobile ? 150 * 1024 * 1024 : MAX_BYTES;
+  /**
+   * ⛔ CETTE BRANCHE EST, EN PRATIQUE, LA BRANCHE SAFARI.
+   *
+   * Chromium expose `performance.memory`, Android Chrome expose `deviceMemory` :
+   * ils sortent tous les deux plus haut. Seuls Safari (iOS et macOS) et Firefox
+   * mobile arrivent jusqu'ici. C'est ce qui explique qu'un defaut « qu'on ne
+   * retrouve pas avec les autres navigateurs » vive precisement ici.
+   *
+   * Le defaut : les deux branches precedentes divisent par `RATIO_PIC_MEMOIRE`
+   * — elles partent d'une memoire disponible et en deduisent une taille de
+   * fichier. Celle-ci rendait 150 Mo **sans diviser**, donc une taille de
+   * fichier. Or le pic vaut 3,23 fois le fichier : 150 Mo de fichier visaient
+   * un pic de **525 Mo**. Aucun iPhone ne laisse un onglet monter si haut — il
+   * le tue, et Safari affiche « Un probleme recurrent est survenu ». C'est
+   * exactement le symptome rapporte.
+   *
+   * On raisonne donc comme partout ailleurs : on part d'un plafond de memoire,
+   * et on en deduit la taille de fichier.
+   *
+   * ⚠️ `PLAFOND_TAS_TELEPHONE` est **prudent, pas mesure** : je n'ai pas pu
+   * mesurer sur un vrai iPhone (aucun simulateur iOS sur cette machine). Les
+   * limites d'onglet iOS varient selon l'appareil ; 200 Mo passe sur tous ceux
+   * qui sont documentes. A relever seulement APRES une mesure sur un vrai
+   * appareil — pas a l'estime.
+   */
+  const PLAFOND_TAS_TELEPHONE = 200 * 1024 * 1024;
+  return mobile ? Math.floor(PLAFOND_TAS_TELEPHONE / RATIO_PIC_MEMOIRE) : MAX_BYTES;
 }
 
 /**
