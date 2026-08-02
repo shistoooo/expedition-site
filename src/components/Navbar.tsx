@@ -19,7 +19,9 @@ export default function Navbar() {
   // toutes les pages sont en mode TubeForge, pas seulement /tubeforge/*.
   const isTubeForge = useTubeForgeOnly();
   const trialHref = isTubeForge ? "/tubeforge/checkout?plan=sub&months=12" : "/account?mode=register";
-  const trialLabel = isTubeForge ? "14 jours gratuits" : "3 jours gratuits";
+  // Une seule offre annoncée depuis le 2026-08-02 : 14 jours, carte demandée,
+  // rien prélevé avant la fin. La distinction par domaine n'a plus lieu d'être.
+  const trialLabel = "14 jours gratuits";
   const setPhase = useFlightStore((state) => state.setPhase);
 
   useEffect(() => {

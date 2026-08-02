@@ -13,13 +13,21 @@ import PageBackground from "@/components/PageBackground";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
 
-interface PartnerCode {
-  keyCode: string;
+/**
+ * ⛔ LES CODES NE TRANSITENT PLUS.
+ *
+ * Cette page les listait en clair, sur une route publique protégée par le seul
+ * secret d'un slug de six caractères — c'est-à-dire une chaîne qui voyage dans
+ * les URLs, les historiques et le moindre partage d'écran. N'importe qui
+ * pouvait consommer les codes, et le public visé trouvait la page vide.
+ *
+ * Le visiteur réclame désormais SA clé (POST /partners/:slug/claim) : elle lui
+ * est attribuée côté serveur, jamais affichée, jamais copiable par un tiers.
+ */
+interface PartnerActivation {
   durationDays: number;
-  redeemed: boolean;
   redeemedByEmail: string | null;
   redeemedAt: string | null;
-  createdAt: string;
 }
 
 interface PartnerData {
@@ -28,7 +36,9 @@ interface PartnerData {
   avatarUrl: string | null;
   total: number;
   truncated: boolean;
-  codes: PartnerCode[];
+  disponibles: number;
+  activees: number;
+  activations: PartnerActivation[];
 }
 
 function getInitial(name: string): string {
@@ -53,12 +63,9 @@ export default function PartenairePage() {
 
   const [status, setStatus] = useState<"loading" | "found" | "not-found">("loading");
   const [data, setData] = useState<PartnerData | null>(null);
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [showUsed, setShowUsed] = useState(false);
-  const [canShare, setCanShare] = useState(false);
 
   useEffect(() => {
-    setCanShare(typeof navigator !== "undefined" && typeof navigator.share === "function");
   }, []);
 
   useEffect(() => {
@@ -79,38 +86,10 @@ export default function PartenairePage() {
       .catch(() => setStatus("not-found"));
   }, [slug]);
 
-  const { available, used } = useMemo(() => {
-    const a: PartnerCode[] = [];
-    const u: PartnerCode[] = [];
-    for (const c of data?.codes ?? []) {
-      if (c.redeemed) u.push(c);
-      else a.push(c);
-    }
-    return { available: a, used: u };
-  }, [data]);
+  const available = data?.disponibles ?? 0;
+  const used = data?.activations ?? [];
 
-  const copyLink = async (code: string) => {
-    await navigator.clipboard.writeText(`https://expeditionlauncher.store/try/${code}`);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(null), 2000);
-  };
 
-  const shareLink = async (code: string, partnerName: string, durationDays: number) => {
-    const url = `https://expeditionlauncher.store/try/${code}`;
-    if (!navigator.share) {
-      copyLink(code);
-      return;
-    }
-    try {
-      await navigator.share({
-        title: `Invitation de ${partnerName}`,
-        text: `${durationDays} jours d'accès gratuit à Expedition 👇`,
-        url,
-      });
-    } catch {
-      /* user cancelled */
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden relative">
@@ -188,12 +167,12 @@ export default function PartenairePage() {
                       Salut, {data.name} 👋
                     </h1>
                     <p className="text-white/50 text-sm md:text-base mt-1">
-                      {available.length > 0 ? (
+                      {available > 0 ? (
                         <>
-                          Voici tes <span className="text-white font-semibold">{available.length} invitation{available.length > 1 ? "s" : ""}</span> à offrir à tes amis, collègues ou contacts.
+                          Il reste <span className="text-white font-semibold">{available} invitation{available > 1 ? "s" : ""}</span> à récupérer sur cette page.
                         </>
                       ) : (
-                        "Toutes tes invitations ont été distribuées."
+                        "Toutes les invitations ont été récupérées."
                       )}
                     </p>
                   </div>
@@ -201,84 +180,37 @@ export default function PartenairePage() {
 
                 {/* Mini stats row */}
                 <div className="relative mt-5 flex items-center gap-1.5 text-xs text-white/40 flex-wrap">
-                  <span className="text-green-400/80 font-medium">{available.length} à offrir</span>
+                  <span className="text-green-400/80 font-medium">{available} disponible{available > 1 ? "s" : ""}</span>
                   <span className="text-white/20">·</span>
-                  <span>{used.length} déjà donné{used.length > 1 ? "e" : ""}{used.length > 1 ? "s" : ""}</span>
+                  <span>{used.length} déjà activée{used.length > 1 ? "s" : ""}</span>
                   <span className="text-white/20">·</span>
                   <span>{data.total} au total</span>
                 </div>
               </motion.div>
 
               {/* Available invitations */}
-              {available.length > 0 ? (
+              {available > 0 ? (
                 <section className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-mono text-white/40 uppercase tracking-wider">
-                      Invitations à offrir ({available.length})
+                      Récupère ton accès
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {available.map((c, idx) => (
-                      <motion.div
-                        key={c.keyCode}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: Math.min(idx * 0.04, 0.4) }}
-                        whileHover={{ y: -2 }}
-                        className="group relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-purple-500/15 via-purple-600/5 to-transparent border border-purple-400/25 hover:border-purple-400/40 transition-all"
-                      >
-                        {/* Subtle glow */}
-                        <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-purple-500/20 blur-3xl group-hover:bg-purple-500/30 transition-all pointer-events-none" />
-
-                        <div className="relative z-10 space-y-4">
-                          {/* Top row */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-1.5 text-[10px] font-mono text-purple-300/70 uppercase tracking-[0.15em]">
-                              <Gift className="w-3 h-3" />
-                              <span>Invitation</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/70 border border-white/10 font-mono">
-                              <Clock className="w-2.5 h-2.5" />
-                              <span>{c.durationDays}j</span>
-                            </div>
-                          </div>
-
-                          {/* Code */}
-                          <div className="text-center py-2">
-                            <code className="block text-lg md:text-xl font-mono font-bold text-white tracking-wider">
-                              {c.keyCode}
-                            </code>
-                            <p className="text-[11px] text-white/40 mt-1.5">
-                              {c.durationDays} jours d&apos;accès gratuit
-                            </p>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => copyLink(c.keyCode)}
-                              className="flex-1 h-10 px-3 rounded-xl bg-purple-500 hover:bg-purple-400 text-white text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30"
-                            >
-                              {copiedCode === c.keyCode ? (
-                                <><Check className="w-4 h-4" /> Copié</>
-                              ) : (
-                                <><Copy className="w-4 h-4" /> Copier le lien</>
-                              )}
-                            </button>
-                            {canShare && (
-                              <button
-                                onClick={() => shareLink(c.keyCode, data.name, c.durationDays)}
-                                className="shrink-0 h-10 w-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white/60 hover:text-white transition-all flex items-center justify-center"
-                                aria-label="Partager"
-                              >
-                                <Share2 className="w-4 h-4" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
+                  <div className="rounded-2xl p-6 bg-gradient-to-br from-purple-500/15 via-purple-600/5 to-transparent border border-purple-400/25 text-center">
+                    <p className="text-white/70 text-sm leading-relaxed">
+                      Ton accès est attribué à ton compte au moment où tu le récupères.
+                      Aucun code à copier, rien à partager — donc rien qui puisse partir ailleurs.
+                    </p>
+                    <a
+                      href={`/account?mode=register&via=${encodeURIComponent(slug)}`}
+                      className="mt-5 inline-flex items-center justify-center h-11 px-6 rounded-xl bg-purple-500 hover:bg-purple-400 text-white text-sm font-semibold transition-all shadow-lg shadow-purple-500/30"
+                    >
+                      Récupérer mon accès
+                    </a>
+                    <p className="text-[11px] text-white/35 mt-3">
+                      Un accès par personne et par machine.
+                    </p>
                   </div>
                 </section>
               ) : (
@@ -315,10 +247,10 @@ export default function PartenairePage() {
                         <div className="mt-3 space-y-1.5">
                           {used.map((c) => (
                             <div
-                              key={c.keyCode}
+                              key={`${c.redeemedByEmail ?? ''}-${c.redeemedAt ?? ''}`}
                               className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5 text-xs"
                             >
-                              <code className="font-mono text-white/30 shrink-0 hidden sm:inline">{c.keyCode}</code>
+                              
                               <span className="text-white/60 flex-1 truncate" title={c.redeemedByEmail ?? ""}>
                                 {c.redeemedByEmail ?? "—"}
                               </span>

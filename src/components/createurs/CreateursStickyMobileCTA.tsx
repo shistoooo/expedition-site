@@ -61,7 +61,7 @@ export default function CreateursStickyMobileCTA() {
               "0 6px 20px rgba(139,92,246,0.35), inset 0 1px 0 rgba(255,255,255,0.15)",
           }}
         >
-          {SALES_OPEN ? "3 jours gratuits" : "Être prévenu"}
+          {SALES_OPEN ? "14 jours gratuits" : "Être prévenu"}
           {SALES_OPEN ? (
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           ) : (

@@ -179,7 +179,7 @@ function PricingCard({ plan }: { plan: typeof plans[number] }) {
             href="/account?mode=register"
             className="mt-2.5 block text-center text-[11px] text-white/40 hover:text-white/70 transition-colors"
           >
-            ou commence par 3&nbsp;jours gratuits, sans carte &rarr;
+            ou commence par 14&nbsp;jours gratuits &rarr;
           </Link>
         )}
       </div>

@@ -57,7 +57,7 @@ export default function BannerPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="px-7 py-4 rounded-xl bg-white text-black font-bold text-[17px]">Commencer 3 jours gratuits →</span>
+            <span className="px-7 py-4 rounded-xl bg-white text-black font-bold text-[17px]">Commencer 14 jours gratuits →</span>
             <span className="px-6 py-4 rounded-xl bg-white/[0.06] border border-white/10 text-white font-semibold text-[17px]">Voir la démo →</span>
           </div>
         </div>

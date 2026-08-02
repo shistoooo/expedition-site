@@ -214,7 +214,7 @@ export default function AccountPage() {
     const [step, setStep] = useState<AccountStep>("login");
     const [authMode, setAuthMode] = useState<"login" | "register">("login");
 
-    // CTA « 3 jours gratuits » → /account?mode=register : ouvre direct l'onglet
+    // CTA « 14 jours gratuits » → /account?mode=register : ouvre direct l'onglet
     // Inscription (meilleure conversion pour un nouveau + email capté = relance).
     useEffect(() => {
         if (typeof window === "undefined") return;
@@ -1123,10 +1123,10 @@ export default function AccountPage() {
                                     {!clientSecret && (
                                         <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5 mb-4">
                                             <h2 className="text-lg font-bold mb-1 flex items-center gap-2">
-                                                <Download className="w-5 h-5 text-purple-400" /> Lance tes 3 jours gratuits
+                                                <Download className="w-5 h-5 text-purple-400" /> Lance tes 14 jours gratuits
                                             </h2>
                                             <p className="text-white/50 text-sm mb-4">
-                                                T&eacute;l&eacute;charge l&apos;app et connecte-toi : 3 jours d&apos;acc&egrave;s complet (jusqu&apos;&agrave; 25 r&eacute;cup&eacute;rations/jour), sans carte.
+                                                T&eacute;l&eacute;charge l&apos;app et connecte-toi : 14 jours d&apos;acc&egrave;s complet, rien n&apos;est pr&eacute;lev&eacute; avant la fin de l&apos;essai.
                                             </p>
                                             <DownloadSection />
                                         </div>

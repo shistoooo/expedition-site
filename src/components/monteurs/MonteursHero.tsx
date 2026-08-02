@@ -16,7 +16,7 @@ export default function MonteursHero() {
   }, []);
 
   const ctaHref = SALES_OPEN ? "/account?mode=register" : "/checkout";
-  const ctaLabel = SALES_OPEN ? "Commencer 3 jours gratuits" : "Être prévenu au lancement";
+  const ctaLabel = SALES_OPEN ? "Commencer 14 jours gratuits" : "Être prévenu au lancement";
 
   return (
     <section

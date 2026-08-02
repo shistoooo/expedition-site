@@ -190,7 +190,7 @@ export default function LauncherPage() {
                   Cr&eacute;er un compte pour t&eacute;l&eacute;charger
                   <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
                 </Link>
-                <span className="text-sm text-white/40">Gratuit, sans carte &middot; 3 jours offerts</span>
+                <span className="text-sm text-white/40">14 jours gratuits &middot; annulable en 1 clic</span>
               </div>
             </motion.div>
 

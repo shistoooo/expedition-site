@@ -277,7 +277,7 @@ export default function SwipeForgePage() {
                 <Rocket className="w-5 h-5 text-purple-400 shrink-0" />
                 <p className="text-sm text-white/50">
                   Tu es sur Exp&eacute;dition ? Essaie aussi{" "}
-                  <span className="text-white/80 font-semibold">TubeForge</span> &mdash; 3 jours gratuits, sans carte.
+                  <span className="text-white/80 font-semibold">TubeForge</span> &mdash; 14 jours gratuits.
                 </p>
               </div>
               <Link

@@ -1,4 +1,26 @@
 ---
+### [2026-08-02 20:15] — Une seule offre annoncée : 14 jours, carte demandée
+
+**Quoi :** Toutes les promesses « 3 jours gratuits · sans carte » du site et du launcher deviennent « 14 jours gratuits », alignées sur l'essai qui existe réellement. La page partenaire n'affiche plus aucun code.
+
+**Pourquoi :** Le site annonçait **deux offres contradictoires**. L'essai 14 jours avec carte existe depuis un moment (`TF_SUB_TRIAL_DAYS = 14`, CGV art. 3 bis, FAQ, checkout), mais l'accueil, la FAQ générale, la page launcher, la page compte et SwipeForge promettaient encore « 3 jours sans carte » — le teaser freemium interne à l'app. Un visiteur lisait la promesse sans carte puis tombait sur un checkout qui en demande une.
+
+Décision produit : l'essai officiel est le **checkout avec carte**. Le freemium 3 jours reste un mécanisme interne, il n'est plus une promesse publique.
+
+**Fichiers touchés :**
+- `src/components/HomeHero.tsx`, `FAQSection.tsx`, `HomePricing.tsx`, `Navbar.tsx`, `TubeForgeSection.tsx`, `createurs/*`, `monteurs/*`, `src/app/launcher/page.tsx`, `account/page.tsx`, `swipeforge/page.tsx`, `banner/page.tsx` — libellés uniformisés
+- `src/app/partenaire/[slug]/page.tsx` — plus de codes affichés ; compteurs + bouton « Récupérer mon accès »
+- `expedition-launcher/src/components/LoginScreen.tsx` — mention « sans carte bancaire » retirée
+
+**Comment annuler :**
+`git revert` du commit. Attention : revenir en arrière restaure des promesses que le produit ne tient pas.
+
+**Effets de bord possibles :**
+La page partenaire change de nature : le partenaire ne copie plus des codes, il partage son lien et chaque visiteur récupère son accès. Le code ne transite plus — c'est ce qui ferme la fuite.
+
+**Vérifié :** aucune occurrence résiduelle de « sans carte » ni « 3 jours gratuits » hors du commentaire historique de `/tubeforge/essai`. Build sans erreur ni avertissement. Route de production contrôlée : `/partners/shyro-d11e59` ne renvoie plus aucun champ contenant un code (10 disponibles / 4 activées en compteurs seuls).
+
+---
 ### [2026-08-02 18:20] — 403 : on redemande une URL neuve au lieu de rejouer la morte
 
 **Quoi :** Sur deux refus 403 consécutifs d'une même piste, le téléchargement redemande une résolution neuve — même lien, même définition — et repart avec l'URL obtenue, au lieu de rejouer quatre fois la même adresse.

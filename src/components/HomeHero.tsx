@@ -26,7 +26,7 @@ export default function HomeHero() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
           </span>
-          <span>{SALES_OPEN ? "3 jours gratuits · sans carte" : "Lancement imminent"}</span>
+          <span>{SALES_OPEN ? "14 jours gratuits" : "Lancement imminent"}</span>
         </div>
 
         <div
@@ -69,7 +69,7 @@ export default function HomeHero() {
             href={SALES_OPEN ? "/account?mode=register" : "/checkout"}
             className="group px-8 py-4 rounded-xl bg-white text-black font-bold text-base transition-all duration-200 flex items-center gap-2 border border-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.1),0_8px_24px_rgba(139,92,246,0.25)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.1),0_12px_40px_rgba(139,92,246,0.4)] hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
           >
-            {SALES_OPEN ? "Commencer 3 jours gratuits" : "Être prévenu au lancement"}
+            {SALES_OPEN ? "Commencer 14 jours gratuits" : "Être prévenu au lancement"}
             {SALES_OPEN ? (
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-200" />
             ) : (
@@ -78,7 +78,7 @@ export default function HomeHero() {
           </Link>
           {SALES_OPEN && (
             <p className="text-sm text-white/40">
-              Crée ton compte gratuit (sans carte) &rarr; ensuite&nbsp;: t&apos;abonner ou lancer tes 3&nbsp;jours.
+              Crée ton compte, puis lance tes 14&nbsp;jours gratuits. Rien n&apos;est prélevé avant la fin de l&apos;essai.
             </p>
           )}
         </div>

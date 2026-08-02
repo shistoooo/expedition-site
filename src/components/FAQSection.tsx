@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: "Y a-t-il un essai gratuit ?",
-    a: "Oui : 3 jours gratuits sur TubeForge, sans carte bancaire. Cr\u00e9e ton compte, lance l\u2019essai, et acc\u00e8de \u00e0 toutes les fonctions (4K, d\u00e9coupe, plugins Premiere & DaVinci) jusqu\u2019\u00e0 25 r\u00e9cup\u00e9rations par jour. Aucun pr\u00e9l\u00e8vement \u2014 tu t\u2019abonnes seulement si tu veux continuer.",
+    a: "Oui : 14 jours gratuits sur TubeForge, avec acc\u00e8s complet (4K, d\u00e9coupe, plugins Premiere & DaVinci). Tu enregistres ta carte \u00e0 l\u2019inscription, mais rien n\u2019est pr\u00e9lev\u00e9 avant la fin de l\u2019essai : tu peux annuler en 1 clic depuis Mon compte pendant les 14 jours, et dans ce cas tu ne paies rien.",
   },
   {
     q: "Que veut dire \u00ab\u00a0tarif bloqu\u00e9\u00a0\u00bb ?",
