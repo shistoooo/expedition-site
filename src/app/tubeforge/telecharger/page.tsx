@@ -779,7 +779,17 @@ export default function TelechargerPage() {
     abortRef.current = ctrl;
     setProgress({ phase: "download", pct: 0, label: "Démarrage" });
     try {
-      setDone(await download(result, setProgress, ctrl.signal));
+      /**
+       * Redemande une résolution NEUVE quand une piste se fait refuser deux
+       * fois de suite en 403 — le symptôme d'une URL expirée, contre laquelle
+       * rejouer la même adresse ne peut rien. Même lien, même définition : la
+       * personne récupère exactement ce qu'elle avait demandé.
+       */
+      const renouveler = async () => {
+        const frais = await resolve(url.trim(), result.definitionChoisie ?? undefined);
+        return frais.ok ? frais : null;
+      };
+      setDone(await download(result, setProgress, ctrl.signal, renouveler));
       /**
        * Le compteur affiche ne bougeait plus apres un telechargement.
        *

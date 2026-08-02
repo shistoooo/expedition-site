@@ -1,4 +1,28 @@
 ---
+### [2026-08-02 18:20] — 403 : on redemande une URL neuve au lieu de rejouer la morte
+
+**Quoi :** Sur deux refus 403 consécutifs d'une même piste, le téléchargement redemande une résolution neuve — même lien, même définition — et repart avec l'URL obtenue, au lieu de rejouer quatre fois la même adresse.
+
+**Pourquoi :** Signalé sur iPhone : « code 403, tranche 1 sur 18 » immédiatement, et « je relance plus tard et ça marche ». La cause la plus fréquente de ce refus est une URL expirée. Or on rejouait exactement la même URL quatre fois : si elle est morte, aucun délai ne peut la ressusciter. Les quatre essais étaient perdus d'avance.
+
+**Fichiers touchés :**
+- `src/lib/webdl.ts` — `fetchTranches` accepte `renouveler` ; URL courante partagée par les six ouvriers, une seule renégociation à la fois, deux au maximum ; `fetchChunked` et `fetchVersFlux` la transmettent ; `download` fabrique une résolution neuve UNIQUE pour les deux pistes
+- `src/app/tubeforge/telecharger/page.tsx` — fournit le renouvellement (elle seule connaît le lien collé)
+
+**Comment annuler :**
+`git revert` du commit. Effet : un 403 sur une URL expirée redevient un échec sec.
+
+**Effets de bord possibles :**
+Au pire une résolution supplémentaire par téléchargement en panne — jamais deux, jamais une par piste : image et son expirent ensemble et partagent la même. Le rythme d'appels à YouTube est la ressource qu'on ménage, c'est pourquoi la renégociation est unique et plafonnée.
+
+**Vérifié :** harnais dans le navigateur contre le Worker de production, avec de vrais 403 fabriqués.
+- Deux refus sur une piste → 1 renouvellement, fichier prêt.
+- **Contrôle décisif** — URL rendue définitivement morte (10 refus) : 1 renouvellement, **fichier prêt quand même**. Sans le correctif, les quatre essais s'épuisaient sur le lien mort.
+- Deux erreurs d'instrument écartées en route : mes deux 403 partaient d'abord sur deux pistes différentes (aucune refusée deux fois), et un clic programmé ne peut pas ouvrir le sélecteur de fichier — il fallait forcer le chemin mémoire.
+
+Build sans erreur ni avertissement.
+
+---
 ### [2026-08-02 16:40] — Safari iPhone : le repli mémoire visait un pic de 525 Mo
 
 **Quoi :** Sur téléphone sans stockage utilisable, le budget de fichier passe de 150 Mo à **57 Mo** — c'est-à-dire un pic mémoire visé de 200 Mo au lieu de 525 Mo.

@@ -704,19 +704,52 @@ async function fetchTranches(
   piste: string,
   deposer: Depot,
   concurrency = 6,
-  chunkSize = 6_000_000
+  chunkSize = 6_000_000,
+  /**
+   * Rend une URL NEUVE pour cette piste, ou `null` si c'est impossible.
+   *
+   * Sans ca, un refus 403 faisait rejouer QUATRE FOIS LA MEME URL. Or la cause
+   * la plus frequente de ce refus est une URL expiree : rejouer un lien mort ne
+   * peut pas reussir, quel que soit le delai. Vecu le 02/08/2026 — « code 403,
+   * tranche 1 sur 18 » immediatement, et « je relance plus tard et ca marche ».
+   */
+  renouveler?: () => Promise<string | null>
 ): Promise<void> {
   const ranges: Array<[number, number]> = [];
   for (let s = 0; s < size; s += chunkSize) ranges.push([s, Math.min(s + chunkSize, size) - 1]);
 
   let next = 0;
 
+  /**
+   * L'URL est partagee par les six ouvriers : une seule renegociation profite a
+   * tous. `enCours` evite que six tranches en echec declenchent six resolutions
+   * simultanees — ce qui gaspillerait le rythme d'appels a YouTube, la ressource
+   * meme qu'on essaie de menager.
+   */
+  let urlCourante = url;
+  let enCours: Promise<string | null> | null = null;
+  let renouvellements = 0;
+  const renouvelerUneFois = async (usee: string): Promise<string> => {
+    if (!renouveler || renouvellements >= 2) return urlCourante;
+    // Quelqu'un a deja renouvele pendant qu'on attendait : on prend le sien.
+    if (urlCourante !== usee) return urlCourante;
+    if (!enCours) {
+      renouvellements++;
+      enCours = renouveler().finally(() => { enCours = null; });
+    }
+    const neuve = await enCours;
+    if (neuve && neuve !== urlCourante) urlCourante = neuve;
+    return urlCourante;
+  };
+
   const worker = async () => {
     for (;;) {
       const k = next++;
       if (k >= ranges.length) return;
       const [s, e] = ranges[k];
-      const sep = url.includes("?") ? "&" : "?";
+      // Calcule sur l'URL COURANTE : une URL renouvelee peut ne pas avoir la
+      // meme forme que celle d'origine.
+      const sepDe = (u: string) => (u.includes("?") ? "&" : "?");
 
       /**
        * Chaque tranche a droit a plusieurs essais.
@@ -768,13 +801,24 @@ async function fetchTranches(
             ? 1500 * Math.pow(2, attempt - 1) + Math.random() * 1000
             : 300 * attempt + Math.random() * 200;
           await new Promise((r) => setTimeout(r, attente));
+          /**
+           * Le premier nouvel essai teste l'hypothese « refus passager ». S'il
+           * echoue encore en 403, l'hypothese tombe : on cesse de rejouer la
+           * meme URL et on en demande une neuve. C'est le seul recours quand
+           * l'URL est simplement expiree.
+           */
+          if (lastStatus === 403 && attempt >= 2) {
+            const usee = urlCourante;
+            const neuve = await renouvelerUneFois(usee);
+            if (neuve !== usee) lastStatus = 0;   // repart sur une base propre
+          }
         }
         // Surveillance du SILENCE, et non chronometre de la tranche : une
         // tranche suspendue gelait la barre sans rien afficher, mais une tranche
         // simplement LENTE doit pouvoir aller au bout. Voir `surveilleProgression`.
         const veille = surveilleProgression(signal);
         try {
-          const r = await fetch(`${url}${sep}start=${s}&end=${e}`, {
+          const r = await fetch(`${urlCourante}${sepDe(urlCourante)}start=${s}&end=${e}`, {
             signal: veille.signal,
             referrerPolicy: "no-referrer",
           });
@@ -876,10 +920,15 @@ async function fetchChunked(
   size: number,
   onBytes: (n: number) => void,
   signal: AbortSignal,
-  piste = "fichier"
+  piste = "fichier",
+  renouveler?: () => Promise<string | null>
 ): Promise<ArrayBuffer> {
   const out = new Uint8Array(size);
-  await fetchTranches(url, size, onBytes, signal, piste, (pos, buf) => { out.set(buf, pos); });
+  await fetchTranches(
+    url, size, onBytes, signal, piste,
+    (pos, buf) => { out.set(buf, pos); },
+    6, tailleTranche(), renouveler
+  );
   return out.buffer;
 }
 
@@ -892,13 +941,14 @@ async function fetchVersFlux(
   signal: AbortSignal,
   piste: string,
   flux: FluxDisque,
-  decalage = 0
+  decalage = 0,
+  renouveler?: () => Promise<string | null>
 ): Promise<void> {
   const deposer = depotSerialise(flux);
   await fetchTranches(
     url, size, onBytes, signal, piste,
     (pos, buf) => deposer(decalage + pos, buf),
-    6, tailleTranche()
+    6, tailleTranche(), renouveler
   );
 }
 
@@ -1266,14 +1316,44 @@ function compteurProgression(totalKnown: number, onProgress: (p: Progress) => vo
   };
 }
 
+/**
+ * Redemande au service une resolution NEUVE de la meme vidéo, dans la meme
+ * définition. Fournie par la page, qui seule connaît le lien collé.
+ */
+export type RenouvelerSource = () => Promise<Resolved | null>;
+
 export async function download(
   r: Resolved,
   onProgress: (p: Progress) => void,
-  signal: AbortSignal
+  signal: AbortSignal,
+  renouvelerSource?: RenouvelerSource
 ): Promise<Livraison> {
   const totalKnown = r.muxed
     ? r.file?.size ?? 0
     : (r.video?.size ?? 0) + (r.audio?.size ?? 0);
+
+  /**
+   * UNE seule résolution neuve pour TOUT le téléchargement.
+   *
+   * L'image et le son expirent ensemble — ils viennent du même appel. Laisser
+   * chaque piste en redemander une produirait deux résolutions pour une seule
+   * panne, et le rythme d'appels à YouTube est précisément la ressource qu'on
+   * essaie de ménager : la gaspiller pénaliserait tout le monde.
+   */
+  let resolutionNeuve: Promise<Resolved | null> | null = null;
+  const urlNeuvePour = (
+    piste: "video" | "audio" | "file"
+  ): (() => Promise<string | null>) | undefined => {
+    if (!renouvelerSource) return undefined;
+    return async () => {
+      if (!resolutionNeuve) resolutionNeuve = renouvelerSource().catch(() => null);
+      const frais = await resolutionNeuve;
+      if (!frais) return null;
+      if (piste === "file") return frais.file?.url ?? null;
+      if (piste === "video") return frais.video?.url ?? null;
+      return frais.audio?.url ?? null;
+    };
+  };
 
   // Chemin disque : le fichier ne passe pas par la memoire, donc l'ancien
   // plafond de 500 Mo n'a plus de raison d'etre. `disquePret()` est deja resolu
@@ -1285,7 +1365,7 @@ export async function download(
         "Cette vidéo dépasse 4 Go. À cette taille, un onglet n’est plus le bon outil : TubeForge le fait sans limite, et pose l’extrait dans ton chutier."
       );
     }
-    return telechargerSurDisque(r, onProgress, signal, totalKnown);
+    return telechargerSurDisque(r, onProgress, signal, totalKnown, urlNeuvePour);
   }
 
   if (totalKnown > MAX_BYTES) {
@@ -1306,7 +1386,7 @@ export async function download(
     // cote (mesure du 26/07).
     const grab = (u: string) =>
       r.file!.size
-        ? fetchChunked(u, r.file!.size, bump, signal, "fichier")
+        ? fetchChunked(u, r.file!.size, bump, signal, "fichier", urlNeuvePour("file"))
         : fetchWhole(u, bump, signal);
 
     let buf: ArrayBuffer;
@@ -1325,8 +1405,8 @@ export async function download(
   if (!r.video || !r.audio) throw new Error("Format introuvable pour cette vidéo.");
 
   const [vb, ab] = await Promise.all([
-    fetchChunked(r.video.url, r.video.size, bump, signal, "vidéo"),
-    fetchChunked(r.audio.url, r.audio.size, bump, signal, "audio"),
+    fetchChunked(r.video.url, r.video.size, bump, signal, "vidéo", urlNeuvePour("video")),
+    fetchChunked(r.audio.url, r.audio.size, bump, signal, "audio", urlNeuvePour("audio")),
   ]);
 
   onProgress({ phase: "merge", pct: 100, label: "Assemblage image + son" });
@@ -1375,7 +1455,9 @@ async function telechargerSurDisque(
   r: Resolved,
   onProgress: (p: Progress) => void,
   signal: AbortSignal,
-  totalKnown: number
+  totalKnown: number,
+  /** Fabrique d'URL neuve, partagee avec le chemin memoire. Voir `download`. */
+  urlNeuvePour: (p: "video" | "audio" | "file") => (() => Promise<string | null>) | undefined
 ): Promise<Livraison> {
   const container = r.muxed ? r.file?.container ?? "mp4" : r.video?.container ?? "mp4";
   const nom = safeName(r.meta.title, container);
@@ -1401,7 +1483,7 @@ async function telechargerSurDisque(
       // chemin, pour la meme raison (cache CORS de CloudFront chez Twitch).
       const verser = (u: string) =>
         r.file!.size
-          ? fetchVersFlux(u, r.file!.size, bump, signal, "fichier", dest.flux)
+          ? fetchVersFlux(u, r.file!.size, bump, signal, "fichier", dest.flux, 0, urlNeuvePour("file"))
           : (async () => {
               // Taille inconnue : on ne peut pas trancher, on recopie le flux.
               const rep = await fetch(u, { signal: echeance(5 * 60_000, signal), referrerPolicy: "no-referrer" });
@@ -1437,8 +1519,8 @@ async function telechargerSurDisque(
       const fa = (await ba.poignee.createWritable()) as FluxDisque;
       try {
         await Promise.all([
-          fetchVersFlux(r.video.url, r.video.size, bump, signal, "vidéo", fv),
-          fetchVersFlux(r.audio.url, r.audio.size, bump, signal, "audio", fa),
+          fetchVersFlux(r.video.url, r.video.size, bump, signal, "vidéo", fv, 0, urlNeuvePour("video")),
+          fetchVersFlux(r.audio.url, r.audio.size, bump, signal, "audio", fa, 0, urlNeuvePour("audio")),
         ]);
       } finally {
         // Les flux doivent etre fermes avant que `getFile()` voie les octets.
