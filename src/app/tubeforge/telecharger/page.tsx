@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CompatBadge from "@/components/shared/CompatBadge";
 import {
-  clearToken, download, EchecReseau, fetchMe, getToken, loginUrl, readHashResult, resolve, warmSession,
+  clearToken, download, EchecReseau, fetchMe, getToken, loginUrl, readHashResult, resolve, surTelephone, warmSession,
   type Livraison, type Me, type Progress, type Resolved, type Upsell,
 } from "@/lib/webdl";
 
@@ -1419,7 +1419,22 @@ export default function TelechargerPage() {
                             l'information invérifiable pour la personne. */}
                         {result.downgradeReason === "plafond-youtube"
                           ? `Qualité réduite : YouTube limite en ce moment ce qu'il nous laisse récupérer${result.bestHeight ? ` (le ${result.bestHeight}p existe)` : ""}. Réessaie dans quelques minutes.`
-                          : `Qualité réduite volontairement : ${result.bestHeight ? `en ${result.bestHeight}p, cette vidéo` : "en pleine résolution, cette vidéo"} dépasserait ce que ton navigateur peut assembler.`}
+                          : result.definitionDemandee
+                            ? /* La personne a demandé une définition précise et on ne
+                                 l'a pas servie. C'est le moment où l'explication compte
+                                 le plus : sans elle, elle croit que le bouton est cassé. */
+                              `Le ${result.definitionDemandee}p n'a pas pu être assemblé${
+                                surTelephone()
+                                  ? " par ton téléphone : il n'a pas assez de mémoire pour recoudre un fichier de cette taille. Sur ordinateur, il passe sans souci."
+                                  : " par ton navigateur : le fichier dépasse ce qu'il peut tenir en mémoire."
+                              } On t'a servi le ${result.definitionChoisie ?? result.video?.height}p à la place.`
+                            : /* « Volontairement » laissait croire qu'on retenait la
+                                 qualité. Et la ligne sous les puces dit déjà « sur
+                                 ordinateur, aucun souci » : le répéter ici faisait
+                                 deux fois le même message à trois lignes d'écart. */
+                              `Servie en ${result.definitionChoisie ?? result.video?.height}p : ${
+                                result.bestHeight ? `le ${result.bestHeight}p` : "la pleine résolution"
+                              } dépasse la mémoire de ${surTelephone() ? "ton téléphone" : "ton navigateur"}.`}
                       </p>
                     )}
 
@@ -1441,30 +1456,54 @@ export default function TelechargerPage() {
                           {result.definitions.map((d) => {
                             const active = (result.definitionChoisie ?? result.video?.height) === d.definition;
                             const enCours = changeDef === d.definition;
+                            // Le Worker a calcule, pour CET appareil, si la definition
+                            // tient. On le montre au lieu de laisser cliquer dans le vide.
+                            const horsPortee = d.tientDansLeBudget === false;
                             return (
                               <button
                                 key={d.definition}
                                 type="button"
                                 onClick={() => onChangerDefinition(d.definition)}
-                                disabled={active || busy || changeDef !== null}
+                                disabled={active || busy || changeDef !== null || horsPortee}
                                 aria-pressed={active}
+                                title={
+                                  horsPortee
+                                    ? `Trop lourd pour ${surTelephone() ? "ton téléphone" : "ton navigateur"}`
+                                    : undefined
+                                }
                                 className={[
                                   "px-2.5 py-1 rounded-md text-[12px] font-mono tabular-nums transition-colors",
                                   "border disabled:cursor-default",
                                   active
                                     ? "border-white/25 bg-white/[0.08] text-white"
-                                    : "border-white/[0.08] text-white/50 hover:text-white hover:border-white/20 hover:bg-white/[0.04]",
+                                    : horsPortee
+                                      ? "border-white/[0.05] text-white/20 line-through"
+                                      : "border-white/[0.08] text-white/50 hover:text-white hover:border-white/20 hover:bg-white/[0.04]",
                                   changeDef !== null && !enCours ? "opacity-40" : "",
                                 ].join(" ")}
                               >
                                 {d.definition}p
                                 <span className={active ? "text-white/50" : "text-white/30"}>
-                                  {" · "}{enCours ? "…" : fmtPoids(d.size)}
+                                  {/* Hors budget, le poids connu est celui de la variante
+                                      qu'on ne livrera PAS : l'afficher annoncerait un
+                                      fichier qui n'existe pas. On dit la contrainte. */}
+                                  {" · "}
+                                  {enCours ? "…" : horsPortee ? "trop lourd" : fmtPoids(d.size)}
                                 </span>
                               </button>
                             );
                           })}
                         </div>
+                        {/* Un `title` ne s'ouvre pas au doigt — donc il n'existe pas
+                            sur téléphone, qui est précisément le cas concerné. La
+                            raison doit être écrite en clair sous les puces. */}
+                        {result.definitions.some((d) => d.tientDansLeBudget === false) && (
+                          <p className="text-[13px] md:text-[11px] text-white/40 mt-2 leading-relaxed">
+                            {surTelephone()
+                              ? "Les définitions barrées dépassent la mémoire de ton téléphone : il ne peut pas recoudre un fichier aussi lourd. Sur ordinateur, elles se téléchargent sans souci."
+                              : "Les définitions barrées dépassent ce que ton navigateur peut tenir en mémoire."}
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>

@@ -1,4 +1,29 @@
 ---
+### [2026-08-02 15:05] — La qualité refusée s'explique, et le poids annoncé redevient vrai
+
+**Quoi :** Quand une définition ne peut pas être servie, la page le dit et nomme la cause (« le 1080p dépasse la mémoire de ton téléphone — sur ordinateur, aucun souci »), et les définitions hors de portée sont barrées avant le clic. Au passage, le poids affiché à côté de chaque définition décrivait un fichier qui n'était pas celui livré.
+
+**Pourquoi :** Signalé par un utilisateur : sélectionner 1080p sur téléphone ne donnait pas de 1080p, **sans aucun message**. Deux défauts distincts derrière ça :
+
+1. En ajoutant le sélecteur, j'avais effacé le message de qualité réduite dès que la personne choisissait elle-même — y compris quand son choix ne pouvait pas être honoré. C'est précisément le moment où l'explication compte : sans elle, on croit que le bouton est cassé.
+2. `definitionsDisponibles` appelait `pickPair(formats, h, 0)`, **sans budget**. Or une même définition existe en plusieurs débits : sans contrainte le sélecteur retient la plus lourde, avec un budget il descend vers une plus légère et sert quand même cette définition. Mesuré sur `aqz-KE-bpKQ` à 150 Mo : la page annonçait « 1080p · 275 Mo » alors que le téléchargement livrait du 1080p en 148 Mo. Un test naïf « 275 > 150 » — celui que j'avais écrit d'abord — aurait barré une définition parfaitement servable.
+
+**Fichiers touchés :**
+- `tubeforge-webdl/src/youtube.js` — `definitionsDisponibles(formats, plafond, budget)` interroge le sélecteur sous le budget réel et renvoie `tientDansLeBudget`
+- `tubeforge-webdl/src/index.js` — le choix explicite n'efface le message que s'il a été **honoré** ; sinon `definitionDemandee` remonte
+- `tubeforge-webdl/test/test_definitions.mjs` — 8 assertions sur offre == livraison sous budget (27→35)
+- `expedition-site-prod/src/lib/webdl.ts` — types `tientDansLeBudget` / `definitionDemandee` ; `surTelephone()`
+- `expedition-site-prod/src/app/tubeforge/telecharger/page.tsx` — puces barrées + désactivées, « trop lourd » au lieu d'un poids trompeur, message qui nomme l'appareil
+
+**Comment annuler :**
+`git revert` du commit. Rien à purger : le cache ne stocke que les formats bruts, la sélection est refaite à chaque requête.
+
+**Effets de bord possibles :**
+Les poids affichés changent selon l'appareil — c'est voulu, ils décrivent enfin le fichier réel. Un `title` ne s'ouvrant pas au doigt, l'explication est écrite en clair sous les puces plutôt que confiée à une infobulle.
+
+**Vérifié :** 35/35 tests (rejoués contre l'ancien code : 4 échecs, dont les « 839 Mo » fantômes). Rendu contrôlé dans le navigateur contre le Worker de production — téléphone (« ton téléphone… sur ordinateur, aucun souci »), ordinateur à faible mémoire (« ton navigateur »), et cas normal 500 Mo : aucune puce barrée, aucun message.
+
+---
 ### [2026-08-02 14:10] — La recharge est retirée du produit, partout
 
 **Quoi :** Plus aucun chemin du site ne permet d'acheter une recharge.

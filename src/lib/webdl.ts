@@ -197,6 +197,20 @@ export function budgetOctets(surDisque = false): number {
   return mobile ? 150 * 1024 * 1024 : MAX_BYTES;
 }
 
+/**
+ * L'appareil est-il un telephone ou une tablette ?
+ *
+ * Sert uniquement a NOMMER la cause quand une definition ne passe pas. Dire
+ * « ton navigateur ne peut pas » a quelqu'un sur telephone le laisse croire que
+ * l'outil est casse ; dire « ton telephone ne peut pas, sur ordinateur ca
+ * passe » lui donne une action. Meme regex que ci-dessus, volontairement : les
+ * deux doivent toujours parler du meme appareil.
+ */
+export function surTelephone(): boolean {
+  if (typeof window === "undefined") return false;
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+}
+
 export type Me = {
   /** true si le Worker exige d'etre membre du Discord (constante cote Worker). */
   gate?: boolean;
@@ -262,9 +276,22 @@ export type Resolved = {
    * Calculées côté Worker par le même sélecteur que celui qui livre : ce qui est
    * proposé ici sera honoré à l'identique.
    */
-  definitions?: Array<{ definition: number; container: string; size: number }>;
+  definitions?: Array<{
+    definition: number;
+    container: string;
+    size: number;
+    /**
+     * Cette définition est-elle assemblable par CET appareil ? Un téléphone ne
+     * tient pas un 1080p long en mémoire. On l'affiche quand même — la personne
+     * a le droit de savoir que le 1080p existe — mais on le dit avant le clic
+     * plutôt que de la laisser cliquer dans le vide.
+     */
+    tientDansLeBudget?: boolean;
+  }>;
   /** Celle effectivement retenue, pour savoir laquelle cocher. */
   definitionChoisie?: number | null;
+  /** Ce qui avait été demandé, quand on n'a pas pu le servir. */
+  definitionDemandee?: number | null;
 };
 
 export type Progress = { phase: "download" | "merge" | "save"; pct: number; label: string };
