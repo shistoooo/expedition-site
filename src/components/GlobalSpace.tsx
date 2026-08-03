@@ -22,6 +22,7 @@
  */
 
 import dynamic from "next/dynamic";
+import { useTubeForgeOnly } from "@/lib/useTubeForgeOnly";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -49,13 +50,36 @@ function FondLeger() {
   );
 }
 
+/**
+ * Fond TubeForge : la même construction que `FondLeger`, mais en chaud.
+ *
+ * Pas d'étoiles, et c'est le point. Le ciel violet raconte « suite d'outils
+ * spatiale » — une histoire qui n'est pas celle de TubeForge, et qui jurait
+ * avec les boutons orange dès qu'on a corrigé la palette. Deux lueurs
+ * suffisent à garder la profondeur sans raconter autre chose que le produit.
+ */
+function FondTubeForge() {
+  return (
+    <div className="fixed inset-0 w-full h-full pointer-events-none z-[1]">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,106,31,0.10)_0%,transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(239,58,36,0.06)_0%,transparent_55%)]" />
+    </div>
+  );
+}
+
 export default function GlobalSpace() {
   const pathname = usePathname();
   const isDesktop = useIsDesktop();
+  const seulTubeForge = useTubeForgeOnly();
 
   const EXCLUDED_ROUTES = ["/checkout", "/checkout/success", "/coin-green-screen", "/avatar-editor"];
   // /admin = panneau de données → fond uni, aucun décor spatial
   if (EXCLUDED_ROUTES.includes(pathname) || pathname?.startsWith("/admin")) return null;
+
+  // Monde TubeForge : aucun ciel étoilé, sur téléphone comme sur ordinateur.
+  // Le moteur 3D n'est même pas téléchargé — un décor qu'on ne montre pas n'a
+  // aucune raison de coûter 700 Ko.
+  if (seulTubeForge) return <FondTubeForge />;
 
   // Téléphone : fond statique, et surtout aucun moteur 3D téléchargé.
   if (!isDesktop) return <FondLeger />;

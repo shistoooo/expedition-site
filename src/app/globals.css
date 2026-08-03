@@ -429,3 +429,8 @@ input:-webkit-autofill:focus {
   --color-purple-800: #a82214;
   --color-purple-900: #7d180e;
 }
+
+/* Le bleu nuit du fond de page appartient au ciel violet de la suite. Sous la
+   DA TubeForge, on le tire vers un brun très sombre — assez chaud pour que les
+   lueurs orange s'y posent, assez neutre pour que les cartes noires tiennent. */
+.da-tubeforge .bg-\[\#06051a\] { background-color: #0c0705; }
