@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { TubeForgeOnlyProvider } from "@/lib/TubeForgeOnlyProvider";
+import MarqueurDA from "@/components/MarqueurDA";
 import { EN_TETE_TUBEFORGE } from "@/middleware";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
@@ -116,6 +117,7 @@ export default async function RootLayout({
         // laissait l'autre en violet. Ici, tout hérite sans rien recenser.
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased noise-overlay${seulTubeForge ? " da-tubeforge" : ""}`}
       >
+        <MarqueurDA />
         <GlobalSpace />
         <Analytics />
 
