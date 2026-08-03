@@ -111,7 +111,10 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased noise-overlay`}
+        // Posée sur le <body> et pas sur chaque page : la page compte a
+        // plusieurs racines (connexion, tableau de bord) et n'en marquer qu'une
+        // laissait l'autre en violet. Ici, tout hérite sans rien recenser.
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased noise-overlay${seulTubeForge ? " da-tubeforge" : ""}`}
       >
         <GlobalSpace />
         <Analytics />

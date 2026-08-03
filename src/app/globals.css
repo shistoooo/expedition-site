@@ -399,3 +399,33 @@ input:-webkit-autofill:focus {
 .tf-scope section {
   overflow: visible;
 }
+
+/* ── DA TubeForge sur les pages partagées (compte, checkout…) ────────────────
+   Ces pages sont communes aux deux mondes et leur balisage porte la palette
+   violette de la suite. Sur le domaine TubeForge ce violet ment : le produit
+   qu'on y vend est orange/rouge, et la page de téléchargement l'est déjà.
+
+   ⛔ CE QUI A ÉCHOUÉ D'ABORD, ET POURQUOI CETTE VERSION MARCHE.
+   Première tentative : redéclarer `.da-tubeforge .bg-purple-600 { … }`. Sans
+   effet, même en `!important` — parce qu'en Tailwind v4 l'utilitaire ne porte
+   PAS la couleur, il porte une indirection :
+       .bg-purple-600 { background-color: var(--color-purple-600) }
+   Se battre contre la classe revenait à repeindre le panneau indicateur au
+   lieu de changer la destination. On redéfinit donc LA VARIABLE : chaque
+   utilitaire suit, y compris ses variantes d'opacité, qui composent à partir
+   de cette même variable.
+
+   Les valeurs conservent les rapports de clarté de l'échelle violette
+   d'origine — c'est ce qui préserve les contrastes déjà validés sur une page
+   qui gère de la facturation. */
+.da-tubeforge {
+  --color-purple-100: #ffe6d5;
+  --color-purple-200: #ffcdad;
+  --color-purple-300: #ffb083;
+  --color-purple-400: #ff6a1f;   /* accent de texte, le plus fréquent */
+  --color-purple-500: #f4542a;
+  --color-purple-600: #ef3a24;   /* bouton principal */
+  --color-purple-700: #d02d1a;
+  --color-purple-800: #a82214;
+  --color-purple-900: #7d180e;
+}
