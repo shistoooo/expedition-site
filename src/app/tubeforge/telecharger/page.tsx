@@ -1346,7 +1346,16 @@ export default function TelechargerPage() {
               </motion.div>
             )}
 
-            {!discord && (upsell || epuise) && (
+            {/* ⛔ LE MEILLEUR MOMENT POUR VENDRE ÉTAIT MUET.
+                Ce bloc ne s'affichait que si le Worker envoyait un `upsell`.
+                Or l'échec le plus fréquent — « YouTube prend NOTRE serveur pour
+                un robot » — n'en porte pas : la personne lisait un paragraphe
+                rouge qui vantait TubeForge, sans un seul bouton pour y aller.
+                C'est précisément l'instant où l'argument porte le mieux :
+                elle vient de se heurter à une limite que le produit n'a pas.
+                On sert donc l'offre sur TOUT échec, avec un texte par défaut
+                quand le Worker n'en fournit pas. */}
+            {!discord && (upsell || epuise || error || echecTelechargement) && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1354,8 +1363,13 @@ export default function TelechargerPage() {
                 className="mt-3 rounded-2xl border p-5 md:p-6"
                 style={{ borderColor: "rgba(239,58,36,0.32)", background: "rgba(239,58,36,0.055)" }}
               >
-                <p className="font-bold text-white mb-1.5">{(upsell || epuise)!.titre}</p>
-                <p className="text-sm text-white/60 leading-relaxed">{(upsell || epuise)!.texte}</p>
+                <p className="font-bold text-white mb-1.5">
+                  {(upsell || epuise)?.titre ?? "TubeForge ne rencontre pas ce blocage"}
+                </p>
+                <p className="text-sm text-white/60 leading-relaxed">
+                  {(upsell || epuise)?.texte
+                    ?? "Il télécharge depuis TA connexion, pas depuis nos serveurs. YouTube le traite comme n\u2019importe quel spectateur — donc ni file d\u2019attente, ni refus, ni qualité rabotée."}
+                </p>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mt-5">
                   <Link
                     data-track="webdl-upsell-essai"
