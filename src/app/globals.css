@@ -433,4 +433,48 @@ input:-webkit-autofill:focus {
 /* Le bleu nuit du fond de page appartient au ciel violet de la suite. Sous la
    DA TubeForge, on le tire vers un brun très sombre — assez chaud pour que les
    lueurs orange s'y posent, assez neutre pour que les cartes noires tiennent. */
-.da-tubeforge .bg-\[\#06051a\] { background-color: #0c0705; }
+
+
+/* ── Restes de la DA Expédition, traités en un point ─────────────────────────
+   Le remappage des variables `--color-purple-*` ne touche QUE les utilitaires
+   Tailwind standard. Un audit du 2026-08-03 a relevé 79 endroits qui lui
+   échappent : couleurs écrites en dur, dégradés inline, composants qui
+   embarquent leur propre violet. Les cinq règles ci-dessous couvrent celles
+   qui sont partagées par toutes les pages — le reste se corrige dans le JSX. */
+
+/* 1. TYPOGRAPHIE. `.tf-scope` ne couvre que le segment /tubeforge/* : hors de
+      là, les titres restaient en Playfair, le serif éditorial de la suite —
+      exactement ce que TubeForge écarte. Si la variable display n'est pas
+      chargée sur la page, on retombe sur la grotesque, jamais sur le serif. */
+.da-tubeforge h1,
+.da-tubeforge h2,
+.da-tubeforge h3 {
+  font-family: var(--font-tf-display), var(--font-geist-sans), sans-serif;
+}
+
+/* 2. LE FAISCEAU DES CARTES. `BorderBeam` fait tourner un conique violet —
+      c'est le liseré qu'on voit courir autour de la carte « Mon compte ». */
+.da-tubeforge .border-beam-gradient {
+  background-image: conic-gradient(from var(--angle, 0deg),
+    transparent 0%, rgba(255, 106, 31, 0.55) 12%,
+    rgba(239, 58, 36, 0.75) 20%, transparent 32%) !important;
+}
+
+/* 3. LA GRILLE DE FOND. `PageBackground` embarque une grille violette en dur.
+      La référence TubeForge trace la sienne en blanc très faible. */
+.da-tubeforge .page-background-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) !important;
+}
+
+/* 4. LA SÉLECTION DE TEXTE. Détail, mais il apparaît dès qu'on surligne un
+      email ou un montant — et il était violet. */
+.da-tubeforge ::selection {
+  background: rgba(255, 106, 31, 0.35);
+  color: #fff;
+}
+
+/* 5. LA BASE OPAQUE. La référence peint `#07060f`, pas une teinte inventée :
+      c'est cette valeur qui couvre le ciel étoilé sur les pages TubeForge. */
+.da-tubeforge .bg-\[\#06051a\] { background-color: #07060f; }
