@@ -78,15 +78,26 @@ export default function TubeForgePage() {
           className="absolute bottom-[-25%] right-[-12%] w-[760px] h-[560px] rounded-full blur-[170px]"
           style={{ background: "radial-gradient(ellipse at center, rgba(239,68,68,0.07), transparent 72%)" }}
         />
-        {/* Touches VIOLET (couleur du wordmark) : légères, en flancs, jamais au
-            centre — le violet reste rare et signifiant, pas décoratif. */}
+        {/* Touches VIOLET (couleur du wordmark) : en FLANCS, jamais au centre.
+            Opacités relevées le 2026-08-03 (0,075→0,115 et 0,055→0,09), et une
+            troisième lueur ajoutée en haut à droite pour que la couleur existe
+            aussi dans le premier écran — auparavant elle n'apparaissait qu'à
+            38 % de la page, donc après le hero.
+            La règle ne change pas : le violet reste rare et signifiant. Il
+            monte d'un cran, il ne devient pas décor — au-delà, il rentre en
+            concurrence avec l'ember et on ne sait plus quelle est la couleur
+            du produit. */}
+        <div
+          className="absolute top-[-6%] right-[-10%] w-[520px] h-[520px] rounded-full blur-[190px]"
+          style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.085), transparent 70%)" }}
+        />
         <div
           className="absolute top-[38%] left-[-18%] w-[620px] h-[620px] rounded-full blur-[180px]"
-          style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.075), transparent 68%)" }}
+          style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.115), transparent 68%)" }}
         />
         <div
           className="absolute top-[68%] right-[-14%] w-[520px] h-[520px] rounded-full blur-[180px]"
-          style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.055), transparent 68%)" }}
+          style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.09), transparent 68%)" }}
         />
       </div>
       {/* Grille technique — UNIQUEMENT en haut de page (derrière le hero), discrète

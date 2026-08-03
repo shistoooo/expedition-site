@@ -340,7 +340,10 @@ input:-webkit-autofill:focus {
 @media (prefers-reduced-motion: reduce) { .tf-forge-flow { animation: none; } }
 
 /* TubeForge — drift lent de la grille de fond (boucle transparente : 44px = 1 cellule) */
-.tf-grid-anim { animation: tf-grid-drift 24s linear infinite; }
+/* 6,8 s et non 24 : demande du 2026-08-03, « +254 % de vitesse » — la durée
+   se divise donc par 3,54. La grille dérive toujours de 44 px, c'est le
+   RYTHME qui change, pas la distance. */
+.tf-grid-anim { animation: tf-grid-drift 6.8s linear infinite; }
 @keyframes tf-grid-drift { to { background-position: 44px 44px; } }
 @media (prefers-reduced-motion: reduce) { .tf-grid-anim { animation: none; } }
 
