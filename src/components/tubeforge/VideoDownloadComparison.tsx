@@ -168,7 +168,25 @@ function VideoPanel({
         onEnded={onEnded}
         onTimeUpdate={(e) => onTimeUpdate(e.currentTarget.currentTime)}
         style={{ aspectRatio: `${width} / ${height}` }}
-        className={`block w-full h-auto transition-[filter] duration-500 ${mocked ? "blur-md brightness-50" : ""}`}
+        /**
+         * ⛔ AUCUN `filter` SUR UNE VIDÉO QUI JOUE.
+         *
+         * On posait `blur-md brightness-50` sur le <video> lui-même. Une vidéo
+         * sans filtre est servie par WebKit hors du pipeline de peinture, dans
+         * une couche dédiée, sans copie. Un filtre la DISQUALIFIE de ce chemin
+         * matériel : chaque image décodée doit être recopiée, floutée, puis
+         * recomposée — ici pendant ~27 secondes d'affilée, pendant que l'autre
+         * vidéo continue de décoder.
+         *
+         * Le voile ci-dessous donne le même effet « mise en veille » pour le
+         * prix d'un aplat : la vidéo reste sur son chemin matériel.
+         */
+        className="block w-full h-auto"
+      />
+      {/* Voile frère, jamais un filtre sur la source. */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+        style={{ background: "rgba(6,5,26,0.72)", opacity: mocked ? 1 : 0 }}
       />
       {mocked && <WaitJoke />}
       <div

@@ -39,8 +39,8 @@ function Cell({ children, className = "", delay = 0, look = 0 }: { children: Rea
   const { r, tilt } = LOOKS[look % LOOKS.length];
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay, ease: easeOutExpo }}
       className={`group ${className}`}
@@ -57,8 +57,8 @@ export default function FeaturesList() {
     <div className="grid md:grid-cols-5 gap-4 md:gap-5">
       {/* Intro : le titre vit dans la grille */}
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, ease: easeOutExpo }}
         className="md:col-span-2 flex flex-col justify-center py-2 md:pr-4"

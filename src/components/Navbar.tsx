@@ -58,9 +58,27 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "glass py-3" : "py-5 bg-transparent"
+      /**
+       * ⛔ NI `transition-all`, NI `backdrop-filter` SUR CETTE BARRE.
+       *
+       * Elle portait `.glass` (backdrop-filter: blur(48px)) dès 50 px de scroll.
+       * Un `backdrop-filter` force WebKit à recomposer TOUT ce qui est peint
+       * derrière, puis à le flouter — et derrière, il y a la grille animée. Le
+       * flou était donc recalculé à chaque repeint de la grille, indéfiniment.
+       * `transition-all` aggravait tout : il interpolait le RAYON de flou sur
+       * 500 ms, soit trente rayons distincts dont aucun n'est réutilisable.
+       *
+       * Symptôme rapporté le 2026-08-03 : « je scrolle, ça rame, puis l'onglet
+       * meurt ». Le seuil de 50 px est exactement le geste décrit.
+       *
+       * Un fond plat donne le même rendu : la page peint déjà une base charbon
+       * OPAQUE en dessous, donc le flou d'arrière-plan ne révélait rien.
+       * On ne transitionne plus que ce qui est composable et bon marché.
+       */
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,padding] duration-500 ${
+        isScrolled ? "py-3" : "py-5"
       }`}
+      style={{ backgroundColor: isScrolled ? "rgba(7,6,15,0.90)" : "transparent" }}
     >
       <div className="container-main flex items-center justify-between relative">
         <Link href={isTubeForge ? ACCUEIL_TUBEFORGE : "/"} className="flex items-center gap-2 group z-10">
