@@ -146,6 +146,15 @@ interface SubscriptionInfo {
     cancelAtPeriodEnd: boolean;
 }
 
+/**
+ * Le programme ambassadeur est-il ouvert ?
+ *
+ * Typé `boolean` et non `false` : avec le littéral, TypeScript sait que la
+ * branche est morte et cesse d'y raffiner `subscription` / `ambassadorStatus`,
+ * ce qui casse la compilation du bloc qu'on veut justement conserver intact.
+ */
+const PROGRAMME_AMBASSADEUR_OUVERT: boolean = false;
+
 interface AmbassadorInfo {
     isAmbassador: boolean;
     referralCode: string;
@@ -1303,7 +1312,13 @@ export default function AccountPage() {
                                     voient la section (côté account ET la sub-section
                                     "Devenez Ambassadeur"). Page /ambassador reste
                                     publique pour SEO + invitation par lien direct. */}
-                                {subscription && subscription.status !== "canceled" &&
+                                {/* ⛔ RETIRÉ POUR TOUT LE MONDE, ADMINS COMPRIS (2026-08-03).
+                                    Le programme n'est pas ouvert : l'afficher, même au
+                                    seul admin, encombrait la page compte d'un bloc qui
+                                    ne mène nulle part. Le code reste en place — c'est
+                                    la CONDITION qu'on ferme, pas la fonctionnalité, pour
+                                    que la remettre soit une ligne et non une réécriture. */}
+                                {PROGRAMME_AMBASSADEUR_OUVERT && subscription && subscription.status !== "canceled" &&
                                   ADMIN_EMAILS.includes(email.toLowerCase().trim()) && (
                                     ambassadorStatus?.isAmbassador ? (
                                         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
