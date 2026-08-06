@@ -126,6 +126,55 @@ async function ouvrirBrouillon(piste: string) {
 }
 
 /**
+ * Age minimum d'un residu avant qu'on ose y toucher.
+ *
+ * ⛔ CE DELAI N'EST PAS UNE PRECAUTION VAGUE : il protege le lien de secours.
+ *
+ * `ouvrirDestination` remet le fichier via un lien objet adosse a l'entree OPFS,
+ * et ne supprime cette entree qu'au bout de CINQ MINUTES — exprès, parce que la
+ * page propose « rien n'est arrivé ? enregistre-le à la main (le lien reste
+ * valable 5 minutes) ». C'est la seule reparation possible quand le navigateur
+ * refuse le telechargement en silence, ce qui est arrive (rapport du
+ * 01/08/2026).
+ *
+ * Or le balayage ci-dessous supprimait TOUT `tfdl-*` sans regarder l'age. Lancer
+ * un second telechargement dans les cinq minutes — le geste le plus ordinaire du
+ * monde pour quelqu'un qui recupere plusieurs extraits — detruisait donc le
+ * secours du premier.
+ *
+ * MESURE DU 06/08/2026, Chrome 148, sur l'origine de production : un lien objet
+ * adosse a une entree OPFS rend `OK 262 144 octets` avant `removeEntry`, et
+ * **`TypeError: Failed to fetch` apres**. Le lien meurt bien avec l'entree.
+ *
+ * Dix minutes couvrent les cinq du secours avec de la marge, sans laisser
+ * trainer un fichier de la taille d'une video plus longtemps que necessaire.
+ *
+ * ⚠️ Ce qui NE risquait rien, verifie a la meme occasion : un brouillon en cours
+ * d'ecriture. `removeEntry` leve `NoModificationAllowedError` tant qu'un flux est
+ * ouvert dessus — le navigateur protege lui-meme les ecritures en vol, y compris
+ * celles d'un autre onglet.
+ */
+const AGE_RESIDU_MS = 10 * 60_000;
+
+/**
+ * L'instant de creation, lu dans le NOM du fichier.
+ *
+ * `ouvrirBrouillon` compose `tfdl-<piste>-<date en base 36>-<n>.part`. L'horodatage
+ * est donc deja la : inutile d'interroger le fichier, ce qui couterait un accès
+ * disque par entree.
+ *
+ * Rend `null` quand le nom ne suit pas cette forme — un residu d'une version
+ * anterieure, ou la sonde `tfdl-sonde`. Ceux-la sont balayes sans condition :
+ * ils ne portent aucun lien de secours.
+ */
+function dateDuBrouillon(nom: string): number | null {
+  const m = /^tfdl-[a-z]+-([0-9a-z]+)-\d+\.part$/.exec(nom);
+  if (!m) return null;
+  const t = parseInt(m[1], 36);
+  return Number.isFinite(t) && t > 0 ? t : null;
+}
+
+/**
  * Balayage des residus au DEBUT d'un telechargement.
  *
  * Si l'onglet est ferme avant que le minuteur de suppression se declenche, un
@@ -138,9 +187,15 @@ async function balayerResidus(saufCes: Set<string>) {
   try {
     const racine = await opfs();
     if (!racine) return;
+    const maintenant = Date.now();
     const aJeter: string[] = [];
     for await (const nom of (racine as unknown as { keys: () => AsyncIterable<string> }).keys()) {
-      if (nom.startsWith("tfdl-") && !saufCes.has(nom)) aJeter.push(nom);
+      if (!nom.startsWith("tfdl-") || saufCes.has(nom)) continue;
+      const ne = dateDuBrouillon(nom);
+      // Un brouillon recent peut encore porter le lien de secours d'un
+      // telechargement qui vient de finir : on le laisse vieillir.
+      if (ne !== null && maintenant - ne < AGE_RESIDU_MS) continue;
+      aJeter.push(nom);
     }
     for (const nom of aJeter) {
       try { await racine.removeEntry(nom); } catch { /* verrouille par une autre operation */ }
