@@ -18,9 +18,31 @@
  *     produits au milieu d'un achat.
  */
 
-/** Les domaines sur lesquels SEUL TubeForge existe. */
+/**
+ * Les domaines sur lesquels SEUL TubeForge existe.
+ *
+ * ⛔ BASCULE COMPLÈTE DU 2026-08-08 : le domaine PRINCIPAL a rejoint la liste.
+ *
+ * Décision produit : TubeForge est le produit qu'on vend aujourd'hui, donc c'est
+ * lui que voit un visiteur qui arrive — pas un catalogue. Le site de la suite
+ * n'est plus servi nulle part.
+ *
+ * ⚠️ CE QUE ÇA COUPE, et c'est assumé : sur `expeditionlauncher.store`, les
+ * pages de `CHEMINS_SUITE` (/monteurs, /createurs, /pricing, /economie,
+ * /launcher, /clipforge, /reviewforge, /tools, /ambassador…) ne répondent plus
+ * — le middleware renvoie vers TubeForge. Elles répondaient toutes `200` avant
+ * la bascule. ClipForge et ReviewForge disparaissent donc du web public.
+ *
+ * ⚠️ Ce que le code ne peut PAS annuler : Google mettra des semaines à oublier
+ * ces pages, là où une ligne suffit à les rétablir ici. L'asymétrie est réelle.
+ *
+ * ↩️ POUR REVENIR EN ARRIÈRE : retirer la ligne `"expeditionlauncher.store"`
+ * ci-dessous, et redéployer. Le site de la suite est INTACT dans le code — il
+ * n'a jamais été supprimé, seulement cessé d'être servi sur ce domaine.
+ */
 export const DOMAINES_TUBEFORGE = [
   "tubeforge.explauncheur.space",
+  "expeditionlauncher.store",
 ];
 
 /** Vrai si cet hôte ne sert que TubeForge. */

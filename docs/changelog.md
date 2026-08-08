@@ -1,4 +1,33 @@
 ---
+### [2026-08-08 02:50] — Bascule complète : le domaine principal sert TubeForge
+
+**Quoi :** `expeditionlauncher.store` rejoint `DOMAINES_TUBEFORGE`. Le site
+« TubeForge seul » — celui avec les deux vidéos comparatives — est désormais ce
+que voit tout visiteur. Le site de la suite n'est plus servi nulle part.
+
+**Pourquoi :** TubeForge est le produit vendu aujourd'hui. Quelqu'un qui arrive
+sur le domaine principal tombait sur un catalogue au lieu du produit.
+
+**Fichiers touchés :**
+- `src/lib/tubeforgeOnly.ts` — une ligne ajoutée à `DOMAINES_TUBEFORGE`
+
+**⚠️ Effets de bord ASSUMÉS.** Le mode TubeForge ne masque pas les liens : il
+COUPE les chemins de `CHEMINS_SUITE`. Sur `expeditionlauncher.store`, ces pages
+répondaient `200` et renvoient désormais vers TubeForge :
+`/monteurs` `/createurs` `/pricing` `/economie` `/launcher` `/clipforge`
+`/reviewforge` `/tools` `/ambassador`.
+**ClipForge et ReviewForge disparaissent donc du web public**, ainsi que la page
+ambassadeurs. C'était la décision, prise en connaissance de cause.
+
+Ce que le code ne peut pas annuler : Google mettra des semaines à oublier ces
+pages, là où une ligne suffit à les rétablir. L'asymétrie est réelle.
+
+**Comment annuler :** retirer `"expeditionlauncher.store"` de
+`DOMAINES_TUBEFORGE` dans `src/lib/tubeforgeOnly.ts`, puis redéployer. Le site
+de la suite est INTACT dans le code — il n'a jamais été supprimé, seulement
+cessé d'être servi sur ce domaine.
+
+---
 ### [2026-08-02 21:40] — Le mode « TubeForge seul » se décide côté serveur
 
 **Quoi :** Le middleware pose un en-tête `x-tubeforge-seul`, le layout le lit, et le PREMIER HTML est déjà celui du bon monde. Au passage, l'identité déclarée aux moteurs (JSON-LD) dépend du domaine.
