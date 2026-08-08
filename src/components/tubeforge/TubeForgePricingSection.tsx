@@ -188,7 +188,9 @@ export default function TubeForgePricingSection() {
            * chose.
            */}
           <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em]">
-            {PRICING_MODE === "recharge_lifetime" ? "39,99 €, une seule fois" : "Choisis ta formule"}
+            {/* Le prix vit dans la CARTE, en gros. L'écrire aussi dans le titre
+                le faisait lire deux fois à trois centimètres d'écart. */}
+            {PRICING_MODE === "recharge_lifetime" ? "Une seule fois" : "Choisis ta formule"}
           </h2>
           {sousTitre && (
             <p className="mt-4 text-base text-white/50 max-w-xl mx-auto leading-relaxed">{sousTitre}</p>
