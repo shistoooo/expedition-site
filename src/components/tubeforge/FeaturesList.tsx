@@ -84,7 +84,7 @@ export default function FeaturesList() {
       {/* 01 — LA cellule riche : une VRAIE capture (timeline Premiere, clip
           importé par TubeForge). Pas un mockup dessiné : le produit, tel quel. */}
       <Cell className="md:col-span-3" look={0}>
-        <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Ça atterrit direct sur ta timeline</h3>
+        <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">Tu ne touches plus au Finder</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-5">
           Pas de dossier à ranger, pas de glisser-déposer. La vidéo apparaît sur Premiere ou DaVinci, prête à couper.
         </p>
@@ -140,7 +140,7 @@ export default function FeaturesList() {
 
       {/* 04 — texte seul : tout n'a pas besoin d'une illustration */}
       <Cell className="md:col-span-3" delay={0.15} look={3}>
-        <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">4K, et autant que tu veux à la chaîne</h3>
+        <h3 className="font-bold text-white text-lg md:text-xl mb-1.5">4K, et à la chaîne</h3>
         <p className="text-white/45 text-sm leading-relaxed mb-5">
           Lance-en autant que tu veux : 3 se téléchargent en même temps, les autres s&apos;enchaînent tout seuls pendant que tu montes.
         </p>

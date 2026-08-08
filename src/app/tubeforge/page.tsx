@@ -25,7 +25,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "C'est un abonnement ?",
-    a: "Non. TubeForge se paie une fois, 39,99€, et il est à toi. Pas de renouvellement, pas de compteur, rien à annuler. Les mises à jour sont comprises.",
+    a: "Non. Tu le paies une fois, 39,99€, et il est à toi. Les mises à jour sont comprises.",
   },
   {
     q: "Sur combien d'ordinateurs ?",

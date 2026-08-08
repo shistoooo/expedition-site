@@ -519,8 +519,13 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
             <p className="text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[0.95]" style={{ color: RED }}>
               12 journées
             </p>
+            {/* Le bloc de statistiques plus haut dit DÉJÀ « 12 journées de travail
+                par an » puis « le temps que tu passes à récupérer des fichiers »,
+                méthode de calcul comprise. Le redire mot pour mot ici ne rappelait
+                rien, ça donnait juste un texte qui tourne en rond. Juste avant le
+                prix, on bascule du problème à ce qu'on en fait. */}
             <p className="text-sm text-white/52 mt-2.5 leading-snug">
-              de travail par an, passées à<br className="hidden sm:block" /> récupérer des fichiers
+              que TubeForge te rend<br className="hidden sm:block" /> dès le premier montage
             </p>
           </div>
 

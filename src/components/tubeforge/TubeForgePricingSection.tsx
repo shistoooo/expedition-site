@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Check, Star, Rocket, Sparkles, ArrowRight } from "lucide-react";
+import { Check, Star, Rocket, ArrowRight } from "lucide-react";
 import NumberTicker from "@/components/NumberTicker";
 import { SALES_OPEN, PRICING_MODE } from "@/lib/salesConfig";
 
@@ -110,7 +110,7 @@ function OffreUniqueCard() {
       <div className="flex items-baseline gap-2 mb-1">
         <span className="font-black text-5xl text-white">{eurStatic(PLAN_LIFETIME_CENTS)}</span>
       </div>
-      <p className="text-sm text-white/45 mb-6">Une seule fois. Plus jamais de facture.</p>
+      <p className="text-sm text-white/45 mb-6">Tu le gardes, même le jour où le prix montera.</p>
       <ul className="space-y-3 mb-8 flex-1">
         {[
           "Toutes les fonctions, sans limite de téléchargements",
@@ -133,7 +133,7 @@ function OffreUniqueCard() {
         Obtenir TubeForge
       </Link>
       <p className="text-xs text-white/35 mt-4 text-center">
-        Paiement sécurisé par Stripe · Mac et Windows
+        Paiement sécurisé par Stripe
       </p>
     </motion.div>
   );
@@ -158,22 +158,32 @@ export default function TubeForgePricingSection() {
             Prix
           </p>
           <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em] mb-4">
-            {PRICING_MODE === "recharge_lifetime" ? "Un seul prix, une seule fois" : "Choisis ta formule"}
+            {PRICING_MODE === "recharge_lifetime" ? "39,99 €, une seule fois" : "Choisis ta formule"}
           </h2>
+          {/**
+           * ⛔ CE BLOC DISAIT QUATRE FOIS LA MÊME CHOSE.
+           *
+           * Titre « une seule fois », sous-titre « pas de renouvellement, pas de
+           * compteur », pastille « pas de renouvellement, pas de compteur, rien à
+           * annuler », carte « Une seule fois. Plus jamais de facture. » — deux
+           * répétitions MOT POUR MOT à trois lignes d'écart.
+           *
+           * Écrit d'un seul jet en basculant sur l'achat unique : chaque surface a
+           * reformulé l'argument au lieu d'en porter un autre. C'est la signature
+           * la plus reconnaissable d'un texte généré, et un lecteur la sent avant
+           * de savoir la nommer.
+           *
+           * Règle tenue ici : le titre annonce le prix, le sous-titre défend le
+           * choix, la carte détaille. La pastille est SUPPRIMÉE — elle ne portait
+           * rien que les deux autres ne disaient déjà.
+           */}
           <p className="text-base text-white/50 max-w-xl mx-auto leading-relaxed">
             {PRICING_MODE === "both"
               ? "Abonnement classique, ou paiement unique : recharge à la demande ou accès à vie."
               : PRICING_MODE === "recharge_lifetime"
-                ? "Pas d'abonnement, pas de renouvellement, pas de compteur. Tu achètes TubeForge et il est à toi."
+                ? "Un outil que tu ouvres à chaque montage ne devrait pas t'envoyer une facture tous les mois."
                 : "Abonnement mensuel ou annuel, sans engagement."}
           </p>
-          <div
-            className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm"
-            style={{ background: "rgba(255,106,31,0.08)", border: "1px solid rgba(255,106,31,0.22)", color: "rgba(255,255,255,0.8)" }}
-          >
-            <Sparkles className="w-3.5 h-3.5" style={{ color: AMBER }} />
-            <span><span className="font-semibold text-white">Payé une fois</span> : pas de renouvellement, pas de compteur, rien à annuler</span>
-          </div>
         </motion.div>
 
         {PRICING_MODE === "classic" && <ClassicCard />}
