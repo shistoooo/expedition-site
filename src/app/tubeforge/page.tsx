@@ -16,8 +16,8 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const FAQ_ITEMS = [
   {
-    q: "Je peux tester avant d'acheter ?",
-    a: "Oui, le téléchargeur web est gratuit et ne demande aucun compte : tu colles un lien, tu récupères ta vidéo. Il fait moins que l'app (pas de plugin Premiere, pas de 4K, pas de file d'attente), mais il te dit tout de suite si TubeForge te sert à quelque chose.",
+    q: "Ça marche avec quels sites ?",
+    a: "Plus de 1500 : YouTube, TikTok, Vimeo, X, Twitch, Dailymotion, et la plupart des plateformes vidéo. Le geste est le même partout — tu colles le lien, tu choisis la qualité.",
   },
   {
     q: "Ça marche avec quel logiciel de montage ?",

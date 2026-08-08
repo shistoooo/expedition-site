@@ -120,6 +120,31 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      /**
+       * TÉLÉCHARGEUR WEB — FERMÉ LE 2026-08-09.
+       *
+       * Le Worker `tubeforge-webdl` répond 410 sur toutes ses routes
+       * (`SERVICE_OUVERT = "false"`). Laisser la page en ligne afficherait une
+       * interface qui se charge normalement, accepte un lien, puis échoue —
+       * pire qu'une page qui dit franchement que c'est fini.
+       *
+       * `permanent: false` (307) et non 308 : la fermeture se rouvre en
+       * remettant un drapeau, alors qu'un 308 se grave dans le cache des
+       * navigateurs pour des mois. On ne paie pas ce prix-là pour un retour
+       * arrière qui ne coûte qu'un déploiement.
+       *
+       * `/diagnostic` part avec : il ne diagnostique plus rien.
+       */
+      {
+        source: "/tubeforge/telecharger",
+        destination: "/tubeforge",
+        permanent: false,
+      },
+      {
+        source: "/tubeforge/telecharger/:chemin*",
+        destination: "/tubeforge",
+        permanent: false,
+      },
       // /pionnier et /discord-pionnier (page supprimée — fusionnée avec /pricing
       // après audit copy-sales-expert : 95% du contenu était dupliqué)
       {
