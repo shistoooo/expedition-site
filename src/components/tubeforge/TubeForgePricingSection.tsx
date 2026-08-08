@@ -144,6 +144,14 @@ function eurStatic(cents: number): string {
 }
 
 export default function TubeForgePricingSection() {
+  // Vide en mode achat unique : voir le commentaire au-dessus du titre.
+  const sousTitre =
+    PRICING_MODE === "both"
+      ? "Abonnement classique, ou paiement unique : recharge à la demande ou accès à vie."
+      : PRICING_MODE === "recharge_lifetime"
+        ? ""
+        : "Abonnement mensuel ou annuel, sans engagement.";
+
   return (
     <section className="pt-16 pb-16 md:pt-24 md:pb-24 relative">
       <div className="container-main max-w-4xl">
@@ -157,33 +165,34 @@ export default function TubeForgePricingSection() {
           <p className="text-xs font-mono uppercase tracking-widest mb-4" style={{ color: "rgba(255,106,31,0.75)" }}>
             Prix
           </p>
-          <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em] mb-4">
-            {PRICING_MODE === "recharge_lifetime" ? "39,99 €, une seule fois" : "Choisis ta formule"}
-          </h2>
           {/**
            * ⛔ CE BLOC DISAIT QUATRE FOIS LA MÊME CHOSE.
            *
            * Titre « une seule fois », sous-titre « pas de renouvellement, pas de
            * compteur », pastille « pas de renouvellement, pas de compteur, rien à
            * annuler », carte « Une seule fois. Plus jamais de facture. » — deux
-           * répétitions MOT POUR MOT à trois lignes d'écart.
+           * répétitions MOT POUR MOT à trois lignes d'écart. Écrit d'un seul jet
+           * en basculant sur l'achat unique : chaque surface a reformulé
+           * l'argument au lieu d'en porter un autre.
            *
-           * Écrit d'un seul jet en basculant sur l'achat unique : chaque surface a
-           * reformulé l'argument au lieu d'en porter un autre. C'est la signature
-           * la plus reconnaissable d'un texte généré, et un lecteur la sent avant
-           * de savoir la nommer.
+           * La pastille est partie d'abord. Le sous-titre a ensuite été réécrit
+           * en « un outil que tu ouvres à chaque montage ne devrait pas
+           * t'envoyer une facture tous les mois » — il ne répétait plus rien,
+           * mais il PLAIDAIT, et une page de prix qui argumente sonne encore
+           * comme de la publicité générée.
            *
-           * Règle tenue ici : le titre annonce le prix, le sous-titre défend le
-           * choix, la carte détaille. La pastille est SUPPRIMÉE — elle ne portait
-           * rien que les deux autres ne disaient déjà.
+           * Il n'y a donc plus de sous-titre du tout : le titre annonce le prix,
+           * la carte détaille juste en dessous. Rien à ajouter entre les deux.
+           * `sousTitre` reste calculé pour que les autres modes de tarification
+           * gardent le leur — on rend le paragraphe seulement s'il dit quelque
+           * chose.
            */}
-          <p className="text-base text-white/50 max-w-xl mx-auto leading-relaxed">
-            {PRICING_MODE === "both"
-              ? "Abonnement classique, ou paiement unique : recharge à la demande ou accès à vie."
-              : PRICING_MODE === "recharge_lifetime"
-                ? "Un outil que tu ouvres à chaque montage ne devrait pas t'envoyer une facture tous les mois."
-                : "Abonnement mensuel ou annuel, sans engagement."}
-          </p>
+          <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em]">
+            {PRICING_MODE === "recharge_lifetime" ? "39,99 €, une seule fois" : "Choisis ta formule"}
+          </h2>
+          {sousTitre && (
+            <p className="mt-4 text-base text-white/50 max-w-xl mx-auto leading-relaxed">{sousTitre}</p>
+          )}
         </motion.div>
 
         {PRICING_MODE === "classic" && <ClassicCard />}
