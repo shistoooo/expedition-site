@@ -266,7 +266,7 @@ function OneTimeCheckoutContent() {
   }, [isLifetime]);
 
   const included = isLifetime
-    ? ["Accès à vie, un seul paiement", ...COMMON_INCLUDED, "10 clés boost d'1 mois à offrir (valables le mois de ton achat)", "Plus jamais de facture"]
+    ? ["Accès à vie, un seul paiement", ...COMMON_INCLUDED, "Plus jamais de facture"]
     : isSub
       ? ["14 jours d'essai gratuit, accès complet", ...COMMON_INCLUDED, "4 clés cadeau à offrir chaque année (plan annuel)", "Annulable à tout moment"]
       : [`${months} mois d'accès illimité (${months * 30} jours)`, ...COMMON_INCLUDED, "Sans renouvellement automatique"];

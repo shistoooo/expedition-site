@@ -16,8 +16,8 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const FAQ_ITEMS = [
   {
-    q: "Comment marche l'essai de 14 jours ?",
-    a: "Tu entres ta carte, et tu as 14 jours d'accès complet, gratuitement. Rien n'est prélevé avant la fin de l'essai : tu peux annuler en 1 clic depuis Mon compte à n'importe quel moment pendant les 14 jours, et dans ce cas tu ne paies rien du tout.",
+    q: "Je peux tester avant d'acheter ?",
+    a: "Oui, le téléchargeur web est gratuit et ne demande aucun compte : tu colles un lien, tu récupères ta vidéo. Il fait moins que l'app (pas de plugin Premiere, pas de 4K, pas de file d'attente), mais il te dit tout de suite si TubeForge te sert à quelque chose.",
   },
   {
     q: "Ça marche avec quel logiciel de montage ?",
@@ -28,8 +28,8 @@ const FAQ_ITEMS = [
     a: "Non. TubeForge se paie une fois, 39,99€, et il est à toi. Pas de renouvellement, pas de compteur, rien à annuler. Les mises à jour sont comprises.",
   },
   {
-    q: "Je peux annuler quand ?",
-    a: "À tout moment, en 1 clic depuis Mon compte, sans frais. Pendant l'essai : tu ne paies rien. Après : tu gardes l'accès jusqu'à la fin de la période déjà payée, et c'est tout.",
+    q: "Sur combien d'ordinateurs ?",
+    a: "Deux en même temps, Mac ou Windows, avec le même compte. Ton fixe au studio et ton portable, par exemple.",
   },
   {
     q: "L'accès à vie, ça dure vraiment combien de temps ?",

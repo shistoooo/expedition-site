@@ -67,7 +67,7 @@ export default function FeaturesList() {
           Pensé pour le montage <span style={{ color: AMBER }}>sur les réseaux sociaux.</span>
         </h2>
         <p className="text-white/50 text-sm md:text-base leading-relaxed mb-7 max-w-sm">
-          Des outils simples, efficaces et pensés pour les créateurs qui veulent aller droit au but.
+          Un lien, un extrait, ta timeline. Le reste, TubeForge s'en occupe.
         </p>
         <div>
           <Link

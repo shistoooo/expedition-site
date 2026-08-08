@@ -245,10 +245,10 @@ export default function VideoDownloadComparison() {
         className="text-center mb-10"
       >
         <h2 className="text-4xl md:text-6xl font-black tracking-[-0.02em]">
-          Imagine le temps que <span style={{ color: "#ff6a1f" }}>tu gagnerais</span>
+          Le temps que <span style={{ color: "#ff6a1f" }}>tu récupères</span>
         </h2>
         <p className="mt-4 text-base md:text-lg text-white/50">
-          Voici le test : la même vidéo, la même connexion.
+          Même vidéo, même connexion, deux méthodes.
         </p>
       </motion.div>
 

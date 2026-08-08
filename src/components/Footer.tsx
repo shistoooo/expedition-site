@@ -103,7 +103,7 @@ export default function Footer() {
           className="mt-8 pt-8 border-t border-white/5 text-center"
         >
           <p className="text-white/40 text-sm">
-            Construit avec passion depuis Paris — Expédition
+            Expédition — fait à Paris
           </p>
           <p className="text-white/30 text-xs mt-3">
             © {new Date().getFullYear()} Expédition. Tous droits réservés.

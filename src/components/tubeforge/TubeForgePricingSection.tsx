@@ -117,7 +117,6 @@ function OffreUniqueCard() {
           "Aussi longtemps que TubeForge existe",
           "Toutes les mises à jour comprises",
           "Mac et Windows",
-          "10 clés d'un mois à offrir",
         ].map((f) => (
           <li key={f} className="flex items-start gap-2.5 text-sm text-white/70">
             <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: AMBER }} />
@@ -134,7 +133,7 @@ function OffreUniqueCard() {
         Obtenir TubeForge
       </Link>
       <p className="text-xs text-white/35 mt-4 text-center">
-        Paiement sécurisé par Stripe · 14 jours pour te faire rembourser
+        Paiement sécurisé par Stripe · Mac et Windows
       </p>
     </motion.div>
   );
