@@ -18,10 +18,11 @@ export default function Navbar() {
   // Le DOMAINE compte autant que le chemin : sur tubeforge.explauncheur.space,
   // toutes les pages sont en mode TubeForge, pas seulement /tubeforge/*.
   const isTubeForge = useTubeForgeOnly();
-  const trialHref = isTubeForge ? "/tubeforge/checkout?plan=sub&months=12" : "/account?mode=register";
-  // Une seule offre annoncée depuis le 2026-08-02 : 14 jours, carte demandée,
-  // rien prélevé avant la fin. La distinction par domaine n'a plus lieu d'être.
-  const trialLabel = "14 jours gratuits";
+  const trialHref = isTubeForge ? "/tubeforge/checkout?plan=lifetime" : "/account?mode=register";
+  // L'abonnement est fermé aux nouveaux depuis le 2026-08-08. L'essai de
+  // 14 jours ÉTAIT un abonnement Stripe : il n'y a donc plus d'essai à
+  // annoncer, et un bouton qui en promet un mène à un mur.
+  const trialLabel = "Obtenir TubeForge";
   const setPhase = useFlightStore((state) => state.setPhase);
 
   useEffect(() => {

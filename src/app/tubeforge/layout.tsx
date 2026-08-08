@@ -61,22 +61,17 @@ const jsonLd = {
   description:
     "Colle un lien, TubeForge envoie l'extrait exact directement sur ta timeline Premiere Pro ou DaVinci Resolve. Plus de 1500 sites, 4K.",
   url: `${siteUrl}/tubeforge`,
-  offers: [
-    {
-      "@type": "Offer",
-      name: "Abonnement mensuel",
-      price: "4.99",
-      priceCurrency: "EUR",
-      url: `${siteUrl}/tubeforge/checkout?plan=sub&months=1`,
-    },
-    {
-      "@type": "Offer",
-      name: "Abonnement annuel (3,49€/mois)",
-      price: "41.88",
-      priceCurrency: "EUR",
-      url: `${siteUrl}/tubeforge/checkout?plan=sub&months=12`,
-    },
-  ],
+  // Une seule offre depuis le 2026-08-08. Laisser les deux abonnements ici
+  // ferait annoncer par Google un prix qu'aucune page ne vend plus — et c'est
+  // le genre d'écart qui se découvre par un client qui lit 4,99 € et paie 39,99 €.
+  offers: {
+    "@type": "Offer",
+    name: "TubeForge — achat unique",
+    price: "39.99",
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    url: `${siteUrl}/tubeforge/checkout?plan=lifetime`,
+  },
 };
 
 export default function TubeForgeLayout({ children }: { children: React.ReactNode }) {

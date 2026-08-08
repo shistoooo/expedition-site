@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export default function TubeForgeEssaiRedirect() {
   const router = useRouter();
   useEffect(() => {
-    router.replace("/tubeforge/checkout?plan=sub&months=12");
+    router.replace("/tubeforge/checkout?plan=lifetime");
   }, [router]);
   return null;
 }

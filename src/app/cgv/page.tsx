@@ -77,6 +77,12 @@ export default function CGVPage() {
                             factur&eacute; automatiquement &agrave; la fin de l&apos;essai.
                         </li>
                         <li>
+                            <strong>Formules par abonnement (mensuelle et annuelle) :</strong> ces formules ne sont plus
+                            propos&eacute;es &agrave; la souscription depuis le 8 ao&ucirc;t 2026. Les conditions ci-dessous restent
+                            int&eacute;gralement applicables aux abonnements en cours &agrave; cette date, qui se poursuivent et se
+                            reconduisent sans changement jusqu&apos;&agrave; leur r&eacute;siliation par le Client.
+                        </li>
+                        <li>
                             <strong>Abonnement mensuel :</strong> 4,99&euro;/mois, sans engagement. Reconduction automatique
                             chaque mois, r&eacute;siliable &agrave; tout moment (effet en fin de p&eacute;riode, articles 3 et 5).
                         </li>

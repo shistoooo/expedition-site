@@ -532,27 +532,27 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
 
           <div>
             <p className="text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[0.95] text-white">
-              41,88&nbsp;€
+              39,99&nbsp;€
             </p>
             <p className="text-sm text-white/52 mt-2.5 leading-snug">
-              par an, soit 3,49&nbsp;€ par mois<br className="hidden sm:block" /> pour{" "}
+              une seule fois<br className="hidden sm:block" /> pour{" "}
               <span className="tf-forge-flow font-bold">TubeForge</span>
             </p>
           </div>
         </div>
 
         <p className="text-lg md:text-xl font-bold text-white leading-snug mb-6 max-w-xl">
-          Quatorze jours pour voir si ça change ta façon de monter.
+          Payé une fois, gardé pour de bon.
         </p>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <Link
             data-track="webdl-promo-essai"
-            href="/tubeforge/checkout?plan=sub&months=12"
+            href="/tubeforge/checkout?plan=lifetime"
             className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl font-bold text-black text-[15px] transition-transform duration-200 hover:translate-y-[-1px]"
             style={{ background: `linear-gradient(118deg, ${AMBER} 0%, ${RED} 58%, #8b3dff 155%)` }}
           >
-            Essayer 14 jours gratuitement
+            Obtenir TubeForge
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
@@ -564,8 +564,8 @@ function PromoTubeForge({ poidsMo, dureeSec }: { poidsMo: number | null; dureeSe
           </Link>
         </div>
         <p className="text-[13px] md:text-[11px] text-white/50 mt-3.5 leading-relaxed">
-          3,49&nbsp;€ par mois à l&apos;année. On demande ta carte, on ne prélève rien avant le
-          quinzième jour, et tu annules en un clic.
+          Un paiement, pas d&apos;abonnement. Mises à jour comprises, Mac et Windows.
+          Si ça ne te sert pas, tu as 14 jours pour te faire rembourser.
         </p>
       </motion.div>
     </div>
@@ -1373,11 +1373,11 @@ export default function TelechargerPage() {
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mt-5">
                   <Link
                     data-track="webdl-upsell-essai"
-                    href="/tubeforge/checkout?plan=sub&months=12"
+                    href="/tubeforge/checkout?plan=lifetime"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-black transition-transform duration-200 hover:translate-y-[-1px]"
                     style={{ background: "linear-gradient(118deg, #ff6a1f 0%, #ef3a24 58%, #8b3dff 155%)" }}
                   >
-                    Essayer 14 jours gratuitement
+                    Obtenir TubeForge
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                   <Link

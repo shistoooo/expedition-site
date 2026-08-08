@@ -24,8 +24,8 @@ const FAQ_ITEMS = [
     a: "Premiere Pro et DaVinci Resolve, via le plugin qui s'installe directement dans le logiciel. Mac et Windows.",
   },
   {
-    q: "Pourquoi le prix par mois change ?",
-    a: "Au mois, c'est 4,99€, sans engagement. À l'année, le mois descend à 3,49€ (41,88€ facturés une fois par an, soit −30%). Et si tu ne veux plus jamais payer, l'accès à vie est un paiement unique de 39,99€.",
+    q: "C'est un abonnement ?",
+    a: "Non. TubeForge se paie une fois, 39,99€, et il est à toi. Pas de renouvellement, pas de compteur, rien à annuler. Les mises à jour sont comprises.",
   },
   {
     q: "Je peux annuler quand ?",
@@ -145,10 +145,10 @@ export default function TubeForgePage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   data-track="hero-essai"
-                  href="/tubeforge/checkout?plan=sub&months=12"
+                  href="/tubeforge/checkout?plan=lifetime"
                   className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
                 >
-                  Essayer gratuitement <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
+                  Obtenir TubeForge <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />
                 </Link>
                 <a
                   data-track="hero-voir-demo"

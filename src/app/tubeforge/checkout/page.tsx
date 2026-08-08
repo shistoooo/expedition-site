@@ -175,20 +175,29 @@ function PaymentForm({ plan, price }: { plan: OneTimePlan; price: string }) {
 function OneTimeCheckoutContent() {
   const searchParams = useSearchParams();
   /**
-   * Par défaut = abonnement. L'accès à vie reste accessible par paramètre.
+   * ⛔ L'ABONNEMENT EST FERMÉ AUX NOUVEAUX (08/08/2026). Le worker rend 410 sur
+   * `/auth/tubeforge/subscribe-setup` : un tunnel d'abonnement mène désormais à
+   * un mur, après avoir demandé un email et une carte.
    *
-   * ⛔ LA RECHARGE EST RETIRÉE (02/08/2026) — et il ne suffit pas de la
-   * décrocher des pages : un lien `?plan=recharge` traîne dans un historique,
-   * un favori, un message. Tant que ce tunnel l'accepte, on peut encore en
-   * acheter une. La demande était « nulle part sur le site » : c'est donc ici
-   * que ça se décide, pas dans les composants.
+   * Même raisonnement que pour la recharge en juillet : il ne suffit pas de
+   * décrocher les liens des pages. Un `?plan=sub&months=12` traîne dans un
+   * historique, un favori, un vieux message Discord, une relance par email.
+   * Tant que ce tunnel l'accepte, quelqu'un le parcourt jusqu'au mur.
    *
-   * Un `plan=recharge` retombe silencieusement sur l'abonnement — c'est ce qui
-   * ressemble le plus à ce que la personne venait chercher, et ça vaut mieux
-   * qu'une page d'erreur pour quelqu'un qui voulait payer.
+   * Tout ce qui n'est pas explicitement autre chose retombe donc sur l'achat
+   * unique — la seule offre qui aboutisse. Mieux vaut vendre ce qui existe que
+   * renvoyer une erreur à quelqu'un qui venait payer.
+   *
+   * ⚠️ Ceci ne touche AUCUN abonné en cours : les 23 vivants ne repassent
+   * jamais par ce tunnel, ils sont gérés depuis /account.
    */
   const planParam = searchParams.get("plan");
-  const plan: PlanKind = planParam === "lifetime" ? "lifetime" : "sub";
+  // `as PlanKind` volontaire : sans ça TypeScript réduit `plan` au littéral
+  // "lifetime" et déclare mortes les branches `isSub`. On veut les GARDER
+  // compilées et testables — c'est ici, sur une ligne, que l'abonnement se
+  // rouvre le jour où on le décide, pas dans dix composants à réécrire.
+  const plan = "lifetime" as PlanKind;
+  void planParam;
   const isLifetime = plan === "lifetime";
   const isSub = plan === "sub";
   // Offre « page cachée » — le worker revalide le code et recalcule le montant :
