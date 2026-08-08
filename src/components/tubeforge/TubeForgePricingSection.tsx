@@ -81,110 +81,62 @@ const PLAN_YEARLY_PER_MONTH = 349;
 const PLAN_LIFETIME_CENTS = 3999;
 
 // 3 cartes : mois à gauche, ANNÉE au centre (le héros), à vie à droite.
-function ThreePlansGrid() {
-  const cardBase = "flex flex-col rounded-2xl p-6 md:p-7 border";
+/**
+ * UNE SEULE OFFRE — l'achat unique.
+ *
+ * Les cartes « Mensuel » et « Annuel » ont été retirées le 2026-08-08 : le
+ * worker refuse désormais toute NOUVELLE souscription (410, voir
+ * `ABONNEMENT_OUVERT` dans licensing/src/config-offre.ts). Les 23 abonnements
+ * vivants continuent normalement, ils ne passent pas par cette page.
+ *
+ * On les SUPPRIME au lieu de les masquer : ce fichier porte déjà la trace d'un
+ * bloc rendu par aucun mode, donc jamais relu, qui affichait 49,99 € pendant
+ * que le paiement facturait 89,99 €. Du code invisible ne reste pas juste.
+ * Pour rouvrir l'abonnement un jour : `git log` sur ce fichier.
+ */
+function OffreUniqueCard() {
   return (
-    <div className="grid md:grid-cols-3 gap-4 md:gap-5 max-w-4xl mx-auto w-full items-stretch">
-      {/* Mensuel */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, ease: easeOutExpo }}
-        className={`${cardBase} border-white/10 bg-white/[0.02] max-md:order-2`}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, ease: easeOutExpo }}
+      className="flex flex-col rounded-2xl p-7 md:p-9 border max-w-md mx-auto w-full"
+      style={{ borderColor: "rgba(255,106,31,0.28)", background: "rgba(255,106,31,0.04)" }}
+    >
+      <p className="font-mono text-xs uppercase tracking-widest mb-4" style={{ color: "rgba(255,106,31,0.75)" }}>
+        Achat unique
+      </p>
+      <div className="flex items-baseline gap-2 mb-1">
+        <span className="font-black text-5xl text-white">{eurStatic(PLAN_LIFETIME_CENTS)}</span>
+      </div>
+      <p className="text-sm text-white/45 mb-6">Une seule fois. Plus jamais de facture.</p>
+      <ul className="space-y-3 mb-8 flex-1">
+        {[
+          "Toutes les fonctions, sans limite de téléchargements",
+          "Aussi longtemps que TubeForge existe",
+          "Toutes les mises à jour comprises",
+          "Mac et Windows",
+          "10 clés d'un mois à offrir",
+        ].map((f) => (
+          <li key={f} className="flex items-start gap-2.5 text-sm text-white/70">
+            <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: AMBER }} />
+            {f}
+          </li>
+        ))}
+      </ul>
+      <Link
+        data-track="pricing-vie"
+        href="/tubeforge/checkout?plan=lifetime"
+        className="w-full py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+        style={{ background: AMBER, color: "#0a0a0a" }}
       >
-        <p className="font-mono text-xs uppercase tracking-widest text-white/40 mb-4">Mensuel</p>
-        <div className="flex items-baseline gap-1 mb-1">
-          <span className="font-black text-4xl text-white">4,99€</span>
-          <span className="text-sm text-white/40">/mois</span>
-        </div>
-        <p className="text-xs text-white/35 mb-5">Sans engagement, annulable à tout moment.</p>
-        <ul className="space-y-2.5 mb-6 flex-1">
-          {["14 jours gratuits", "Sans engagement : tu pars quand tu veux", "Parfait pour un projet ponctuel"].map((f) => (
-            <li key={f} className="flex items-start gap-2 text-sm text-white/60">
-              <Check className="w-4 h-4 shrink-0 mt-0.5 text-white/30" />
-              {f}
-            </li>
-          ))}
-        </ul>
-        <Link
-          data-track="pricing-mensuel"
-          href="/tubeforge/checkout?plan=sub&months=1"
-          className="w-full py-3 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2 transition-colors hover:bg-white/5"
-          style={{ borderColor: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)" }}
-        >
-          Commencer l&apos;essai
-        </Link>
-      </motion.div>
-
-      {/* Année — LE plan (centre, mis en avant) */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.08, ease: easeOutExpo }}
-        className={`${cardBase} relative max-md:order-1 md:-my-3`}
-        style={{ borderColor: "rgba(255,106,31,0.45)", background: "linear-gradient(165deg, rgba(255,106,31,0.1) 0%, rgba(13,13,22,0.98) 55%)" }}
-      >
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[11px] font-bold text-white" style={{ background: "linear-gradient(135deg,#ff6a1f,#ef3a24)" }}>
-          Le plus choisi · −30%
-        </div>
-        <p className="font-mono text-xs uppercase tracking-widest mb-4" style={{ color: AMBER }}>Année</p>
-        <div className="flex items-baseline gap-2 mb-1">
-          <span className="font-black text-5xl text-white">3,49€</span>
-          <span className="text-sm text-white/40">/mois</span>
-          <span className="text-sm text-white/30 line-through">4,99€</span>
-        </div>
-        <p className="text-xs text-white/40 mb-5">Facturé {eurStatic(PLAN_YEARLY_CENTS)} par an, après l&apos;essai.</p>
-        <ul className="space-y-2.5 mb-6 flex-1">
-          {["14 jours gratuits, 0€ aujourd'hui", "Accès complet : 4K, 1500+ sites, plugins Premiere & DaVinci", "Le mois le moins cher (−30%)", "4 clés cadeau à offrir chaque année"].map((f) => (
-            <li key={f} className="flex items-start gap-2 text-sm text-white/75">
-              <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: AMBER }} />
-              {f}
-            </li>
-          ))}
-        </ul>
-        <Link
-          data-track="pricing-annee"
-          href="/tubeforge/checkout?plan=sub&months=12"
-          className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-[0.98]"
-          style={{ background: "linear-gradient(135deg, #ff6a1f 0%, #ef3a24 100%)", color: "#fff" }}
-        >
-          Commencer 14 jours gratuits <ArrowRight className="w-4 h-4" />
-        </Link>
-      </motion.div>
-
-      {/* À vie */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.16, ease: easeOutExpo }}
-        className={`${cardBase} border-white/10 bg-white/[0.02] max-md:order-3`}
-      >
-        <p className="font-mono text-xs uppercase tracking-widest text-white/40 mb-4">À vie</p>
-        <div className="flex items-baseline gap-1 mb-1">
-          <span className="font-black text-4xl text-white">{eurStatic(PLAN_LIFETIME_CENTS)}</span>
-        </div>
-        <p className="text-xs text-white/35 mb-5">Une seule fois. Plus jamais de facture.</p>
-        <ul className="space-y-2.5 mb-6 flex-1">
-          {["Aussi longtemps que TubeForge existe", "Plus jamais de facture, même si le prix monte", "10 clés boost d'1 mois à offrir"].map((f) => (
-            <li key={f} className="flex items-start gap-2 text-sm text-white/60">
-              <Check className="w-4 h-4 shrink-0 mt-0.5 text-white/30" />
-              {f}
-            </li>
-          ))}
-        </ul>
-        <Link
-          data-track="pricing-vie"
-          href="/tubeforge/checkout?plan=lifetime"
-          className="w-full py-3 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2 transition-colors hover:bg-white/5"
-          style={{ borderColor: "rgba(255,106,31,0.35)", color: AMBER }}
-        >
-          Obtenir l&apos;accès à vie
-        </Link>
-      </motion.div>
-    </div>
+        Obtenir TubeForge
+      </Link>
+      <p className="text-xs text-white/35 mt-4 text-center">
+        Paiement sécurisé par Stripe · 14 jours pour te faire rembourser
+      </p>
+    </motion.div>
   );
 }
 
@@ -207,13 +159,13 @@ export default function TubeForgePricingSection() {
             Prix
           </p>
           <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em] mb-4">
-            {PRICING_MODE === "recharge_lifetime" ? "14 jours gratuits, puis dès 3,49€/mois" : "Choisis ta formule"}
+            {PRICING_MODE === "recharge_lifetime" ? "Un seul prix, une seule fois" : "Choisis ta formule"}
           </h2>
           <p className="text-base text-white/50 max-w-xl mx-auto leading-relaxed">
             {PRICING_MODE === "both"
               ? "Abonnement classique, ou paiement unique : recharge à la demande ou accès à vie."
               : PRICING_MODE === "recharge_lifetime"
-                ? "Tu testes tout pendant 14 jours, gratuitement. Ensuite tu choisis : au mois, à l'année, ou une bonne fois pour toutes."
+                ? "Pas d'abonnement, pas de renouvellement, pas de compteur. Tu achètes TubeForge et il est à toi."
                 : "Abonnement mensuel ou annuel, sans engagement."}
           </p>
           <div
@@ -221,12 +173,12 @@ export default function TubeForgePricingSection() {
             style={{ background: "rgba(255,106,31,0.08)", border: "1px solid rgba(255,106,31,0.22)", color: "rgba(255,255,255,0.8)" }}
           >
             <Sparkles className="w-3.5 h-3.5" style={{ color: AMBER }} />
-            <span><span className="font-semibold text-white">0€ aujourd&apos;hui</span> : rien n&apos;est prélevé avant la fin des 14 jours d&apos;essai</span>
+            <span><span className="font-semibold text-white">Payé une fois</span> : pas de renouvellement, pas de compteur, rien à annuler</span>
           </div>
         </motion.div>
 
         {PRICING_MODE === "classic" && <ClassicCard />}
-        {PRICING_MODE === "recharge_lifetime" && <ThreePlansGrid />}
+        {PRICING_MODE === "recharge_lifetime" && <OffreUniqueCard />}
         {/* Le mode « both » affichait `RechargeLifetimeCards`, deux cartes dont
             une RECHARGE — retirée du produit le 02/08/2026 — et un accès à vie
             affiché à 49,99 € alors que le paiement en facture 89,99 €.
