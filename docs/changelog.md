@@ -1,4 +1,36 @@
 ---
+### [2026-08-08 03:30] — TubeForge à vie : 89,99 € → 39,99 €
+
+**Quoi :** le prix de l'accès à vie passe à 39,99 €, partout : constantes
+d'affichage, page produit, CGV, données structurées.
+
+**Pourquoi :** TubeForge est vendu seul depuis ce soir, et sera lu comme un
+téléchargeur quoi qu'il apporte. Dans cette catégorie, un achat unique se bat
+contre 4K Video Downloader (~40 €) — pas contre la gratuité, ce qui est le
+combat perdu d'avance d'un abonnement.
+
+**Fichiers touchés :**
+- `src/components/tubeforge/MonthSelector.tsx` — `LIFETIME_CENTS`, `LIFETIME_PROMO_CENTS`
+- `src/components/tubeforge/TubeForgePricingSection.tsx` — `PLAN_LIFETIME_CENTS`
+- `src/app/tubeforge/page.tsx` — la FAQ
+- `src/app/cgv/page.tsx` — les conditions de vente
+- `src/app/tubeforge/layout.tsx` — les données structurées
+
+**⚠️ Le prix est DUPLIQUÉ avec le worker** (`routes/auth.ts`, `TF_LIFETIME_CENTS`),
+qui est celui qui FACTURE — deux dépôts, aucun import possible. Ça a déjà coûté
+un incident : une carte annonçait 49,99 € pendant que Stripe encaissait 89,99 €.
+Un test de contrat vit désormais côté worker
+(`licensing/test/contrat-prix.test.mts`) et lit les deux fichiers. Il a attrapé
+cette bascule-ci, où le site était passé à 39,99 € et pas le worker.
+
+**Comment annuler :** remettre `3999` → `8999` dans les cinq fichiers ci-dessus
+ET dans `licensing/src/routes/auth.ts`, puis relancer le test de contrat.
+
+**Effets de bord possibles :** aucun côté technique. Commercialement, l'accès à
+vie devient moins cher que 12 mois d'abonnement annuel (41,88 €) — c'est
+volontaire, mais ça rend l'abonnement annuel difficile à défendre. À surveiller.
+
+---
 ### [2026-08-08 02:50] — Bascule complète : le domaine principal sert TubeForge
 
 **Quoi :** `expeditionlauncher.store` rejoint `DOMAINES_TUBEFORGE`. Le site

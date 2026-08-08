@@ -8,9 +8,9 @@ import { Gift, ArrowRight, Loader2 } from "lucide-react";
       Le montant FACTURÉ est toujours recalculé côté serveur ; ici c'est
       uniquement de l'affichage. ─────────────────────────────────────────── */
 export const RECHARGE_CENTS = 1499;
-export const LIFETIME_CENTS = 8999;
+export const LIFETIME_CENTS = 3999;
 // L'offre vie119 est neutralisée (même prix que le public) — miroir du worker.
-export const LIFETIME_PROMO_CENTS = 8999;
+export const LIFETIME_PROMO_CENTS = 3999;
 
 export function volumeDiscountPct(months: number): number {
   const m = Math.min(12, Math.max(1, Math.floor(months) || 1));

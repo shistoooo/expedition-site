@@ -74,11 +74,11 @@ function ClassicCard() {
 }
 
 // Barème 2026-07-24 : mensuel 4,99€/mois · annuel 3,49€/mois (41,88€/an, −30%)
-// · à vie 89,99€. Essai 14 jours avec carte sur les abos.
+// · à vie 39,99€ (2026-08-08). Essai 14 jours avec carte sur les abos.
 const PLAN_MONTHLY_CENTS = 499;
 const PLAN_YEARLY_CENTS = 4188;
 const PLAN_YEARLY_PER_MONTH = 349;
-const PLAN_LIFETIME_CENTS = 8999;
+const PLAN_LIFETIME_CENTS = 3999;
 
 // 3 cartes : mois à gauche, ANNÉE au centre (le héros), à vie à droite.
 function ThreePlansGrid() {

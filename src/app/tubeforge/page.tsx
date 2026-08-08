@@ -25,7 +25,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Pourquoi le prix par mois change ?",
-    a: "Au mois, c'est 4,99€, sans engagement. À l'année, le mois descend à 3,49€ (41,88€ facturés une fois par an, soit −30%). Et si tu ne veux plus jamais payer, l'accès à vie est un paiement unique de 89,99€.",
+    a: "Au mois, c'est 4,99€, sans engagement. À l'année, le mois descend à 3,49€ (41,88€ facturés une fois par an, soit −30%). Et si tu ne veux plus jamais payer, l'accès à vie est un paiement unique de 39,99€.",
   },
   {
     q: "Je peux annuler quand ?",

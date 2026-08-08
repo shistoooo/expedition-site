@@ -87,7 +87,7 @@ export default function CGVPage() {
                             p&eacute;riode d&eacute;j&agrave; factur&eacute;e ; aucun remboursement au prorata.
                         </li>
                         <li>
-                            <strong>Acc&egrave;s &agrave; vie :</strong> 89,99&euro;, paiement unique, donnant acc&egrave;s &agrave; TubeForge dans les
+                            <strong>Acc&egrave;s &agrave; vie :</strong> 39,99&euro;, paiement unique, donnant acc&egrave;s &agrave; TubeForge dans les
                             conditions de l&apos;article 3 ter ci-dessous.
                         </li>
                     </ul>

@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD SoftwareApplication + offres (abonnement dès 4,99€/mois / accès à vie 89,99€).
+// JSON-LD SoftwareApplication + offres (abonnement dès 4,99€/mois / accès à vie 39,99€).
 // Pas de note/avis agrégés ici : on n'invente pas de aggregateRating.
 const jsonLd = {
   "@context": "https://schema.org",
