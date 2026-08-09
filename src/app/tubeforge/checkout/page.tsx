@@ -203,6 +203,12 @@ function OneTimeCheckoutContent() {
   // Offre « page cachée » — le worker revalide le code et recalcule le montant :
   // l'URL ne fait qu'afficher, jamais fixer le prix.
   const promoVie = isLifetime && searchParams.get("offre") === "vie119";
+  /**
+   * Code de parrainage porté par le lien d'un ambassadeur (?ref=CODE).
+   * Il ne change RIEN au prix : il sert uniquement à savoir qui créditer.
+   * Transmis au worker, qui le pose dans les métadonnées Stripe.
+   */
+  const refParrainage = (searchParams.get("ref") || "").trim();
   // Pré-sélection du nombre de mois quand on arrive depuis le sélecteur de la landing.
   const initialMonths = Math.min(12, Math.max(1, parseInt(searchParams.get("months") || (isSub ? "12" : "1"), 10) || 1));
 
@@ -227,7 +233,7 @@ function OneTimeCheckoutContent() {
     setError(null);
     try {
       const res = await fetch(`${WORKER_URL}/auth/tubeforge/payment-intent`, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan, months: m, ...(promoVie ? { offer: "vie119" } : {}) }),
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan, months: m, ...(promoVie ? { offer: "vie119" } : {}), ...(refParrainage ? { ref: refParrainage } : {}) }),
       });
       const data = await res.json();
       if (!res.ok || !data.clientSecret) throw new Error(data.error || "Paiement indisponible pour le moment.");

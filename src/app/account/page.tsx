@@ -153,10 +153,31 @@ interface SubscriptionInfo {
  * branche est morte et cesse d'y raffiner `subscription` / `ambassadorStatus`,
  * ce qui casse la compilation du bloc qu'on veut justement conserver intact.
  */
-const PROGRAMME_AMBASSADEUR_OUVERT: boolean = false;
+const PROGRAMME_AMBASSADEUR_OUVERT: boolean = true;
+
+/**
+ * QUI VOIT LE PROGRAMME AMBASSADEUR.
+ *
+ * Ouverture volontairement restreinte : le programme se libère à quelques
+ * personnes choisies, pas au public. Il n'y a d'ailleurs aucune page publique
+ * qui le présente — /ambassador reste bloqué sur ce domaine, c'est assumé.
+ *
+ * Pour ouvrir à quelqu'un : ajouter son e-mail ici, en minuscules. Pour ouvrir
+ * à TOUS les clients éligibles : remplacer la vérification par `true` à
+ * l'endroit où cette liste est lue (un seul endroit, cherché « AMBASSADEURS_AUTORISES »).
+ *
+ * ⚠️ Cette liste ne remplace PAS l'éligibilité : le worker exige d'être client
+ * (achat unique ou abonnement actif) et refuse sinon. Elle ne fait que décider
+ * à qui l'interface propose la chose.
+ */
+const AMBASSADEURS_AUTORISES = [
+    "shisto81@gmail.com",
+];
 
 interface AmbassadorInfo {
     isAmbassador: boolean;
+    eligible?: boolean;
+    pendingApproval?: boolean;
     referralCode: string;
     stripeConnectStatus: "not_started" | "onboarding" | "active" | "restricted";
     stats: {
@@ -520,10 +541,10 @@ export default function AccountPage() {
                 });
                 if (ambRes.ok) {
                     const ambData = await ambRes.json();
-                    if (ambData.isAmbassador) {
-                        setAmbassadorStatus(ambData);
-                        setCustomCodeInput(ambData.referralCode);
-                    }
+                    // On garde la réponse dans TOUS les cas : sans elle, une personne
+                    // éligible mais pas encore inscrite ne verrait jamais la proposition.
+                    setAmbassadorStatus(ambData);
+                    if (ambData.isAmbassador) setCustomCodeInput(ambData.referralCode);
                 }
             } catch { /* silently ignore */ }
 
@@ -745,7 +766,10 @@ export default function AccountPage() {
 
     const handleCopyCode = async () => {
         if (!ambassadorStatus) return;
-        const link = `https://expeditionlauncher.store/checkout?ref=${ambassadorStatus.referralCode}`;
+        // ⚠️ /tubeforge/checkout, PAS /checkout : le second est l'ancienne page
+        // d'abonnement, fermée aux nouveaux clients depuis le 2026-08-08. Le lien
+        // partagé menait donc les filleuls vers une offre qui n'existe plus.
+        const link = `https://expeditionlauncher.store/tubeforge/checkout?plan=lifetime&ref=${ambassadorStatus.referralCode}`;
         await navigator.clipboard.writeText(link);
         setCodeCopied(true);
         setTimeout(() => setCodeCopied(false), 2000);
@@ -1318,8 +1342,9 @@ export default function AccountPage() {
                                     ne mène nulle part. Le code reste en place — c'est
                                     la CONDITION qu'on ferme, pas la fonctionnalité, pour
                                     que la remettre soit une ligne et non une réécriture. */}
-                                {PROGRAMME_AMBASSADEUR_OUVERT && subscription && subscription.status !== "canceled" &&
-                                  ADMIN_EMAILS.includes(email.toLowerCase().trim()) && (
+                                {PROGRAMME_AMBASSADEUR_OUVERT &&
+                                  AMBASSADEURS_AUTORISES.includes(email.toLowerCase().trim()) &&
+                                  (ambassadorStatus?.isAmbassador || ambassadorStatus?.eligible) && (
                                     ambassadorStatus?.isAmbassador ? (
                                         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                             <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
