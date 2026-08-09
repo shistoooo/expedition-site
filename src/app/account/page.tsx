@@ -15,6 +15,7 @@ import PageBackground from "@/components/PageBackground";
 import WalletSection from "@/components/WalletSection";
 import BorderBeam from "@/components/BorderBeam";
 import { PRICING_MODE } from "@/lib/salesConfig";
+import { LIFETIME_CENTS } from "@/components/tubeforge/MonthSelector";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -170,6 +171,20 @@ const PROGRAMME_AMBASSADEUR_OUVERT: boolean = true;
  * (achat unique ou abonnement actif) et refuse sinon. Elle ne fait que décider
  * à qui l'interface propose la chose.
  */
+/**
+ * LE PRIX ET LA COMMISSION, DÉRIVÉS D'UN SEUL NOMBRE.
+ *
+ * Cette page affichait « Accès à vie — 149€ » pendant que Stripe facturait
+ * 39,99 €, et « 42% sur 11,99€/mois pendant 6 mois » pendant que le worker
+ * versait 43% une fois. Trois nombres écrits à la main, trois divergences.
+ *
+ * Tout part désormais de LIFETIME_CENTS, le même nombre que celui dont le test
+ * de contrat vérifie qu'il vaut ce que le worker facture.
+ */
+const PRIX_A_VIE = LIFETIME_CENTS / 100;                                  // 39,99
+const COMMISSION_TAUX = 0.43;                                             // aligné sur AMBASSADEUR_TAUX_LIFETIME
+const COMMISSION_PAR_VENTE = Math.floor(LIFETIME_CENTS * COMMISSION_TAUX) / 100; // 17,19
+
 const AMBASSADEURS_AUTORISES = [
     "shisto81@gmail.com",
 ];
@@ -1014,7 +1029,7 @@ export default function AccountPage() {
                                                     disabled={actionLoading}
                                                     className="w-full py-2.5 rounded-lg bg-orange-500/15 border border-orange-500/30 text-orange-300 font-semibold text-sm hover:bg-orange-500/25 transition-all disabled:opacity-50"
                                                 >
-                                                    Acc&egrave;s &agrave; vie &mdash; 149&euro;
+                                                    Acc&egrave;s &agrave; vie &mdash; {PRIX_A_VIE.toFixed(2).replace(".", ",")}&euro;
                                                 </button>
                                             </div>
                                         </div>
@@ -1394,16 +1409,16 @@ export default function AccountPage() {
                                                     <p className="text-white/60 text-sm">
                                                         Avec vos <span className="text-white font-bold">{ambassadorStatus.stats.activeReferrals} filleul{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""} actif{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""}</span>, vous pouvez toucher jusqu&apos;à{" "}
                                                         <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                                                            ~{(ambassadorStatus.stats.activeReferrals * 17.19).toFixed(2)}€
+                                                            {(ambassadorStatus.stats.activeReferrals * COMMISSION_PAR_VENTE).toFixed(2).replace(".", ",")}€
                                                         </span>{" "}
-                                                        sur 6 mois.
+                                                        au total.
                                                     </p>
                                                 </div>
                                             )}
                                             {ambassadorStatus.stats.activeReferrals === 0 && (
                                                 <div className="p-4 rounded-xl bg-white/5 border border-white/5 mb-6 text-center">
                                                     <p className="text-white/40 text-sm mb-1">Partagez votre lien pour commencer à gagner</p>
-                                                    <p className="text-xs text-white/25">1 seul filleul = <span className="text-purple-300">~30€</span> sur 6 mois</p>
+                                                    <p className="text-xs text-white/25">1 seule vente = <span className="text-purple-300">{COMMISSION_PAR_VENTE.toFixed(2).replace(".", ",")}€</span></p>
                                                 </div>
                                             )}
 
@@ -1551,7 +1566,7 @@ export default function AccountPage() {
                                                 <Gift className="w-10 h-10 text-purple-400 mx-auto mb-4" />
                                                 <h2 className="text-lg font-bold mb-2">Devenez Ambassadeur</h2>
                                                 <p className="text-white/50 text-sm">
-                                                    Partagez Expédition et touchez <span className="text-white font-semibold">42% de commission</span> sur chaque abonnement généré, pendant 6 mois.
+                                                    Partagez TubeForge et touchez <span className="text-white font-semibold">{Math.round(COMMISSION_TAUX * 100)}% de commission</span> sur chaque achat généré, soit {COMMISSION_PAR_VENTE.toFixed(2).replace(".", ",")}&euro; par vente.
                                                 </p>
                                             </div>
 
@@ -1564,22 +1579,21 @@ export default function AccountPage() {
                                                     { referrals: 25, emoji: "💎" },
                                                     { referrals: 50, emoji: "👑" },
                                                 ].map((tier) => {
-                                                    const monthlyPerReferral = 9.99 * 0.42;
-                                                    const total6Months = Math.round(tier.referrals * monthlyPerReferral * 6);
+                                                    const total = Math.round(tier.referrals * COMMISSION_PAR_VENTE);
                                                     return (
                                                         <div key={tier.referrals} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/20 transition-colors">
                                                             <div className="flex items-center gap-3">
                                                                 <span className="text-lg">{tier.emoji}</span>
-                                                                <span className="text-sm text-white/70">{tier.referrals} filleuls</span>
+                                                                <span className="text-sm text-white/70">{tier.referrals} ventes</span>
                                                             </div>
                                                             <div className="text-right">
-                                                                <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">~{total6Months}€</span>
-                                                                <span className="text-white/30 text-xs ml-1">sur 6 mois</span>
+                                                                <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{total}€</span>
+                                                                <span className="text-white/30 text-xs ml-1">au total</span>
                                                             </div>
                                                         </div>
                                                     );
                                                 })}
-                                                <p className="text-[10px] text-white/25 text-center">Bas&eacute; sur l&apos;abonnement mensuel &agrave; 11,99€ — 42% de commission pendant 6 mois par filleul.</p>
+                                                <p className="text-[10px] text-white/25 text-center">{Math.round(COMMISSION_TAUX * 100)}% de l&apos;achat unique &agrave; {PRIX_A_VIE.toFixed(2).replace(".", ",")}€, vers&eacute;s une fois par vente.</p>
                                             </div>
 
                                             <button
