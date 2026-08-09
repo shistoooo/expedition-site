@@ -22,7 +22,7 @@ const steps = [
   {
     icon: Banknote,
     title: "Gagnez de l'argent",
-    desc: "Recevez 42% de commission sur chaque abonnement généré, pendant 6 mois par filleul.",
+    desc: "Recevez 43% de commission sur chaque achat généré, versés en une fois. 17,19 € par vente.",
   },
 ];
 
@@ -94,17 +94,18 @@ export default function AmbassadorPage() {
             {/* The number IS the hook — give it impossible-to-miss scale */}
             <div className="mb-4">
               <span className="text-[60px] sm:text-[100px] md:text-[140px] lg:text-[180px] font-black leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-200 to-purple-500 select-none">
-                42%
+                43%
               </span>
             </div>
 
             <h1 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-white/90">
-              de commission. Pendant 6 mois.
+              de commission. Sur chaque vente.
             </h1>
 
             <p className="text-xl md:text-2xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Recommandez Expédition à votre communauté et gagnez sur chaque abonnement généré,{" "}
-              <span className="text-white font-medium">pendant 6 mois par filleul</span>. Sans plafond.
+              Recommandez TubeForge à votre communauté et gagnez{" "}
+              <span className="text-white font-medium">17,19 € par achat</span>, versés en une fois.
+              Sans plafond.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -164,19 +165,19 @@ export default function AmbassadorPage() {
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 text-center">
-                <p className="text-xs text-white/40 mb-1">Par mois</p>
-                <p className="text-3xl font-black text-purple-400">~{Math.round(referrals * 5)}&euro;</p>
-                <p className="text-xs text-white/30 mt-1">pendant 6 mois</p>
+                <p className="text-xs text-white/40 mb-1">Par vente</p>
+                <p className="text-3xl font-black text-purple-400">17,19&euro;</p>
+                <p className="text-xs text-white/30 mt-1">vers&eacute;s en une fois</p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 text-center">
-                <p className="text-xs text-white/40 mb-1">Total sur 6 mois</p>
-                <p className="text-3xl font-black text-green-400">~{Math.round(referrals * 5 * 6)}&euro;</p>
-                <p className="text-xs text-white/30 mt-1">pour {referrals} filleul{referrals > 1 ? "s" : ""}</p>
+                <p className="text-xs text-white/40 mb-1">Total</p>
+                <p className="text-3xl font-black text-green-400">~{(referrals * 17.19).toFixed(0)}&euro;</p>
+                <p className="text-xs text-white/30 mt-1">pour {referrals} vente{referrals > 1 ? "s" : ""}</p>
               </div>
             </div>
 
             <p className="text-xs text-white/25 text-center">
-              Bas&eacute; sur 42% de commission sur 11,99&euro;/mois, pendant 6 mois par filleul.
+              43% de 39,99&euro;, l&apos;achat unique TubeForge. Vers&eacute; une fois par vente, sans plafond.
             </p>
           </motion.div>
         </div>

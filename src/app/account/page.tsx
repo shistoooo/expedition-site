@@ -1369,7 +1369,7 @@ export default function AccountPage() {
                                                     <p className="text-white/60 text-sm">
                                                         Avec vos <span className="text-white font-bold">{ambassadorStatus.stats.activeReferrals} filleul{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""} actif{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""}</span>, vous pouvez toucher jusqu&apos;à{" "}
                                                         <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                                                            ~{Math.round(ambassadorStatus.stats.activeReferrals * 9.99 * 0.42 * 6)}€
+                                                            ~{(ambassadorStatus.stats.activeReferrals * 17.19).toFixed(2)}€
                                                         </span>{" "}
                                                         sur 6 mois.
                                                     </p>
