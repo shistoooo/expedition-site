@@ -291,6 +291,27 @@ export default function AccountPage() {
     const [discordLinked, setDiscordLinked] = useState(false);
     const [discordLinking, setDiscordLinking] = useState(false);
 
+    /**
+     * Retour vers la page qui nous a envoyés ici (`?next=/affiliation?invitation=…`).
+     *
+     * Sans ça, quelqu'un qui reçoit une invitation d'affiliation, clique
+     * « Se connecter », s'authentifie… reste sur cette page et ne revient
+     * jamais à son invitation. Le lien paraît cassé alors qu'il est valide.
+     *
+     * ⛔ ON N'ACCEPTE QU'UN CHEMIN RELATIF. `next=https://ailleurs.tld` ou
+     * `next=//ailleurs.tld` transformerait cette page en tremplin de
+     * redirection : un lien portant NOTRE domaine qui dépose la personne sur
+     * un site tiers, juste après une connexion. C'est la faille de
+     * redirection ouverte déjà corrigée côté OAuth ; on ne la rouvre pas ici.
+     */
+    useEffect(() => {
+        if (!accessToken) return;
+        const brut = new URLSearchParams(window.location.search).get("next");
+        if (!brut) return;
+        if (!brut.startsWith("/") || brut.startsWith("//")) return;
+        window.location.replace(brut);
+    }, [accessToken]);
+
     // Auto-restore session au boot : si l'utilisateur a déjà un cookie
     // `expedition_session` valide (vient de replays ou ancien login), on
     // le re-logge automatiquement sans demander email/password.
