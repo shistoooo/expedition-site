@@ -6,7 +6,7 @@ import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     Users, Shield, CheckCircle2, XCircle, Search, ToggleLeft, ToggleRight,
     UserCheck, UserX, RefreshCw, FileText, Link2, Copy, Check, Ticket,
-    Users2, Plus, ChevronDown, ChevronUp, TrendingUp,
+    Users2, Plus, ChevronDown, ChevronUp, TrendingUp, Send, Ban,
     BarChart2, Eye, Globe, Smartphone, Monitor, Tablet, ExternalLink
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -81,7 +81,20 @@ type PartnerConversion = {
 };
 
 type Step = "login" | "admin";
-type Tab = "users" | "ambassadors" | "applications" | "keys" | "partners" | "attribution" | "stats";
+/** Ce que rend GET /admin/affiliation/invitations. */
+type AdminInvitation = {
+    id: string;
+    label: string | null;
+    url: string;
+    createdAt: number;
+    /** Un état, pas trois booléens à recombiner à chaque affichage. */
+    etat: "disponible" | "utilise" | "annule";
+    usedAt: number | null;
+    usedByEmail: string | null;
+    referralCode: string | null;
+};
+
+type Tab = "users" | "ambassadors" | "applications" | "keys" | "partners" | "invitations" | "attribution" | "stats";
 
 type DailyRow = { day: string; site: string; total_events: number; pageviews: number };
 type ReferrerRow = { referrer: string; visits: number };
@@ -150,6 +163,15 @@ export default function AdminPage() {
     const [justGenerated, setJustGenerated] = useState<string[]>([]);
     const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
+    /**
+     * Invitations au programme d'affiliation. Un lien = une personne : tu
+     * l'envoies, elle se connecte avec son compte Expédition, elle est affiliée.
+     */
+    const [invitations, setInvitations] = useState<AdminInvitation[]>([]);
+    const [invitationsLoading, setInvitationsLoading] = useState(false);
+    const [newInvitationLabel, setNewInvitationLabel] = useState("");
+    const [createInvitationLoading, setCreateInvitationLoading] = useState(false);
+    const [copiedInvitation, setCopiedInvitation] = useState<string | null>(null);
     const [partners, setPartners] = useState<AdminPartner[]>([]);
     const [partnersLoading, setPartnersLoading] = useState(false);
     const [newPartnerName, setNewPartnerName] = useState("");
@@ -275,6 +297,66 @@ export default function AdminPage() {
             setApplicationsLoading(false);
         }
     }, [accessToken]);
+
+    const fetchInvitations = useCallback(async () => {
+        if (!accessToken) return;
+        setInvitationsLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/affiliation/invitations`, {
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setInvitations(data.invitations);
+        } catch {
+            setError("Erreur chargement des invitations");
+        } finally {
+            setInvitationsLoading(false);
+        }
+    }, [accessToken]);
+
+    const handleCreateInvitation = async () => {
+        if (!accessToken) return;
+        setCreateInvitationLoading(true);
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/affiliation/invitations`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${accessToken}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ label: newInvitationLabel.trim() || undefined }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            setNewInvitationLabel("");
+            // Le lien part dans le presse-papiers tout de suite : on vient de le
+            // créer POUR l'envoyer, pas pour le regarder dans une liste.
+            if (data.invitation?.url) {
+                void navigator.clipboard.writeText(data.invitation.url).then(() => {
+                    setCopiedInvitation(data.invitation.id);
+                    setTimeout(() => setCopiedInvitation(null), 2500);
+                }).catch(() => { /* presse-papiers refusé : le lien reste dans la liste */ });
+            }
+            await fetchInvitations();
+        } catch (e) {
+            setError(e instanceof Error ? e.message : "Erreur création de l'invitation");
+        } finally {
+            setCreateInvitationLoading(false);
+        }
+    };
+
+    const handleRevokeInvitation = async (id: string) => {
+        if (!accessToken) return;
+        try {
+            const res = await fetch(`${WORKER_URL}/admin/affiliation/invitations/${id}/revoke`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${accessToken}` },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            await fetchInvitations();
+        } catch (e) {
+            setError(e instanceof Error ? e.message : "Erreur annulation");
+        }
+    };
 
     const fetchKeys = useCallback(async () => {
         if (!accessToken) return;
@@ -530,6 +612,7 @@ export default function AdminPage() {
 
     useEffect(() => {
         if (step === "admin" && tab === "partners") fetchPartners();
+        if (step === "admin" && tab === "invitations") fetchInvitations();
     }, [step, tab, fetchPartners]);
 
     useEffect(() => {
@@ -762,6 +845,13 @@ export default function AdminPage() {
                                     >
                                         <Users2 className="w-4 h-4" />
                                         Partenaires ({partners.length})
+                                    </button>
+                                    <button
+                                        onClick={() => setTab("invitations")}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === "invitations" ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
+                                    >
+                                        <Send className="w-4 h-4" />
+                                        Invitations ({invitations.filter((i) => i.etat === "disponible").length})
                                     </button>
                                     <button
                                         onClick={() => setTab("attribution")}
@@ -1437,6 +1527,121 @@ export default function AdminPage() {
                                 )}
 
                                 {/* Stats Tab */}
+                                {tab === "invitations" && (
+                                    <div className="space-y-6">
+                                        {/* Créer un lien */}
+                                        <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                            <h2 className="text-sm font-mono text-white/40 uppercase mb-2">Inviter dans le programme d&apos;affiliation</h2>
+                                            <p className="text-xs text-white/35 mb-6">
+                                                Un lien = une personne. Elle se connecte avec son compte Expédition et
+                                                elle est affiliée — sans formulaire, sans approbation, sans achat préalable.
+                                            </p>
+                                            <div className="flex flex-wrap items-end gap-4">
+                                                <div className="space-y-2 flex-1 min-w-[220px]">
+                                                    <label className="text-xs font-mono text-white/40 uppercase">Pour qui ?</label>
+                                                    <input
+                                                        type="text"
+                                                        value={newInvitationLabel}
+                                                        onChange={(e) => setNewInvitationLabel(e.target.value)}
+                                                        placeholder="ex : Donay"
+                                                        onKeyDown={(e) => { if (e.key === "Enter") void handleCreateInvitation(); }}
+                                                        className="w-full h-10 px-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-purple-500/50 transition-all"
+                                                    />
+                                                </div>
+                                                <button
+                                                    onClick={() => void handleCreateInvitation()}
+                                                    disabled={createInvitationLoading}
+                                                    className="h-10 px-5 rounded-xl bg-purple-600 text-white text-sm font-medium hover:bg-purple-500 transition-all shadow-lg shadow-purple-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    {createInvitationLoading
+                                                        ? <Loader2 className="w-4 h-4 animate-spin" />
+                                                        : <><Plus className="w-4 h-4" /> Créer le lien</>}
+                                                </button>
+                                            </div>
+                                            {/* Un libellé facultatif, mais sans lui la liste devient illisible :
+                                                dans deux semaines, « à qui j'ai envoyé celui-là ? » n'a pas de réponse. */}
+                                            <p className="text-xs text-white/30 mt-3">
+                                                Le libellé n&apos;est visible que par toi. Le lien est copié dès sa création.
+                                            </p>
+                                        </div>
+
+                                        {/* La liste */}
+                                        <div className="p-6 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
+                                            <div className="flex items-center justify-between mb-6">
+                                                <h2 className="text-sm font-mono text-white/40 uppercase">Liens ({invitations.length})</h2>
+                                                <button onClick={() => void fetchInvitations()} className="text-white/40 hover:text-white transition-colors">
+                                                    <RefreshCw className={`w-4 h-4 ${invitationsLoading ? "animate-spin" : ""}`} />
+                                                </button>
+                                            </div>
+
+                                            {invitations.length === 0 && !invitationsLoading && (
+                                                <p className="text-sm text-white/30">Aucun lien pour l&apos;instant.</p>
+                                            )}
+
+                                            <div className="space-y-3">
+                                                {invitations.map((inv) => (
+                                                    <div key={inv.id} className="p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                                                        <div className="flex items-start justify-between gap-4 flex-wrap">
+                                                            <div className="min-w-0 flex-1">
+                                                                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                                                                    <span className="text-sm font-medium text-white">{inv.label || "Sans libellé"}</span>
+                                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase ${
+                                                                        inv.etat === "disponible" ? "bg-emerald-500/15 text-emerald-300"
+                                                                        : inv.etat === "utilise" ? "bg-purple-500/15 text-purple-300"
+                                                                        : "bg-white/10 text-white/40"
+                                                                    }`}>
+                                                                        {inv.etat === "disponible" ? "disponible" : inv.etat === "utilise" ? "utilisé" : "annulé"}
+                                                                    </span>
+                                                                </div>
+                                                                {inv.etat === "utilise" ? (
+                                                                    <p className="text-xs text-white/45">
+                                                                        {inv.usedByEmail ?? "compte inconnu"}
+                                                                        {inv.referralCode && <> · code <span className="font-mono text-white/70">{inv.referralCode}</span></>}
+                                                                    </p>
+                                                                ) : (
+                                                                    <p className="font-mono text-[11px] text-white/35 break-all">{inv.url}</p>
+                                                                )}
+                                                            </div>
+
+                                                            <div className="flex items-center gap-2 shrink-0">
+                                                                {inv.etat === "disponible" && (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                void navigator.clipboard.writeText(inv.url).then(() => {
+                                                                                    setCopiedInvitation(inv.id);
+                                                                                    setTimeout(() => setCopiedInvitation(null), 2000);
+                                                                                });
+                                                                            }}
+                                                                            className="h-9 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-xs flex items-center gap-1.5 transition-all"
+                                                                        >
+                                                                            {copiedInvitation === inv.id ? <><Check className="w-3.5 h-3.5" /> Copié</> : <><Copy className="w-3.5 h-3.5" /> Copier</>}
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => void handleRevokeInvitation(inv.id)}
+                                                                            className="h-9 px-3 rounded-lg bg-white/5 hover:bg-red-500/15 text-white/50 hover:text-red-300 text-xs flex items-center gap-1.5 transition-all"
+                                                                        >
+                                                                            <Ban className="w-3.5 h-3.5" /> Annuler
+                                                                        </button>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {/* Annuler un lien DÉJÀ utilisé ne retirerait personne du programme :
+                                                l'affiliation vit dans `ambassadors`, pas dans les invitations. Le
+                                                bouton n'apparaît donc pas — laisser croire le contraire serait pire. */}
+                                            <p className="text-xs text-white/25 mt-5 leading-relaxed">
+                                                Annuler ne vaut que pour un lien non utilisé. Une fois accepté, retirer
+                                                quelqu&apos;un du programme se fait depuis l&apos;onglet Ambassadeurs.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {tab === "stats" && (
                                     <div className="space-y-6">
                                         {/* Filtres */}
