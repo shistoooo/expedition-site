@@ -10,7 +10,7 @@
  * en base au moment de l'acceptation : deux textes différents portant la même
  * version rendraient la trace inutilisable.
  */
-export const AFFILIATION_CONDITIONS_VERSION = "2026-08-13.2";
+export const AFFILIATION_CONDITIONS_VERSION = "2026-08-13.3";
 
 export type Clause = { titre: string; corps: string };
 
@@ -18,7 +18,7 @@ export const AFFILIATION_CONDITIONS: Clause[] = [
     {
         titre: "Ce qui est versé",
         corps:
-            "Expédition s'engage à vous rémunérer selon les règles de ce document : 43 % du montant hors taxes encaissé sur chaque achat unique TubeForge attribué à votre code, versé une seule fois par vente. Le taux et le prix peuvent changer pour les ventes à venir ; une vente déjà réalisée garde le taux en vigueur au moment où elle a eu lieu.",
+            "Expédition s'engage à vous rémunérer : 43 % du montant hors taxes encaissé sur chaque achat unique TubeForge attribué à votre code, versé une seule fois par vente. Le taux et le prix peuvent changer pour les ventes à venir. Une vente déjà réalisée garde le taux en vigueur au moment où elle a eu lieu.",
     },
     {
         titre: "Comment une vente vous est attribuée",
@@ -28,12 +28,12 @@ export const AFFILIATION_CONDITIONS: Clause[] = [
     {
         titre: "Quand vous êtes payé",
         corps:
-            "Expédition verse les commissions par Stripe Connect, sur le compte que vous configurez. Le versement intervient 30 jours après la vente, le temps de couvrir rétractation et litige. Tant que votre compte Stripe Connect n'est pas valide, vos commissions vous attendent.",
+            "Expédition verse les commissions par Stripe Connect, sur le compte que vous configurez. Le versement intervient 30 jours après la vente, le temps de couvrir rétractation et litige. Tant que votre compte Stripe Connect n'est pas valide, vos commissions restent en attente.",
     },
     {
         titre: "Ce que vous ne pouvez pas faire",
         corps:
-            "Pas de spam, ni par e-mail ni en commentaires. N'achetez pas de mots-clés publicitaires sur la marque Expédition ou TubeForge, ni sur leurs variantes. Ne promettez aucun gain ni aucun revenu au nom d'Expédition, et n'affirmez sur le produit que ce qui figure sur le site. Les codes de réduction que vous inventez n'engagent que vous. Enfin, l'auto-parrainage ne rapporte rien : ni votre propre achat, ni celui d'un compte que vous contrôlez.",
+            "N'envoyez pas de spam, ni par e-mail ni en commentaires. N'achetez pas de mots-clés publicitaires sur la marque Expédition ou TubeForge, ni sur leurs variantes. Ne promettez aucun gain ni aucun revenu au nom d'Expédition, et n'affirmez sur le produit que ce qui figure sur le site. Les codes de réduction que vous inventez n'engagent que vous. Enfin, l'auto-parrainage ne rapporte rien : ni votre propre achat, ni celui d'un compte que vous contrôlez.",
     },
     {
         titre: "Vous parlez en votre nom",
@@ -43,7 +43,7 @@ export const AFFILIATION_CONDITIONS: Clause[] = [
     {
         titre: "Vos impôts sont les vôtres",
         corps:
-            "Les sommes versées sont des revenus que vous déclarez vous-même, selon votre statut et votre pays. Expédition ne retient ni ne déclare rien à votre place, et vous transmet un récapitulatif des versements sur demande.",
+            "Vous déclarez vous-même ces revenus, selon votre statut et votre pays. Expédition ne retient ni ne déclare rien à votre place, et vous transmet un récapitulatif des versements sur demande.",
     },
     {
         titre: "Arrêter, des deux côtés",
@@ -53,12 +53,12 @@ export const AFFILIATION_CONDITIONS: Clause[] = [
     {
         titre: "Vos données",
         corps:
-            "Expédition conserve votre compte, votre code, les ventes qui vous sont attribuées et la date à laquelle vous avez accepté ces conditions. Vous ne voyez jamais l'identité des personnes qui achètent par votre lien, seulement leur nombre. Vous pouvez demander la suppression de votre compte partenaire ; les écritures comptables liées aux versements sont conservées le temps que la loi impose.",
+            "Expédition conserve votre compte, votre code, les ventes qu'elle vous attribue et la date à laquelle vous avez accepté ces conditions. Vous ne voyez jamais l'identité des personnes qui achètent par votre lien, seulement leur nombre. Vous pouvez demander la suppression de votre compte partenaire. Expédition garde les écritures comptables des versements le temps que la loi impose.",
     },
     {
         titre: "Si le texte change",
         corps:
-            "Expédition vous présentera la nouvelle version avant que vous continuiez. Ce que vous avez accepté aujourd'hui reste rattaché à la version datée du " +
+            "Si les règles changent, Expédition vous présentera la nouvelle version avant que vous repreniez. Ce que vous avez accepté aujourd'hui reste rattaché à la version datée du " +
             AFFILIATION_CONDITIONS_VERSION +
             ".",
     },
