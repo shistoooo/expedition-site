@@ -1622,6 +1622,32 @@ export default function AccountPage() {
                                                 </motion.div>
                                             )}
                                         </div>
+) : ambassadorStatus?.pendingApproval ? (
+                                        /* Demande déposée, validation à venir.
+                                           `pendingApproval` était renseigné et typé, mais jamais lu ici :
+                                           après un rechargement, la personne revoyait le formulaire
+                                           d'activation, sans aucune trace de sa demande. */
+                                        <div className="p-8 rounded-2xl bg-[#0F0F12] border border-emerald-500/20 shadow-2xl shadow-emerald-500/5">
+                                            <h2 className="text-lg font-bold flex items-center gap-2 mb-4">
+                                                <Gift className="w-5 h-5 text-emerald-400" />
+                                                Demande envoyée
+                                            </h2>
+                                            <div className="flex items-start gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                                                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                                                <div className="text-sm text-emerald-300/90 leading-relaxed">
+                                                    Votre demande d&apos;affiliation a bien été envoyée. Votre code est réservé.
+                                                    <span className="block mt-2 text-white/50">
+                                                        Attendez la validation avant de partager votre lien&nbsp;: les ventes réalisées avant ne sont pas comptabilisées.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <p className="mt-4 text-xs text-white/30">
+                                                Conditions acceptées le jour de la demande, version {AFFILIATION_CONDITIONS_VERSION}.{" "}
+                                                <Link href="/affiliation/conditions" target="_blank" className="text-purple-400 underline underline-offset-2">
+                                                    Les relire
+                                                </Link>
+                                            </p>
+                                        </div>
                                     ) : (
                                         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                             <div className="text-center mb-6">
