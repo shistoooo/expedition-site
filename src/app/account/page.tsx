@@ -1699,7 +1699,10 @@ export default function AccountPage() {
                                                     <Link href="/affiliation/conditions" target="_blank" className="text-purple-400 underline underline-offset-2 hover:text-purple-300">
                                                         conditions du programme
                                                     </Link>{" "}
-                                                    : {Math.round(COMMISSION_TAUX * 100)} % par vente, versement 30 jours après, pas de spam ni d&apos;auto-parrainage, mention obligatoire du lien affilié, revenus déclarés par mes soins.
+                                                    : pas de spam ni d&apos;auto-parrainage, mention obligatoire du lien affilié, revenus déclarés par mes soins.
+                                                    <span className="block mt-2 text-white/70">
+                                                        En cochant, <b className="text-white">Expédition s&apos;engage à me rémunérer selon ces règles</b>&nbsp;: {Math.round(COMMISSION_TAUX * 100)} % de chaque vente attribuée à mon code, versés 30 jours après.
+                                                    </span>
                                                 </span>
                                             </label>
 

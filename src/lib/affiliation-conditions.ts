@@ -10,7 +10,7 @@
  * en base au moment de l'acceptation : deux textes différents portant la même
  * version rendraient la trace inutilisable.
  */
-export const AFFILIATION_CONDITIONS_VERSION = "2026-08-13";
+export const AFFILIATION_CONDITIONS_VERSION = "2026-08-13.2";
 
 export type Clause = { titre: string; corps: string };
 
@@ -18,7 +18,7 @@ export const AFFILIATION_CONDITIONS: Clause[] = [
     {
         titre: "Ce qui est versé",
         corps:
-            "43 % du montant hors taxes encaissé sur chaque achat unique TubeForge attribué à votre code, versé une seule fois par vente. Le taux et le prix peuvent changer pour les ventes à venir ; une vente déjà réalisée garde le taux en vigueur au moment où elle a eu lieu.",
+            "Expédition s'engage à vous rémunérer selon les règles de ce document : 43 % du montant hors taxes encaissé sur chaque achat unique TubeForge attribué à votre code, versé une seule fois par vente. Le taux et le prix peuvent changer pour les ventes à venir ; une vente déjà réalisée garde le taux en vigueur au moment où elle a eu lieu.",
     },
     {
         titre: "Comment une vente vous est attribuée",

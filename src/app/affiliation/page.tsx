@@ -171,7 +171,10 @@ function Contenu() {
           <input type="checkbox" checked={accepte} onChange={(e) => setAccepte(e.target.checked)}
                  className="mt-1 w-4 h-4 shrink-0 cursor-pointer" style={{ accentColor: AMBRE }} />
           <span className="text-sm text-white/60 leading-relaxed">
-            J&apos;ai lu et j&apos;accepte les conditions du programme d&apos;affiliation, dans leur version du {AFFILIATION_CONDITIONS_VERSION}.
+            J&apos;ai lu et j&apos;accepte les conditions du programme d&apos;affiliation, version du {AFFILIATION_CONDITIONS_VERSION}.
+            <span className="block mt-2 text-white/75">
+              En cochant, <b className="text-white">Expédition s&apos;engage à me rémunérer selon ces règles</b>&nbsp;: 43 % de chaque vente attribuée à mon code, versés 30 jours après.
+            </span>
           </span>
         </label>
 
