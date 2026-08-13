@@ -114,8 +114,7 @@ function Contenu() {
       <Cadre>
         <h1 className="text-2xl font-black mb-3">Programme d&apos;affiliation</h1>
         <p className="text-white/55 mb-6">
-          Cette page s&apos;ouvre avec un lien d&apos;invitation. Si tu en as reçu un, ouvre-le
-          directement — il contient ton accès.
+          Cette page s&apos;ouvre avec un lien d&apos;invitation. Si tu en as reçu un, ouvre-le : il contient ton accès.
         </p>
         <Link href="/tubeforge" className="text-sm font-semibold" style={{ color: AMBRE }}>
           Découvrir TubeForge →
@@ -148,7 +147,7 @@ function Contenu() {
         <p className="font-mono text-xs tracking-[0.2em] mb-3" style={{ color: AMBRE }}>INVITATION VALIDE</p>
         <h1 className="text-2xl md:text-3xl font-black mb-2">Avant de rejoindre, l&apos;essentiel</h1>
         <p className="text-white/55 mb-7">
-          Version du {AFFILIATION_CONDITIONS_VERSION}. Tu peux tout lire, mais voici ce qui t&apos;engage vraiment.
+          Version du {AFFILIATION_CONDITIONS_VERSION}. Le texte complet tient en neuf points. Ces cinq-là sont ceux qui t&apos;engagent.
         </p>
 
         <div className="space-y-4 mb-7">

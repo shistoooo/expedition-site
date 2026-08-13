@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AFFILIATION_CONDITIONS, AFFILIATION_CONDITIONS_VERSION } from "@/lib/affiliation-conditions";
 
 export const metadata: Metadata = {
-    title: "Conditions du programme d'affiliation — Expédition",
+    title: "Conditions du programme d'affiliation · Expédition",
     description:
         "Ce que touche un partenaire, comment une vente lui est attribuée, quand il est payé, et ce qu'il ne peut pas faire.",
     robots: { index: true, follow: true },
