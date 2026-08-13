@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { AFFILIATION_CONDITIONS, AFFILIATION_CONDITIONS_VERSION } from "@/lib/affiliation-conditions";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
 const AMBRE = "#ff6a1f";
@@ -30,6 +31,9 @@ type Etat =
   | { phase: "chargement" }
   | { phase: "sans-jeton" }
   | { phase: "connexion-requise" }
+  // La charte s'affiche AVANT de consommer le lien : tant que la personne n'a
+  // pas validé, l'invitation reste intacte et elle peut revenir.
+  | { phase: "charte"; accessToken: string }
   | { phase: "en-cours" }
   | { phase: "ok"; code: string; deja: boolean }
   | { phase: "erreur"; message: string };
@@ -38,6 +42,7 @@ function Contenu() {
   const jeton = useSearchParams().get("invitation")?.trim() ?? "";
   const [etat, setEtat] = useState<Etat>({ phase: "chargement" });
   const [copie, setCopie] = useState(false);
+  const [accepte, setAccepte] = useState(false);
 
   useEffect(() => {
     if (!jeton) { setEtat({ phase: "sans-jeton" }); return; }
@@ -52,20 +57,13 @@ function Contenu() {
         if (!vivant) return;
         if (!accessToken) { setEtat({ phase: "connexion-requise" }); return; }
 
-        setEtat({ phase: "en-cours" });
-        const r = await fetch(`${WORKER_URL}/ambassador/invitation`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-          body: JSON.stringify({ token: jeton }),
-        });
-        const d = (await r.json()) as { referralCode?: string; deja?: boolean; error?: string };
-        if (!vivant) return;
-
-        if (!r.ok || !d.referralCode) {
-          setEtat({ phase: "erreur", message: d.error ?? "Ce lien n'a pas pu être utilisé." });
-          return;
-        }
-        setEtat({ phase: "ok", code: d.referralCode, deja: !!d.deja });
+        /**
+         * On S'ARRÊTE ici. Avant, ouvrir le lien en étant connecté rendait
+         * affilié sur-le-champ : aucune charte, rien à valider, rien de tracé.
+         * La personne devenait partenaire d'un programme dont elle n'avait lu
+         * aucune règle, sur un simple clic dans un message.
+         */
+        setEtat({ phase: "charte", accessToken });
       } catch {
         if (vivant) setEtat({ phase: "erreur", message: "Connexion impossible. Réessaie dans un instant." });
       }
@@ -73,6 +71,26 @@ function Contenu() {
 
     return () => { vivant = false; };
   }, [jeton]);
+
+  /** Consomme l'invitation. Appelée UNIQUEMENT après validation de la charte. */
+  const rejoindre = async (accessToken: string) => {
+    setEtat({ phase: "en-cours" });
+    try {
+      const r = await fetch(`${WORKER_URL}/ambassador/invitation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ token: jeton, conditionsVersion: AFFILIATION_CONDITIONS_VERSION }),
+      });
+      const d = (await r.json()) as { referralCode?: string; deja?: boolean; error?: string; message?: string };
+      if (!r.ok || !d.referralCode) {
+        setEtat({ phase: "erreur", message: d.message ?? d.error ?? "Ce lien n'a pas pu être utilisé." });
+        return;
+      }
+      setEtat({ phase: "ok", code: d.referralCode, deja: !!d.deja });
+    } catch {
+      setEtat({ phase: "erreur", message: "Connexion impossible. Réessaie dans un instant." });
+    }
+  };
 
   // On renvoie vers la connexion en GARDANT le jeton dans l'adresse de retour :
   // sans ça, la personne se connecte et retombe sur une page qui ne sait plus
@@ -120,6 +138,53 @@ function Contenu() {
           Se connecter
         </Link>
       </Cadre>
+    );
+  }
+
+  if (etat.phase === "charte") {
+    return (
+      <div className="max-w-2xl mx-auto w-full rounded-2xl border p-8 md:p-10"
+           style={{ borderColor: "rgba(255,106,31,0.28)", background: "rgba(255,106,31,0.04)" }}>
+        <p className="font-mono text-xs tracking-[0.2em] mb-3" style={{ color: AMBRE }}>INVITATION VALIDE</p>
+        <h1 className="text-2xl md:text-3xl font-black mb-2">Avant de rejoindre, l&apos;essentiel</h1>
+        <p className="text-white/55 mb-7">
+          Version du {AFFILIATION_CONDITIONS_VERSION}. Tu peux tout lire, mais voici ce qui t&apos;engage vraiment.
+        </p>
+
+        <div className="space-y-4 mb-7">
+          {AFFILIATION_CONDITIONS.slice(0, 5).map((clause, i) => (
+            <div key={clause.titre} className="flex gap-3">
+              <span className="font-mono text-xs text-white/25 pt-1 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <p className="font-semibold text-sm text-white/90">{clause.titre}</p>
+                <p className="text-sm text-white/50 leading-relaxed">{clause.corps}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <Link href="/affiliation/conditions" target="_blank"
+              className="inline-block text-sm font-semibold mb-7" style={{ color: AMBRE }}>
+          Lire les conditions complètes →
+        </Link>
+
+        <label className="flex items-start gap-3 mb-6 cursor-pointer">
+          <input type="checkbox" checked={accepte} onChange={(e) => setAccepte(e.target.checked)}
+                 className="mt-1 w-4 h-4 shrink-0 cursor-pointer" style={{ accentColor: AMBRE }} />
+          <span className="text-sm text-white/60 leading-relaxed">
+            J&apos;ai lu et j&apos;accepte les conditions du programme d&apos;affiliation, dans leur version du {AFFILIATION_CONDITIONS_VERSION}.
+          </span>
+        </label>
+
+        <button onClick={() => rejoindre(etat.accessToken)} disabled={!accepte}
+                className="w-full py-3.5 rounded-xl font-semibold text-sm transition-opacity disabled:opacity-35 disabled:cursor-not-allowed"
+                style={{ background: AMBRE, color: "#0a0a0a" }}>
+          J&apos;accepte et je rejoins le programme
+        </button>
+        <p className="text-xs text-white/30 mt-4 text-center">
+          Ton invitation reste valable tant que tu n&apos;as pas validé.
+        </p>
+      </div>
     );
   }
 
