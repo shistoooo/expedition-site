@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { lienPartenaire } from "@/lib/parrainage";
+import { AFFILIATION_CONDITIONS_VERSION } from "@/lib/affiliation-conditions";
 import {
     Lock, Mail, KeyRound, AlertCircle, Loader2, ChevronLeft,
     CreditCard, Calendar, Shield, XCircle, RotateCcw, CheckCircle2, LogOut, Download, Apple, Monitor,
@@ -278,6 +280,11 @@ export default function AccountPage() {
     const [ambassadorStatus, setAmbassadorStatus] = useState<AmbassadorInfo | null>(null);
     const [ambassadorLoading, setAmbassadorLoading] = useState(false);
     const [ambassadorError, setAmbassadorError] = useState<string | null>(null);
+    // Conditions du programme : cochées avant d'activer, version envoyée au worker.
+    const [conditionsOk, setConditionsOk] = useState(false);
+    // Message rendu par le worker quand la demande est enregistrée sans activation
+    // immédiate (personne pas encore cliente, ou compte en attente de validation).
+    const [demandeEnvoyee, setDemandeEnvoyee] = useState<string | null>(null);
     const [customCodeInput, setCustomCodeInput] = useState("");
     const [customCodeLoading, setCustomCodeLoading] = useState(false);
     const [codeCopied, setCodeCopied] = useState(false);
@@ -701,26 +708,61 @@ export default function AccountPage() {
         }
     };
 
+    /**
+     * Activer l'affiliation.
+     *
+     * Trois cas, trois écrans — avant, les trois tombaient dans le même bloc rouge :
+     *  · activation immédiate (client, compte validé) → le code s'affiche ;
+     *  · demande enregistrée (pas encore client, ou validation à venir) → un
+     *    message qui dit que c'est parti, pas une erreur ;
+     *  · vraie panne → le bloc rouge, qui redevient rare et donc lisible.
+     *
+     * Le front ne lisait pas le bon champ : la route renvoyait `{success, status}`
+     * sans `referralCode`, et l'écran se déclarait quand même ambassadeur avec un
+     * code vide. Une activation RÉUSSIE produisait donc un affichage cassé.
+     */
     const handleBecomeAmbassador = async () => {
         if (!accessToken) return;
+        if (!conditionsOk) {
+            setAmbassadorError("Il faut accepter les conditions du programme pour continuer.");
+            return;
+        }
         setAmbassadorLoading(true);
         setAmbassadorError(null);
+        setDemandeEnvoyee(null);
 
         try {
             const res = await fetch(`${WORKER_URL}/ambassador/register`, {
                 method: "POST",
-                headers: { "Authorization": `Bearer ${accessToken}` },
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ conditionsVersion: AFFILIATION_CONDITIONS_VERSION }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Erreur lors de l'activation");
 
-            setAmbassadorStatus({
-                isAmbassador: true,
-                referralCode: data.referralCode,
-                stripeConnectStatus: "not_started",
-                stats: { totalReferrals: 0, activeReferrals: 0, totalEarnings: 0, pendingEarnings: 0 },
-            });
-            setCustomCodeInput(data.referralCode);
+            // 202 : demande enregistrée, rien à afficher comme un échec.
+            if (res.status === 202 || data.demandeEnregistree) {
+                setDemandeEnvoyee(data.message || "Votre demande d'affiliation a bien été envoyée.");
+                return;
+            }
+            if (!res.ok) throw new Error(data.message || data.error || "Erreur lors de l'activation");
+
+            if (data.referralCode) {
+                setAmbassadorStatus({
+                    isAmbassador: data.status === "approved" || !!data.deja,
+                    pendingApproval: data.status === "pending",
+                    eligible: true,
+                    referralCode: data.referralCode,
+                    stripeConnectStatus: "not_started",
+                    stats: { totalReferrals: 0, activeReferrals: 0, totalEarnings: 0, pendingEarnings: 0 },
+                });
+                setCustomCodeInput(data.referralCode);
+            }
+            if (data.status === "pending") {
+                setDemandeEnvoyee(data.message || "Votre demande d'affiliation a bien été envoyée.");
+            }
         } catch (err: unknown) {
             setAmbassadorError(err instanceof Error ? err.message : "Erreur lors de l'activation");
         } finally {
@@ -802,10 +844,9 @@ export default function AccountPage() {
 
     const handleCopyCode = async () => {
         if (!ambassadorStatus) return;
-        // ⚠️ /tubeforge/checkout, PAS /checkout : le second est l'ancienne page
-        // d'abonnement, fermée aux nouveaux clients depuis le 2026-08-08. Le lien
-        // partagé menait donc les filleuls vers une offre qui n'existe plus.
-        const link = `https://expeditionlauncher.store/tubeforge/checkout?plan=lifetime&ref=${ambassadorStatus.referralCode}`;
+        // Une seule fonction construit ce lien, et c'est la même qui l'affiche.
+        // Avant, l'écran montrait une adresse et le bouton en copiait une autre.
+        const link = lienPartenaire(ambassadorStatus.referralCode);
         await navigator.clipboard.writeText(link);
         setCodeCopied(true);
         setTimeout(() => setCodeCopied(false), 2000);
@@ -1448,7 +1489,7 @@ export default function AccountPage() {
                                                 <label className="text-xs font-mono text-white/40 uppercase mb-2 block">Votre lien de parrainage</label>
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex-1 h-11 px-4 bg-white/5 rounded-xl border border-white/10 text-white text-sm flex items-center truncate">
-                                                        expeditionlauncher.store/checkout?ref={ambassadorStatus.referralCode}
+                                                        {lienPartenaire(ambassadorStatus.referralCode).replace("https://", "")}
                                                     </div>
                                                     <button
                                                         onClick={handleCopyCode}
@@ -1617,9 +1658,28 @@ export default function AccountPage() {
                                                 <p className="text-[10px] text-white/25 text-center">{Math.round(COMMISSION_TAUX * 100)}% de l&apos;achat unique &agrave; {PRIX_A_VIE.toFixed(2).replace(".", ",")}€, vers&eacute;s une fois par vente.</p>
                                             </div>
 
+                                            {/* Les conditions se cochent AVANT d'activer, et la version
+                                                cochée part au worker qui la range en base. Une case sans
+                                                trace ne prouve rien le jour d'un désaccord. */}
+                                            <label className="flex items-start gap-3 mb-4 cursor-pointer group">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={conditionsOk}
+                                                    onChange={(e) => { setConditionsOk(e.target.checked); setAmbassadorError(null); }}
+                                                    className="mt-1 w-4 h-4 shrink-0 accent-purple-500 cursor-pointer"
+                                                />
+                                                <span className="text-xs text-white/50 leading-relaxed group-hover:text-white/70 transition-colors">
+                                                    J&apos;ai lu et j&apos;accepte les{" "}
+                                                    <Link href="/affiliation/conditions" target="_blank" className="text-purple-400 underline underline-offset-2 hover:text-purple-300">
+                                                        conditions du programme
+                                                    </Link>{" "}
+                                                    : {Math.round(COMMISSION_TAUX * 100)} % par vente, versement 30 jours après, pas de spam ni d&apos;auto-parrainage, mention obligatoire du lien affilié, revenus déclarés par mes soins.
+                                                </span>
+                                            </label>
+
                                             <button
                                                 onClick={handleBecomeAmbassador}
-                                                disabled={ambassadorLoading}
+                                                disabled={ambassadorLoading || !conditionsOk}
                                                 className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-purple-500/25"
                                             >
                                                 {ambassadorLoading ? (
@@ -1639,6 +1699,17 @@ export default function AccountPage() {
                                                     En savoir plus <ExternalLink className="w-3.5 h-3.5" />
                                                 </Link>
                                             </div>
+
+                                            {demandeEnvoyee && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: -5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm flex items-start gap-2"
+                                                >
+                                                    <Check className="w-4 h-4 shrink-0 mt-0.5" />
+                                                    <span>{demandeEnvoyee}</span>
+                                                </motion.div>
+                                            )}
 
                                             {ambassadorError && (
                                                 <motion.div

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import TubeForgeTracking from "@/components/tubeforge/TubeForgeTracking";
+import CaptureParrainage from "@/components/CaptureParrainage";
 
 // Display font scopée TubeForge : grotesque à caractère (axe optique un peu
 // rugueux) — cohérente avec l'identité mono/technique ember, contrairement au
@@ -78,6 +79,9 @@ export default function TubeForgeLayout({ children }: { children: React.ReactNod
   return (
     <div className={`${tfDisplay.variable} tf-scope`}>
       <TubeForgeTracking />
+      {/* Capte ?ref= dès la page produit : le lien partenaire n'a plus besoin
+          de pointer droit sur le paiement pour que la commission survive. */}
+      <CaptureParrainage />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

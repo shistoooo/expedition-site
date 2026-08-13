@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, ShieldCheck, Gift, Sparkles, Loader2, AlertCircl
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState, useEffect, useRef, Suspense } from "react";
+import { capturerParrainage, lireParrainage } from "@/lib/parrainage";
 import { useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -208,7 +209,22 @@ function OneTimeCheckoutContent() {
    * Il ne change RIEN au prix : il sert uniquement à savoir qui créditer.
    * Transmis au worker, qui le pose dans les métadonnées Stripe.
    */
-  const refParrainage = (searchParams.get("ref") || "").trim();
+  const refUrl = (searchParams.get("ref") || "").trim();
+  /**
+   * Deux origines possibles, dans cet ordre :
+   *   1. l'URL, quand la personne arrive tout droit sur le checkout ;
+   *   2. le code capturé plus tôt, quand elle est passée par la page produit.
+   *
+   * Sans le second cas, un lien partenaire menant à `/tubeforge` perdait la
+   * commission au clic sur « acheter » — c'est pour ça que le lien pointait
+   * jusqu'ici droit sur le formulaire de paiement.
+   */
+  const [refParrainage, setRefParrainage] = useState(refUrl);
+  useEffect(() => {
+    if (refUrl) { capturerParrainage(); return; }
+    const garde = lireParrainage();
+    if (garde) setRefParrainage(garde);
+  }, [refUrl]);
   // Pré-sélection du nombre de mois quand on arrive depuis le sélecteur de la landing.
   const initialMonths = Math.min(12, Math.max(1, parseInt(searchParams.get("months") || (isSub ? "12" : "1"), 10) || 1));
 
