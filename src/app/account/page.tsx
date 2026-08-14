@@ -1419,10 +1419,27 @@ export default function AccountPage() {
                                     ne mène nulle part. Le code reste en place — c'est
                                     la CONDITION qu'on ferme, pas la fonctionnalité, pour
                                     que la remettre soit une ligne et non une réécriture. */}
-                                {PROGRAMME_AMBASSADEUR_OUVERT &&
-                                  AMBASSADEURS_AUTORISES.includes(email.toLowerCase().trim()) &&
-                                  (ambassadorStatus?.isAmbassador || ambassadorStatus?.eligible) && (
-                                    ambassadorStatus?.isAmbassador ? (
+                                {/**
+                                  * ⛔ LA LISTE D'AUTORISATION CACHAIT LEUR PROPRE TABLEAU DE BORD
+                                  *    AUX GENS DÉJÀ DANS LE PROGRAMME.
+                                  *
+                                  * Constaté le 2026-08-13 : une personne invitée par lien se
+                                  * connecte, accepte les conditions, obtient son code — et ne voit
+                                  * RIEN dans « Mon compte ». `AMBASSADEURS_AUTORISES` ne contient
+                                  * qu'une seule adresse, et elle gardait les DEUX branches.
+                                  *
+                                  * Le système d'invitation (09/08) a été branché sur une interface
+                                  * fermée le 03/08. Chacune était cohérente seule ; personne ne les
+                                  * a relues ensemble.
+                                  *
+                                  * Deux questions différentes, deux gardes différentes :
+                                  *  · ÊTRE dans le programme → son tableau de bord s'affiche
+                                  *    toujours. Cacher à quelqu'un ses propres commissions n'a
+                                  *    aucun sens, et c'est nous qui sommes allés le chercher.
+                                  *  · POUVOIR REJOINDRE de son propre chef → reste fermé à la
+                                  *    liste : le programme n'est pas ouvert au public.
+                                  */}
+                                {ambassadorStatus?.isAmbassador ? (
                                         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                             <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
                                                 <Gift className="w-5 h-5 text-purple-400" />
@@ -1430,20 +1447,13 @@ export default function AccountPage() {
                                             </h2>
 
                                             {/* Stats Grid */}
-                                            <div className="grid grid-cols-2 gap-3 mb-4">
+                                            <div className="grid grid-cols-3 gap-3 mb-4">
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                                                         <Users className="w-3.5 h-3.5" />
                                                         Total filleuls
                                                     </div>
                                                     <div className="text-2xl font-bold">{ambassadorStatus.stats.totalReferrals}</div>
-                                                </div>
-                                                <div className="p-4 rounded-xl bg-white/5">
-                                                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
-                                                        <TrendingUp className="w-3.5 h-3.5" />
-                                                        Actifs
-                                                    </div>
-                                                    <div className="text-2xl font-bold text-green-400">{ambassadorStatus.stats.activeReferrals}</div>
                                                 </div>
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
@@ -1461,23 +1471,23 @@ export default function AccountPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Earnings projection based on active referrals */}
-                                            {ambassadorStatus.stats.activeReferrals > 0 && (
-                                                <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-6">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <TrendingUp className="w-4 h-4 text-purple-400" />
-                                                        <span className="text-sm font-semibold text-white">Projection</span>
-                                                    </div>
-                                                    <p className="text-white/60 text-sm">
-                                                        Avec vos <span className="text-white font-bold">{ambassadorStatus.stats.activeReferrals} filleul{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""} actif{ambassadorStatus.stats.activeReferrals > 1 ? "s" : ""}</span>, vous pouvez toucher jusqu&apos;à{" "}
-                                                        <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                                                            {(ambassadorStatus.stats.activeReferrals * COMMISSION_PAR_VENTE).toFixed(2).replace(".", ",")}€
-                                                        </span>{" "}
-                                                        au total.
-                                                    </p>
-                                                </div>
-                                            )}
-                                            {ambassadorStatus.stats.activeReferrals === 0 && (
+                                            {/**
+                                              * ⛔ LA « PROJECTION » COMPTAIT L'ARGENT DEUX FOIS.
+                                              *
+                                              * Elle annonçait « avec vos N filleuls actifs, vous pouvez
+                                              * toucher jusqu'à N × 17,19 € » — or un filleul devient
+                                              * « actif » PRÉCISÉMENT au moment où il achète, donc cette
+                                              * somme est déjà celle des tuiles « Gains totaux » et
+                                              * « En attente ». On promettait au futur ce qui était déjà
+                                              * gagné, et c'était encore plus trompeur en achat unique :
+                                              * un filleul ne rapporte qu'une fois, il n'y a aucun
+                                              * revenu récurrent à projeter.
+                                              *
+                                              * Retirée avec la tuile « Actifs », pour la même raison :
+                                              * « actif » décrit un abonnement qui court, une notion qui
+                                              * n'existe plus depuis la bascule en achat unique.
+                                              */}
+                                            {ambassadorStatus.stats.totalEarnings + ambassadorStatus.stats.pendingEarnings === 0 && (
                                                 <div className="p-4 rounded-xl bg-white/5 border border-white/5 mb-6 text-center">
                                                     <p className="text-white/40 text-sm mb-1">Partagez votre lien pour commencer à gagner</p>
                                                     <p className="text-xs text-white/25">1 seule vente = <span className="text-purple-300">{COMMISSION_PAR_VENTE.toFixed(2).replace(".", ",")}€</span></p>
@@ -1648,7 +1658,9 @@ export default function AccountPage() {
                                                 </Link>
                                             </p>
                                         </div>
-                                    ) : (
+                                    ) : PROGRAMME_AMBASSADEUR_OUVERT &&
+                                        AMBASSADEURS_AUTORISES.includes(email.toLowerCase().trim()) &&
+                                        ambassadorStatus?.eligible ? (
                                         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                             <div className="text-center mb-6">
                                                 <Gift className="w-10 h-10 text-purple-400 mx-auto mb-4" />
@@ -1751,8 +1763,7 @@ export default function AccountPage() {
                                                 </motion.div>
                                             )}
                                         </div>
-                                    )
-                                )}
+                                    ) : null}
 
                             </motion.div>
                         )}
