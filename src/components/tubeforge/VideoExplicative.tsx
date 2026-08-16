@@ -33,6 +33,14 @@ type Props = {
   sousTitre?: string;
   /** Renvoi vers une version plus longue, sous le cadre. */
   versionLongue?: VideoDemo;
+  /**
+   * La phrase qui donne envie de la regarder.
+   *
+   * Sans elle, le renvoi se réduisait à « Tout voir en détail (19 min) » —
+   * une consigne de navigation, pas une raison de cliquer. Personne n'ouvre
+   * dix-neuf minutes parce qu'on lui propose du « détail ».
+   */
+  versionLongueAccroche?: string;
   className?: string;
 };
 
@@ -42,6 +50,7 @@ export default function VideoExplicative({
   titre,
   sousTitre,
   versionLongue,
+  versionLongueAccroche,
   className = "",
 }: Props) {
   const [lance, setLance] = useState(false);
@@ -113,7 +122,10 @@ export default function VideoExplicative({
       </div>
 
       {versionLongue && videoDisponible(versionLongue) && (
-        <p className="text-center mt-5">
+        <div className="text-center mt-6 max-w-xl mx-auto">
+          {versionLongueAccroche && (
+            <p className="text-white/50 leading-relaxed mb-2">{versionLongueAccroche}</p>
+          )}
           <a
             href={videoLien(versionLongue)}
             target="_blank"
@@ -121,9 +133,9 @@ export default function VideoExplicative({
             className="text-sm font-semibold hover:underline"
             style={{ color: AMBRE }}
           >
-            Tout voir en détail ({versionLongue.duree}) →
+            Tout est dans la vidéo de {versionLongue.dureeLongue} →
           </a>
-        </p>
+        </div>
       )}
     </div>
   );

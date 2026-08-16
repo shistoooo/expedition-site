@@ -232,7 +232,7 @@ export default function TubeForgePage() {
               versionLongue={VIDEO_COMPLETE}
               eyebrow="En vidéo"
               titre="Trois minutes pour voir si ça te sert"
-              sousTitre="Le geste complet, du lien collé jusqu'à la découpe."
+              versionLongueAccroche="Il en fait bien plus, et chaque fonction t'enlève une manip."
             />
           </div>
         </section>

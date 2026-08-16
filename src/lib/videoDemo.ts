@@ -20,6 +20,13 @@ export type VideoDemo = {
   titre: string;
   /** Durée affichée sur l'affiche, pour que personne ne clique en aveugle. */
   duree: string;
+  /**
+   * La même durée écrite en toutes lettres, pour une phrase.
+   *
+   * Deux champs plutôt que `duree + "utes"` : ce collage marchait par accident
+   * avec « 19 min », et rendait « 1 h 20utes » à la première durée différente.
+   */
+  dureeLongue: string;
 };
 
 /**
@@ -32,6 +39,7 @@ export const VIDEO_COURTE: VideoDemo = {
   id: "n6Vh7zgBnAE",
   titre: "TubeForge en trois minutes",
   duree: "3 min",
+  dureeLongue: "3 minutes",
 };
 
 /** La complète — après l'achat, et en lien depuis la courte. */
@@ -39,6 +47,7 @@ export const VIDEO_COMPLETE: VideoDemo = {
   id: "Eeo6DdR62LE",
   titre: "TubeForge — présentation complète",
   duree: "19 min",
+  dureeLongue: "19 minutes",
 };
 
 /** Vrai quand la vidéo est configurée et peut être affichée. */
