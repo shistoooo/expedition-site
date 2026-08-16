@@ -227,18 +227,18 @@ export default function TubeForgePage() {
                 deux-là vivent sur des pages différentes.
                 Au passage : « montrées » est un passif sans acteur, et
                 « toutes » + « une par une » dit deux fois la même chose. */}
-            {/* ⛔ « chaque fonction t'enlève une manip » ne désignait RIEN.
-                Personne ne se représente « une manip », donc la phrase
-                n'apprenait rien et ne donnait aucune raison de cliquer.
-                On nomme maintenant des choses que le monteur connaît et sait
-                pénibles : sélectionner un passage, attendre ses
-                téléchargements, jongler entre Resolve et le Finder. */}
+            {/* Formulation choisie par Mohamed, dans ses mots.
+                Le site tutoie partout (« colle ton lien », « ta timeline ») :
+                le « vous » de la note d'origine devient « te », sinon la page
+                change de registre en plein milieu.
+                Et « si tu veux les découvrir, regarde la vidéo complète » n'est
+                pas repris ici : le lien juste en dessous le dit déjà. */}
             <VideoExplicative
               video={VIDEO_COURTE}
               versionLongue={VIDEO_COMPLETE}
               eyebrow="En vidéo"
               titre="Trois minutes pour voir si ça te sert"
-              versionLongueAccroche="Découpe à la seconde, file d'attente, plugin DaVinci."
+              versionLongueAccroche="TubeForge est blindé d'outils qui te font gagner du temps au montage."
             />
           </div>
         </section>
