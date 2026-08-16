@@ -20,13 +20,13 @@
  * vaut aucune section qu'un lecteur noir ou un « Video unavailable » au milieu
  * d'une page de vente. Renseigner cette ligne suffit à tout allumer.
  */
-export const VIDEO_TUBEFORGE_ID = "";
+export const VIDEO_TUBEFORGE_ID = "Eeo6DdR62LE";
 
 /** Durée annoncée à côté du bouton. Sert à ce que personne ne clique en aveugle. */
-export const VIDEO_TUBEFORGE_DUREE = "";
+export const VIDEO_TUBEFORGE_DUREE = "19 min";
 
 export const VIDEO_TUBEFORGE_TITRE =
-  "TubeForge — toutes les fonctionnalités en vidéo";
+  "TubeForge — présentation complète";
 
 /** Vrai quand la vidéo est configurée et peut être affichée. */
 export const videoDemoDisponible = (): boolean => VIDEO_TUBEFORGE_ID.trim().length > 0;
