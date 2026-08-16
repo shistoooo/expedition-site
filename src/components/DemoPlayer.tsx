@@ -58,6 +58,21 @@ type DemoPlayerProps = {
   videoId?: string;
   /** Force the player to autoplay as soon as the YouTube API is ready (muted) */
   autoplay?: boolean;
+  /**
+   * Démarre avec le SON. Uniquement valable si la lecture part d'un clic : les
+   * navigateurs refusent tout démarrage automatique sonore, et un `autoplay=1`
+   * sans `mute=1` posé au chargement ne démarre simplement pas.
+   */
+  avecSon?: boolean;
+  /**
+   * Vitesse imposée. `null` = on ne touche à rien.
+   *
+   * Le défaut de 1,5× convient à une démo de trente secondes ; imposé à une
+   * vidéo explicative de plusieurs minutes, il la rend pénible à suivre et
+   * déforme la voix. Une vidéo qu'on a faite pour EXPLIQUER doit se lire à sa
+   * vitesse.
+   */
+  vitesse?: number | null;
   /** Titre accessible de l'iframe (lecteurs d'écran). Défaut = démo TubeForge. */
   title?: string;
   className?: string;
@@ -66,6 +81,8 @@ type DemoPlayerProps = {
 export default function DemoPlayer({
   videoId = DEFAULT_VIDEO_ID,
   autoplay = false,
+  avecSon = false,
+  vitesse = PLAYBACK_RATE,
   title = "TubeForge — Démo du plugin Premiere Pro & DaVinci Resolve",
   className = "",
 }: DemoPlayerProps) {
@@ -111,9 +128,12 @@ export default function DemoPlayer({
       }
       playerRef.current = null;
     };
-  }, []);
+  }, [vitesse]);
 
-  const autoplayParam = autoplay ? "&autoplay=1&mute=1" : "";
+  // `mute=1` n'est PAS un choix : sans lui, le navigateur refuse le démarrage
+  // automatique et la vidéo reste figée. On ne l'enlève que quand la lecture
+  // part d'un clic de la personne, ce que `avecSon` signale.
+  const autoplayParam = autoplay ? (avecSon ? "&autoplay=1" : "&autoplay=1&mute=1") : "";
 
   return (
     <iframe

@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import VideoDownloadComparison from "@/components/tubeforge/VideoDownloadComparison";
 import TubeForgePricingSection from "@/components/tubeforge/TubeForgePricingSection";
 import FeaturesList from "@/components/tubeforge/FeaturesList";
+import VideoExplicative from "@/components/tubeforge/VideoExplicative";
 import CompatBadge from "@/components/shared/CompatBadge";
 import TubeForgeCreatorsMarquee from "@/components/tubeforge/TubeForgeCreatorsMarquee";
 
@@ -197,6 +198,32 @@ export default function TubeForgePage() {
         <section id="features-tf" data-section="features" className="pb-16 md:pb-24 relative">
           <div className="container-main max-w-5xl">
             <FeaturesList />
+          </div>
+        </section>
+
+        {/**
+          * ── LA DÉMONSTRATION, JUSTE AVANT LE PRIX ──────────────────────
+          *
+          * Placée ici et pas ailleurs, pour une raison précise : depuis la
+          * fermeture de l'essai 14 jours (08/08) et la coupure du téléchargeur
+          * web gratuit (09/08), plus RIEN ne permet de voir TubeForge avant de
+          * payer 39,99 €. Cette vidéo n'est pas un bonus, c'est ce qui remplace
+          * l'essai — la seule preuve qui reste.
+          *
+          * Et c'est à cet endroit exact que le doute est maximal : la personne
+          * vient de lire les fonctionnalités, elle voit le prix arriver, elle se
+          * demande si ça marche vraiment. La réponse doit tomber là.
+          *
+          * La section disparaît d'elle-même tant que `VIDEO_TUBEFORGE_ID` est
+          * vide (voir `lib/videoDemo.ts`).
+          */}
+        <section data-section="demo-complete" className="pb-16 md:pb-24 relative">
+          <div className="container-main max-w-5xl">
+            <VideoExplicative
+              eyebrow="La démo"
+              titre="Regarde-le tourner avant de payer"
+              sousTitre="Toutes les fonctionnalités, montrées une par une, sur de vrais montages."
+            />
           </div>
         </section>
 

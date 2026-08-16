@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import VideoExplicative from "@/components/tubeforge/VideoExplicative";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
 const AMBER = "#ff6a1f";
@@ -244,6 +245,24 @@ function MerciContent() {
                   Me connecter <ArrowRight className="w-5 h-5" />
                 </Link>
                 {giftKeysBlock}
+
+                {/**
+                  * LA VIDÉO ARRIVE APRÈS LE BOUTON, PAS AVANT.
+                  *
+                  * La personne vient de payer : ce qu'elle veut, c'est l'app.
+                  * Mettre la vidéo entre elle et le téléchargement
+                  * transformerait un achat réussi en salle d'attente.
+                  *
+                  * Juste en dessous, en revanche, c'est le bon moment : le
+                  * téléchargement tourne, il y a une minute de temps mort, et
+                  * c'est là qu'on découvre ce que l'outil sait faire — plutôt
+                  * que de le découvrir seul, six mois plus tard.
+                  */}
+                <VideoExplicative
+                  className="mt-10"
+                  titre="Pendant que ça télécharge"
+                  sousTitre="Toutes les fonctionnalités de TubeForge, montrées une par une."
+                />
               </motion.div>
             )}
 
