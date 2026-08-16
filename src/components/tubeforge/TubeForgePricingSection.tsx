@@ -132,6 +132,28 @@ function OffreUniqueCard() {
       >
         Obtenir TubeForge
       </Link>
+
+      {/**
+        * L'essai en SECOND, et discret. Deux boutons pleins côte à côte
+        * feraient choisir entre deux inconnues ; ici l'achat reste la
+        * proposition, et l'essai la porte de sortie pour qui hésite.
+        *
+        * Le lien annonce la carte AVANT le clic. Le dire seulement sur la page
+        * suivante donnerait le sentiment d'avoir été attiré par un « gratuit »
+        * qui ne l'est pas tout à fait.
+        */}
+      <Link
+        data-track="pricing-essai"
+        href="/tubeforge/essai"
+        className="w-full mt-3 py-3 rounded-xl border font-semibold text-sm flex items-center justify-center transition-colors hover:bg-white/5"
+        style={{ borderColor: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.8)" }}
+      >
+        Ou l&apos;essayer 14 jours
+      </Link>
+      <p className="text-xs text-white/30 mt-2.5 text-center">
+        Carte demandée, rien prélevé avant la fin de l&apos;essai.
+      </p>
+
       <p className="text-xs text-white/35 mt-4 text-center">
         Paiement sécurisé par Stripe
       </p>
