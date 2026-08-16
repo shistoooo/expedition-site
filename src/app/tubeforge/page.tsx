@@ -227,12 +227,18 @@ export default function TubeForgePage() {
                 deux-là vivent sur des pages différentes.
                 Au passage : « montrées » est un passif sans acteur, et
                 « toutes » + « une par une » dit deux fois la même chose. */}
+            {/* ⛔ « chaque fonction t'enlève une manip » ne désignait RIEN.
+                Personne ne se représente « une manip », donc la phrase
+                n'apprenait rien et ne donnait aucune raison de cliquer.
+                On nomme maintenant des choses que le monteur connaît et sait
+                pénibles : sélectionner un passage, attendre ses
+                téléchargements, jongler entre Resolve et le Finder. */}
             <VideoExplicative
               video={VIDEO_COURTE}
               versionLongue={VIDEO_COMPLETE}
               eyebrow="En vidéo"
               titre="Trois minutes pour voir si ça te sert"
-              versionLongueAccroche="Il en fait bien plus, et chaque fonction t'enlève une manip."
+              versionLongueAccroche="Découpe à la seconde, file d'attente, plugin DaVinci."
             />
           </div>
         </section>
