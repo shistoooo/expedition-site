@@ -290,6 +290,30 @@ export default function AccountPage() {
         joursRestants: number; annulable: boolean;
     } | null>(null);
     const [essaiAnnulation, setEssaiAnnulation] = useState(false);
+
+    /**
+     * ⛔ LE JETON PASSE EN ARGUMENT, PAS PAR L'ÉTAT.
+     *
+     * Premier jet : cet appel lisait la variable d'état `accessToken`, quinze
+     * lignes après un `setAccessToken(...)`. React ne met pas l'état à jour dans
+     * la closure en cours : la requête partait en `Bearer null`, le worker
+     * rendait 401, `setEssai` n'était jamais appelé — donc ni la date, ni le
+     * montant, ni le bouton d'arrêt n'existaient dans le DOM. Le seul moyen
+     * d'échapper au prélèvement était invisible.
+     *
+     * Et il faut l'appeler à CHAQUE entrée du tableau de bord : connexion par
+     * mot de passe, restauration de session, retour Discord, inscription. La
+     * restauration par cookie est le chemin normal les jours suivants, et c'est
+     * celui des liens envoyés dans les courriels d'avis.
+     */
+    const chargerEssai = useCallback(async (token: string) => {
+        try {
+            const r = await fetch(`${WORKER_URL}/license/essai`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (r.ok) setEssai((await r.json()).essai ?? null);
+        } catch { /* l'absence d'essai n'est pas une erreur */ }
+    }, []);
     const [ambassadorStatus, setAmbassadorStatus] = useState<AmbassadorInfo | null>(null);
     const [ambassadorLoading, setAmbassadorLoading] = useState(false);
     const [ambassadorError, setAmbassadorError] = useState<string | null>(null);
@@ -352,6 +376,7 @@ export default function AccountPage() {
                         const subData = await subRes.json();
                         if (subData.subscription) setSubscription(subData.subscription);
                     } catch { /* ignore */ }
+                        void chargerEssai(data.accessToken);   // restauration de session
                     setStep("dashboard");
                 }
             })
@@ -388,6 +413,7 @@ export default function AccountPage() {
                     const subData = await subRes.json();
                     if (subData.subscription) setSubscription(subData.subscription);
                 } catch { /* ignore */ }
+                    void chargerEssai(token);   // retour Discord
                 setStep("dashboard");
             })
             .catch(() => setError("Erreur de connexion Discord."))
@@ -487,6 +513,9 @@ export default function AccountPage() {
                 if (loginData.subscription) setSubscription(loginData.subscription);
             }
 
+            // `token` peut être null si la connexion qui suit l'inscription a échoué :
+            // sans jeton il n'y a rien à charger, et forcer l'appel enverrait « Bearer null ».
+            if (token) void chargerEssai(token);   // inscription
             setStep("dashboard");
             setSuccessMessage("Compte créé avec succès !");
             if (token) checkDiscordStatus(token);
@@ -590,15 +619,6 @@ export default function AccountPage() {
                 setSubscription(subData.subscription);
             }
 
-            // Essai avec carte : sa date de prélèvement et son bouton d'arrêt.
-            (async () => {
-                try {
-                    const r = await fetch(`${WORKER_URL}/license/essai`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-                    if (r.ok) setEssai((await r.json()).essai ?? null);
-                } catch { /* l'absence d'essai n'est pas une erreur */ }
-            })();
 
             // Fetch ambassador status + Discord status (non-blocking)
             try {
@@ -616,6 +636,7 @@ export default function AccountPage() {
 
             checkDiscordStatus(data.accessToken);
 
+                void chargerEssai(data.accessToken);   // connexion par mot de passe
             setStep("dashboard");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "Une erreur est survenue";
