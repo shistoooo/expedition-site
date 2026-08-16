@@ -10,6 +10,7 @@ import VideoDownloadComparison from "@/components/tubeforge/VideoDownloadCompari
 import TubeForgePricingSection from "@/components/tubeforge/TubeForgePricingSection";
 import FeaturesList from "@/components/tubeforge/FeaturesList";
 import VideoExplicative from "@/components/tubeforge/VideoExplicative";
+import { VIDEO_COURTE, VIDEO_COMPLETE } from "@/lib/videoDemo";
 import CompatBadge from "@/components/shared/CompatBadge";
 import TubeForgeCreatorsMarquee from "@/components/tubeforge/TubeForgeCreatorsMarquee";
 
@@ -219,10 +220,19 @@ export default function TubeForgePage() {
           */}
         <section data-section="demo-complete" className="pb-16 md:pb-24 relative">
           <div className="container-main max-w-5xl">
+            {/* ⛔ WORDING — CE BLOC ET CELUI DE LA PAGE MERCI DISAIENT LA MÊME
+                PHRASE. « Toutes les fonctionnalités, montrées une par une »
+                apparaissait aux DEUX endroits, à un mot près. Le détecteur de
+                répétitions ne l'attrape pas : il lit une page à la fois, et ces
+                deux-là vivent sur des pages différentes.
+                Au passage : « montrées » est un passif sans acteur, et
+                « toutes » + « une par une » dit deux fois la même chose. */}
             <VideoExplicative
-              eyebrow="La démo"
-              titre="Regarde-le tourner avant de payer"
-              sousTitre="Toutes les fonctionnalités, montrées une par une, sur de vrais montages."
+              video={VIDEO_COURTE}
+              versionLongue={VIDEO_COMPLETE}
+              eyebrow="En vidéo"
+              titre="Trois minutes pour voir si ça te sert"
+              sousTitre="Le geste complet, du lien collé jusqu'à la découpe."
             />
           </div>
         </section>

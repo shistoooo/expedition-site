@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import VideoExplicative from "@/components/tubeforge/VideoExplicative";
+import { VIDEO_COMPLETE } from "@/lib/videoDemo";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
 const AMBER = "#ff6a1f";
@@ -259,9 +260,10 @@ function MerciContent() {
                   * que de le découvrir seul, six mois plus tard.
                   */}
                 <VideoExplicative
+                  video={VIDEO_COMPLETE}
                   className="mt-10"
                   titre="Pendant que ça télécharge"
-                  sousTitre="Toutes les fonctionnalités de TubeForge, montrées une par une."
+                  sousTitre="La présentation complète, fonction par fonction."
                 />
               </motion.div>
             )}

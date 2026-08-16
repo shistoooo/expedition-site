@@ -1,49 +1,60 @@
 "use client";
 
 /**
- * LA VIDÉO EXPLICATIVE — AFFICHE PUIS LECTURE AU CLIC, AVEC LE SON.
+ * UNE VIDÉO DE DÉMONSTRATION — AFFICHE, PUIS LECTURE AU CLIC, AVEC LE SON.
  *
  * ⛔ POURQUOI PAS DE DÉMARRAGE AUTOMATIQUE.
  * Ce n'est pas un choix de goût : Chrome, Safari et Firefox refusent tous de
  * démarrer une vidéo sonore sans geste de l'utilisateur. Un `autoplay` sans
  * `mute` ne produit pas une vidéo qui parle, il produit une vidéo FIGÉE — donc
- * un rectangle noir au milieu de la page. Les seules options réelles sont
+ * un rectangle noir au milieu de la page. Les deux seules options réelles sont
  * « démarre seule et muette » ou « démarre au clic, avec le son ».
  *
- * On prend la seconde : le clic est justement ce qui autorise le son. La
- * personne voit une image d'accroche, clique, et la vidéo part comme prévu.
+ * On prend la seconde : le clic est justement ce qui autorise le son.
  */
 
 import { useState } from "react";
 import { Play } from "lucide-react";
 import DemoPlayer from "@/components/DemoPlayer";
 import {
-  VIDEO_TUBEFORGE_ID,
-  VIDEO_TUBEFORGE_TITRE,
-  VIDEO_TUBEFORGE_DUREE,
-  videoDemoDisponible,
-  videoDemoAffiche,
-  videoDemoAfficheRepli,
+  type VideoDemo,
+  videoDisponible,
+  videoAffiches,
+  videoLien,
 } from "@/lib/videoDemo";
 
 const AMBRE = "#ff6a1f";
 
 type Props = {
+  video: VideoDemo;
   /** Petit intitulé au-dessus du cadre. Rien = pas d'intitulé. */
   eyebrow?: string;
   titre?: string;
   sousTitre?: string;
+  /** Renvoi vers une version plus longue, sous le cadre. */
+  versionLongue?: VideoDemo;
   className?: string;
 };
 
-export default function VideoExplicative({ eyebrow, titre, sousTitre, className = "" }: Props) {
+export default function VideoExplicative({
+  video,
+  eyebrow,
+  titre,
+  sousTitre,
+  versionLongue,
+  className = "",
+}: Props) {
   const [lance, setLance] = useState(false);
-  const [afficheKo, setAfficheKo] = useState(false);
+  /**
+   * Quelle affiche on tente. On descend d'un cran à chaque échec, et au-delà
+   * de la dernière on n'affiche plus d'image du tout : le cadre sombre et le
+   * bouton lecture suffisent, là où une image cassée fait « site en panne ».
+   */
+  const [rang, setRang] = useState(0);
 
-  // Tant que l'identifiant n'est pas renseigné, on ne rend RIEN : un lecteur
-  // vide ou un « Video unavailable » au milieu d'une page de vente ferait plus
-  // de mal que l'absence de section.
-  if (!videoDemoDisponible()) return null;
+  if (!videoDisponible(video)) return null;
+  const affiches = videoAffiches(video);
+  const affiche = rang < affiches.length ? affiches[rang] : null;
 
   return (
     <div className={className}>
@@ -59,44 +70,61 @@ export default function VideoExplicative({ eyebrow, titre, sousTitre, className 
         </div>
       )}
 
-      <div className="relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden border border-white/10 bg-black"
-           style={{ aspectRatio: "16 / 9" }}>
+      <div
+        className="relative w-full max-w-3xl mx-auto rounded-2xl overflow-hidden border border-white/10"
+        style={{ aspectRatio: "16 / 9", background: "#0a0a12" }}
+      >
         {lance ? (
           /* `vitesse={null}` : le lecteur impose 1,5× par défaut, ce qui convient
-             à une démo de trente secondes et rend une explication incompréhensible. */
-          <DemoPlayer
-            videoId={VIDEO_TUBEFORGE_ID}
-            title={VIDEO_TUBEFORGE_TITRE}
-            autoplay
-            avecSon
-            vitesse={null}
-          />
+             à une démo de trente secondes et rend une explication pénible à suivre. */
+          <DemoPlayer videoId={video.id} title={video.titre} autoplay avecSon vitesse={null} />
         ) : (
           <button
             onClick={() => setLance(true)}
-            aria-label={`Lire la vidéo : ${VIDEO_TUBEFORGE_TITRE}`}
+            aria-label={`Lire la vidéo : ${video.titre}`}
             className="group absolute inset-0 w-full h-full flex items-center justify-center"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={afficheKo ? videoDemoAfficheRepli() : videoDemoAffiche()}
-              onError={() => setAfficheKo(true)}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-70 transition-opacity group-hover:opacity-85"
+            {affiche && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={affiche}
+                onError={() => setRang((r) => r + 1)}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-70 transition-opacity group-hover:opacity-85"
+              />
+            )}
+            <span
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%)" }}
             />
-            <span className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent 60%)" }} />
-            <span className="relative z-10 flex items-center justify-center w-16 h-16 rounded-full transition-transform group-hover:scale-105"
-                  style={{ background: AMBRE }}>
+            <span
+              className="relative z-10 flex items-center justify-center w-16 h-16 rounded-full transition-transform group-hover:scale-105"
+              style={{ background: AMBRE }}
+            >
               <Play className="w-6 h-6 ml-0.5" fill="#0a0a0a" style={{ color: "#0a0a0a" }} />
             </span>
-            {VIDEO_TUBEFORGE_DUREE && (
+            {video.duree && (
               <span className="absolute bottom-4 right-4 z-10 px-2.5 py-1 rounded-md bg-black/70 text-xs font-mono text-white/80">
-                {VIDEO_TUBEFORGE_DUREE}
+                {video.duree}
               </span>
             )}
           </button>
         )}
       </div>
+
+      {versionLongue && videoDisponible(versionLongue) && (
+        <p className="text-center mt-5">
+          <a
+            href={videoLien(versionLongue)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold hover:underline"
+            style={{ color: AMBRE }}
+          >
+            Tout voir en détail ({versionLongue.duree}) →
+          </a>
+        </p>
+      )}
     </div>
   );
 }

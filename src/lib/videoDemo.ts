@@ -1,43 +1,63 @@
 /**
- * LA VIDÉO EXPLICATIVE DE TUBEFORGE — UNE SEULE SOURCE.
+ * LES DEUX VIDÉOS DE DÉMONSTRATION — UNE SEULE SOURCE.
  *
- * Elle apparaît à deux endroits qui n'ont rien à voir : sur la page de vente
- * (avant le prix) et juste après l'achat (page de remerciement). Écrire son
- * identifiant deux fois, c'est la garantie qu'un jour l'un des deux pointera
- * vers une ancienne version — le même défaut que les trois prix écrits à la
- * main qui affichaient 149 € pendant que Stripe facturait 39,99 €.
+ * Elles apparaissent à des endroits qui n'ont rien à voir : page de vente
+ * (avant le prix) et page d'après-achat. Écrire un identifiant deux fois, c'est
+ * la garantie qu'un jour l'un des deux pointera vers une ancienne version — le
+ * même défaut que les trois prix écrits à la main qui affichaient 149 € pendant
+ * que Stripe facturait 39,99 €.
  *
- * ⚠️ POURQUOI CETTE VIDÉO COMPTE PLUS QU'UNE DÉMO ORDINAIRE.
+ * ⚠️ POURQUOI CES VIDÉOS COMPTENT PLUS QU'UNE DÉMO ORDINAIRE.
  * L'essai de 14 jours a été fermé le 2026-08-08, le téléchargeur web gratuit
  * coupé le 09. Depuis, RIEN ne permet de voir TubeForge avant de payer 39,99 €.
- * Cette vidéo est le seul élément de preuve qui reste avant l'achat.
+ * C'est le seul élément de preuve qui reste avant l'achat.
  */
+
+export type VideoDemo = {
+  /** Identifiant YouTube : la partie après `?v=` ou après `youtu.be/`. */
+  id: string;
+  /** Titre accessible de l'iframe (lecteurs d'écran). */
+  titre: string;
+  /** Durée affichée sur l'affiche, pour que personne ne clique en aveugle. */
+  duree: string;
+};
 
 /**
- * Identifiant YouTube de la vidéo (la partie après `?v=`).
+ * La courte — celle qu'on met en avant AVANT l'achat.
  *
- * Vide = les blocs vidéo ne s'affichent nulle part. C'est volontaire : mieux
- * vaut aucune section qu'un lecteur noir ou un « Video unavailable » au milieu
- * d'une page de vente. Renseigner cette ligne suffit à tout allumer.
+ * 2 min 51 s, un extrait des fonctions. Devant quelqu'un qui hésite encore,
+ * trois minutes se regardent ; dix-neuf, non.
  */
-export const VIDEO_TUBEFORGE_ID = "Eeo6DdR62LE";
+export const VIDEO_COURTE: VideoDemo = {
+  id: "n6Vh7zgBnAE",
+  titre: "TubeForge en trois minutes",
+  duree: "3 min",
+};
 
-/** Durée annoncée à côté du bouton. Sert à ce que personne ne clique en aveugle. */
-export const VIDEO_TUBEFORGE_DUREE = "19 min";
-
-export const VIDEO_TUBEFORGE_TITRE =
-  "TubeForge — présentation complète";
+/** La complète — après l'achat, et en lien depuis la courte. */
+export const VIDEO_COMPLETE: VideoDemo = {
+  id: "Eeo6DdR62LE",
+  titre: "TubeForge — présentation complète",
+  duree: "19 min",
+};
 
 /** Vrai quand la vidéo est configurée et peut être affichée. */
-export const videoDemoDisponible = (): boolean => VIDEO_TUBEFORGE_ID.trim().length > 0;
+export const videoDisponible = (v: VideoDemo): boolean => v.id.trim().length > 0;
+
+/** Page YouTube, pour ouvrir la version longue dans un onglet. */
+export const videoLien = (v: VideoDemo): string => `https://youtu.be/${v.id}`;
 
 /**
- * L'image d'accroche servie par YouTube. `maxresdefault` n'existe pas pour
- * toutes les vidéos ; `hqdefault` existe toujours, on garde donc celle-là comme
- * repli plutôt que d'afficher un cadre vide.
+ * Les affiches, de la meilleure à la moins bonne.
+ *
+ * ⛔ AUCUNE N'EST GARANTIE. Mesuré le 2026-08-16 sur la vidéo courte, publiée
+ * le matin même : les CINQ formats rendaient 404, YouTube ne les avait pas
+ * encore générées. Un repli à deux niveaux ne suffisait donc pas — il faut
+ * pouvoir n'afficher AUCUNE image et rester présentable, sinon la page montre
+ * une icône d'image cassée à l'endroit précis où l'on demande 39,99 €.
  */
-export const videoDemoAffiche = (): string =>
-  `https://i.ytimg.com/vi/${VIDEO_TUBEFORGE_ID}/maxresdefault.jpg`;
-
-export const videoDemoAfficheRepli = (): string =>
-  `https://i.ytimg.com/vi/${VIDEO_TUBEFORGE_ID}/hqdefault.jpg`;
+export const videoAffiches = (v: VideoDemo): string[] => [
+  `https://i.ytimg.com/vi/${v.id}/maxresdefault.jpg`,
+  `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+  `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`,
+];

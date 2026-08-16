@@ -84,6 +84,16 @@ function repetitions(lignes) {
 
 const pages = process.argv.slice(2).length ? process.argv.slice(2) : PAGES_PAR_DEFAUT;
 let total = 0;
+/**
+ * Ce que chaque page dit, pour comparer les pages ENTRE ELLES.
+ *
+ * ⛔ LA FAILLE QUI A LAISSÉ PASSER UNE RÉPÉTITION. Le 2026-08-16, la page de
+ * vente et la page d'après-achat portaient la même phrase à un mot près
+ * (« Toutes les fonctionnalités, montrées une par une »). Ce script était vert :
+ * il lisait une page à la fois, et aucune des deux ne se répétait elle-même.
+ * Un détecteur qui ne regarde jamais deux pages ensemble ne peut pas voir ça.
+ */
+const parPage = new Map();
 
 for (const url of pages) {
   let html;
@@ -96,12 +106,38 @@ for (const url of pages) {
     continue;
   }
 
-  const trouves = repetitions(texteVisible(html));
+  const lignes = texteVisible(html);
+  parPage.set(new URL(url).pathname || '/', lignes);
+  const trouves = repetitions(lignes);
   total += trouves.length;
   const chemin = new URL(url).pathname || '/';
   if (!trouves.length) { console.log(`\n✅ ${chemin} — aucune répétition`); continue; }
   console.log(`\n⛔ ${chemin} — ${trouves.length} suite(s) répétée(s)`);
   for (const [suite, c] of trouves.slice(0, 15)) console.log(`   ×${c}  « ${suite} »`);
+}
+
+/* ── Les mêmes phrases d'une page à l'autre ─────────────────────────────── */
+const phrases = new Map();       // phrase normalisée → pages où elle apparaît
+for (const [chemin, lignes] of parPage) {
+  for (const l of new Set(lignes)) {
+    // Une phrase courte se répète légitimement (« Mon compte », un prix, un CTA).
+    // Au-delà de six mots, deux pages qui disent pareil plaident deux fois.
+    if (l.split(/\s+/).length < 7) continue;
+    const cle = l.toLowerCase().replace(/[^\p{L}\p{N} ]/gu, '').replace(/\s+/g, ' ').trim();
+    if (!phrases.has(cle)) phrases.set(cle, { texte: l, pages: new Set() });
+    phrases.get(cle).pages.add(chemin);
+  }
+}
+const croisees = [...phrases.values()].filter((p) => p.pages.size > 1);
+if (croisees.length) {
+  console.log(`\n⛔ ${croisees.length} phrase(s) partagée(s) entre plusieurs pages`);
+  for (const { texte, pages } of croisees.slice(0, 10)) {
+    console.log(`   « ${texte.slice(0, 88)} »`);
+    console.log(`     → ${[...pages].join('  ')}`);
+  }
+  total += croisees.length;
+} else if (parPage.size > 1) {
+  console.log('\n✅ aucune phrase partagée entre les pages');
 }
 
 console.log(
