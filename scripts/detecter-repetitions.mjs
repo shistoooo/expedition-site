@@ -20,11 +20,34 @@
  * Sort en code 1 s'il trouve quelque chose, pour servir de garde-fou en CI.
  */
 
+/**
+ * ⚠️ TROIS ADRESSES NE FONT PAS TROIS PAGES.
+ *
+ * Cette liste contenait `/`, `/tubeforge` et `/tubeforge/telecharger`. Or `/`
+ * est une RÉÉCRITURE vers `/tubeforge`, et `/telecharger` REDIRIGE dessus
+ * depuis la coupure du téléchargeur (09/08). Les trois servaient donc le même
+ * HTML, et la comparaison entre pages a signalé seize phrases « partagées » :
+ * la page se comparait à elle-même, trois fois.
+ *
+ * La liste est corrigée, et le script déduplique en plus par contenu — parce
+ * qu'une future réécriture reproduira le problème sans prévenir.
+ */
 const PAGES_PAR_DEFAUT = [
-  'https://expeditionlauncher.store/',
   'https://expeditionlauncher.store/tubeforge',
-  'https://expeditionlauncher.store/tubeforge/telecharger',
+  'https://expeditionlauncher.store/affiliation',
+  // Le tunnel d'achat : son texte compte autant que celui de la page de vente,
+  // et une troisième page permet à la règle « présent partout = décor » de
+  // distinguer le pied de page d'une vraie répétition d'argument.
+  'https://expeditionlauncher.store/tubeforge/checkout?plan=lifetime',
 ];
+/**
+ * ⚠️ NE PAS Y METTRE /cgv NI /affiliation/conditions.
+ *
+ * Un texte juridique cite le code de la consommation, donc il répète des
+ * formules entières : 49 « répétitions » au premier passage, toutes légitimes.
+ * Noyer les vrais défauts sous du bruit garanti, c'est la façon la plus sûre
+ * de faire cesser de lire un outil. On peut toujours les passer à la main.
+ */
 
 /** Mots trop courants pour qu'une suite qui en est faite signifie quoi que ce soit. */
 const VIDES = new Set(
@@ -37,7 +60,13 @@ const N_MIN = 4;
 const N_MAX = 6;
 
 function texteVisible(html) {
-  const sansCode = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, ' ');
+  // `<title>` et `<noscript>` ne sont pas du texte de page : le titre remonte
+  // sur chaque URL d'une même section et se faisait signaler comme « phrase
+  // partagée », alors que c'est une métadonnée, pas un argument de vente.
+  const sansCode = html.replace(
+    /<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<title[\s\S]*?<\/title>|<noscript[\s\S]*?<\/noscript>/g,
+    ' ',
+  );
   return sansCode
     .replace(/<[^>]+>/g, '\n')
     .replace(/&#x27;|&apos;/g, "'")
@@ -107,7 +136,16 @@ for (const url of pages) {
   }
 
   const lignes = texteVisible(html);
-  parPage.set(new URL(url).pathname || '/', lignes);
+  const chemin0 = new URL(url).pathname || '/';
+  // Deux adresses qui rendent le MÊME texte sont une seule page : on garde la
+  // première et on ignore les suivantes, sinon chaque phrase paraît partagée.
+  const empreinte = lignes.join('\u0000');
+  const jumelle = [...parPage.entries()].find(([, l]) => l.join('\u0000') === empreinte);
+  if (jumelle) {
+    console.log(`\n··· ${chemin0} sert le même contenu que ${jumelle[0]} — ignorée`);
+    continue;
+  }
+  parPage.set(chemin0, lignes);
   const trouves = repetitions(lignes);
   total += trouves.length;
   const chemin = new URL(url).pathname || '/';
@@ -128,7 +166,18 @@ for (const [chemin, lignes] of parPage) {
     phrases.get(cle).pages.add(chemin);
   }
 }
-const croisees = [...phrases.values()].filter((p) => p.pages.size > 1);
+/**
+ * Une phrase présente sur TOUTES les pages est du décor : entête, pied de page,
+ * bandeau de consentement. La signaler à chaque passage apprend à ignorer
+ * l'outil. On ne garde que ce qui apparaît sur PLUSIEURS pages sans être
+ * partout — c'est là que deux surfaces plaident la même chose par accident.
+ *
+ * La règle ne s'applique qu'à partir de trois pages : avec deux, « partout »
+ * et « sur les deux » sont la même chose, et on ne détecterait plus rien.
+ */
+const croisees = [...phrases.values()].filter(
+  (p) => p.pages.size > 1 && (parPage.size < 3 || p.pages.size < parPage.size),
+);
 if (croisees.length) {
   console.log(`\n⛔ ${croisees.length} phrase(s) partagée(s) entre plusieurs pages`);
   for (const { texte, pages } of croisees.slice(0, 10)) {

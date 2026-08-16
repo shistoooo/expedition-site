@@ -324,8 +324,12 @@ function OneTimeCheckoutContent() {
                   {isLifetime ? "Accès à vie" : isSub ? (months === 1 ? "Abonnement mensuel" : `Abonnement — ${months} mois`) : `Recharge — ${months} mois`}
                 </p>
                 <p className="text-sm text-white/50">
+                  {/* Le récapitulatif juste au-dessus dit déjà « accès illimité
+                      tant que TubeForge existe » : le redire ici trois lignes
+                      plus bas ne rassure pas davantage, ça donne l'impression
+                      d'un texte qui tourne en rond. On dit autre chose. */}
                   {isLifetime
-                    ? "Un seul paiement, accès illimité tant que le logiciel existe."
+                    ? "Mac et Windows, sur deux ordinateurs à la fois."
                     : isSub
                       ? "14 jours gratuits, annulable à tout moment."
                       : `${months * 30} jours d'accès illimité, sans renouvellement auto.`}
