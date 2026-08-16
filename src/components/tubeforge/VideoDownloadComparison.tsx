@@ -133,6 +133,35 @@ function VideoPanel({
     if (el && el.readyState >= 3) markReady();
   }, []);
 
+  /**
+   * ⛔ SUR IPHONE, `canplay` NE SE DÉCLENCHAIT JAMAIS — LES DEUX VIDÉOS
+   *    RESTAIENT NOIRES À 0:00, INDÉFINIMENT.
+   *
+   * Safari iOS ne précharge pas les données d'une vidéo, même muette et en
+   * ligne : il s'arrête aux métadonnées et attend qu'on demande la lecture.
+   * `readyState` plafonnait donc à 1, `canplay` (qui exige 3) ne partait pas,
+   * et comme la course n'ouvre la porte qu'une fois LES DEUX prêtes, aucune ne
+   * démarrait. Deux rectangles noirs et deux chronos figés.
+   *
+   * Trois filets, chacun pour un mode de panne distinct :
+   *  1. `loadedmetadata` compte aussi comme « prête » — c'est l'évènement
+   *     qu'iOS émet fidèlement, et il suffit : la lecture fait le reste ;
+   *  2. on APPELLE `play()` dès que la source est posée, parce que sur iOS
+   *     c'est précisément la demande de lecture qui lance le téléchargement ;
+   *  3. un délai de sécurité ouvre la porte quoi qu'il arrive — mieux vaut une
+   *     course un peu désynchronisée que deux écrans noirs.
+   */
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !load) return;
+    // (2) Muette et en ligne, donc autorisée sans geste de l'utilisateur. On
+    //     remet en pause aussitôt si le départ n'est pas encore donné.
+    void el.play().then(() => { if (!shouldPlay) el.pause(); }).catch(() => {});
+    // (3) Le filet. 4 s : au-delà, plus personne ne regarde.
+    const t = setTimeout(markReady, 4000);
+    return () => clearTimeout(t);
+  }, [load]);
+
   // Ne démarre QUE quand le parent donne le feu vert (shouldPlay), une fois
   // que les DEUX vidéos ont chargé — évite qu'une vidéo plus légère parte
   // avant l'autre. Pas de tableau de dépendances : se réaffirme à CHAQUE
@@ -163,8 +192,10 @@ function VideoPanel({
         src={load ? src : undefined}
         muted
         playsInline
-        preload={load ? "auto" : "none"}
+        preload={load ? "metadata" : "none"}
         onCanPlay={markReady}
+        onLoadedMetadata={markReady}
+        onLoadedData={markReady}
         onEnded={onEnded}
         onTimeUpdate={(e) => onTimeUpdate(e.currentTarget.currentTime)}
         style={{ aspectRatio: `${width} / ${height}` }}
