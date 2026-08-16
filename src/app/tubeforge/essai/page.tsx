@@ -183,8 +183,12 @@ function Contenu() {
         <h1 className="text-3xl md:text-4xl font-black tracking-[-0.03em] mb-3">
           14 jours, tout compris
         </h1>
+        {/* La carte de prix dit déjà « Toutes les fonctions, sans limite de
+            téléchargements » : le détecteur a signalé la phrase partagée entre
+            les deux pages. Ici on répond à une autre question — non pas « qu'est-ce
+            que j'achète » mais « qu'est-ce qui est bridé pendant l'essai ». */}
         <p className="text-white/55 leading-relaxed">
-          Toutes les fonctions, sans limite de téléchargements.
+          Rien n&apos;est bridé : c&apos;est TubeForge entier, pendant quatorze jours.
         </p>
       </div>
 
