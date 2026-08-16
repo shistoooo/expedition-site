@@ -694,7 +694,7 @@ export default function AdminPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden relative">
+        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-clip relative">
             {/* Pas de PageBackground ici : panneau de données = fond uni, zéro décor */}
             <Navbar />
 

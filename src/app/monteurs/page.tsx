@@ -19,7 +19,7 @@ import MonteursStickyMobileCTA from "@/components/monteurs/MonteursStickyMobileC
 
 export default function MonteursPage() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative text-white">
       <PageBackground />
       <Navbar />
 

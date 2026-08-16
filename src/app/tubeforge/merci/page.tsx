@@ -183,7 +183,7 @@ function MerciContent() {
   ) : null;
 
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative text-white">
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2]" aria-hidden="true">
         <div className="absolute inset-0 bg-black/20" />
       </div>

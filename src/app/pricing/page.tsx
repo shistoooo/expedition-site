@@ -192,7 +192,7 @@ function PricingCard({ plan, index }: { plan: typeof plans[number]; index: numbe
 
 export default function PricingPage() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative bg-[#06051a] text-white">
       <PageBackground />
       {/* Dim stars behind pricing content */}
       <div className="fixed inset-0 bg-[#06051a]/60 pointer-events-none z-[3]" />

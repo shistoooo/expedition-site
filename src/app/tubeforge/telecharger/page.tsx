@@ -887,15 +887,15 @@ export default function TelechargerPage() {
         : null;
 
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative text-white">
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2]" aria-hidden="true">
         <div className="absolute inset-0" style={{ background: "#07060f" }} />
         <div
-          className="absolute -top-48 left-1/2 -translate-x-1/2 w-[1100px] h-[700px] rounded-full blur-[170px]"
+          className="absolute -top-48 left-1/2 -translate-x-1/2 w-[1100px] h-[700px] rounded-full md:blur-[170px]"
           style={{ background: "radial-gradient(ellipse at center, rgba(255,106,31,0.12), rgba(239,68,68,0.05) 42%, transparent 72%)" }}
         />
         <div
-          className="absolute top-[55%] right-[-14%] w-[520px] h-[520px] rounded-full blur-[180px]"
+          className="absolute top-[55%] right-[-14%] w-[520px] h-[520px] rounded-full md:blur-[180px]"
           style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.06), transparent 68%)" }}
         />
       </div>

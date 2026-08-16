@@ -299,7 +299,7 @@ function OneTimeCheckoutContent() {
       : "Zéro engagement, zéro prélèvement automatique. Tu recharges quand tu veux.";
 
   return (
-    <div className="w-full min-h-screen flex flex-col overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen flex flex-col overflow-x-clip relative text-white">
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2]" aria-hidden="true">
         <div className="absolute inset-0" style={{ background: "#07060f" }} />
       </div>

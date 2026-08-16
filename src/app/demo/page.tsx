@@ -11,7 +11,7 @@ const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export default function DemoPage() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative text-white">
       <PageBackground />
       <Navbar />
 

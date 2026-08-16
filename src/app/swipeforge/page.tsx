@@ -57,7 +57,7 @@ const FEATURES = [
 
 export default function SwipeForgePage() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative text-white">
       {/* Fond ambre — scopé à cette page (ne touche pas PageBackground global) */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[2]" aria-hidden="true">
         <div
@@ -69,7 +69,7 @@ export default function SwipeForgePage() {
           }}
         />
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full blur-[150px]"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full md:blur-[150px]"
           style={{ background: "rgba(255,182,39,0.09)" }}
         />
         {/* Les vraies étoiles animées viennent de GlobalSpace (densité réduite pour /swipeforge) */}

@@ -759,7 +759,7 @@ const STARTING_CAPITAL = [
 
 export default function EconomiePage() {
   return (
-    <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-hidden relative">
+    <div className="w-full min-h-screen bg-[#06051a] text-white overflow-x-clip relative">
       <PageBackground />
       <Navbar />
 
@@ -778,7 +778,7 @@ export default function EconomiePage() {
         />
         {/* Secondary glow — lower, shifts purple emphasis */}
         <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full md:blur-[160px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse, rgba(139,92,246,0.08) 0%, transparent 65%)" }}
           aria-hidden="true"
         />
@@ -1033,7 +1033,7 @@ export default function EconomiePage() {
       <section className="py-28 md:py-36 relative" aria-labelledby="wallet-heading">
         {/* Purple nebula glow for wallet/éclats */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full blur-[180px] pointer-events-none"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full md:blur-[180px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse, rgba(139,92,246,0.08) 0%, transparent 65%)" }}
           aria-hidden="true"
         />
@@ -1088,8 +1088,8 @@ export default function EconomiePage() {
           aria-hidden="true"
         />
         {/* Side bleeding glows */}
-        <div className="absolute top-1/2 left-0 w-64 h-96 blur-[120px] pointer-events-none" style={{ background: "rgba(139,92,246,0.08)", transform: "translateY(-50%)" }} aria-hidden="true" />
-        <div className="absolute top-1/2 right-0 w-64 h-96 blur-[120px] pointer-events-none" style={{ background: "rgba(139,92,246,0.08)", transform: "translateY(-50%)" }} aria-hidden="true" />
+        <div className="absolute top-1/2 left-0 w-64 h-96 md:blur-[120px] pointer-events-none" style={{ background: "rgba(139,92,246,0.08)", transform: "translateY(-50%)" }} aria-hidden="true" />
+        <div className="absolute top-1/2 right-0 w-64 h-96 md:blur-[120px] pointer-events-none" style={{ background: "rgba(139,92,246,0.08)", transform: "translateY(-50%)" }} aria-hidden="true" />
 
         <div className="container-main relative z-10">
           <motion.div
@@ -1139,7 +1139,7 @@ export default function EconomiePage() {
       <section className="py-28 md:py-36 relative" aria-labelledby="cosmetiques-heading">
         {/* Amber nebula for gold-purchased cosmetics */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full md:blur-[160px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse, rgba(245,158,11,0.07) 0%, transparent 65%)" }}
           aria-hidden="true"
         />
@@ -1417,7 +1417,7 @@ export default function EconomiePage() {
       <section className="py-28 md:py-36 relative" aria-labelledby="tarifs-heading">
         {/* Cyan nebula — technical/pricing feel */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full md:blur-[160px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse, rgba(34,211,238,0.06) 0%, transparent 60%)" }}
           aria-hidden="true"
         />
@@ -1538,7 +1538,7 @@ export default function EconomiePage() {
       <section className="py-28 md:py-36 relative" aria-labelledby="mining-heading">
         {/* Orange nebula for mining/bronze section */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[160px] pointer-events-none"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full md:blur-[160px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse, rgba(249,115,22,0.08) 0%, rgba(245,158,11,0.04) 45%, transparent 65%)" }}
           aria-hidden="true"
         />

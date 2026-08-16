@@ -24,9 +24,21 @@
 }
 
 
+/*
+ * ⛔ `overflow-x: hidden` SUR `html` CASSE LE DÉFILEMENT SUR MOBILE.
+ *
+ * Signalé par un utilisateur sur Android : « c'est crop et pas scrollable ».
+ * Cette déclaration transforme l'élément racine en conteneur de défilement, et
+ * les navigateurs mobiles gèrent mal le cas — le défilement par inertie se
+ * retrouve piégé entre deux conteneurs et devient poussif, voire inopérant.
+ *
+ * `clip` coupe le débordement SANS créer de conteneur de défilement. C'est
+ * exactement ce qu'on veut : empêcher la barre horizontale, pas confisquer la
+ * verticale. (Chrome 90+, Firefox 81+, Safari 16+.)
+ */
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -35,7 +47,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
+  /* Même raison que sur `html` : deux conteneurs de défilement imbriqués sont
+     précisément la configuration qui piège le doigt sur mobile. */
+  overflow-x: clip;
 }
 
 /* Display font for headings — Playfair Display serif */
@@ -260,7 +274,11 @@ h2 {
 /* Remove max-width on section to avoid scrollbar shift issues */
 section {
   width: 100%;
-  overflow-x: hidden;
+  /* `clip` et non `hidden` : avec `hidden`, CHAQUE section devenait un
+     conteneur de défilement. Sur une page qui en compte une dizaine, le doigt
+     pouvait rester capturé par la section sous lui au lieu de faire défiler la
+     page. */
+  overflow-x: clip;
 }
 
 /* Section transition class — kept for markup compatibility, no visible line */

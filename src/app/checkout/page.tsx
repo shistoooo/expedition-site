@@ -496,7 +496,7 @@ function CheckoutContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden">
+        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-clip">
             <PageBackground />
 
             <Navbar />
@@ -946,7 +946,7 @@ function WaitlistContent() {
     };
 
     return (
-        <div className="w-full min-h-screen overflow-x-hidden relative bg-[#06051a] text-white">
+        <div className="w-full min-h-screen overflow-x-clip relative bg-[#06051a] text-white">
             <PageBackground />
             <Navbar />
             <main className="pt-36 pb-32 container-main relative z-10 flex items-center justify-center min-h-[70vh]">

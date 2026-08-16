@@ -913,7 +913,7 @@ export default function AccountPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-hidden relative">
+        <div className="min-h-screen bg-[#06051a] text-white selection:bg-purple-500/30 overflow-x-clip relative">
             <PageBackground />
 
             <Navbar />

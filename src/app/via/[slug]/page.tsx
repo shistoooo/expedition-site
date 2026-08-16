@@ -60,7 +60,7 @@ export default function PartnerLandingPage() {
   // tapé un mauvais lien).
   if (!partner) {
     return (
-      <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+      <div className="w-full min-h-screen overflow-x-clip relative text-white">
         <PageBackground />
         <Navbar />
         <main className="w-full relative z-10 pt-40 pb-32 container-main flex flex-col items-center text-center">
@@ -86,7 +86,7 @@ export default function PartnerLandingPage() {
   }
 
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative text-white">
       <PageBackground />
       <Navbar />
 

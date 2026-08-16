@@ -63,7 +63,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 export default function TubeForgePage() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden relative text-white">
+    <div className="w-full min-h-screen overflow-x-clip relative text-white">
       {/* Fond scopé TubeForge — charbon OPAQUE (couvre les étoiles globales de
           GlobalSpace) + lueurs ember + grille technique subtile (vibe éditeur de
           montage). Cohérent avec la DA ember, ne touche pas le reste du site. */}
@@ -72,12 +72,12 @@ export default function TubeForgePage() {
         <div className="absolute inset-0" style={{ background: "#07060f" }} />
         {/* lueur ember haute */}
         <div
-          className="absolute -top-48 left-1/2 -translate-x-1/2 w-[1200px] h-[760px] rounded-full blur-[170px]"
+          className="absolute -top-48 left-1/2 -translate-x-1/2 w-[1200px] h-[760px] rounded-full md:blur-[170px]"
           style={{ background: "radial-gradient(ellipse at center, rgba(255,106,31,0.12), rgba(239,68,68,0.05) 42%, transparent 72%)" }}
         />
         {/* lueur ember basse à droite */}
         <div
-          className="absolute bottom-[-25%] right-[-12%] w-[760px] h-[560px] rounded-full blur-[170px]"
+          className="absolute bottom-[-25%] right-[-12%] w-[760px] h-[560px] rounded-full md:blur-[170px]"
           style={{ background: "radial-gradient(ellipse at center, rgba(239,68,68,0.07), transparent 72%)" }}
         />
         {/* Touches VIOLET (couleur du wordmark) : en FLANCS, jamais au centre.
@@ -90,15 +90,15 @@ export default function TubeForgePage() {
             concurrence avec l'ember et on ne sait plus quelle est la couleur
             du produit. */}
         <div
-          className="absolute top-[-6%] right-[-10%] w-[520px] h-[520px] rounded-full blur-[190px]"
+          className="absolute top-[-6%] right-[-10%] w-[520px] h-[520px] rounded-full md:blur-[190px]"
           style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.085), transparent 70%)" }}
         />
         <div
-          className="absolute top-[38%] left-[-18%] w-[620px] h-[620px] rounded-full blur-[180px]"
+          className="absolute top-[38%] left-[-18%] w-[620px] h-[620px] rounded-full md:blur-[180px]"
           style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.115), transparent 68%)" }}
         />
         <div
-          className="absolute top-[68%] right-[-14%] w-[520px] h-[520px] rounded-full blur-[180px]"
+          className="absolute top-[68%] right-[-14%] w-[520px] h-[520px] rounded-full md:blur-[180px]"
           style={{ background: "radial-gradient(circle at center, rgba(139,61,255,0.09), transparent 68%)" }}
         />
       </div>

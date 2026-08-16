@@ -68,8 +68,8 @@ export default function MoneySection() {
   return (
     <section className="py-24 md:py-32 relative overflow-hidden bg-gradient-to-b from-[#0a0a0a] to-[#111]">
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-yellow-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-yellow-500/5 rounded-full md:blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full md:blur-[120px] pointer-events-none" />
 
       <div className="container-main relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
