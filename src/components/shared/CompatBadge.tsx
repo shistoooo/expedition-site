@@ -14,13 +14,31 @@ export default function CompatBadge({ delay = 0 }: CompatBadgeProps) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: easeOutExpo }}
-      className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-sm"
+      /**
+       * ⛔ IL DÉBORDAIT SUR MOBILE, ET RIEN NE PERMETTAIT DE LE LIRE.
+       *
+       * `inline-flex` sans retour à la ligne tenait tout sur une seule ligne :
+       * « DaVinci Resolve » sortait de l'écran, coupé net, et la pastille
+       * n'étant pas défilable, l'information était simplement perdue.
+       *
+       * `flex-wrap` la fait passer à la ligne au lieu de déborder, et
+       * `rounded-3xl` remplace `rounded-full` : un rayon « pilule » sur deux
+       * lignes produit des extrémités difformes.
+       *
+       * On garde les noms en toutes lettres. Les réduire à leurs icônes ferait
+       * tenir la ligne, mais « avec quoi ça marche » est exactement ce qu'on
+       * vient lire ici — le résoudre en demandant de reconnaître deux logos
+       * déplace le problème au lieu de le régler.
+       */
+      className="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2 max-w-full px-4 py-2.5 rounded-3xl bg-white/[0.04] border border-white/10 backdrop-blur-sm"
     >
       <span className="text-[10px] font-mono uppercase tracking-widest text-white/45">
         Compatible
       </span>
 
-      <span className="h-4 w-px bg-white/15" aria-hidden="true" />
+      {/* Masqué sous 640 px : une barre verticale entre deux lignes
+          empilées ne sépare plus rien, elle flotte. */}
+      <span className="hidden sm:block h-4 w-px bg-white/15" aria-hidden="true" />
 
       {/* Premiere Pro — carré violet sombre, "Pr" rose-violet (style Adobe) */}
       <span className="inline-flex items-center gap-1.5">
@@ -37,7 +55,7 @@ export default function CompatBadge({ delay = 0 }: CompatBadgeProps) {
         <span className="text-xs md:text-sm font-semibold text-white/85">Premiere&nbsp;Pro</span>
       </span>
 
-      <span className="text-white/25 text-xs">&middot;</span>
+      <span className="hidden sm:block text-white/25 text-xs">&middot;</span>
 
       {/* DaVinci Resolve — carré sombre + 3 gouttes (bleu, jaune-vert, rouge) en triangle */}
       <span className="inline-flex items-center gap-1.5">
