@@ -25,19 +25,35 @@ function MerciContent() {
   const searchParams = useSearchParams();
   const kind = searchParams.get("kind");
   const isSub = kind === "sub";
+  /**
+   * L'essai avec carte a son propre chemin.
+   *
+   * Sans ce `kind`, il retombait sur `claim-subscription`, qui rend 410 depuis
+   * la fermeture des abonnements — donc un mur, APRÈS que la personne a
+   * enregistré sa carte. Et le libellé de repli aurait annoncé « ton achat »
+   * alors que rien n'a été débité.
+   */
+  const isEssai = kind === "essai";
   // Flow Payment Element : Stripe renvoie ?payment_intent=pi_... (redirection 3DS)
   // et on le passe aussi manuellement quand il n'y a pas de redirection.
   // Flow abonnement (SetupIntent) : ?setup_intent=seti_...
-  const sessionId = isSub ? searchParams.get("setup_intent") : searchParams.get("payment_intent");
+  const sessionId = (isSub || isEssai) ? searchParams.get("setup_intent") : searchParams.get("payment_intent");
   // Endpoint + clé de payload selon le flow — même contrat de réponse côté worker.
-  const claimEndpoint = isSub ? "claim-subscription" : "claim-payment";
+  const claimEndpoint = isEssai ? "claim-essai" : isSub ? "claim-subscription" : "claim-payment";
   const claimBody = (extra?: Record<string, string>) =>
-    JSON.stringify(isSub ? { setup_intent: sessionId, ...extra } : { payment_intent: sessionId, ...extra });
+    JSON.stringify(
+      isEssai ? { setupIntentId: sessionId, ...extra }
+      : isSub ? { setup_intent: sessionId, ...extra }
+      : { payment_intent: sessionId, ...extra },
+    );
   // Le repli disait « ta recharge » — une offre retirée du produit le
   // 02/08/2026. Seul un lien ancien peut encore atterrir ici, et lui nommer un
   // produit qui n'existe plus serait déroutant. « Ton achat » reste vrai dans
   // tous les cas, y compris ceux qu'on n'a pas prévus.
-  const kindLabel = kind === "lifetime" ? "ton accès à vie" : isSub ? "ton essai de 14 jours" : "ton achat";
+  const kindLabel = isEssai ? "ton essai de 14 jours"
+    : kind === "lifetime" ? "ton accès à vie"
+    : isSub ? "ton essai de 14 jours"
+    : "ton achat";
 
   const [phase, setPhase] = useState<Phase>("loading");
   const [error, setError] = useState<string | null>(null);

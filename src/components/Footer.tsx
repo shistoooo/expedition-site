@@ -58,14 +58,25 @@ export default function Footer() {
                 Mon compte
               </Link>
             </div>
-            <div className="mt-3 flex gap-6 justify-center md:justify-start text-xs text-white/40">
-              <Link href="/cgv" className="hover:text-white/60 transition-colors">
+            {/**
+                * ⛔ CONTRASTE MESURÉ À 3,75:1 SUR LE FOND TUBEFORGE (#07060f).
+                *
+                * `text-white/40` en `text-xs` passait sous le seuil WCAG AA
+                * (4,5:1) : les liens existaient, mais on ne les voyait pas —
+                * d'où « je n'ai pas les mentions légales en bas de page ».
+                *
+                * Ce ne sont pas des liens décoratifs : les mentions légales et
+                * les CGV sont obligatoires et doivent être ACCESSIBLES, pas
+                * seulement présentes. `white/55` mesure 6,26:1.
+                */}
+              <div className="mt-3 flex gap-6 justify-center md:justify-start text-sm text-white/55">
+              <Link href="/cgv" className="hover:text-white transition-colors">
                 CGV
               </Link>
-              <Link href="/confidentialite" className="hover:text-white/60 transition-colors">
+              <Link href="/confidentialite" className="hover:text-white transition-colors">
                 Confidentialit&eacute;
               </Link>
-              <Link href="/mentions-legales" className="hover:text-white/60 transition-colors">
+              <Link href="/mentions-legales" className="hover:text-white transition-colors">
                 Mentions l&eacute;gales
               </Link>
             </div>

@@ -277,6 +277,19 @@ export default function AccountPage() {
     const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    /**
+     * Essai avec carte en cours.
+     *
+     * ⛔ SANS CE BLOC, UN PRÉLÈVEMENT ANNONCÉ SERAIT IMPOSSIBLE À ARRÊTER.
+     * Le bouton d'annulation existant ne s'affiche que dans la branche
+     * « abonnement », et `/portal/subscribe` exige un abonnement Stripe qu'un
+     * essai-carte n'a pas. La seule annulation possible aurait été un e-mail.
+     */
+    const [essai, setEssai] = useState<{
+        statut: string; preleveAt: number; montantCents: number;
+        joursRestants: number; annulable: boolean;
+    } | null>(null);
+    const [essaiAnnulation, setEssaiAnnulation] = useState(false);
     const [ambassadorStatus, setAmbassadorStatus] = useState<AmbassadorInfo | null>(null);
     const [ambassadorLoading, setAmbassadorLoading] = useState(false);
     const [ambassadorError, setAmbassadorError] = useState<string | null>(null);
@@ -576,6 +589,16 @@ export default function AccountPage() {
             if (subData.subscription) {
                 setSubscription(subData.subscription);
             }
+
+            // Essai avec carte : sa date de prélèvement et son bouton d'arrêt.
+            (async () => {
+                try {
+                    const r = await fetch(`${WORKER_URL}/license/essai`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    });
+                    if (r.ok) setEssai((await r.json()).essai ?? null);
+                } catch { /* l'absence d'essai n'est pas une erreur */ }
+            })();
 
             // Fetch ambassador status + Discord status (non-blocking)
             try {
@@ -1406,6 +1429,57 @@ export default function AccountPage() {
                                 )}
 
 
+
+                                {essai && essai.statut === "actif" && (
+                                    <div className="p-6 rounded-2xl bg-[#0F0F12] border shadow-2xl mb-4"
+                                         style={{ borderColor: "rgba(255,106,31,0.25)", boxShadow: "0 20px 60px rgba(255,106,31,0.05)" }}>
+                                        <h2 className="text-lg font-bold mb-1">Essai en cours</h2>
+                                        <p className="text-white/50 text-sm mb-5">
+                                            Il te reste {essai.joursRestants} jour{essai.joursRestants > 1 ? "s" : ""}.
+                                        </p>
+
+                                        {/* La date et le montant, en clair. Les mêmes que dans les e-mails
+                                            et que ceux annoncés avant la carte : trois endroits, une seule
+                                            source, celle du serveur. */}
+                                        <div className="rounded-xl bg-white/5 border border-white/10 px-4 py-3 mb-5">
+                                            <p className="text-xs font-mono text-white/40 uppercase mb-1">Prélèvement prévu</p>
+                                            <p className="text-white font-semibold">
+                                                {(essai.montantCents / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2 })} €
+                                                {" · "}
+                                                {new Date(essai.preleveAt).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
+                                            </p>
+                                            <p className="text-white/35 text-xs mt-1">Un seul paiement. Aucun abonnement, rien à résilier ensuite.</p>
+                                        </div>
+
+                                        <button
+                                            onClick={async () => {
+                                                if (!accessToken || essaiAnnulation) return;
+                                                setEssaiAnnulation(true);
+                                                try {
+                                                    const r = await fetch(`${WORKER_URL}/license/essai/annuler`, {
+                                                        method: "POST",
+                                                        headers: { Authorization: `Bearer ${accessToken}` },
+                                                    });
+                                                    const d = await r.json();
+                                                    if (!r.ok) { setError(d.message || d.error || "Annulation impossible."); return; }
+                                                    setEssai(null);
+                                                    setSuccessMessage("Essai annulé. Rien ne sera prélevé.");
+                                                } catch {
+                                                    setError("Connexion impossible. Réessaie dans un instant.");
+                                                } finally {
+                                                    setEssaiAnnulation(false);
+                                                }
+                                            }}
+                                            disabled={essaiAnnulation}
+                                            className="w-full py-3 rounded-xl bg-white/5 text-white/80 font-semibold text-sm border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                                        >
+                                            {essaiAnnulation ? <Loader2 className="w-4 h-4 animate-spin" /> : "Arrêter l'essai"}
+                                        </button>
+                                        <p className="text-xs text-white/30 mt-3 text-center">
+                                            Tu gardes l&apos;accès jusqu&apos;à la fin de l&apos;essai, et rien ne sera débité.
+                                        </p>
+                                    </div>
+                                )}
 
                                 {/* Ambassador Section — masquée pour les non-admins.
                                     Décision business temporaire : tant que le programme

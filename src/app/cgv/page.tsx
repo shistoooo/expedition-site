@@ -14,7 +14,7 @@ export default function CGVPage() {
                 <h1 className="text-3xl font-bold mt-8 mb-8">Conditions G&eacute;n&eacute;rales de Vente</h1>
 
                 <div className="prose prose-invert prose-sm max-w-none space-y-6 text-white/70 leading-relaxed">
-                    <p><strong>Derni&egrave;re mise &agrave; jour :</strong> 24 juillet 2026</p>
+                    <p><strong>Derni&egrave;re mise &agrave; jour :</strong> 16 ao&ucirc;t 2026</p>
 
                     <h2 className="text-xl font-bold text-white mt-8">1. Objet</h2>
                     <p>
@@ -65,16 +65,28 @@ export default function CGVPage() {
 
                     <h2 className="text-xl font-bold text-white mt-8">3 bis. Formules TubeForge</h2>
                     <p>
-                        Pour le logiciel TubeForge, l&apos;&Eacute;diteur propose un abonnement par paliers d&apos;engagement,
-                        pr&eacute;c&eacute;d&eacute; d&apos;un essai gratuit, ainsi qu&apos;une formule &agrave; paiement unique :
+                        Pour le logiciel TubeForge, l&apos;&Eacute;diteur propose une formule unique : un achat
+                        d&eacute;finitif, pr&eacute;c&eacute;d&eacute; le cas &eacute;ch&eacute;ant d&apos;une p&eacute;riode d&apos;essai de 14 jours.
                     </p>
                     <ul className="list-disc pl-6 space-y-2">
                         <li>
-                            <strong>Essai gratuit de 14 jours :</strong> la souscription requiert l&apos;enregistrement d&apos;une
-                            carte bancaire valide, mais <strong>aucun montant n&apos;est pr&eacute;lev&eacute; pendant l&apos;essai</strong>.
-                            Le Client peut r&eacute;silier &agrave; tout moment durant ces 14 jours depuis &quot;Mon compte&quot; :
-                            aucun d&eacute;bit n&apos;est alors effectu&eacute;. &Agrave; d&eacute;faut de r&eacute;siliation, le plan choisi est
-                            factur&eacute; automatiquement &agrave; la fin de l&apos;essai.
+                            <strong>Essai de 14 jours avec paiement diff&eacute;r&eacute; :</strong> l&apos;ouverture de l&apos;essai
+                            requiert l&apos;enregistrement d&apos;une carte bancaire valide. <strong>Aucun montant n&apos;est
+                            pr&eacute;lev&eacute; pendant les 14 jours.</strong> Au terme de cette p&eacute;riode, un paiement
+                            <strong> unique de 39,99&nbsp;&euro;</strong> est pr&eacute;lev&eacute; et ouvre l&apos;acc&egrave;s d&eacute;fini &agrave;
+                            l&apos;article 3 ter. Ce pr&eacute;l&egrave;vement n&apos;ouvre <strong>aucun abonnement</strong> et ne
+                            donne lieu &agrave; <strong>aucun renouvellement</strong>.
+                            <br />
+                            Le montant et la date exacte du pr&eacute;l&egrave;vement sont port&eacute;s &agrave; la connaissance du
+                            Client <strong>avant l&apos;enregistrement de sa carte</strong>, puis rappel&eacute;s par courrier
+                            &eacute;lectronique &agrave; l&apos;ouverture de l&apos;essai, trois jours avant l&apos;&eacute;ch&eacute;ance et la veille
+                            de celle-ci. Le Client peut mettre fin &agrave; l&apos;essai &agrave; tout moment depuis
+                            &quot;Mon compte&quot; jusqu&apos;&agrave; la veille de l&apos;&eacute;ch&eacute;ance : aucun d&eacute;bit n&apos;est alors
+                            effectu&eacute;.
+                            <br />
+                            En cas de refus de la carte &agrave; l&apos;&eacute;ch&eacute;ance, aucun montant n&apos;est pr&eacute;lev&eacute; et
+                            l&apos;acc&egrave;s d&eacute;finitif n&apos;est pas ouvert ; le Client en est inform&eacute; et peut proc&eacute;der au
+                            paiement par ses propres moyens.
                         </li>
                         <li>
                             <strong>Formules par abonnement (mensuelle et annuelle) :</strong> ces formules ne sont plus
@@ -163,6 +175,16 @@ export default function CGVPage() {
                     <p>
                         En cons&eacute;quence, aucun remboursement pour simple changement d&apos;avis ne sera effectu&eacute; apr&egrave;s la validation du paiement.
                         La garantie l&eacute;gale de conformit&eacute; pr&eacute;vue aux articles L224-25-12 et suivants du Code de la consommation reste pleinement applicable (voir article 7 bis ci-dessous).
+                    </p>
+                    <p>
+                        <strong>Cas particulier de l&apos;essai de 14 jours (article 3 bis).</strong> Lorsque le Client
+                        ouvre un essai, le contrat est conclu &agrave; la date d&apos;ouverture de cet essai, et non &agrave; la
+                        date du pr&eacute;l&egrave;vement. Le d&eacute;lai de r&eacute;tractation de quatorze jours pr&eacute;vu &agrave;
+                        l&apos;article L221-18 court donc &agrave; compter de cette ouverture et co&iuml;ncide avec la dur&eacute;e
+                        de l&apos;essai. Mettre fin &agrave; l&apos;essai depuis &quot;Mon compte&quot; avant l&apos;&eacute;ch&eacute;ance vaut
+                        exercice de ce droit : aucun montant n&apos;ayant &eacute;t&eacute; pr&eacute;lev&eacute;, aucun remboursement
+                        n&apos;est n&eacute;cessaire. La renonciation d&eacute;crite ci-dessus ne prend effet qu&apos;&agrave; compter du
+                        pr&eacute;l&egrave;vement, l&apos;acc&egrave;s d&eacute;finitif d&eacute;butant &agrave; cette date.
                     </p>
 
                     <h2 className="text-xl font-bold text-white mt-8">5. R&eacute;siliation</h2>
