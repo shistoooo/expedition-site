@@ -32,6 +32,13 @@ interface AdminAmbassador {
     status: string;
     stripe_connect_status: string;
     created_at: string;
+    /** Personnes venues par son lien, qu'elles aient acheté ou non. */
+    filleuls: number;
+    /** Celles qui ont ACHETÉ. C'est le seul chiffre qui vaut de l'argent. */
+    ventes: number;
+    gainsVersesCents: number;
+    gainsAttenteCents: number;
+    derniereVente: string | null;
 }
 
 interface AmbassadorApplication {
@@ -1037,10 +1044,45 @@ export default function AdminPage() {
                                                     >
                                                         <div className="min-w-0 flex-1">
                                                             <p className="text-sm text-white/80 truncate">{amb.email}</p>
-                                                            <div className="flex items-center gap-2 mt-1">
+                                                            <div className="flex items-center gap-2 mt-1 flex-wrap">
                                                                 <span className="text-xs text-white/25 font-mono">{amb.referral_code}</span>
                                                                 {statusBadge(amb.status)}
+                                                                {/* Stripe Connect inactif = les commissions s'accumulent en
+                                                                    attente au lieu d'être versées. Le signaler ici évite de
+                                                                    découvrir six mois plus tard qu'on doit de l'argent. */}
+                                                                {amb.stripe_connect_status !== "active" && (amb.ventes ?? 0) > 0 && (
+                                                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase bg-amber-500/15 text-amber-300">
+                                                                        paiement non configuré
+                                                                    </span>
+                                                                )}
                                                                 <span className="text-xs text-white/20">{new Date(amb.created_at).toLocaleDateString("fr-FR")}</span>
+                                                            </div>
+
+                                                            {/* ⛔ CE BLOC N'EXISTAIT PAS : l'admin ne montrait que
+                                                                l'identité et le statut. La personne qui PAIE les
+                                                                commissions était la seule à ne pas voir qui vendait. */}
+                                                            <div className="flex items-center gap-4 mt-2.5 text-xs">
+                                                                <span className="text-white/45">
+                                                                    <span className="font-bold text-white">{amb.ventes ?? 0}</span> vente{(amb.ventes ?? 0) > 1 ? "s" : ""}
+                                                                </span>
+                                                                <span className="text-white/30">
+                                                                    {amb.filleuls ?? 0} filleul{(amb.filleuls ?? 0) > 1 ? "s" : ""}
+                                                                </span>
+                                                                {((amb.gainsVersesCents ?? 0) > 0) && (
+                                                                    <span className="text-emerald-300/80">
+                                                                        {((amb.gainsVersesCents ?? 0) / 100).toFixed(2).replace(".", ",")}&euro; versés
+                                                                    </span>
+                                                                )}
+                                                                {((amb.gainsAttenteCents ?? 0) > 0) && (
+                                                                    <span className="text-amber-300/80">
+                                                                        {((amb.gainsAttenteCents ?? 0) / 100).toFixed(2).replace(".", ",")}&euro; en attente
+                                                                    </span>
+                                                                )}
+                                                                {amb.derniereVente && (
+                                                                    <span className="text-white/20">
+                                                                        dernière : {new Date(amb.derniereVente).toLocaleDateString("fr-FR")}
+                                                                    </span>
+                                                                )}
                                                             </div>
                                                         </div>
                                                         {amb.status === "pending" && (

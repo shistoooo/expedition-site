@@ -27,6 +27,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { capturerParrainage, lireParrainage } from "@/lib/parrainage";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "https://api.clipapp.uk";
 const AMBRE = "#ff6a1f";
@@ -129,7 +130,27 @@ function Contenu() {
   const [erreur, setErreur] = useState<string | null>(null);
   const [dejaUtilise, setDejaUtilise] = useState(false);
 
-  const ref = (params.get("ref") || "").trim();
+  /**
+   * ⛔ LE CODE DE PARRAINAGE DOIT SURVIVRE AU CHEMIN, PAS SEULEMENT À L'URL.
+   *
+   * Première version : on ne lisait que `?ref=` sur CETTE page. Or le parcours
+   * réel est « lien de l'affilié vers /tubeforge » → on lit la page → on clique
+   * « Ou l'essayer 14 jours », un lien qui ne transporte aucun code. La
+   * commission disparaissait donc à ce clic précis, sans que personne ne s'en
+   * aperçoive : l'essai s'ouvrait normalement, et quatorze jours plus tard le
+   * prélèvement partait sans `ref_code`.
+   *
+   * `lireParrainage()` relit le code mémorisé à l'arrivée sur n'importe quelle
+   * page TubeForge (voir `CaptureParrainage`, monté dans le layout). C'est le
+   * mécanisme écrit exprès pour ce cas — je l'avais simplement contourné.
+   */
+  const refUrl = (params.get("ref") || "").trim();
+  const [ref, setRef] = useState(refUrl);
+  useEffect(() => {
+    if (refUrl) { capturerParrainage(); return; }
+    const garde = lireParrainage();
+    if (garde) setRef(garde);
+  }, [refUrl]);
 
   const ouvrir = async () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
