@@ -1565,13 +1565,37 @@ export default function AccountPage() {
                                             </h2>
 
                                             {/* Stats Grid */}
-                                            <div className="grid grid-cols-3 gap-3 mb-4">
+                                            <div className="grid grid-cols-2 gap-3 mb-4">
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                                                         <Users className="w-3.5 h-3.5" />
-                                                        Total filleuls
+                                                        Filleuls
                                                     </div>
                                                     <div className="text-2xl font-bold">{ambassadorStatus.stats.totalReferrals}</div>
+                                                    <p className="text-[10px] text-white/25 mt-1">venus par ton lien</p>
+                                                </div>
+
+                                                {/**
+                                                  * ⛔ CETTE TUILE AVAIT ÉTÉ RETIRÉE LE 2026-08-13, ET C'ÉTAIT
+                                                  *    UNE ERREUR DE MA PART.
+                                                  *
+                                                  * Elle s'appelait « Actifs », un mot qui décrivait un abonnement
+                                                  * en cours — notion disparue avec la bascule en achat unique. Le
+                                                  * mot était faux, mais le CHIFFRE ne l'était pas : il compte les
+                                                  * filleuls qui ont réellement acheté, c'est-à-dire les ventes.
+                                                  *
+                                                  * En le supprimant, on a retiré à l'affilié la seule réponse
+                                                  * directe à « est-ce que j'ai vendu ? ». Il ne lui restait que
+                                                  * l'argent, qui répond à côté : zéro euro peut vouloir dire
+                                                  * « aucune vente » comme « une vente pas encore versée ».
+                                                  */}
+                                                <div className="p-4 rounded-xl bg-white/5">
+                                                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                                                        <CheckCircle2 className="w-3.5 h-3.5" />
+                                                        Ventes
+                                                    </div>
+                                                    <div className="text-2xl font-bold text-emerald-400">{ambassadorStatus.stats.activeReferrals}</div>
+                                                    <p className="text-[10px] text-white/25 mt-1">qui ont acheté</p>
                                                 </div>
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
