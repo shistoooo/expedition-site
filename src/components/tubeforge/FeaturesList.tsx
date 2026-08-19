@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { useLienParrainage } from "@/lib/useParrainage";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const AMBER = "#ff6a1f";
@@ -72,7 +73,7 @@ export default function FeaturesList() {
         <div>
           <Link
             data-track="bento-essai"
-            href="/tubeforge/checkout?plan=lifetime"
+            href={useLienParrainage("/tubeforge/checkout?plan=lifetime")}
             className="inline-flex items-center gap-2 px-5 py-3 font-bold text-sm text-white transition-all hover:brightness-110 active:scale-[0.98]"
             style={{ background: `linear-gradient(118deg, ${AMBER} 0%, ${RED} 58%, ${VIOLET} 155%)` }}
           >

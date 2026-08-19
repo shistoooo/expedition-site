@@ -13,6 +13,7 @@ import VideoExplicative from "@/components/tubeforge/VideoExplicative";
 import { VIDEO_COURTE, VIDEO_COMPLETE } from "@/lib/videoDemo";
 import CompatBadge from "@/components/shared/CompatBadge";
 import TubeForgeCreatorsMarquee from "@/components/tubeforge/TubeForgeCreatorsMarquee";
+import { useLienParrainage } from "@/lib/useParrainage";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -147,7 +148,7 @@ export default function TubeForgePage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   data-track="hero-essai"
-                  href="/tubeforge/checkout?plan=lifetime"
+                  href={useLienParrainage("/tubeforge/checkout?plan=lifetime")}
                   className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-black font-bold text-base border border-white/20 transition-all duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
                 >
                   Obtenir TubeForge <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1.5" />

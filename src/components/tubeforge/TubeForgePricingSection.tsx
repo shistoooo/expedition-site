@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, Star, Rocket, ArrowRight } from "lucide-react";
 import NumberTicker from "@/components/NumberTicker";
 import { SALES_OPEN, PRICING_MODE } from "@/lib/salesConfig";
+import { useLienParrainage } from "@/lib/useParrainage";
 
 const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const AMBER = "#ff6a1f";
@@ -126,7 +127,7 @@ function OffreUniqueCard() {
       </ul>
       <Link
         data-track="pricing-vie"
-        href="/tubeforge/checkout?plan=lifetime"
+        href={useLienParrainage("/tubeforge/checkout?plan=lifetime")}
         className="w-full py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
         style={{ background: AMBER, color: "#0a0a0a" }}
       >
@@ -144,7 +145,7 @@ function OffreUniqueCard() {
         */}
       <Link
         data-track="pricing-essai"
-        href="/tubeforge/essai"
+        href={useLienParrainage("/tubeforge/essai")}
         className="w-full mt-3 py-3 rounded-xl border font-semibold text-sm flex items-center justify-center transition-colors hover:bg-white/5"
         style={{ borderColor: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.8)" }}
       >

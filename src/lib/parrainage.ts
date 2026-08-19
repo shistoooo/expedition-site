@@ -92,3 +92,29 @@ export const SITE_PUBLIC = 'https://expeditionlauncher.store';
 export function lienPartenaire(code: string): string {
   return `${SITE_PUBLIC}/tubeforge?ref=${encodeURIComponent(code)}`;
 }
+
+/**
+ * ⛔ LA MÉMOIRE DU NAVIGATEUR NE SUFFIT PAS — ELLE EST LE POINT UNIQUE DE PANNE.
+ *
+ * Constaté le 2026-08-18, sur la première vraie vente : un affilié avait bien
+ * amené l'acheteur, et la commission n'était nulle part. La chaîne de capture
+ * fonctionnait pourtant — testée jusqu'au bundle servi.
+ *
+ * La cause est structurelle : les quatre boutons d'achat de `/tubeforge`
+ * pointaient vers le tunnel SANS transporter le code. Tout reposait donc sur
+ * `localStorage`, qui disparaît dans des situations parfaitement banales :
+ *   · navigation privée, où l'écriture est refusée ou effacée à la fermeture ;
+ *   · navigateur intégré à Discord, Instagram ou TikTok — là où un affilié
+ *     partage justement son lien — dont le stockage est cloisonné ;
+ *   · quelqu'un qui clique sur son téléphone et achète sur son ordinateur.
+ *
+ * Le code voyage désormais AUSSI dans l'adresse. Les deux mécanismes se
+ * rattrapent l'un l'autre : l'adresse tient quand le stockage est refusé, le
+ * stockage tient quand la personne s'éloigne et revient plus tard.
+ */
+export function lienAvecParrainage(href: string, code?: string | null): string {
+  const ref = code ?? lireParrainage();
+  if (!ref || !codeValide(ref)) return href;
+  // `href` porte déjà des paramètres dans la plupart des cas (`?plan=lifetime`).
+  return href + (href.includes('?') ? '&' : '?') + 'ref=' + encodeURIComponent(ref);
+}
