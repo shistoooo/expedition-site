@@ -1569,7 +1569,7 @@ export default function AccountPage() {
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                                                         <Users className="w-3.5 h-3.5" />
-                                                        Filleuls
+                                                        Parrain&eacute;s
                                                     </div>
                                                     <div className="text-2xl font-bold">{ambassadorStatus.stats.totalReferrals}</div>
                                                     <p className="text-[10px] text-white/25 mt-1">venus par ton lien</p>
@@ -1600,16 +1600,38 @@ export default function AccountPage() {
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                                                         <Banknote className="w-3.5 h-3.5" />
-                                                        Gains totaux
+                                                        Total gagn&eacute;
                                                     </div>
-                                                    <div className="text-2xl font-bold">{(ambassadorStatus.stats.totalEarnings / 100).toFixed(2)}€</div>
+                                                    {/**
+                                                      * ⛔ CETTE TUILE S'APPELAIT « Gains totaux » ET AFFICHAIT
+                                                      *    `totalEarnings`, QUI NE COMPTE QUE LES COMMISSIONS
+                                                      *    DÉJÀ VIRÉES (`WHERE status = 'paid'`, queries.ts).
+                                                      *
+                                                      * Résultat vu par le premier ambassadeur à avoir vendu :
+                                                      * « Ventes 1 » et « Gains totaux 0,00 € » sur la même
+                                                      * ligne. Il a compris qu'il n'avait rien gagné, alors que
+                                                      * ses 17,19 € l'attendaient dans la tuile d'à côté.
+                                                      *
+                                                      * On additionne donc le versé ET l'attente : la tuile
+                                                      * répond enfin à « combien est-ce que j'ai gagné ? », et
+                                                      * « En attente » répond à « et je le touche quand ? ».
+                                                      * Une commission annulée porte un autre statut, elle
+                                                      * n'entre dans aucune des deux.
+                                                      */}
+                                                    <div className="text-2xl font-bold">{((ambassadorStatus.stats.totalEarnings + ambassadorStatus.stats.pendingEarnings) / 100).toFixed(2).replace(".", ",")}€</div>
+                                                    <p className="text-[10px] text-white/25 mt-1">sur tes ventes</p>
                                                 </div>
                                                 <div className="p-4 rounded-xl bg-white/5">
                                                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                                                         <Clock className="w-3.5 h-3.5" />
                                                         En attente
                                                     </div>
-                                                    <div className="text-2xl font-bold text-purple-400">{(ambassadorStatus.stats.pendingEarnings / 100).toFixed(2)}€</div>
+                                                    <div className="text-2xl font-bold text-purple-400">{(ambassadorStatus.stats.pendingEarnings / 100).toFixed(2).replace(".", ",")}€</div>
+                                                    <p className="text-[10px] text-white/25 mt-1">
+                                                        {ambassadorStatus.stripeConnectStatus === "active"
+                                                            ? "vers\u00e9 au prochain virement"
+                                                            : "relie ton compte pour les toucher"}
+                                                    </p>
                                                 </div>
                                             </div>
 
@@ -1631,14 +1653,14 @@ export default function AccountPage() {
                                               */}
                                             {ambassadorStatus.stats.totalEarnings + ambassadorStatus.stats.pendingEarnings === 0 && (
                                                 <div className="p-4 rounded-xl bg-white/5 border border-white/5 mb-6 text-center">
-                                                    <p className="text-white/40 text-sm mb-1">Partagez votre lien pour commencer à gagner</p>
+                                                    <p className="text-white/40 text-sm mb-1">Partage ton lien pour commencer à gagner</p>
                                                     <p className="text-xs text-white/25">1 seule vente = <span className="text-purple-300">{COMMISSION_PAR_VENTE.toFixed(2).replace(".", ",")}€</span></p>
                                                 </div>
                                             )}
 
                                             {/* Referral Code */}
                                             <div className="mb-4">
-                                                <label className="text-xs font-mono text-white/40 uppercase mb-2 block">Votre lien de parrainage</label>
+                                                <label className="text-xs font-mono text-white/40 uppercase mb-2 block">Ton lien de parrainage</label>
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex-1 h-11 px-4 bg-white/5 rounded-xl border border-white/10 text-white text-sm flex items-center truncate">
                                                         {lienPartenaire(ambassadorStatus.referralCode).replace("https://", "")}
@@ -1744,7 +1766,7 @@ export default function AccountPage() {
                                                 ) : (
                                                     <div>
                                                         <p className="text-white/40 text-xs mb-3">
-                                                            Connectez votre compte bancaire via Stripe pour recevoir vos commissions.
+                                                            Relie ton compte bancaire via Stripe pour toucher tes commissions.
                                                         </p>
                                                         <button
                                                             onClick={handleStripeOnboard}
@@ -1787,9 +1809,9 @@ export default function AccountPage() {
                                             <div className="flex items-start gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
                                                 <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                                                 <div className="text-sm text-emerald-300/90 leading-relaxed">
-                                                    On a bien reçu votre demande. Votre code est réservé.
+                                                    On a bien reçu ta demande. Ton code est réservé.
                                                     <span className="block mt-2 text-white/50">
-                                                        Attendez la validation avant de partager votre lien&nbsp;: les ventes faites avant ne comptent pas.
+                                                        Attends la validation avant de partager ton lien&nbsp;: les ventes faites avant ne comptent pas.
                                                     </span>
                                                 </div>
                                             </div>
@@ -1806,15 +1828,15 @@ export default function AccountPage() {
                                         <div className="p-8 rounded-2xl bg-[#0F0F12] border border-purple-500/15 shadow-2xl shadow-purple-500/5">
                                             <div className="text-center mb-6">
                                                 <Gift className="w-10 h-10 text-purple-400 mx-auto mb-4" />
-                                                <h2 className="text-lg font-bold mb-2">Devenez Ambassadeur</h2>
+                                                <h2 className="text-lg font-bold mb-2">Deviens ambassadeur</h2>
                                                 <p className="text-white/50 text-sm">
-                                                    Partagez TubeForge et touchez <span className="text-white font-semibold">{Math.round(COMMISSION_TAUX * 100)}% de commission</span> sur chaque achat généré, soit {COMMISSION_PAR_VENTE.toFixed(2).replace(".", ",")}&euro; par vente.
+                                                    Partage TubeForge et touche <span className="text-white font-semibold">{Math.round(COMMISSION_TAUX * 100)}% de commission</span> sur chaque achat généré, soit {COMMISSION_PAR_VENTE.toFixed(2).replace(".", ",")}&euro; par vente.
                                                 </p>
                                             </div>
 
                                             {/* Earnings projection */}
                                             <div className="mb-6 space-y-2">
-                                                <p className="text-xs font-mono text-white/40 uppercase">Combien vous pourriez gagner</p>
+                                                <p className="text-xs font-mono text-white/40 uppercase">Combien tu pourrais gagner</p>
                                                 {[
                                                     { referrals: 5, emoji: "🔥" },
                                                     { referrals: 10, emoji: "🚀" },

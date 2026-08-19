@@ -1066,7 +1066,7 @@ export default function AdminPage() {
                                                                     <span className="font-bold text-white">{amb.ventes ?? 0}</span> vente{(amb.ventes ?? 0) > 1 ? "s" : ""}
                                                                 </span>
                                                                 <span className="text-white/30">
-                                                                    {amb.filleuls ?? 0} filleul{(amb.filleuls ?? 0) > 1 ? "s" : ""}
+                                                                    {amb.filleuls ?? 0} parrainé{(amb.filleuls ?? 0) > 1 ? "s" : ""}
                                                                 </span>
                                                                 {((amb.gainsVersesCents ?? 0) > 0) && (
                                                                     <span className="text-emerald-300/80">
