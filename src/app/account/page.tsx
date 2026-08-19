@@ -306,6 +306,37 @@ export default function AccountPage() {
      * restauration par cookie est le chemin normal les jours suivants, et c'est
      * celui des liens envoyés dans les courriels d'avis.
      */
+    /**
+     * ⛔ MÊME DÉFAUT QUE `chargerEssai`, SUR UNE AUTRE DONNÉE.
+     *
+     * `/ambassador/status` n'était appelé qu'à UNE des quatre entrées du
+     * tableau de bord : la connexion par mot de passe. La restauration de
+     * session par cookie — le chemin normal quand on revient le lendemain —,
+     * le retour Discord et l'inscription ne le chargeaient jamais.
+     *
+     * `ambassadorStatus` restait donc `null`, et la garde de rendu
+     * `ambassadorStatus?.isAmbassador` était fausse : un affilié approuvé,
+     * avec son code en base, ne voyait aucun panneau. C'est ce qui est arrivé
+     * à Donay le 2026-08-16, alors que le programme fonctionnait.
+     *
+     * La leçon est la même : le jeton passe en ARGUMENT, et la fonction est
+     * appelée à CHAQUE entrée. Une donnée chargée à un seul endroit finit
+     * toujours par manquer là où on ne l'a pas branchée.
+     */
+    const chargerAmbassadeur = useCallback(async (token: string) => {
+        try {
+            const r = await fetch(`${WORKER_URL}/ambassador/status`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!r.ok) return;
+            const d = await r.json();
+            // On garde la réponse dans TOUS les cas : sans elle, une personne
+            // éligible mais pas encore inscrite ne verrait jamais la proposition.
+            setAmbassadorStatus(d);
+            if (d.isAmbassador) setCustomCodeInput(d.referralCode);
+        } catch { /* l'absence de statut n'est pas une erreur */ }
+    }, []);
+
     const chargerEssai = useCallback(async (token: string) => {
         try {
             const r = await fetch(`${WORKER_URL}/license/essai`, {
@@ -377,6 +408,8 @@ export default function AccountPage() {
                         if (subData.subscription) setSubscription(subData.subscription);
                     } catch { /* ignore */ }
                         void chargerEssai(data.accessToken);   // restauration de session
+                        void chargerAmbassadeur(data.accessToken);
+                        checkDiscordStatus(data.accessToken);
                     setStep("dashboard");
                 }
             })
@@ -414,6 +447,8 @@ export default function AccountPage() {
                     if (subData.subscription) setSubscription(subData.subscription);
                 } catch { /* ignore */ }
                     void chargerEssai(token);   // retour Discord
+                    void chargerAmbassadeur(token);
+                    checkDiscordStatus(token);
                 setStep("dashboard");
             })
             .catch(() => setError("Erreur de connexion Discord."))
@@ -516,6 +551,7 @@ export default function AccountPage() {
             // `token` peut être null si la connexion qui suit l'inscription a échoué :
             // sans jeton il n'y a rien à charger, et forcer l'appel enverrait « Bearer null ».
             if (token) void chargerEssai(token);   // inscription
+            if (token) void chargerAmbassadeur(token);
             setStep("dashboard");
             setSuccessMessage("Compte créé avec succès !");
             if (token) checkDiscordStatus(token);
@@ -620,23 +656,10 @@ export default function AccountPage() {
             }
 
 
-            // Fetch ambassador status + Discord status (non-blocking)
-            try {
-                const ambRes = await fetch(`${WORKER_URL}/ambassador/status`, {
-                    headers: { "Authorization": `Bearer ${data.accessToken}` },
-                });
-                if (ambRes.ok) {
-                    const ambData = await ambRes.json();
-                    // On garde la réponse dans TOUS les cas : sans elle, une personne
-                    // éligible mais pas encore inscrite ne verrait jamais la proposition.
-                    setAmbassadorStatus(ambData);
-                    if (ambData.isAmbassador) setCustomCodeInput(ambData.referralCode);
-                }
-            } catch { /* silently ignore */ }
-
             checkDiscordStatus(data.accessToken);
 
                 void chargerEssai(data.accessToken);   // connexion par mot de passe
+                void chargerAmbassadeur(data.accessToken);
             setStep("dashboard");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "Une erreur est survenue";
