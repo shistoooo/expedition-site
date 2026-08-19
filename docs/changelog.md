@@ -1,4 +1,42 @@
 ---
+### [2026-08-19 14:10] — Un ambassadeur qui vient de vendre lisait « 0,00 € »
+
+**Quoi :** la tuile « Gains totaux » du panneau ambassadeur affiche désormais le
+versé + l'attente, « Filleuls » devient « Parrainés », et le panneau tutoie
+partout.
+
+**Pourquoi :** `getAmbassadorStats` renvoie deux montants distincts, et la tuile
+n'affichait que `totalEarnings`, filtré sur `status = 'paid'`
+(`licensing/src/db/queries.ts:730`). Le premier ambassadeur à avoir vendu a donc
+lu « Ventes 1 » et « Gains totaux 0,00 € » côte à côte : ses 17,19 € étaient
+dans la tuile voisine, en attente de son compte bancaire. Le libellé disait
+« totaux » pour un sous-ensemble.
+
+« Filleul » vient du baptême et ne décrit personne : celui qui clique un lien
+d'affilié ne se pense pas filleul de qui que ce soit.
+
+Le panneau mélangeait enfin les deux adresses — « venus par ton lien » trois
+lignes au-dessus de « Votre lien de parrainage ».
+
+**Fichiers touchés :**
+- `src/app/account/page.tsx` — les quatre tuiles, plus six formulations vouvoyées
+- `src/app/admin/page.tsx` — « filleul » → « parrainé » dans la liste ambassadeurs
+
+**Comment annuler :** rendre à la tuile son ancien libellé et sa valeur
+`totalEarnings / 100` seule. Rien à toucher côté worker : les deux montants
+étaient déjà servis, seul l'affichage en ignorait un.
+
+**Effets de bord possibles :** le montant « Déjà versé » n'apparaît plus nulle
+part ; il se lit dans le tableau de bord Stripe Connect. Personne ne l'avait
+demandé, et l'afficher redonnait quatre chiffres d'argent pour deux questions.
+
+**⚠️ Ce commit répare aussi un déploiement bloqué.** Le commit `eb2d0c0` porte
+l'auteur `shisto81@gmail.com`, que Vercel refuse — seule l'adresse
+`…@users.noreply.github.com` passe. Il est resté quatorze minutes sans produire
+de build, sans aucune erreur visible. Ne jamais passer `-c user.email` sur ce
+dépôt : la config locale porte déjà la bonne adresse.
+
+---
 ### [2026-08-08 03:30] — TubeForge à vie : 89,99 € → 39,99 €
 
 **Quoi :** le prix de l'accès à vie passe à 39,99 €, partout : constantes
